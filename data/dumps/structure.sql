@@ -1,3 +1,19 @@
+CREATE TABLE IF NOT EXISTS `modules` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(100) NOT NULL,
+    `system` tinyint(1) NOT NULL,
+    `version` varchar(10) NOT NULL,
+    `vendor` varchar(100) NOT NULL,
+    `vendor_email` varchar(100) NOT NULL,
+    `description` text NOT NULL,
+    `dependences` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `modules` (`id`, `name`, `system`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
+(1, 'application', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Core module, make the first application initialization', ''),
+(2, 'users', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Allows to users logon and logoff ', '');
+
 CREATE TABLE IF NOT EXISTS `localizations` (
     `language` varchar(2) NOT NULL,
     `locale` varchar(5) NOT NULL,
