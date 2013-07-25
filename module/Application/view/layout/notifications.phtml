@@ -1,0 +1,10 @@
+<?php foreach ($this->flashMessages() as $namespace => $messages) : ?>
+    <?php if (count($messages)) : ?>
+        <?php foreach ($messages as $message) : ?>
+        <div class="alert alert-<?=$namespace?>">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <?php echo $message; ?>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+<?php endforeach; ?>

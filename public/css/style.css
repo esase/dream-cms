@@ -1,0 +1,15 @@
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+/* loading ajax*/
+
+.loading-ajax {
+    background-image: url("../images/loading_bg.png");
+    height: 64px;
+    position: absolute;
+    text-align: center;
+    width: 89px;
+    z-index: 10;
+}
