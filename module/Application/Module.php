@@ -54,6 +54,9 @@ class Module
         $eventManager = $e->getApplication()->getEventManager();
         $this->serviceManager = $e->getApplication()->getServiceManager();
 
+        // init php settings
+        $this->initPhpSettings();
+
         // init session
         $this->initSession();
 
@@ -65,6 +68,20 @@ class Module
 
         // init identity
         $this->initIdentity();
+    }
+
+    /**
+     * Init php settings
+     */
+    private function initPhpSettings()
+    {
+        $config = $this->serviceManager->get('Config');
+
+        if (!empty($config['php_settings'])) {
+            foreach($config['php_settings'] as $settingName => $settingValue) {
+                ini_set($settingName, $settingValue);
+            }
+        }
     }
 
     /**

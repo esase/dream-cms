@@ -12,6 +12,10 @@
  */
 
 return array(
+    'php_settings' => array(
+        'date.timezone' => 'Europe/Moscov',
+        'mbstring.internal_encoding' => 'UTF-8',
+    ),
     'session' => array(
         'config' => array(
             'class' => 'Zend\Session\Config\SessionConfig',

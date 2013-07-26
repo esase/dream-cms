@@ -1,6 +1,10 @@
 <?php
 
 return array(
+   'php_settings' => array(
+        'display_startup_errors' => true,
+        'display_errors' => true
+    ), 
     'static_cache' => array(
         'options' => array(
             'writable' => false,
