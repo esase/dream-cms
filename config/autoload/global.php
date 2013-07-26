@@ -16,7 +16,7 @@ return array(
         'config' => array(
             'class' => 'Zend\Session\Config\SessionConfig',
             'options' => array(
-                'savePath' => APPLICATION_ROOT . '\data\sessions',
+                'savePath' => APPLICATION_ROOT . '/data/sessions',
                 'cookieLifetime' => 0,
                 'cookieSecure' => false,
                 'cookieHttpOnly' => true
@@ -34,7 +34,7 @@ return array(
         'options' => array(
             'writable' => true,
             'readable' => true,
-            'cache_dir' => APPLICATION_ROOT . '\data\cache',
+            'cache_dir' => APPLICATION_ROOT . '/data/cache',
             'dir_level' => 1,
             'ttl' => 0 // cache never will be expired
         )
