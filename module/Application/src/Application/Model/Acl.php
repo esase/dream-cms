@@ -17,6 +17,11 @@ class Acl extends Base
     const DEFAULT_ROLE_GUEST  = 2;
 
     /**
+     * Default guest id
+     */
+    const DEFAULT_GUEST_ID  = -1;
+
+    /**
      * Default role member
      */
     const DEFAULT_ROLE_MEMBER = 3;

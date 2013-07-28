@@ -1,79 +1,135 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 
 namespace Application;
 
+use Zend\ModuleManager\ModuleEvent as ModuleEvent;
+use Application\Model\Acl as Acl;
 use stdClass;
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Mvc\MvcEvent;
-use Zend\Validator\AbstractValidator;
 
 use Zend\Authentication\Result as AuthenticationResult;
 use Zend\Authentication\Storage;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 
-use Zend\Permissions\Acl\Acl;
-use Zend\Permissions\Acl\Role\GenericRole as Role;
-use Zend\Permissions\Acl\Resource\GenericResource as Resource;
-
 use Zend\Session\SessionManager;
 use Zend\Session\Container as SessionContainer;
+
+use Zend\Validator\AbstractValidator;
+use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
 
 class Module
 {
     /**
-     * List of registered localizations
-     * @var array
-     */
-    private $localizations;
-
-    /**
-     * Default localization
-     * @var array
-     */
-    private $defaultLocalization;
-
-    /**
      * Service manager
      * @var object
      */
-    private $serviceManager;
+    protected $serviceManager;
+
+    /**
+     * Module manager
+     * @var object
+     */
+    protected $moduleManager;
+
+    /**
+     * User identity
+     * @var object
+     */
+    protected $userIdentity;
+
+    /**
+     * List of registered localizations
+     * @var array
+     */
+    protected $localizations;
+
+    /**
+     * Init
+     *
+     * @param object $moduleManager
+     */
+    function init(\Zend\ModuleManager\ModuleManager $moduleManager)
+    {
+        // get service manager
+        $this->serviceManager =
+        $moduleManager->getEvent()->getParam('ServiceManager');
+
+        // get module manager
+        $this->moduleManager = $moduleManager;
+
+        $moduleManager->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULES_POST,
+            array($this, 'initApplication'));
+    }
 
     /**
      * Bootstrap
      */
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager = $e->getApplication()->getEventManager();
-        $this->serviceManager = $e->getApplication()->getServiceManager();
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+            $this, 'initUserLocalization'
+        ), 100);
+    }
 
-        // init php settings
-        $this->initPhpSettings();
-
+    /**
+     * Init application
+     * 
+     * @param object $e
+     */
+    public function initApplication(\Zend\ModuleManager\ModuleEvent $e)
+    {
         // init session
         $this->initSession();
 
-        // init default localization 
-        $this->initDefaultLocalization($eventManager);
+        // init user identity
+        $this->initUserIdentity();
+        
+        // init php settings
+        $this->initPhpSettings();
 
-        // init acl
-        $this->initAcl();
+        // init default localization
+        $this->initDefaultLocalization();
+    }
 
-        // init identity
-        $this->initIdentity();
+    /**
+     * Init session
+     */
+    protected function initSession()
+    {
+        $session = $this->serviceManager->get('Zend\Session\SessionManager');
+        $session->start();
+
+        $container = new SessionContainer('initialized');
+
+        if (!isset($container->init)) {
+            $session->regenerateId(true); $container->init = 1;
+        }
+    }
+
+    /**
+     * Init identity
+     */
+    protected function initUserIdentity()
+    {
+        $authService = $this->serviceManager->get('Application\AuthService');
+
+        if (!$authService->hasIdentity()) {
+            $this->userIdentity = new stdClass();
+            $this->userIdentity->role = Acl::DEFAULT_ROLE_GUEST;
+            $this->userIdentity->user_id = Acl::DEFAULT_GUEST_ID;
+
+            $authService->getStorage()->write($this->userIdentity);
+        }
+        else {
+            $this->userIdentity = $authService->getIdentity();
+        }
     }
 
     /**
      * Init php settings
      */
-    private function initPhpSettings()
+    protected function initPhpSettings()
     {
         $config = $this->serviceManager->get('Config');
 
@@ -85,27 +141,9 @@ class Module
     }
 
     /**
-     * Init session 
+     * Init default localization
      */
-    private function initSession()
-    {
-        $session = $this->serviceManager->get('Zend\Session\SessionManager');
-        $session->start();
-
-        $container = new SessionContainer('initialized');
-
-        if (!isset($container->init)) {
-            $session->regenerateId(true);
-            $container->init = 1;
-        }
-    }
-
-    /**
-     * Init default localization 
-     *
-     * @param object $eventManager
-     */
-    private function initDefaultLocalization($eventManager)
+    private function initDefaultLocalization()
     {
         // get all registered localizations
         $localization = $this->serviceManager
@@ -114,8 +152,8 @@ class Module
 
         // init default localization
         if (null != ($this->localizations = $localization->getAllLocalizations())) {
-            if (null != ($defaultLanguage = \Locale::acceptFromHttp($this->serviceManager->
-                    get('request')->getServer('HTTP_ACCEPT_LANGUAGE')))) {
+            if (null != ($defaultLanguage =
+                    \Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE')))) {
 
                 // extract language code from locale
                 $defaultLanguage = substr($defaultLanguage, 0, 2);
@@ -124,7 +162,8 @@ class Module
             if ($defaultLanguage && array_key_exists($defaultLanguage, $this->
                     localizations)) {
 
-                $this->defaultLocalization = $this->localizations[$defaultLanguage];
+                $this->defaultLocalization =
+                $this->localizations[$defaultLanguage];
             }
             else {
                 $this->defaultLocalization = current($this->localizations);
@@ -133,77 +172,8 @@ class Module
             $translator = $this->serviceManager->get('translator');
             $translator->setLocale($this->defaultLocalization['locale']);
             $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
+
             AbstractValidator::setDefaultTranslator($translator);
-        }
-
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
-
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH, array(
-            $this, 'initUserLocalization'
-        ), 100);
-    }
-
-    /**
-     * Init acl
-     */
-    private function initAcl()
-    {
-        $acl = $this->serviceManager->get('Application\Acl');
-        $aclModel = $this->serviceManager
-            ->get('Application\Model\Builder')
-            ->getInstance('Application\Model\Acl');
-
-        // get all roles
-        if (null != ($roles = $aclModel->getAllRoles())) {
-            foreach ($roles as $roleId => $roleInfo) {
-                $acl->addRole(new Role($roleId));
-            }
-        }
-        
-       // echo '<pre>';
-        //print_r($acl->getRoles());
-        //exit;
-            /*
-            $acl = new Zend_Acl();
-
-        $acl->addRole(new Zend_Acl_Role(ACL_ROLE_GUEST));
-        $acl->addRole(new Zend_Acl_Role(ACL_ROLE_MEMBER));
-        $acl->addRole(new Zend_Acl_Role(ACL_ROLE_ADMIN));
-
-        $acl->deny(array(
-            ACL_ROLE_GUEST,
-            ACL_ROLE_MEMBER
-        ));
-        $acl->allow(ACL_ROLE_ADMIN);//admin can do everything
-
-        Zend_Registry::set('Zend_Acl', $acl);
-            */
-            
-            //1. register all roles
-            //2. register all resources
-            //3. 
-    /*
-            $localization = $this->serviceManager
-            ->get('Application\Model\Builder')
-            ->getInstance('Application\Model\Localization');
-    */
-        //$acl = $this->serviceManager->get('Application\Model\Acl');
-    }
-
-    /**
-     * Init identity
-     */
-    private function initIdentity()
-    {
-        $authService = $this->serviceManager->get('Application\AuthService');
-
-        if (!$authService->hasIdentity()) {
-            $user = new stdClass();
-            $user->role = \Application\Model\Acl::DEFAULT_ROLE_GUEST;
-            $user->user_id = -1;
-
-            $authService->getStorage()->write($user);
         }
     }
 
@@ -213,7 +183,7 @@ class Module
      * @param object $e MvcEvent
      */
     public function initUserLocalization(MvcEvent $e)
-    { 
+    {
         if ($this->localizations) {
             $router = $this->serviceManager->get('router');
             $matches = $e->getRouteMatch();
@@ -242,21 +212,21 @@ class Module
     /**
      * Get service config
      */
-    public function getServiceConfig() 
+    public function getServiceConfig()
     {
-        return  array(
+        return array(
             'factories' => array(
                 'Application\Acl' => function($serviceManager)
                 {
                     return new Acl();
                 },
-                'Application\Model\Builder' => function($serviceManager) 
+                'Application\Model\Builder' => function($serviceManager)
                 {
                     return new Model\ModelBuilder($serviceManager);
                 },
-                'Application\AuthService' => function($serviceManager) 
+                'Application\AuthService' => function($serviceManager)
                 {
-                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'), 
+                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'),
                             'users', 'nick_name', 'password', 'SHA1(CONCAT(MD5(?), salt))');
 
                     $authService = new AuthenticationService();
@@ -264,12 +234,12 @@ class Module
 
                     return $authService;
                 },
-                'Cache\Static' => function ($serviceManager) 
+                'Cache\Static' => function ($serviceManager)
                 {
                     $config = $serviceManager->get('Config');
-                    $cache = \Zend\Cache\StorageFactory::factory(array(
+                    $cache =\Zend\Cache\StorageFactory::factory(array(
                         'adapter' => array(
-                            'name' => $config['static_cache']['type'],
+                            'name' => $config['static_cache']['type']
                         ),
                         'plugins' => array(
                             // Don't throw exceptions on cache errors
@@ -283,12 +253,12 @@ class Module
                     $cache->setOptions($config['static_cache']['options']);
                     return $cache;
                 },
-                'Cache\Dynamic' => function ($serviceManager) 
+                'Cache\Dynamic' => function ($serviceManager)
                 {
                     $config = $serviceManager->get('Config');
                     $cache = \Zend\Cache\StorageFactory::factory(array(
                         'adapter' => array(
-                            'name' => $config['dynamic_cache']['type'],
+                            'name' => $config['dynamic_cache']['type']
                         ),
                         'plugins' => array(
                             // Don't throw exceptions on cache errors
@@ -302,17 +272,18 @@ class Module
                     $cache->setOptions($config['dynamic_cache']['options']);
                     return $cache;
                 },
-                'Custom\Cache\Static\Utils' => function ($serviceManager) 
+                'Custom\Cache\Static\Utils' => function ($serviceManager)
                 {
                    return new \Custom\Cache\Utils($serviceManager->get('Cache\Static'));
                 },
                 'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-                'Zend\Session\SessionManager' => function ($serviceManager) 
+                'Zend\Session\SessionManager' => function ($serviceManager)
                 {
                     $config = $serviceManager->get('config');
 
                     // get session config
-                    $sessionConfig = new $config['session']['config']['class']();
+                    $sessionConfig = new
+                    $config['session']['config']['class']();
                     $sessionConfig->setOptions($config['session']['config']['options']);
 
                     // get session storage
@@ -320,12 +291,14 @@ class Module
 
                     $sessionSaveHandler = null;
                     if (!empty($config['session']['save_handler'])) {
-                        // class should be fetched from service manager since it will require constructor arguments
+                        // class should be fetched from service manager since it
+                        // will require constructor arguments
                         $sessionSaveHandler = $serviceManager->get($config['session']['save_handler']);
                     }
 
                     // get session manager
-                    $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
+                    $sessionManager = new SessionManager($sessionConfig,
+                    $sessionStorage, $sessionSaveHandler);
                     
                     if (!empty($config['session']['validators'])) {
                         $chain = $sessionManager->getValidatorChain();
@@ -359,7 +332,7 @@ class Module
  
                     return $messages;
                 }
-            ),
+            )
         );
     }
 
@@ -370,13 +343,13 @@ class Module
     {
         return array(
             'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
+                __DIR__ . '/autoload_classmap.php'
             ),
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
+                )
+            )
         );
     }
 }

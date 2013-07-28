@@ -1,6 +1,7 @@
 <?php
 
-define('APPLICATION_ROOT', dirname(__DIR__));
+define('APPLICATION_PUBLIC', __DIR__);
+define('APPLICATION_ROOT', dirname(APPLICATION_PUBLIC));
 
 /**
  * This makes our life easier when dealing with paths. Everything is relative
@@ -9,7 +10,7 @@ define('APPLICATION_ROOT', dirname(__DIR__));
 chdir(APPLICATION_ROOT);
 
 // Setup autoloading
-require 'init_autoloader.php';
+require_once 'init_autoloader.php';
 
 // Run the application!
 Zend\Mvc\Application::init(require 'config/application.config.php')->run();
