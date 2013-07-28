@@ -5,9 +5,7 @@ namespace Application;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Application\Model\Acl as Acl;
 use StdClass;
-
 use DateTime;
-use DateTimeZone;
 
 use Zend\Authentication\Result as AuthenticationResult;
 use Zend\Authentication\Storage;
