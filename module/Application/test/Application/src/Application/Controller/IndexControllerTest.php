@@ -93,26 +93,4 @@ class IndexControllerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(404, $response->getStatusCode());
     }
-
-    /**
-     * Test localization
-     */ 
-    public function testLocalization()
-    {
-        $this->serviceManager->get('EventManager')
-            ->trigger('onBootstrap');
-        
-        // get all localizations
-       /* $localization = $this->serviceManager
-            ->get('Application\Model\Builder')
-            ->getInstance('Application\Model\Localization');
-
-        $localizations = $localization->getAllLocalizations();
-echo 'here';
-$translator = $this->serviceManager->get('translator');
-echo $translator->getLocale();
-        foreach($localizations as $language) {
-            
-        }*/
-    }
 }
