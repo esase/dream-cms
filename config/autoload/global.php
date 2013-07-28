@@ -12,9 +12,9 @@
  */
 
 return array(
+    'default_timezone' => 'Europe/Moscow',
     'php_settings' => array(
-        'date.timezone' => 'Europe/Moscov',
-        'mbstring.internal_encoding' => 'UTF-8',
+        'mbstring.internal_encoding' => 'UTF-8'
     ),
     'session' => array(
         'config' => array(

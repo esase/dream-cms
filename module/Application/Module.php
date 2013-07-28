@@ -4,7 +4,10 @@ namespace Application;
 
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Application\Model\Acl as Acl;
-use stdClass;
+use StdClass;
+
+use DateTime;
+use DateTimeZone;
 
 use Zend\Authentication\Result as AuthenticationResult;
 use Zend\Authentication\Storage;
@@ -43,6 +46,12 @@ class Module
      * @var array
      */
     protected $localizations;
+
+    /**
+     * Default localization
+     * @var array
+     */
+    protected $defaultLocalization;
 
     /**
      * Init
@@ -84,7 +93,10 @@ class Module
 
         // init user identity
         $this->initUserIdentity();
-        
+
+        // init time zone
+        $this->initTimeZone();
+
         // init php settings
         $this->initPhpSettings();
 
@@ -127,6 +139,33 @@ class Module
     }
 
     /**
+     * Init time zone
+     */
+    protected function initTimeZone()
+    {
+        $config = $this->serviceManager->get('Config');
+
+        $defaultTimeZone = !empty($this->userIdentity->time_zone)
+            ? $this->userIdentity->time_zone
+            : $config['default_timezone'];
+
+        // change time zone settings
+        if ($defaultTimeZone != date_default_timezone_get()) {
+            date_default_timezone_set($defaultTimeZone);
+        }
+
+ 	// get difference to greenwich time (GMT) with colon between hours and minutes
+        $date = new DateTime();
+
+        $applicationInit = $this->serviceManager
+            ->get('Application\Model\Builder')
+            ->getInstance('Application\Model\Init');
+
+        // change time zone settings in model
+        $applicationInit->initTimeZone($date->format('P'));
+    }
+
+    /**
      * Init php settings
      */
     protected function initPhpSettings()
@@ -151,30 +190,24 @@ class Module
             ->getInstance('Application\Model\Localization');
 
         // init default localization
-        if (null != ($this->localizations = $localization->getAllLocalizations())) {
-            if (null != ($defaultLanguage =
-                    \Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE')))) {
+        $this->localizations = $localization->getAllLocalizations();
+        $acceptLanguage = \Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
 
-                // extract language code from locale
-                $defaultLanguage = substr($defaultLanguage, 0, 2);
-            }
+        $defaultLanguage = !empty($this->userIdentity->language)
+            ? $this->userIdentity->language
+            : ($acceptLanguage ? substr($acceptLanguage, 0, 2) : null);
 
-            if ($defaultLanguage && array_key_exists($defaultLanguage, $this->
-                    localizations)) {
+        // setup locale
+        $this->defaultLocalization =  array_key_exists($defaultLanguage, $this->localizations)
+            ? $this->localizations[$defaultLanguage]
+            : current($this->localizations);
 
-                $this->defaultLocalization =
-                $this->localizations[$defaultLanguage];
-            }
-            else {
-                $this->defaultLocalization = current($this->localizations);
-            }
+        // init translator settings
+        $translator = $this->serviceManager->get('translator');
+        $translator->setLocale($this->defaultLocalization['locale']);
+        $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
 
-            $translator = $this->serviceManager->get('translator');
-            $translator->setLocale($this->defaultLocalization['locale']);
-            $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
-
-            AbstractValidator::setDefaultTranslator($translator);
-        }
+        AbstractValidator::setDefaultTranslator($translator);
     }
 
     /**
@@ -184,21 +217,23 @@ class Module
      */
     public function initUserLocalization(MvcEvent $e)
     {
-        if ($this->localizations) {
-            $router = $this->serviceManager->get('router');
-            $matches = $e->getRouteMatch();
+        $router = $this->serviceManager->get('router');
+        $matches = $e->getRouteMatch();
 
-            // get languge param from the route
-            if (!array_key_exists($matches->getParam('languge'), $this->localizations)) {
-                $router->setDefaultParam('languge', $this->defaultLocalization['language']);
-                return;
-            }
-
-            // init user localization
-            $translator = $this->serviceManager->get('translator');
-            $translator->setLocale($this->localizations[$matches->getParam('languge')]['locale']);
-            $router->setDefaultParam('languge', $matches->getParam('languge'));
+        // get languge param from the route
+        if (!array_key_exists($matches->getParam('languge'), $this->localizations)) {
+            $router->setDefaultParam('languge', $this->defaultLocalization['language']);
+            return;
         }
+
+        // init user localization
+        if ($this->defaultLocalization['language'] != $matches->getParam('languge')) {
+            $this->serviceManager
+                ->get('translator')
+                ->setLocale($this->localizations[$matches->getParam('languge')]['locale']);
+        }
+
+        $router->setDefaultParam('languge', $matches->getParam('languge'));
     }
 
     /**

@@ -45,12 +45,17 @@ CREATE TABLE IF NOT EXISTS `users` (
     `password` varchar(40) NOT NULL DEFAULT '',
     `salt` varchar(10) NOT NULL DEFAULT '',
     `role` int(10) unsigned NOT NULL,
+    `language` varchar(2) DEFAULT NULL,
+    `time_zone` varchar(100) NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `nick_name` (`nick_name`),
     UNIQUE KEY `email` (`email`),
     FOREIGN KEY (role) REFERENCES acl_roles(id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (language) REFERENCES localizations(language)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL    
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `users` (`user_id`, `nick_name`, `email`, `password`, `salt`, `role`) VALUES
