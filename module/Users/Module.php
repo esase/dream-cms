@@ -8,6 +8,7 @@ use Zend\Http\Response;
 
 class Module
 {
+
     /**
      * Return autoloader config array
      *

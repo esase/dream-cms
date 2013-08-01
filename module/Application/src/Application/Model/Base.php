@@ -16,16 +16,6 @@ class Base extends Sql
     protected $staticCacheUtils;
 
     /**
-     * Localization cache
-     */
-    const CACHE_LOCALIZATIONS = 'Application_Localizations';
-
-    /**
-     * Acl roles cache
-     */
-    const CACHE_ACL_ROLES = 'Application_Acl_Roles';
-
-    /**
      * Class constructor
      *
      * @param object $adapter

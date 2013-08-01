@@ -59,8 +59,7 @@ class Module
     function init(\Zend\ModuleManager\ModuleManager $moduleManager)
     {
         // get service manager
-        $this->serviceManager =
-        $moduleManager->getEvent()->getParam('ServiceManager');
+        $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
 
         // get module manager
         $this->moduleManager = $moduleManager;
@@ -100,6 +99,9 @@ class Module
 
         // init default localization
         $this->initDefaultLocalization();
+
+        // init layout
+        $this->initlayout();
     }
 
     /**
@@ -206,6 +208,53 @@ class Module
         $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
 
         AbstractValidator::setDefaultTranslator($translator);
+    }
+
+    /**
+     * Init layout
+     */
+    protected function initlayout()
+    {
+        $templatePathResolver = $this->serviceManager->get('Zend\View\Resolver\TemplatePathStack');
+
+        $layout = $this->serviceManager
+            ->get('Application\Model\Builder')
+            ->getInstance('Application\Model\Layout');
+
+        // get default or user defined layouts
+        $activeLayouts = !empty($this->userIdentity->layout)
+            ? $layout->getLayoutsByName($this->userIdentity->layout)
+            : $layout->getDefaultActiveLayouts();
+
+        // add layouts paths    
+        foreach ($this->moduleManager->getModules() as $module) {
+            foreach ($activeLayouts as $layoutInfo) {
+                $templatePathResolver->addPath('module/' . $module . '/view/' . $layoutInfo['name']);    
+            }
+        }
+
+        // process template map
+        $templatePathResolver = $this->serviceManager->get('Zend\View\Resolver\TemplateMapResolver');
+        $templateMap = array();
+        $activeLayouts = array_reverse($activeLayouts);
+
+        foreach ($templatePathResolver as $name => $path) {
+            foreach ($activeLayouts as $layoutInfo) {
+                $filePath = sprintf($path, $layoutInfo['name']);
+
+                // replace special path marker with current layout name
+                if (file_exists($filePath)) {
+                    $templateMap[$name] = $filePath;
+                    break;
+                }
+            }
+        }
+
+        if ($templateMap) {
+            $templatePathResolver->setMap($templateMap);
+        }
+
+        $layout::setCurrentLayouts($activeLayouts);
     }
 
     /**

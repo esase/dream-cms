@@ -7,6 +7,11 @@ use Zend\Db\ResultSet\ResultSet;
 class Localization extends Base
 {
     /**
+     * Localization cache
+     */
+    const CACHE_LOCALIZATIONS = 'Application_Localizations';
+
+    /**
      * Get all localizations
      *
      * @return array
