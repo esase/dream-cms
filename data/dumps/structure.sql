@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS `layouts` (
     `version` varchar(100) NOT NULL,
     `vendor` varchar(100) NOT NULL,
     `vendor_email` varchar(1000) NOT NULL,
-    PRIMARY KEY (`name`)
+    PRIMARY KEY (`name`),
+    KEY `type` (`type`, `active`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `layouts` (`name`, `type`, `active`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
