@@ -21,10 +21,10 @@ class LoginController extends BaseController
     public function indexAction()
     {
         $userIdentity = $this->getAuthService()->getIdentity();
-        
+
         // if already login, redirect to success page
         if ($userIdentity->role !== Acl::DEFAULT_ROLE_GUEST){
-            return $this->redirect()->toRoute('home');
+            return $this->redirect()->toRoute('application');
         }
 
         // generate login form
@@ -46,7 +46,7 @@ class LoginController extends BaseController
                     $this->getAuthService()->getStorage()->write($this->
                             getAuthService()->getAdapter()->getResultRowObject(null, array('password', 'salt')));
 
-                    return $this->redirect()->toRoute('home');
+                    return $this->redirect()->toRoute('application');
                 }
                 else {
                     // generate error messages
