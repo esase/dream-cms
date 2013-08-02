@@ -32,33 +32,6 @@ class Layout extends Base
     const CACHE_LAYOUTS_TAG = 'Application_Layouts_TAG';
 
     /**
-     * Current layouts
-     * @var array
-     */
-    protected static $currentLayouts = array();
-
-    /**
-     * Set current layouts
-     *
-     * @param array $layouts
-     * @return void
-     */
-    public function setCurrentLayouts($layouts)
-    {
-        self::$currentLayouts = $layouts;
-    }
-
-    /**
-     * Get current layouts
-     *
-     * @return void
-     */
-    public function getCurrentLayouts()
-    {
-        return self::$currentLayouts;
-    }
-
-    /**
      * Get layouts by name
      *
      * @param string $layoutName

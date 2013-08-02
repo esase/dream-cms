@@ -5,10 +5,8 @@ namespace Users;
 use Zend\Mvc\MvcEvent;
 use Zend\Http\Response;
 
-
 class Module
 {
-
     /**
      * Return autoloader config array
      *
@@ -36,6 +34,9 @@ class Module
     public function getServiceConfig()
     {
         return array(
+            'invokables' => array(
+                'Users\Service' => 'Users\Service\Service'
+            ),
         );
     }
 

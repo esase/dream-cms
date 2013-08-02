@@ -4,6 +4,7 @@ namespace Application;
 
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Application\Model\Acl as Acl;
+
 use StdClass;
 use DateTime;
 
@@ -64,8 +65,8 @@ class Module
         // get module manager
         $this->moduleManager = $moduleManager;
 
-        $moduleManager->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULES_POST,
-            array($this, 'initApplication'));
+        $moduleManager->getEventManager()->
+            attach(ModuleEvent::EVENT_LOAD_MODULES_POST, array($this, 'initApplication'));
     }
 
     /**
@@ -136,6 +137,9 @@ class Module
         else {
             $this->userIdentity = $authService->getIdentity();
         }
+
+        $usersService = $this->serviceManager->get('Users\Service');
+        $usersService::setCurrentUserIdentity($this->userIdentity);
     }
 
     /**
@@ -208,6 +212,9 @@ class Module
         $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
 
         AbstractValidator::setDefaultTranslator($translator);
+        
+        $applicationService = $this->serviceManager->get('Application\Service');
+        $applicationService::setCurrentLocalization($this->defaultLocalization);
     }
 
     /**
@@ -254,7 +261,8 @@ class Module
             $templatePathResolver->setMap($templateMap);
         }
 
-        $layout::setCurrentLayouts($activeLayouts);
+        $applicationService = $this->serviceManager->get('Application\Service');
+        $applicationService::setCurrentLayouts($activeLayouts);
     }
 
     /**
@@ -278,6 +286,10 @@ class Module
             $this->serviceManager
                 ->get('translator')
                 ->setLocale($this->localizations[$matches->getParam('languge')]['locale']);
+
+            $applicationService = $this->serviceManager->get('Application\Service');
+            $applicationService::setCurrentLocalization($this->
+                    localizations[$matches->getParam('languge')]);    
         }
 
         $router->setDefaultParam('languge', $matches->getParam('languge'));
@@ -297,6 +309,9 @@ class Module
     public function getServiceConfig()
     {
         return array(
+            'invokables' => array(
+                'Application\Service' => 'Application\Service\Service'
+            ),
             'factories' => array(
                 'Application\Acl' => function($serviceManager)
                 {
