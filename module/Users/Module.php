@@ -2,9 +2,6 @@
 
 namespace Users;
 
-use Zend\Mvc\MvcEvent;
-use Zend\Http\Response;
-
 class Module
 {
     /**
