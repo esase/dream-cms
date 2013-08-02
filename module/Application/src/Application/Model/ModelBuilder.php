@@ -11,6 +11,12 @@ class ModelBuilder implements ModelBuilderInterface
     private $serviceManager;
 
     /**
+     * List of models instances
+     * @var array
+     */
+    private $instances = array();
+
+    /**
      * Class constructor
      * 
      * @param object $serviceManager
@@ -32,7 +38,13 @@ class ModelBuilder implements ModelBuilderInterface
             return false;
         }
 
-        return new $modelName($this->serviceManager->
-                get('Zend\Db\Adapter\Adapter'), $this->serviceManager->get('Custom\Cache\Static\Utils'));
+        if (array_key_exists($modelName, $this->instances)) {
+            return $this->instances[$modelName];
+        }
+
+        $this->instances[$modelName] = new $modelName($this->
+                serviceManager->get('Zend\Db\Adapter\Adapter'), $this->serviceManager->get('Custom\Cache\Static\Utils'));
+
+        return $this->instances[$modelName];
     }
 }
