@@ -10,6 +10,7 @@
     1. Writable
         a. data/cache
         b. data/sessions
+        c. config/modules/custom.php
 
 ## PHP SETTINGS
 
