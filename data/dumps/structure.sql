@@ -43,7 +43,7 @@ INSERT INTO `acl_roles` (`id`, `name`, `system`) VALUES
 CREATE TABLE IF NOT EXISTS `layouts` (
     `name` varchar(50) NOT NULL,
     `type` enum('system','custom') NOT NULL,
-    `active` tinyint(3) unsigned NOT NULL,
+    `active` tinyint(1) unsigned NOT NULL,
     `title` varchar(150) NOT NULL,
     `description` text NOT NULL,
     `version` varchar(100) NOT NULL,
