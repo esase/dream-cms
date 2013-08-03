@@ -19,7 +19,7 @@ class Layout extends Base
     /**
      * Layouts by name
      */
-    const CACHE_LAYOUTS_BY_NAME = 'Application_Layouts_BY_NAME_';
+    const CACHE_LAYOUTS_BY_NAME = 'Application_Layouts_By_Name_';
  
     /**
      * Active layouts cache
@@ -27,9 +27,9 @@ class Layout extends Base
     const CACHE_LAYOUTS_ACTIVE = 'Application_Layouts_Active';
 
     /**
-     * Layouts cache tag
-     */
-    const CACHE_LAYOUTS_TAG = 'Application_Layouts_TAG';
+     * Active layout flag
+     */ 
+    const LAYOUT_ACTIVE = 1;
 
     /**
      * Get layouts by name
@@ -58,7 +58,7 @@ class Layout extends Base
                 ))
                 ->where
                     ->or->equalTo('type', self::LAYOUT_TYPE_SYSTEM)
-                    ->and->equalTo('active', 1);
+                    ->and->equalTo('active', self::LAYOUT_ACTIVE);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -67,11 +67,6 @@ class Layout extends Base
 
             // save data in cache
             $this->staticCacheUtils->getCacheInstance()->setItem($cacheName, $layouts);
-
-            // mark cache with tag
-            $this->staticCacheUtils->getCacheInstance()->setTags($cacheName, array(
-                self::CACHE_LAYOUTS_TAG
-            ));
         }
 
         return $layouts;
@@ -102,7 +97,7 @@ class Layout extends Base
                 ))
                 ->where
                     ->or->equalTo('type', self::LAYOUT_TYPE_CUSTOM)
-                    ->and->equalTo('active', 1);
+                    ->and->equalTo('active', self::LAYOUT_ACTIVE);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -111,11 +106,6 @@ class Layout extends Base
 
             // save data in cache
             $this->staticCacheUtils->getCacheInstance()->setItem($cacheName, $layouts);
-
-            // mark cache with tag
-            $this->staticCacheUtils->getCacheInstance()->setTags($cacheName, array(
-                self::CACHE_LAYOUTS_TAG
-            ));
         }
 
         return $layouts;
