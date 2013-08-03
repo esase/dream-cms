@@ -13,7 +13,6 @@ use Zend\Authentication\Storage;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 
-use Zend\Session\SessionManager;
 use Zend\Session\Container as SessionContainer;
 
 use Zend\Validator\AbstractValidator;
@@ -330,83 +329,6 @@ class Module
                     $authService->setAdapter($authAdapter);
 
                     return $authService;
-                },
-                'Cache\Static' => function ($serviceManager)
-                {
-                    $config = $serviceManager->get('Config');
-                    $cache =\Zend\Cache\StorageFactory::factory(array(
-                        'adapter' => array(
-                            'name' => $config['static_cache']['type']
-                        ),
-                        'plugins' => array(
-                            // Don't throw exceptions on cache errors
-                            'exception_handler' => array(
-                                'throw_exceptions' => false
-                            ),
-                            'Serializer'
-                        )
-                    ));
-
-                    $cache->setOptions($config['static_cache']['options']);
-                    return $cache;
-                },
-                'Cache\Dynamic' => function ($serviceManager)
-                {
-                    $config = $serviceManager->get('Config');
-                    $cache = \Zend\Cache\StorageFactory::factory(array(
-                        'adapter' => array(
-                            'name' => $config['dynamic_cache']['type']
-                        ),
-                        'plugins' => array(
-                            // Don't throw exceptions on cache errors
-                            'exception_handler' => array(
-                                'throw_exceptions' => false
-                            ),
-                            'Serializer'
-                        )
-                    ));
-
-                    $cache->setOptions($config['dynamic_cache']['options']);
-                    return $cache;
-                },
-                'Custom\Cache\Static\Utils' => function ($serviceManager)
-                {
-                   return new \Custom\Cache\Utils($serviceManager->get('Cache\Static'));
-                },
-                'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-                'Zend\Session\SessionManager' => function ($serviceManager)
-                {
-                    $config = $serviceManager->get('config');
-
-                    // get session config
-                    $sessionConfig = new
-                    $config['session']['config']['class']();
-                    $sessionConfig->setOptions($config['session']['config']['options']);
-
-                    // get session storage
-                    $sessionStorage = new $config['session']['storage']();
-
-                    $sessionSaveHandler = null;
-                    if (!empty($config['session']['save_handler'])) {
-                        // class should be fetched from service manager since it
-                        // will require constructor arguments
-                        $sessionSaveHandler = $serviceManager->get($config['session']['save_handler']);
-                    }
-
-                    // get session manager
-                    $sessionManager = new SessionManager($sessionConfig,
-                    $sessionStorage, $sessionSaveHandler);
-                    
-                    if (!empty($config['session']['validators'])) {
-                        $chain = $sessionManager->getValidatorChain();
-
-                        foreach ($config['session']['validators'] as $validator) {
-                            $chain->attach('session.validate', array(new $validator(), 'isValid'));
-                        }
-                    }
-
-                    SessionContainer::setDefaultManager($sessionManager);
-                    return $sessionManager;
                 }
             )
         );
@@ -419,8 +341,8 @@ class Module
     {
         return array(
             'factories' => array(
-                'flashMessages' => function($sm) {
-                    $flashmessenger = $sm->getServiceLocator()
+                'flashMessages' => function($serviceManager) {
+                    $flashmessenger = $serviceManager->getServiceLocator()
                         ->get('ControllerPluginManager')
                         ->get('flashmessenger');
  

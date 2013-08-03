@@ -62,6 +62,84 @@ return array(
         ),
     ),
     'service_manager' => array(
-        'factories' => array()
+        'factories' => array(
+            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
+            'Custom\Cache\Static\Utils' => function ($serviceManager)
+            {
+               return new \Custom\Cache\Utils($serviceManager->get('Cache\Static'));
+            },
+            'Cache\Static' => function ($serviceManager)
+            {
+                $config = $serviceManager->get('Config');
+                $cache =\Zend\Cache\StorageFactory::factory(array(
+                    'adapter' => array(
+                        'name' => $config['static_cache']['type']
+                    ),
+                    'plugins' => array(
+                        // Don't throw exceptions on cache errors
+                        'exception_handler' => array(
+                            'throw_exceptions' => false
+                        ),
+                        'Serializer'
+                    )
+                ));
+
+                $cache->setOptions($config['static_cache']['options']);
+                return $cache;
+            },
+            'Cache\Dynamic' => function ($serviceManager)
+            {
+                $config = $serviceManager->get('Config');
+                $cache = \Zend\Cache\StorageFactory::factory(array(
+                    'adapter' => array(
+                        'name' => $config['dynamic_cache']['type']
+                    ),
+                    'plugins' => array(
+                        // Don't throw exceptions on cache errors
+                        'exception_handler' => array(
+                            'throw_exceptions' => false
+                        ),
+                        'Serializer'
+                    )
+                ));
+
+                $cache->setOptions($config['dynamic_cache']['options']);
+                return $cache;
+            },
+            'Zend\Session\SessionManager' => function ($serviceManager)
+            {
+                $config = $serviceManager->get('config');
+
+                // get session config
+                $sessionConfig = new
+                $config['session']['config']['class']();
+                $sessionConfig->setOptions($config['session']['config']['options']);
+
+                // get session storage
+                $sessionStorage = new $config['session']['storage']();
+
+                $sessionSaveHandler = null;
+                if (!empty($config['session']['save_handler'])) {
+                    // class should be fetched from service manager since it
+                    // will require constructor arguments
+                    $sessionSaveHandler = $serviceManager->get($config['session']['save_handler']);
+                }
+
+                // get session manager
+                $sessionManager = new \Zend\Session\SessionManager($sessionConfig,
+                $sessionStorage, $sessionSaveHandler);
+                
+                if (!empty($config['session']['validators'])) {
+                    $chain = $sessionManager->getValidatorChain();
+
+                    foreach ($config['session']['validators'] as $validator) {
+                        $chain->attach('session.validate', array(new $validator(), 'isValid'));
+                    }
+                }
+
+                \Zend\Session\Container::setDefaultManager($sessionManager);
+                return $sessionManager;
+            }
+        )
     )
 );
