@@ -11,6 +11,12 @@ class Service
     private static $currentUserIdentity;
     
     /**
+     * Current acl
+     * @var object
+     */
+    private static $currentAcl;
+
+    /**
      * Set current user identity
      *
      * @param object $userIdentity
@@ -29,5 +35,26 @@ class Service
     public static function getCurrentUserIdentity()
     {
         return self::$currentUserIdentity;
+    }
+    
+    /**
+     * Set current acl
+     *
+     * @param object $acl
+     * @return void
+     */
+    public static function setCurrentAcl(\Zend\Permissions\Acl\Acl $acl)
+    {
+        self::$currentAcl = $acl;
+    }
+
+    /**
+     * Get current acl
+     *
+     * @return object
+     */
+    public static function getCurrentAcl()
+    {
+        return self::$currentAcl;
     }
 }

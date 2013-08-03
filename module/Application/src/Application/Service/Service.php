@@ -36,7 +36,7 @@ class Service
     {
         return self::$currentLocalization;
     }
-    
+
     /**
      * Set current layouts
      *

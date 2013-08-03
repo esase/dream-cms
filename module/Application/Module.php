@@ -3,7 +3,7 @@
 namespace Application;
 
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
-use Application\Model\Acl as Acl;
+use Application\Model\Acl as AclModel;
 
 use StdClass;
 use DateTime;
@@ -19,10 +19,14 @@ use Zend\Validator\AbstractValidator;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
+use Zend\Permissions\Acl\Acl as Acl;
+use Zend\Permissions\Acl\Role\GenericRole as Role;
+use Zend\Permissions\Acl\Resource\GenericResource as Resource;
+
 class Module
 {
     /**
-     * Service manager
+     * Service managerzend
      * @var object
      */
     protected $serviceManager;
@@ -102,6 +106,9 @@ class Module
 
         // init layout
         $this->initlayout();
+
+        // init acl
+        $this->initAcl();
     }
 
     /**
@@ -128,8 +135,8 @@ class Module
 
         if (!$authService->hasIdentity()) {
             $this->userIdentity = new stdClass();
-            $this->userIdentity->role = Acl::DEFAULT_ROLE_GUEST;
-            $this->userIdentity->user_id = Acl::DEFAULT_GUEST_ID;
+            $this->userIdentity->role = AclModel::DEFAULT_ROLE_GUEST;
+            $this->userIdentity->user_id = AclModel::DEFAULT_GUEST_ID;
 
             $authService->getStorage()->write($this->userIdentity);
         }
@@ -262,6 +269,43 @@ class Module
 
         $applicationService = $this->serviceManager->get('Application\Service');
         $applicationService::setCurrentLayouts($activeLayouts);
+    }
+
+    /**
+     * init acl
+     */ 
+    protected function initAcl()
+    {
+        // admin can do everything
+        if ($this->userIdentity->role == AclModel::DEFAULT_ROLE_ADMIN) {
+            return;
+        }
+
+        $acl = new Acl();
+        $acl->addRole(new Role($this->userIdentity->role));
+
+        $aclModel = $this->serviceManager
+            ->get('Application\Model\Builder')
+            ->getInstance('Application\Model\Acl');
+
+        // get acl resources
+        if (null != ($resources = $aclModel->getAclResources($this->userIdentity->
+                role, $this->userIdentity->user_id))) {
+
+            // process acl resources
+            foreach ($resources as $resourceInfo) {
+                // add new resource
+                $acl->addResource(new Resource($resourceInfo['resource']));
+
+                // add resource's action
+                $resourceInfo['action'] == 'allowed'
+                    ? $acl->allow($this->userIdentity->role, $resourceInfo['resource'])
+                    : $acl->deny($this->userIdentity->role, $resourceInfo['resource']);
+            }
+        };
+
+        $applicationService = $this->serviceManager->get('Users\Service');
+        $applicationService::setCurrentAcl($acl);
     }
 
     /**

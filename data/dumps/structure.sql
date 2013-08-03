@@ -28,18 +28,6 @@ INSERT INTO `localizations` (`language`, `locale`, `default`) VALUES
 ('en', 'en_US', 1),
 ('ru', 'ru_RU', 0);
 
-CREATE TABLE IF NOT EXISTS `acl_roles` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL,
-    `system` tinyint(1) NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `acl_roles` (`id`, `name`, `system`) VALUES
-(1, 'admin', 1),
-(2, 'guest', 1),
-(3, 'member', 1);
-
 CREATE TABLE IF NOT EXISTS `layouts` (
     `name` varchar(50) NOT NULL,
     `type` enum('system','custom') NOT NULL,
@@ -55,6 +43,44 @@ CREATE TABLE IF NOT EXISTS `layouts` (
 
 INSERT INTO `layouts` (`name`, `type`, `active`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
 ('base', 'system', 1, 'Base layout', 'Default base layout', '0.9', 'eSASe', 'alexermashev@gmail.com');
+
+CREATE TABLE IF NOT EXISTS `acl_roles` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(50) NOT NULL,
+    `type` enum('system','custom') NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `acl_roles` (`id`, `name`, `type`) VALUES
+(1, 'admin', 'system'),
+(2, 'guest', 'system'),
+(3, 'member', 'system');
+
+CREATE TABLE IF NOT EXISTS `acl_resources` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `resource` varchar(50) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES modules(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `acl_resources` (`id`, `resource`, `module`) VALUES
+(1, 'application administration', 1);
+
+CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `role` int(10) unsigned NOT NULL,
+    `resource` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (role) REFERENCES acl_roles(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (resource) REFERENCES acl_resources(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `users` (
     `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -82,3 +108,18 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`user_id`, `nick_name`, `email`, `password`, `salt`, `role`) VALUES
 (1, 'esase', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1);
+
+CREATE TABLE IF NOT EXISTS `acl_resources_users_connections` (
+    `connection_id` int(10) unsigned NOT NULL,
+    `user_id` int(10) unsigned NOT NULL,
+    `date_expired` int(10) unsigned NOT NULL,
+    `actions_limit` int(10) unsigned NOT NULL,
+    `actions` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`connection_id`, `user_id`),
+    FOREIGN KEY (connection_id) REFERENCES acl_resources_connections(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

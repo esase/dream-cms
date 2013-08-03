@@ -3,6 +3,7 @@
 namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Expression as Expression;
 
 class Acl extends Base
 {
@@ -27,45 +28,43 @@ class Acl extends Base
     const DEFAULT_ROLE_MEMBER = 3;
 
     /**
-     * Get all roles
+     * Get acl resources
      *
+     * @param integer $roleId
+     * @param integer $userId
      * @return array
      */
-    public function getAllRoles()
+    public function getAclResources($roleId, $userId)
     {
-        // generate cache name
-        $cacheName = $this->staticCacheUtils->getCacheName(self::CACHE_ACL_ROLES);
+        $select = $this->select();
+        $select->from(array('a' => 'acl_resources_connections'))
+            ->columns(array(
+            ))
+            ->join(
+                array('b' => 'acl_resources'),
+                'a.resource = b.id',
+                array(
+                    'resource'
+                )
+            )
+            ->join(
+                array('c' => 'acl_resources_users_connections'),
+                new Expression('c.connection_id = a.id and c.user_id = ?', array(
+                    $userId
+                )),
+                array(
+                    'action' => new Expression('if(c.connection_id is null or (c.actions_limit > 0 and
+                            c.actions_limit > c.actions) or ? < c.date_expired,
+                            "allowed", "not_allowed")', time())
+                ),
+                'left'
+            )
+            ->where(array('role' => $roleId));
 
-        // check data in cache
-        if (null === ($roles = $this->
-                staticCacheUtils->getCacheInstance()->getItem($cacheName))) {
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
 
-            $select = $this->select();
-            $select->from('acl_roles')
-                ->columns(array(
-                    'id',
-                    'name',
-                    'system'
-                ));
-
-            $statement = $this->prepareStatementForSqlObject($select);
-            $resultSet = new ResultSet;
-            $resultSet->initialize($statement->execute());
-
-            // process localizations
-            if ($resultSet) {
-                foreach ($resultSet as $role) {
-                    $roles[$role['id']] = array(
-                        'name'   => $role['name'],
-                        'system' => $role['system']
-                    );
-                }
-            }
-
-            // save data in cache
-            $this->staticCacheUtils->getCacheInstance()->setItem($cacheName, $roles);
-        }
-
-        return $roles;
+        return $resultSet;
     }
 }
