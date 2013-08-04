@@ -112,9 +112,12 @@ INSERT INTO `users` (`user_id`, `nick_name`, `email`, `password`, `salt`, `role`
 CREATE TABLE IF NOT EXISTS `acl_resources_users_connections` (
     `connection_id` int(10) unsigned NOT NULL,
     `user_id` int(10) unsigned NOT NULL,
-    `date_expired` int(10) unsigned NOT NULL,
+    `date_start` int(10) unsigned NOT NULL,
+    `date_end` int(10) unsigned NOT NULL,
     `actions_limit` int(10) unsigned NOT NULL,
     `actions` int(10) unsigned NOT NULL,
+    `actions_reset` int(10) unsigned NOT NULL,
+    `actions_last_reset` int(10) unsigned NOT NULL,
     PRIMARY KEY (`connection_id`, `user_id`),
     FOREIGN KEY (connection_id) REFERENCES acl_resources_connections(id)
         ON UPDATE CASCADE

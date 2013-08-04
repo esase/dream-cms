@@ -28,6 +28,60 @@ class Acl extends Base
     const DEFAULT_ROLE_MEMBER = 3;
 
     /**
+     * Allowed action
+     */
+    const ACTION_ALLOWED = 'allowed';
+
+    /**
+     * Disallowed action
+     */
+    const ACTION_DISALLOWED = 'disallowed';
+
+    /**
+     * Increase acl action
+     *
+     * @param integer $connectionId
+     * @param integer $userId
+     * @param boolean $resetActions
+     * @return boolean|string
+     */
+    public function increaseAclAction($connectionId, $userId, $resetActions = false)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $actionsCounter = $resetActions
+                ? 1
+                : new Expression('actions + 1');
+
+            $updateFields = array();
+            $updateFields['actions'] = $actionsCounter;
+
+            if ($resetActions) {
+                $updateFields['actions_last_reset'] = new Expression('unix_timestamp()');
+            }
+
+            $update = $this->update()
+                ->table('acl_resources_users_connections')
+                ->set($updateFields)
+                ->where(array(
+                    'connection_id' => $connectionId,
+                    'user_id' => $userId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (PDOException $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
      * Get acl resources
      *
      * @param integer $roleId
@@ -36,9 +90,12 @@ class Acl extends Base
      */
     public function getAclResources($roleId, $userId)
     {
+        $currentTime = time();
+
         $select = $this->select();
         $select->from(array('a' => 'acl_resources_connections'))
             ->columns(array(
+                'id'
             ))
             ->join(
                 array('b' => 'acl_resources'),
@@ -53,9 +110,20 @@ class Acl extends Base
                     $userId
                 )),
                 array(
-                    'action' => new Expression('if(c.connection_id is null or (c.actions_limit > 0 and
-                            c.actions_limit > c.actions) or ? < c.date_expired,
-                            "allowed", "not_allowed")', time())
+                    'date_start',
+                    'date_end',
+                    'actions_limit',
+                    'actions',
+                    'actions_reset',
+                    'actions_last_reset',
+                    'permission' => new Expression('if (c.connection_id is null or
+                        (c.date_start = 0 or (? >= c.date_start and ? <= c.date_end))
+                            and
+                        (c.actions_limit = 0 or (c.actions_limit > c.actions))
+                            and
+                        (c.date_start <> 0 or c.actions_limit <> 0), "' .
+                        self::ACTION_ALLOWED . '", "' .
+                        self::ACTION_DISALLOWED . '")',array($currentTime, $currentTime))
                 ),
                 'left'
             )

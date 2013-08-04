@@ -89,6 +89,10 @@ class Module
      */
     public function initApplication(\Zend\ModuleManager\ModuleEvent $e)
     {
+        // set the service manager
+        $applicationService = $this->serviceManager->get('Application\Service');
+        $applicationService::setServiceManager($this->serviceManager);
+
         // init session
         $this->initSession();
 
@@ -144,8 +148,9 @@ class Module
             $this->userIdentity = $authService->getIdentity();
         }
 
-        $usersService = $this->serviceManager->get('Users\Service');
-        $usersService::setCurrentUserIdentity($this->userIdentity);
+        // set the user identity
+        $applicationService = $this->serviceManager->get('Application\Service');
+        $applicationService::setCurrentUserIdentity($this->userIdentity);
     }
 
     /**
@@ -293,19 +298,23 @@ class Module
                 role, $this->userIdentity->user_id))) {
 
             // process acl resources
-            foreach ($resources as $resourceInfo) {
+            $resourcesInfo = array();
+            foreach ($resources as $resource) {
                 // add new resource
-                $acl->addResource(new Resource($resourceInfo['resource']));
+                $acl->addResource(new Resource($resource['resource']));
 
                 // add resource's action
-                $resourceInfo['action'] == 'allowed'
-                    ? $acl->allow($this->userIdentity->role, $resourceInfo['resource'])
-                    : $acl->deny($this->userIdentity->role, $resourceInfo['resource']);
+                $resource['permission'] == AclModel::ACTION_ALLOWED
+                    ? $acl->allow($this->userIdentity->role, $resource['resource'])
+                    : $acl->deny($this->userIdentity->role, $resource['resource']);
+
+                $resourcesInfo[$resource['resource']] = $resource;
             }
         };
 
-        $applicationService = $this->serviceManager->get('Users\Service');
+        $applicationService = $this->serviceManager->get('Application\Service');
         $applicationService::setCurrentAcl($acl);
+        $applicationService::setCurrentAclResources($resourcesInfo);
     }
 
     /**
