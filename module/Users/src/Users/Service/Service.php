@@ -11,46 +11,47 @@ class Service extends ApplicationService
      * Check permission
      *
      * @param string $resource
+     * @param boolean $increaseActions
      * @return boolean
      */
-    public static function checkPermission($resource)
+    public static function checkPermission($resource, $increaseActions = true)
     {
+        // admin can do everything
         if (self::$currentUserIdentity->role == AclModel::DEFAULT_ROLE_ADMIN) {
             return true;
         }
 
         // check resource existing
-        if (array_key_exists($resource, self::$currentAclResources)) {
-            $aclModel = self::$serviceManager
-                ->get('Application\Model\Builder')
-                ->getInstance('Application\Model\Acl');
-
+        if (self::$currentAclResources && array_key_exists($resource, self::$currentAclResources)) {
             // check permission
             $permissionResult = self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource);
 
-            $currentTime = time();
-
             // update actions counter
-            if (self::$currentAclResources[$resource]->actions_limit) {
-                // check expired date
-                if (!self::$currentAclResources[$resource]->date_end ||
-                        self::$currentAclResources[$resource]->date_end >= $currentTime) {
+            if (self::$currentAclResources[$resource]['actions_limit'] && $increaseActions) {
+                $currentTime = time();
+
+                // check expired date (expired date must be active)
+                if (!self::$currentAclResources[$resource]['date_end'] ||
+                        self::$currentAclResources[$resource]['date_end'] >= $currentTime) {
 
                     // check reset actions time
                     $resetActions = false;
 
-                    if (self::$currentAclResources[$resource]->actions_reset && $currentTime >=
-                            self::$currentAclResources[$resource]->actions_last_reset +
-                            self::$currentAclResources[$resource]->actions_reset) {
+                    if (self::$currentAclResources[$resource]['actions_reset'] && $currentTime >=
+                            self::$currentAclResources[$resource]['actions_last_reset'] +
+                            self::$currentAclResources[$resource]['actions_reset']) {
 
                         $resetActions = true;
                     }
 
                     // increase actions counter
                     if ($resetActions || true == $permissionResult) {
-                        echo 'update counter<br>';
-                        $result = $aclModel->increaseAclAction(self::$currentAclResources[$resource]->id,
-                                self::$currentUserIdentity->user_id, $resetActions);
+                        $aclModel = self::$serviceManager
+                            ->get('Application\Model\Builder')
+                            ->getInstance('Application\Model\Acl');
+
+                        $result = $aclModel->increaseAclAction(self::$currentUserIdentity->user_id,
+                                self::$currentAclResources[$resource], $resetActions);
 
                         $permissionResult = $result === true ?:false;
                     }

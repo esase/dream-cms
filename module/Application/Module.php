@@ -288,14 +288,15 @@ class Module
 
         $acl = new Acl();
         $acl->addRole(new Role($this->userIdentity->role));
+        $applicationService = $this->serviceManager->get('Application\Service');
 
         $aclModel = $this->serviceManager
             ->get('Application\Model\Builder')
             ->getInstance('Application\Model\Acl');
 
         // get acl resources
-        if (null != ($resources = $aclModel->getAclResources($this->userIdentity->
-                role, $this->userIdentity->user_id))) {
+        if (null != ($resources = $aclModel->
+                getAclResources($this->userIdentity->role, $this->userIdentity->user_id))) {
 
             // process acl resources
             $resourcesInfo = array();
@@ -310,11 +311,11 @@ class Module
 
                 $resourcesInfo[$resource['resource']] = $resource;
             }
-        };
 
-        $applicationService = $this->serviceManager->get('Application\Service');
+            $applicationService::setCurrentAclResources($resourcesInfo);
+        };
+        
         $applicationService::setCurrentAcl($acl);
-        $applicationService::setCurrentAclResources($resourcesInfo);
     }
 
     /**

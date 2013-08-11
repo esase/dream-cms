@@ -25,4 +25,14 @@ class Base extends Sql
         parent::__construct($adapter);
         $this->staticCacheUtils = $staticCacheUtils;
     }
+
+    /**
+     * Get adapter
+     *
+     * @return object
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
 }

@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
     `role` int(10) unsigned NOT NULL,
     `resource` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY (`role`, `resource`),
     FOREIGN KEY (role) REFERENCES acl_roles(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -109,20 +110,34 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`user_id`, `nick_name`, `email`, `password`, `salt`, `role`) VALUES
 (1, 'esase', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1);
 
-CREATE TABLE IF NOT EXISTS `acl_resources_users_connections` (
+CREATE TABLE IF NOT EXISTS `acl_resources_connections_settings` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `connection_id` int(10) unsigned NOT NULL,
-    `user_id` int(10) unsigned NOT NULL,
+    `user_id` int(10) unsigned DEFAULT NULL,
     `date_start` int(10) unsigned NOT NULL,
     `date_end` int(10) unsigned NOT NULL,
     `actions_limit` int(10) unsigned NOT NULL,
-    `actions` int(10) unsigned NOT NULL,
     `actions_reset` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `setting` (`connection_id`, `user_id`),
+    FOREIGN KEY (connection_id) REFERENCES acl_resources_connections(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `acl_resources_actions_track` (
+    `connection_id` int(10) unsigned NOT NULL,
+    `user_id` int(10) unsigned DEFAULT NULL,
+    `actions` int(10) unsigned NOT NULL,
     `actions_last_reset` int(10) unsigned NOT NULL,
     PRIMARY KEY (`connection_id`, `user_id`),
     FOREIGN KEY (connection_id) REFERENCES acl_resources_connections(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+      ON UPDATE CASCADE
+      ON DELETE CASCADE  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -4,6 +4,7 @@ namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
+use Exception;
 
 class Acl extends Base
 {
@@ -40,41 +41,66 @@ class Acl extends Base
     /**
      * Increase acl action
      *
-     * @param integer $connectionId
      * @param integer $userId
+     * @param array  $resource
+     *      integer id
+     *      string resource
+     *      string permission
+     *      integer date_start
+     *      integer date_end
+     *      integer actions_limit
+     *      integer actions_reset
+     *      integer actions
+     *      integer actions_last_reset
      * @param boolean $resetActions
      * @return boolean|string
      */
-    public function increaseAclAction($connectionId, $userId, $resetActions = false)
+    public function increaseAclAction($userId, array $resource, $resetActions = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            $actionsCounter = $resetActions
-                ? 1
-                : new Expression('actions + 1');
+            // add new acl action track
+            if (!$resource['actions']) {
+                $query = $this->insert()
+                    ->into('acl_resources_actions_track')
+                    ->values(array(
+                        'connection_id' => $resource['id'],
+                        'user_id' => $userId,
+                        'actions' => 1,
+                        'actions_last_reset' => new Expression('unix_timestamp()')
+                    ));
+            }
+            else {
+                // update existing acl action track
+                $actionsCounter = $resetActions
+                    ? 1
+                    : new Expression('actions + 1');
 
-            $updateFields = array();
-            $updateFields['actions'] = $actionsCounter;
+                $updateFields = array();
+                $updateFields['actions'] = $actionsCounter;
 
-            if ($resetActions) {
-                $updateFields['actions_last_reset'] = new Expression('unix_timestamp()');
+                if ($resetActions) {
+                    $updateFields['actions_last_reset'] = new Expression('unix_timestamp()');
+                }
+
+                $query = $this->update()
+                    ->table('acl_resources_actions_track')
+                    ->set($updateFields)
+                    ->where(array(
+                        'connection_id' => $resource['id'],
+                        'user_id' => $userId
+                    ));
             }
 
-            $update = $this->update()
-                ->table('acl_resources_users_connections')
-                ->set($updateFields)
-                ->where(array(
-                    'connection_id' => $connectionId,
-                    'user_id' => $userId
-                ));
-
-            $statement = $this->prepareStatementForSqlObject($update);
+            $statement = $this->prepareStatementForSqlObject($query);
             $statement->execute();
+
             $this->adapter->getDriver()->getConnection()->commit();
         }
-        catch (PDOException $e) {
+        catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            
             return $e->getMessage();
         }
 
@@ -92,8 +118,22 @@ class Acl extends Base
     {
         $currentTime = time();
 
-        $select = $this->select();
-        $select->from(array('a' => 'acl_resources_connections'))
+        $connectionSelect = $this->select();
+        $connectionSelect->from(array('d' => 'acl_resources_connections_settings'))
+            ->columns(array(
+                'id'
+            ))
+            ->order('d.user_id desc')
+            ->limit(1)
+            ->where(array('d.connection_id' => new Expression('a.id')))
+            ->where
+                ->and->isNull('d.user_id')
+            ->where
+                ->or->equalTo('d.connection_id', new Expression('a.id'))
+                ->and->equalTo('d.user_id', $userId);
+
+        $mainSelect = $this->select();
+        $mainSelect->from(array('a' => 'acl_resources_connections'))
             ->columns(array(
                 'id'
             ))
@@ -105,21 +145,28 @@ class Acl extends Base
                 )
             )
             ->join(
-                array('c' => 'acl_resources_users_connections'),
-                new Expression('c.connection_id = a.id and c.user_id = ?', array(
-                    $userId
-                )),
+                array('c' => 'acl_resources_connections_settings'),
+                new Expression('c.id = (' .$this->getSqlStringForSqlObject($connectionSelect) . ')'),
                 array(
                     'date_start',
                     'date_end',
                     'actions_limit',
+                    'actions_reset'
+                ),
+                'left'
+            )
+            ->join(
+                array('i' => 'acl_resources_actions_track'),
+                new Expression('i.connection_id = c.connection_id and i.user_id = ?', array(
+                    $userId
+                )),
+                array(
                     'actions',
-                    'actions_reset',
                     'actions_last_reset',
-                    'permission' => new Expression('if (c.connection_id is null or
+                    'permission' => new Expression('if (c.id is null or
                         (c.date_start = 0 or (? >= c.date_start and ? <= c.date_end))
                             and
-                        (c.actions_limit = 0 or (c.actions_limit > c.actions))
+                        (c.actions_limit = 0 or i.actions is null or c.actions_limit > i.actions)
                             and
                         (c.date_start <> 0 or c.actions_limit <> 0), "' .
                         self::ACTION_ALLOWED . '", "' .
@@ -129,10 +176,10 @@ class Acl extends Base
             )
             ->where(array('role' => $roleId));
 
-        $statement = $this->prepareStatementForSqlObject($select);
+        $statement = $this->prepareStatementForSqlObject($mainSelect);
         $resultSet = new ResultSet;
         $resultSet->initialize($statement->execute());
 
-        return $resultSet;
+        return $resultSet->toArray();
     }
 }
