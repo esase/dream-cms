@@ -398,10 +398,6 @@ class Module
                 'Application\Service' => 'Application\Service\Service'
             ),
             'factories' => array(
-                'Application\Acl' => function($serviceManager)
-                {
-                    return new Acl();
-                },
                 'Application\Model\Builder' => function($serviceManager)
                 {
                     return new Model\ModelBuilder($serviceManager);
