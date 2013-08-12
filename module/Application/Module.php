@@ -131,21 +131,53 @@ class Module
     }
 
     /**
+     * Init guest identity
+     *
+     * @param object $authService
+     * @return void
+     */
+    protected function initGuestIdentity($authService)
+    {
+        $this->userIdentity = new stdClass();
+        $this->userIdentity->role = AclModel::DEFAULT_ROLE_GUEST;
+        $this->userIdentity->user_id = AclModel::DEFAULT_GUEST_ID;
+
+        $authService->getStorage()->write($this->userIdentity);
+    }
+
+    /**
      * Init identity
      */
     protected function initUserIdentity()
     {
         $authService = $this->serviceManager->get('Application\AuthService');
 
+        // set identity as a site guest
         if (!$authService->hasIdentity()) {
-            $this->userIdentity = new stdClass();
-            $this->userIdentity->role = AclModel::DEFAULT_ROLE_GUEST;
-            $this->userIdentity->user_id = AclModel::DEFAULT_GUEST_ID;
-
-            $authService->getStorage()->write($this->userIdentity);
+            $this->initGuestIdentity($authService);
         }
         else {
             $this->userIdentity = $authService->getIdentity();
+
+            // get extended user info
+            if ($authService->getIdentity()->user_id != AclModel::DEFAULT_GUEST_ID) {
+                $user = $this->serviceManager
+                    ->get('Application\Model\Builder')
+                    ->getInstance('Users\Model\Base');
+
+                if (null != ($userInfo = $user->
+                        getUserInfoById($authService->getIdentity()->user_id))) {
+
+                    // fill user identity with user data
+                    foreach($userInfo as $fieldName => $value) {
+                        $this->userIdentity->$fieldName = $value;
+                    }
+                }
+                else {
+                    // user not found, set the current user as a site guest
+                    $this->initGuestIdentity($authService);
+                }
+            }
         }
 
         // set the user identity

@@ -43,8 +43,9 @@ class LoginController extends BaseController
 
                 $result = $this->getAuthService()->authenticate(); 
                 if ($result->isValid()) {
-                    $this->getAuthService()->getStorage()->write($this->
-                            getAuthService()->getAdapter()->getResultRowObject(null, array('password', 'salt')));
+                    // save user id
+                    $this->getAuthService()->getStorage()->write($this->getAuthService()->
+                            getAdapter()->getResultRowObject(array('user_id')));
 
                     return $this->redirect()->toRoute('application');
                 }
