@@ -39,7 +39,7 @@ class Service
      */
     protected static $currentLayouts;
 
-     /**
+    /**
      * Set current user identity
      *
      * @param object $userIdentity
@@ -142,6 +142,22 @@ class Service
     public static function getCurrentLocalization()
     {
         return self::$currentLocalization;
+    }
+
+    /**
+     * Get setting
+     *
+     * @param string $settingName
+     * @return string|boolean
+     */
+    public static function getSetting($settingName)
+    {
+        $settingsModel = self::$serviceManager
+           ->get('Application\Model\Builder')
+           ->getInstance('Application\Model\Setting');
+
+        return $settingsModel->
+                getSetting($settingName, self::$currentLocalization['language']);
     }
 
     /**

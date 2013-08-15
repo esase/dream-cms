@@ -3,7 +3,9 @@
 namespace Application;
 
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
+
 use Application\Model\Acl as AclModel;
+use Application\Service\Service as ApplicationService;
 
 use StdClass;
 use DateTime;
@@ -90,8 +92,7 @@ class Module
     public function initApplication(\Zend\ModuleManager\ModuleEvent $e)
     {
         // set the service manager
-        $applicationService = $this->serviceManager->get('Application\Service');
-        $applicationService::setServiceManager($this->serviceManager);
+        ApplicationService::setServiceManager($this->serviceManager);
 
         // init session
         $this->initSession();
@@ -181,8 +182,7 @@ class Module
         }
 
         // set the user identity
-        $applicationService = $this->serviceManager->get('Application\Service');
-        $applicationService::setCurrentUserIdentity($this->userIdentity);
+        ApplicationService::setCurrentUserIdentity($this->userIdentity);
     }
 
     /**
@@ -255,9 +255,7 @@ class Module
         $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
 
         AbstractValidator::setDefaultTranslator($translator);
-        
-        $applicationService = $this->serviceManager->get('Application\Service');
-        $applicationService::setCurrentLocalization($this->defaultLocalization);
+        ApplicationService::setCurrentLocalization($this->defaultLocalization);
     }
 
     /**
@@ -304,8 +302,7 @@ class Module
             $templatePathResolver->setMap($templateMap);
         }
 
-        $applicationService = $this->serviceManager->get('Application\Service');
-        $applicationService::setCurrentLayouts($activeLayouts);
+        ApplicationService::setCurrentLayouts($activeLayouts);
     }
 
     /**
@@ -320,7 +317,6 @@ class Module
 
         $acl = new Acl();
         $acl->addRole(new Role($this->userIdentity->role));
-        $applicationService = $this->serviceManager->get('Application\Service');
 
         $aclModel = $this->serviceManager
             ->get('Application\Model\Builder')
@@ -344,10 +340,10 @@ class Module
                 $resourcesInfo[$resource['resource']] = $resource;
             }
 
-            $applicationService::setCurrentAclResources($resourcesInfo);
+            ApplicationService::setCurrentAclResources($resourcesInfo);
         };
-        
-        $applicationService::setCurrentAcl($acl);
+
+        ApplicationService::setCurrentAcl($acl);
     }
 
     /**
@@ -372,9 +368,7 @@ class Module
                 ->get('translator')
                 ->setLocale($this->localizations[$matches->getParam('languge')]['locale']);
 
-            $applicationService = $this->serviceManager->get('Application\Service');
-            $applicationService::setCurrentLocalization($this->
-                    localizations[$matches->getParam('languge')]);    
+            ApplicationService::setCurrentLocalization($this->localizations[$matches->getParam('languge')]);    
         }
 
         $router->setDefaultParam('languge', $matches->getParam('languge'));
@@ -394,9 +388,6 @@ class Module
     public function getServiceConfig()
     {
         return array(
-            'invokables' => array(
-                'Application\Service' => 'Application\Service\Service'
-            ),
             'factories' => array(
                 'Application\Model\Builder' => function($serviceManager)
                 {
@@ -422,8 +413,12 @@ class Module
     public function getViewHelperConfig()
     {
         return array(
+            'invokables' => array(
+                'getSetting' => 'Application\View\Helper\Setting'
+            ),
             'factories' => array(
-                'flashMessages' => function($serviceManager) {
+                'flashMessages' => function($serviceManager)
+                {
                     $flashmessenger = $serviceManager->getServiceLocator()
                         ->get('ControllerPluginManager')
                         ->get('flashmessenger');

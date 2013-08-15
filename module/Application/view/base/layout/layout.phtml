@@ -3,9 +3,14 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?php echo $this->headTitle($this->translate('Screaming Power'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
 
-        <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+        <?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendName('generator', $this->getSetting('application_generator') . ' ' . $this->getSetting('application_generator_version'))
+            ->appendName('description', $this->getSetting('application_meta_description'))
+            ->appendName('keywords', $this->getSetting('application_meta_keywords'));
+        ?>
 
         <?php $this->headScript()->captureStart() ?>
         var baseUrl = '<?php echo $this->basePath() ?>/';

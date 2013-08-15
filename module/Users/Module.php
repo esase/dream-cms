@@ -31,9 +31,6 @@ class Module
     public function getServiceConfig()
     {
         return array(
-            'invokables' => array(
-                'Users\Service' => 'Users\Service\Service'
-            ),
         );
     }
 

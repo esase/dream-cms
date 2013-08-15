@@ -15,6 +15,7 @@ use Zend\Math\Rand;
 use Zend\Db\Sql\Expression as Expression;
 
 use Application\Model\Acl as AclModel;
+use Users\Service\Service as UsersService;
 
 class ServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -158,13 +159,12 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $userIdentity->role = $userRole;
         $userIdentity->user_id = $this->userId;
 
-        $usersService = $this->serviceManager->get('Users\Service');
-        $usersService::setCurrentUserIdentity($userIdentity);
+        UsersService::setCurrentUserIdentity($userIdentity);
 
         // init new acl
         $acl = new Acl();
         $acl->addRole(new Role($userRole));
-        $usersService::setCurrentAcl($acl);
+        UsersService::setCurrentAcl($acl);
 
         // get acl resources
         if (null != ($resources = $this->aclModel->
@@ -184,7 +184,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
                 $resourcesInfo[$resource['resource']] = $resource;
             }
 
-            $usersService::setCurrentAclResources($resourcesInfo);
+            UsersService::setCurrentAclResources($resourcesInfo);
         }
     }
 
@@ -201,10 +201,8 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $role = AclModel::DEFAULT_ROLE_ADMIN;
         $this->initAcl($role);
 
-        $usersService = $this->serviceManager->get('Users\Service');
-
         foreach ($testResources as $resource) {
-            $this->assertTrue($usersService::checkPermission($resource));
+            $this->assertTrue(UsersService::checkPermission($resource));
         }
     }
 
@@ -221,10 +219,8 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $role = AclModel::DEFAULT_ROLE_MEMBER;
         $this->initAcl($role);
 
-        $usersService = $this->serviceManager->get('Users\Service');
-
         foreach ($testResources as $resource) {
-            $this->assertFalse($usersService::checkPermission($resource));
+            $this->assertFalse(UsersService::checkPermission($resource));
         }
     }
 
@@ -256,10 +252,9 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         }
         
         $this->initAcl($role);
-        $usersService = $this->serviceManager->get('Users\Service');
 
         foreach ($testResources as $resource) {
-            $this->assertFalse($usersService::checkPermission($resource));
+            $this->assertFalse(UsersService::checkPermission($resource));
         }
     }
 
@@ -305,10 +300,9 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         }
 
         $this->initAcl($role);
-        $usersService = $this->serviceManager->get('Users\Service');
 
         foreach ($testResources as $resource) {
-            $this->assertTrue($usersService::checkPermission($resource));
+            $this->assertTrue(UsersService::checkPermission($resource));
         }
     }
 
@@ -355,16 +349,15 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         }
 
         $this->initAcl($role);
-        $usersService = $this->serviceManager->get('Users\Service');
 
         // get registered acl resources
-        $resources = $usersService::getCurrentAclResources();
-        
+        $resources = UsersService::getCurrentAclResources();
+
         // check local settings
         foreach ($testResources as $resource) {
             $this->assertEquals($localActionsLimit, $resources[$resource]['actions_limit']);
         }
-    }    
+    }
 
     /**
      * Test acl by actions with reset factor
@@ -396,13 +389,11 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             $statement->execute();
         }
 
-        $usersService = $this->serviceManager->get('Users\Service');
-
         // all created acl resources must be active several times
         foreach ($testResources as $resource) {
             for ($i = 1; $i <= $actionsLimit; $i++) {
                 $this->initAcl($role);
-                $this->assertTrue($usersService::checkPermission($resource));
+                $this->assertTrue(UsersService::checkPermission($resource));
             }
         }
 
@@ -410,7 +401,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertFalse($usersService::checkPermission($resource));
+            $this->assertFalse(UsersService::checkPermission($resource));
         }
 
         sleep($actionsReset);
@@ -419,7 +410,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertTrue($usersService::checkPermission($resource));
+            $this->assertTrue(UsersService::checkPermission($resource));
         }
     }
 
@@ -452,13 +443,11 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             $statement->execute();
         }
 
-        $usersService = $this->serviceManager->get('Users\Service');
-
         // all created acl resources must be active
         foreach ($testResources as $resource) {
             for ($i = 1; $i <= $actionsLimit; $i++) {
                 $this->initAcl($role);
-                $this->assertTrue($usersService::checkPermission($resource));
+                $this->assertTrue(UsersService::checkPermission($resource));
             }
         }
 
@@ -466,7 +455,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertFalse($usersService::checkPermission($resource));
+            $this->assertFalse(UsersService::checkPermission($resource));
         }
     }
 
@@ -502,20 +491,19 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         }
 
         $this->initAcl($role);
-        $usersService = $this->serviceManager->get('Users\Service');
 
         // all created acl resources must be active
         foreach ($testResources as $resource) {
-            $this->assertTrue($usersService::checkPermission($resource));
+            $this->assertTrue(UsersService::checkPermission($resource));
         }
 
         // wait two seconds and check acl resources again
         sleep(2);
         $this->initAcl($role);
- 
+
         // now all created acl resources must be expired
         foreach ($testResources as $resource) {
-            $this->assertFalse($usersService::checkPermission($resource));
+            $this->assertFalse(UsersService::checkPermission($resource));
         }
     }
 }

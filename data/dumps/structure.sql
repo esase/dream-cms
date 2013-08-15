@@ -141,3 +141,74 @@ CREATE TABLE IF NOT EXISTS `acl_resources_actions_track` (
       ON UPDATE CASCADE
       ON DELETE CASCADE  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `settings_categories` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL DEFAULT '',
+    `module` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `category` (`name`, `module`),
+    FOREIGN KEY (module) REFERENCES modules(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `settings` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(50) NOT NULL,
+    `label` varchar(150) NOT NULL,
+    `desc` varchar(255) NOT NULL,
+    `type` enum('date','text','textarea','html_textarea','checkbox','select','radio', 'system') NOT NULL,
+    `required` tinyint(1) unsigned NOT NULL,
+    `check` enum('integer','float_number','string','email','url') NOT NULL,
+    `order` smallint(5) unsigned NOT NULL,
+    `category` int(10) unsigned DEFAULT NULL,
+    `module` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `name` (`name`),
+    FOREIGN KEY (category) REFERENCES settings_categories(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (module) REFERENCES modules(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `settings` (`id`, `name`, `label`, `desc`, `type`, `required`, `check`, `order`, `category`, `module`) VALUES
+(1, 'application_generator', '', '', 'system', 0, '', 0, NULL, 1),
+(2, 'application_generator_version', '', '', 'system', 0, '', 0, NULL, 1),
+(5, 'application_site_name', 'Site name', '', 'text', 1, '', 1, NULL, 1),
+(6, 'application_site_email', 'Site email', '', 'text', 1, '', 2, NULL, 1),
+(7, 'application_meta_description', 'Meta description', '', 'text', 1, '', 3, NULL, 1),
+(8, 'application_meta_keywords', 'Meta keywords', '', 'text', 1, '', 4, NULL, 1);
+
+CREATE TABLE IF NOT EXISTS `settings_values` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `setting_id` int(10) unsigned NOT NULL,
+    `value` varchar(255) NOT NULL,
+    `language` varchar(2) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `setting` (`setting_id`, `language`),
+    FOREIGN KEY (setting_id) REFERENCES settings(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (language) REFERENCES localizations(language)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `settings_values` (`id`, `setting_id`, `value`, `language`) VALUES
+(8, 1, 'Dream CMS', NULL),
+(9, 2, '0.9.0', NULL),
+(10, 5, 'Dream CMS demo site', NULL),
+(11, 7, 'Dream CMS', NULL),
+(12, 8, 'php,dream cms,zend framework2', NULL);
+
+CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
+    `setting_id` int(10) unsigned NOT NULL,
+    `value` varchar(255) NOT NULL,
+    PRIMARY KEY (`setting_id`, `value`),
+    FOREIGN KEY (setting_id) REFERENCES settings(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
