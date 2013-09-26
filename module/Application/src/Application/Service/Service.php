@@ -5,6 +5,24 @@ namespace Application\Service;
 class Service
 {
     /**
+     * Layouts directory name
+     * @var string
+     */
+    protected static $layoutsDir = 'layouts';
+
+    /**
+     * Layouts cache css directory name
+     * @var string
+     */
+    protected static $layoutsCacheCssDir = 'layouts_cache/css';
+
+    /**
+     * Layouts cache js directory name
+     * @var string
+     */
+    protected static $layoutsCacheJsDir = 'layouts_cache/js';
+
+    /**
      * Current user identity
      * @var object
      */
@@ -158,6 +176,49 @@ class Service
 
         return $settingsModel->
                 getSetting($settingName, self::$currentLocalization['language']);
+    }
+
+    /**
+     * Get layout path
+     *
+     * @return string
+     */
+    public function getLayoutPath()
+    {
+        return APPLICATION_PUBLIC . '/' . self::$layoutsDir . '/';
+    }
+
+    /**
+     * Get layout dir
+     *
+     * @return string
+     */
+    public function getLayoutDir()
+    {
+        return self::$layoutsDir;
+    }
+
+    /**
+     * Get layout cache path
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getLayoutCachePath($type = 'css')
+    {
+        return APPLICATION_PUBLIC . '/' .
+                ($type == 'css' ? self::$layoutsCacheCssDir : self::$layoutsCacheJsDir) . '/';
+    }
+
+    /**
+     * Get layout cache dir
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getLayoutCacheDir($type = 'css')
+    {
+        return ($type == 'css' ? self::$layoutsCacheCssDir : self::$layoutsCacheJsDir);
     }
 
     /**

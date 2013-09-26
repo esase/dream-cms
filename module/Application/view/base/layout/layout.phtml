@@ -12,21 +12,20 @@
             ->appendName('keywords', $this->getSetting('application_meta_keywords'));
         ?>
 
-        <?php $this->headScript()->captureStart() ?>
-        var baseUrl = '<?php echo $this->basePath() ?>/';
-        <?php $this->headScript()->captureEnd() ?>
-
         <!-- Le styles -->
-        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))
-                        ->prependStylesheet($this->basePath() . '/css/bootstrap-responsive.min.css')
-                        ->prependStylesheet($this->basePath() . '/css/style.css')
-                        ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css') ?>
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icons/favicon.ico', 'images')))
+                        ->prependStylesheet($this->asset('bootstrap-responsive.min.css', 'css'))
+                        ->prependStylesheet($this->asset('style.css', 'css'))
+                       ->prependStylesheet($this->asset('bootstrap.min.css', 'css')) ?>
 
         <!-- Scripts -->
-        <?php echo $this->headScript()->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
-                                      ->prependFile($this->basePath() . '/js/bootstrap.min.js')
-                                      ->prependFile($this->basePath() . '/js/jquery.min.js')
-                                      ->prependFile($this->basePath() . '/js/functions.js') ?>
+
+        <?php echo $this->headScript()
+                ->prependFile($this->asset('html5.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
+                ->prependFile($this->asset('functions.js'))
+                ->prependFile($this->asset('bootstrap.min.js'))
+                ->prependFile($this->asset('jquery.min.js')) ?>
+
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-fixed-top">

@@ -414,7 +414,10 @@ class Module
     {
         return array(
             'invokables' => array(
-                'getSetting' => 'Application\View\Helper\Setting'
+                'getSetting' => 'Application\View\Helper\Setting',
+                'asset' => 'Application\View\Helper\Asset',
+                'headScript' => 'Application\View\Helper\HeadScript',
+                'headlink' => 'Application\View\Helper\HeadLink'
             ),
             'factories' => array(
                 'flashMessages' => function($serviceManager)
