@@ -1,7 +1,8 @@
 <?php
 
 return array(
-   'php_settings' => array(
+    'profiler' => true,
+    'php_settings' => array(
         'display_startup_errors' => true,
         'display_errors' => true
     ), 
@@ -20,5 +21,8 @@ return array(
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions' => true
+    ),
+    'db' => array(
+        'profiler' => true
     )
 );

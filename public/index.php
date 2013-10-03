@@ -1,5 +1,6 @@
 <?php
 
+define('APPLICATION_START', microtime(true));
 define('APPLICATION_PUBLIC', __DIR__);
 define('APPLICATION_ROOT', dirname(APPLICATION_PUBLIC));
 

@@ -25,6 +25,9 @@ use Zend\Permissions\Acl\Acl as Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
 use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 
+use Zend\Log\Writer\FirePhp as FirePhp;
+use Zend\Log\Logger as Logger;
+
 class Module
 {
     /**
@@ -79,9 +82,60 @@ class Module
      */
     public function onBootstrap(MvcEvent $e)
     {
+        // init user localization
         $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
             $this, 'initUserLocalization'
         ), 100);
+
+        $config = $this->serviceManager->get('Config');
+
+        // init profiler
+        if ($config['profiler']) {
+            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, array(
+                $this, 'initProfiler'
+            ));
+        }
+    }
+
+    /**
+     * Init profiler
+     */
+    public function initProfiler(MvcEvent $e)
+    {
+        $writer = new FirePhp();
+        $logger = new Logger();
+        $logger->addWriter($writer);
+
+        $logger->info('memory usage: ' . round(memory_get_usage(true) / 1024) . 'Mb');
+        $logger->info('page execution time: ' . (microtime(true) - APPLICATION_START));
+
+        // get sql profiler
+        if (null !== ($sqlProfiler = $this->
+                serviceManager->get('Zend\Db\Adapter\Adapter')->getProfiler())) {
+
+            $queriesTotalTime = 0;    
+            foreach($sqlProfiler->getProfiles() as $query) {
+                $base = array(
+                    'time' => $query['elapse'],
+                    'query' => $query['sql']
+                );
+
+                $queriesTotalTime += $query['elapse'];
+
+                if(!empty($query['parameters'])) {
+                    $params = array();
+                    foreach($query['parameters'] as $key => $value) {
+                        $params[$key] = $value;
+                    }
+
+                    $base['params'] = $params;
+                }
+
+                $logger->info('', $base);
+            }
+
+            $logger->info('sql queries total execution time: '. $queriesTotalTime);
+        }
     }
 
     /**
