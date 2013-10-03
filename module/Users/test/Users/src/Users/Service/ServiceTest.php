@@ -59,7 +59,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // get acl model
         $this->aclModel = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Acl');
     }
 

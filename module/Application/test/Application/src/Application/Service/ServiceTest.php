@@ -38,7 +38,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // get setting model
         $this->settingModel = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Setting');
 
         // clear settings array
@@ -124,7 +124,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // get localization model
         $localization = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Localization');
 
         // process all registered localization
@@ -162,7 +162,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // get localization model
         $localization = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Localization');
 
         // list of settings values

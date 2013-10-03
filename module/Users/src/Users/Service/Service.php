@@ -47,7 +47,7 @@ class Service extends ApplicationService
                     // increase actions counter
                     if ($resetActions || true == $permissionResult) {
                         $aclModel = self::$serviceManager
-                            ->get('Application\Model\Builder')
+                            ->get('Application\Model\ModelManager')
                             ->getInstance('Application\Model\Acl');
 
                         $result = $aclModel->increaseAclAction(self::$currentUserIdentity->user_id,

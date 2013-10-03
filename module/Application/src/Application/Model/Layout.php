@@ -3,6 +3,7 @@
 namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
+use Application\Utilities\Cache as CacheUtilities;
 
 class Layout extends Base
 {
@@ -40,13 +41,10 @@ class Layout extends Base
     public function getLayoutsByName($layoutName)
     {
         // generate cache name
-        $cacheName = $this->staticCacheUtils->
-                getCacheName(self::CACHE_LAYOUTS_BY_NAME . $layoutName);
+        $cacheName = CacheUtilities::getCacheName(self::CACHE_LAYOUTS_BY_NAME . $layoutName);
 
         // check data in cache
-        if (null === ($layouts = $this->
-                staticCacheUtils->getCacheInstance()->getItem($cacheName))) {
-
+        if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('layouts')
                 ->columns(array(
@@ -66,7 +64,7 @@ class Layout extends Base
             $layouts = $resultSet->toArray();
 
             // save data in cache
-            $this->staticCacheUtils->getCacheInstance()->setItem($cacheName, $layouts);
+            $this->staticCacheInstance->setItem($cacheName, $layouts);
         }
 
         return $layouts;
@@ -80,12 +78,10 @@ class Layout extends Base
     public function getDefaultActiveLayouts()
     {
         // generate cache name
-        $cacheName = $this->staticCacheUtils->getCacheName(self::CACHE_LAYOUTS_ACTIVE);
+        $cacheName = CacheUtilities::getCacheName(self::CACHE_LAYOUTS_ACTIVE);
 
         // check data in cache
-        if (null === ($layouts = $this->
-                staticCacheUtils->getCacheInstance()->getItem($cacheName))) {
-
+        if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('layouts')
                 ->columns(array(
@@ -105,7 +101,7 @@ class Layout extends Base
             $layouts = $resultSet->toArray();
 
             // save data in cache
-            $this->staticCacheUtils->getCacheInstance()->setItem($cacheName, $layouts);
+            $this->staticCacheInstance->setItem($cacheName, $layouts);
         }
 
         return $layouts;

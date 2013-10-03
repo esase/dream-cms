@@ -163,7 +163,7 @@ class Module
             // get extended user info
             if ($authService->getIdentity()->user_id != AclModel::DEFAULT_GUEST_ID) {
                 $user = $this->serviceManager
-                    ->get('Application\Model\Builder')
+                    ->get('Application\Model\ModelManager')
                     ->getInstance('Users\Model\Base');
 
                 if (null != ($userInfo = $user->
@@ -205,7 +205,7 @@ class Module
         $date = new DateTime();
 
         $applicationInit = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Init');
 
         // change time zone settings in model
@@ -233,7 +233,7 @@ class Module
     {
         // get all registered localizations
         $localization = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Localization');
 
         // init default localization
@@ -266,7 +266,7 @@ class Module
         $templatePathResolver = $this->serviceManager->get('Zend\View\Resolver\TemplatePathStack');
 
         $layout = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Layout');
 
         // get default or user defined layouts
@@ -319,7 +319,7 @@ class Module
         $acl->addRole(new Role($this->userIdentity->role));
 
         $aclModel = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Acl');
 
         // get acl resources
@@ -389,9 +389,9 @@ class Module
     {
         return array(
             'factories' => array(
-                'Application\Model\Builder' => function($serviceManager)
+                'Application\Model\ModelManager' => function($serviceManager)
                 {
-                    return new Model\ModelBuilder($serviceManager);
+                    return new Model\ModelManager($serviceManager);
                 },
                 'Application\AuthService' => function($serviceManager)
                 {

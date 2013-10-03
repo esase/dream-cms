@@ -6,14 +6,15 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
+use Application\Utilities\Cache as CacheUtilities;
 
 class Base extends Sql
 {
     /**
-     * Static cache utils
+     * Static cache instance
      * @var object
      */
-    protected $staticCacheUtils;
+    protected $staticCacheInstance;
 
     /**
      * Cache user by id
@@ -29,11 +30,12 @@ class Base extends Sql
      * Class constructor
      *
      * @param object $adapter
+     * @param object $staticCacheInstance
      */
-    public function __construct(Adapter $adapter, \Custom\Cache\Utils $staticCacheUtils)
+    public function __construct(Adapter $adapter, $staticCacheInstance)
     {
         parent::__construct($adapter);
-        $this->staticCacheUtils = $staticCacheUtils;
+        $this->staticCacheInstance = $staticCacheInstance;
     }
 
     /**
@@ -45,13 +47,10 @@ class Base extends Sql
     public function getUserInfoById($userId)
     {
         // generate cache name
-        $cacheName = $this->staticCacheUtils->
-                getCacheName(self::CACHE_USER_BY_ID . $userId);
+        $cacheName = CacheUtilities::getCacheName(self::CACHE_USER_BY_ID . $userId);
 
         // check data in cache
-        if (null === ($userInfo = $this->
-                staticCacheUtils->getCacheInstance()->getItem($cacheName))) {
-
+        if (null === ($userInfo = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('users')
                 ->columns(array(
@@ -72,8 +71,8 @@ class Base extends Sql
             $userInfo = $resultSet->current();
 
             // save data in cache
-            $this->staticCacheUtils->getCacheInstance()->setItem($cacheName, $userInfo);
-            $this->staticCacheUtils->getCacheInstance()->setTags($cacheName, array(
+            $this->staticCacheInstance->setItem($cacheName, $userInfo);
+            $this->staticCacheInstance->setTags($cacheName, array(
                 self::CACHE_TAG_USERS
             ));
         }

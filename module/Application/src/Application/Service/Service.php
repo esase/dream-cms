@@ -171,7 +171,7 @@ class Service
     public static function getSetting($settingName)
     {
         $settingsModel = self::$serviceManager
-           ->get('Application\Model\Builder')
+           ->get('Application\Model\ModelManager')
            ->getInstance('Application\Model\Setting');
 
         return $settingsModel->

@@ -39,7 +39,7 @@ class LocalizationTest extends PHPUnit_Framework_TestCase
 
         // get localization instance
         $this->localization = $this->serviceManager
-            ->get('Application\Model\Builder')
+            ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Localization');
     }
 

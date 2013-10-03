@@ -4,6 +4,7 @@ namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
+use Application\Utilities\Cache as CacheUtilities;
 
 class Setting extends Base
 {
@@ -32,13 +33,10 @@ class Setting extends Base
     protected function getAllSettings($language)
     {
         // generate cache name
-        $cacheName = $this->staticCacheUtils->
-                getCacheName(self::CACHE_SETTINGS_BY_LANGUAGE . $language);
+        $cacheName = CacheUtilities::getCacheName(self::CACHE_SETTINGS_BY_LANGUAGE . $language);
 
         // check data in cache
-        if (null === ($settings = $this->
-                staticCacheUtils->getCacheInstance()->getItem($cacheName))) {
-
+        if (null === ($settings = $this->staticCacheInstance->getItem($cacheName))) {
             $subQuery= $this->select();
             $subQuery->from(array('c' => 'settings_values'))
                 ->columns(array(
@@ -77,8 +75,8 @@ class Setting extends Base
             }
 
             // save data in cache
-            $this->staticCacheUtils->getCacheInstance()->setItem($cacheName, $settings);
-            $this->staticCacheUtils->getCacheInstance()->setTags($cacheName, array(
+            $this->staticCacheInstance->setItem($cacheName, $settings);
+            $this->staticCacheInstance->setTags($cacheName, array(
                 self::CACHE_TAG_SETTINGS
             ));
         }

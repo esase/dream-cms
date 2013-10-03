@@ -10,20 +10,21 @@ use Zend\Db\Sql\Expression as Expression;
 class Base extends Sql
 {
     /**
-     * Static cache utils
+     * Static cache instance
      * @var object
      */
-    protected $staticCacheUtils;
+    protected $staticCacheInstance;
 
     /**
      * Class constructor
      *
      * @param object $adapter
+     * @param object $staticCacheInstance
      */
-    public function __construct(Adapter $adapter, \Custom\Cache\Utils $staticCacheUtils)
+    public function __construct(Adapter $adapter, $staticCacheInstance)
     {
         parent::__construct($adapter);
-        $this->staticCacheUtils = $staticCacheUtils;
+        $this->staticCacheInstance = $staticCacheInstance;
     }
 
     /**

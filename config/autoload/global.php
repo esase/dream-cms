@@ -64,10 +64,6 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-            'Custom\Cache\Static\Utils' => function ($serviceManager)
-            {
-               return new \Custom\Cache\Utils($serviceManager->get('Cache\Static'));
-            },
             'Cache\Static' => function ($serviceManager)
             {
                 $config = $serviceManager->get('Config');

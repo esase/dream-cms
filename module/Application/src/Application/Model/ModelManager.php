@@ -2,7 +2,7 @@
 
 namespace Application\Model;
 
-class ModelBuilder implements ModelBuilderInterface
+class ModelManager
 {
     /**
      * Service manager
@@ -42,8 +42,8 @@ class ModelBuilder implements ModelBuilderInterface
             return $this->instances[$modelName];
         }
 
-        $this->instances[$modelName] = new $modelName($this->
-                serviceManager->get('Zend\Db\Adapter\Adapter'), $this->serviceManager->get('Custom\Cache\Static\Utils'));
+        $this->instances[$modelName] = new $modelName($this->serviceManager->
+                get('Zend\Db\Adapter\Adapter'), $this->serviceManager->get('Cache\Static'));
 
         return $this->instances[$modelName];
     }
