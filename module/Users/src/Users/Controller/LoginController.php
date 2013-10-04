@@ -12,6 +12,7 @@ namespace Users\Controller;
 use Zend\View\Model\ViewModel;
 use Application\Model\Acl as Acl;
 use Users\Form\LoginForm; 
+use Users\Event\Event as UsersEvent;
 
 class LoginController extends BaseController
 {
@@ -21,7 +22,7 @@ class LoginController extends BaseController
     public function indexAction()
     {
         $userIdentity = $this->getAuthService()->getIdentity();
-
+       
         // if already login, redirect to success page
         if ($userIdentity->role !== Acl::DEFAULT_ROLE_GUEST){
             return $this->redirect()->toRoute('application');
@@ -47,6 +48,13 @@ class LoginController extends BaseController
                     $this->getAuthService()->getStorage()->write($this->getAuthService()->
                             getAdapter()->getResultRowObject(array('user_id')));
 
+                    // get updated Identity again 
+                    $userIdentity = $this->getAuthService()->getIdentity();
+
+                    // fire event
+                    UsersEvent::fireEvent(UsersEvent::USER_LOGIN,
+                            $userIdentity->user_id, 'User successfully logged', array($request->getPost('nickname')));
+
                     return $this->redirect()->toRoute('application');
                 }
                 else {
@@ -57,6 +65,11 @@ class LoginController extends BaseController
                         $errorMessage = $this->getTranslator()->translate($errorMessage);
                         $this->flashMessenger()->addMessage($errorMessage);
                     }
+
+                    // fire event
+                    UsersEvent::fireEvent(UsersEvent::USER_LOGIN_FAILED, 0, 'User login failed', array(
+                        $request->getPost('nickname'))
+                    );
 
                     return $this->redirect()->toRoute('application', array('controller' => 'login'));
                 }

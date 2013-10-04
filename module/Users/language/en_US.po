@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-07-22 00:24+0600\n"
+"PO-Revision-Date: 2013-10-04 16:22+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -28,3 +28,21 @@ msgstr "A record with the supplied identity could not be found."
 
 msgid "You've been logged out"
 msgstr "You've been logged out"
+
+msgid "User successfully been logged out"
+msgstr "User \"%s\" successfully been logged out"
+
+msgid "User successfully logged"
+msgstr "User \"%s\" successfully logged"
+
+msgid "User login failed"
+msgstr "User login failed (user name is \"%s\")"
+
+msgid "User login desc"
+msgstr "User login"
+
+msgid "User login failed desc"
+msgstr "User login failed"
+
+msgid "User logout desc"
+msgstr "User logout"

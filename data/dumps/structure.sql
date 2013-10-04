@@ -221,3 +221,20 @@ CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `events` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    `description` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `name` (`name`),
+    FOREIGN KEY (module) REFERENCES modules(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
+(1, 'user.login', 2, 'User login desc'),
+(2, 'user.login.failed', 2, 'User login failed desc'),
+(3, 'user.logout', 2, 'User logout desc');
