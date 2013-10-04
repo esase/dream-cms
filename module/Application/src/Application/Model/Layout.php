@@ -3,7 +3,7 @@
 namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
-use Application\Utilities\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtilities;
 
 class Layout extends Base
 {

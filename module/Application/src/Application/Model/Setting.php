@@ -4,7 +4,7 @@ namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
-use Application\Utilities\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtilities;
 
 class Setting extends Base
 {
