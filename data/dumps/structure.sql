@@ -164,6 +164,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
     `order` smallint(5) unsigned NOT NULL,
     `category` int(10) unsigned DEFAULT NULL,
     `module` int(10) unsigned NOT NULL,
+    `language_sensitive` tinyint(1) NOT NULL DEFAULT '1',
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
     FOREIGN KEY (category) REFERENCES settings_categories(id)
@@ -174,17 +175,17 @@ CREATE TABLE IF NOT EXISTS `settings` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `settings` (`id`, `name`, `label`, `desc`, `type`, `required`, `check`, `order`, `category`, `module`) VALUES
-(1,  'application_generator', '', '', 'system', 0, '', 0, NULL, 1),
-(2,  'application_generator_version', '', '', 'system', 0, '', 0, NULL, 1),
-(3,  'application_site_name', 'Site name', '', 'text', 1, '', 1, NULL, 1),
-(4,  'application_site_email', 'Site email', '', 'text', 1, '', 2, NULL, 1),
-(5,  'application_meta_description', 'Meta description', '', 'text', 1, '', 3, NULL, 1),
-(6,  'application_meta_keywords', 'Meta keywords', '', 'text', 1, '', 4, NULL, 1),
-(7,  'application_js_cache', 'Js cache', '', 'checkbox', 0, '', 5, NULL, 1),
-(8,  'application_js_cache_gzip', 'Enable gzip for js cache', '', 'checkbox', 0, '', 6, NULL, 1),
-(9,  'application_css_cache', 'Css cache', '', 'checkbox', 0, '', 7, NULL, 1),
-(10, 'application_css_cache_gzip', 'Enable gzip for css cache', '', 'checkbox', 0, '', 8, NULL, 1);
+INSERT INTO `settings` (`id`, `name`, `label`, `desc`, `type`, `required`, `check`, `order`, `category`, `module`, `language_sensitive`) VALUES
+(1, 'application_generator', '', '', 'system', 0, '', 0, NULL, 1, 0),
+(2, 'application_generator_version', '', '', 'system', 0, '', 0, NULL, 1, 0),
+(3, 'application_site_name', 'Site name', '', 'text', 1, '', 1, NULL, 1, 1),
+(4, 'application_site_email', 'Site email', '', 'text', 1, '', 2, NULL, 1, 0),
+(5, 'application_meta_description', 'Meta description', '', 'text', 1, '', 3, NULL, 1, 1),
+(6, 'application_meta_keywords', 'Meta keywords', '', 'text', 1, '', 4, NULL, 1, 1),
+(7, 'application_js_cache', 'Js cache', '', 'checkbox', 0, '', 5, NULL, 1, 0),
+(8, 'application_js_cache_gzip', 'Enable gzip for js cache', '', 'checkbox', 0, '', 6, NULL, 1, 0),
+(9, 'application_css_cache', 'Css cache', '', 'checkbox', 0, '', 7, NULL, 1, 0),
+(10, 'application_css_cache_gzip', 'Enable gzip for css cache', '', 'checkbox', 0, '', 8, NULL, 1, 0);
 
 CREATE TABLE IF NOT EXISTS `settings_values` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

@@ -9,7 +9,7 @@ use Application\Utility\Cache as CacheUtilities;
 class Setting extends Base
 {
     /**
-     * Current list of settings
+     * List of settings
      * @var array
      */
     protected static $settings;
@@ -91,14 +91,14 @@ class Setting extends Base
      * @param string $language
      * @return string|array|boolean
      */
-    public function getSetting($settingName, $language = null)
+    public function getSetting($settingName, $language)
     {
-        if (!self::$settings) {
-            self::$settings = $this->getAllSettings($language);
+        if (empty(self::$settings[$language])) {
+            self::$settings[$language] = $this->getAllSettings($language);
         }
 
-        if (isset(self::$settings[$settingName])) {
-            $setting = explode(';', self::$settings[$settingName]);
+        if (isset(self::$settings[$language][$settingName])) {
+            $setting = explode(';', self::$settings[$language][$settingName]);
 
             return count($setting) == 1
                 ? current($setting)

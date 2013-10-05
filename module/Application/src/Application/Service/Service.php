@@ -166,16 +166,17 @@ class Service
      * Get setting
      *
      * @param string $settingName
+     * @param string $language
      * @return string|boolean
      */
-    public static function getSetting($settingName)
+    public static function getSetting($settingName, $language = null)
     {
         $settingsModel = self::$serviceManager
            ->get('Application\Model\ModelManager')
            ->getInstance('Application\Model\Setting');
 
-        return $settingsModel->
-                getSetting($settingName, self::$currentLocalization['language']);
+        return $settingsModel->getSetting($settingName,
+                ($language ? $language : self::$currentLocalization['language']));
     }
 
     /**
