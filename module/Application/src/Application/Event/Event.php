@@ -16,12 +16,12 @@ class Event
      *
      * @param string $event
      * @param integer $objectid
+     * @param integer $userId
      * @param string $description
      * @param array $descriptionParams
-     * @param integer $userId
      * @return void
      */
-    public static function fireEvent($event, $objectid, $description, array $descriptionParams = array(), $userId = 0)
+    public static function fireEvent($event, $objectid, $userId, $description, array $descriptionParams = array())
     {
         self::getEventManager()->trigger($event, __METHOD__, array(
             'object_id' => $objectid,

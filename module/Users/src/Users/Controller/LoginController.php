@@ -52,7 +52,7 @@ class LoginController extends BaseController
                     $userIdentity = $this->getAuthService()->getIdentity();
 
                     // fire event
-                    UsersEvent::fireEvent(UsersEvent::USER_LOGIN,
+                    UsersEvent::fireEvent(UsersEvent::USER_LOGIN, $userIdentity->user_id,
                             $userIdentity->user_id, 'User successfully logged', array($request->getPost('nickname')));
 
                     return $this->redirect()->toRoute('application');
@@ -67,9 +67,8 @@ class LoginController extends BaseController
                     }
 
                     // fire event
-                    UsersEvent::fireEvent(UsersEvent::USER_LOGIN_FAILED, 0, 'User login failed', array(
-                        $request->getPost('nickname'))
-                    );
+                    UsersEvent::fireEvent(UsersEvent::USER_LOGIN_FAILED, 0,
+                            Acl::DEFAULT_ROLE_GUEST, 'User login failed', array($request->getPost('nickname')));
 
                     return $this->redirect()->toRoute('application', array('controller' => 'login'));
                 }

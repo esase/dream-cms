@@ -21,7 +21,7 @@ class LogoutController extends BaseController
                 ->setNamespace('success')
                 ->addMessage($this->getTranslator()->translate('You\'ve been logged out'));
 
-            UsersEvent::fireEvent(UsersEvent::USER_LOGOUT,
+            UsersEvent::fireEvent(UsersEvent::USER_LOGOUT, $user->user_id,
                 $user->user_id, 'User successfully been logged out', array($user->nick_name));
         }
 
