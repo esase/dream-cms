@@ -2,5 +2,6 @@
 
 return array(
     'Application',
-    'Users'
+    'Users',
+    'XmlRpc'
 );

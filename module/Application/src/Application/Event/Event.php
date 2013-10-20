@@ -12,6 +12,11 @@ class Event
     protected static $eventManager;
 
     /**
+     * Application get localizations by xmlrpc event
+     */
+    const APPLICATION_GET_LOCALIZATIONS = 'application.get.localizations.xmlrpc';
+
+    /**
      * Fire event
      *
      * @param string $event
@@ -39,7 +44,6 @@ class Event
     public static function getEventManager()
     {
         if (self::$eventManager) {
-
             return self::$eventManager;
         }
 

@@ -21,10 +21,6 @@ use Zend\Validator\AbstractValidator;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
-use Zend\Permissions\Acl\Acl as Acl;
-use Zend\Permissions\Acl\Role\GenericRole as Role;
-use Zend\Permissions\Acl\Resource\GenericResource as Resource;
-
 use Zend\Log\Writer\FirePhp as FirePhp;
 use Zend\Log\Logger as Logger;
 
@@ -165,9 +161,6 @@ class Module
 
         // init layout
         $this->initlayout();
-
-        // init acl
-        $this->initAcl();
     }
 
     /**
@@ -310,6 +303,7 @@ class Module
 
         AbstractValidator::setDefaultTranslator($translator);
         ApplicationService::setCurrentLocalization($this->defaultLocalization);
+        ApplicationService::setLocalizations($this->localizations);
     }
 
     /**
@@ -360,47 +354,6 @@ class Module
     }
 
     /**
-     * init acl
-     */ 
-    protected function initAcl()
-    {
-        // admin can do everything
-        if ($this->userIdentity->role == AclModel::DEFAULT_ROLE_ADMIN) {
-            return;
-        }
-
-        $acl = new Acl();
-        $acl->addRole(new Role($this->userIdentity->role));
-
-        $aclModel = $this->serviceManager
-            ->get('Application\Model\ModelManager')
-            ->getInstance('Application\Model\Acl');
-
-        // get acl resources
-        if (null != ($resources = $aclModel->
-                getAclResources($this->userIdentity->role, $this->userIdentity->user_id))) {
-
-            // process acl resources
-            $resourcesInfo = array();
-            foreach ($resources as $resource) {
-                // add new resource
-                $acl->addResource(new Resource($resource['resource']));
-
-                // add resource's action
-                $resource['permission'] == AclModel::ACTION_ALLOWED
-                    ? $acl->allow($this->userIdentity->role, $resource['resource'])
-                    : $acl->deny($this->userIdentity->role, $resource['resource']);
-
-                $resourcesInfo[$resource['resource']] = $resource;
-            }
-
-            ApplicationService::setCurrentAclResources($resourcesInfo);
-        };
-
-        ApplicationService::setCurrentAcl($acl);
-    }
-
-    /**
      * Init user localization
      *
      * @param object $e MvcEvent
@@ -411,7 +364,9 @@ class Module
         $matches = $e->getRouteMatch();
 
         // get languge param from the route
-        if (!array_key_exists($matches->getParam('languge'), $this->localizations)) {
+        if (!$matches->getParam('languge') ||
+                    !array_key_exists($matches->getParam('languge'), $this->localizations)) {
+
             $router->setDefaultParam('languge', $this->defaultLocalization['language']);
             return;
         }

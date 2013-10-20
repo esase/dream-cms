@@ -34,7 +34,7 @@ class Cache
             if (is_array($arg)) {
                 $result .= self::processArgs($arg);
             }
-            else if( is_scalar($arg) ) {
+            else if ( is_scalar($arg) ) {
                 $result .= ':' . $arg;
             }
         }

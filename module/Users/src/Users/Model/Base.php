@@ -16,6 +16,12 @@ class Base extends Sql
      */
     protected $staticCacheInstance;
 
+    protected $privateFields = array(
+        'email',
+        'api_key',
+        'api_secret'
+    );
+
     /**
      * Cache user by id
      */
@@ -42,28 +48,42 @@ class Base extends Sql
      * Get user info by Id
      *
      * @param integer $userId
+     * @param boolean $isApiKey
      * @return array
      */
-    public function getUserInfoById($userId)
+    public function getUserInfoById($userId, $isApiKey = false)
     {
         // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_USER_BY_ID . $userId);
+        $cacheName =
+                CacheUtilities::getCacheName(self::CACHE_USER_BY_ID . $userId, array($isApiKey));
 
         // check data in cache
         if (null === ($userInfo = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('users')
                 ->columns(array(
+                    'user_id',
                     'nick_name',
                     'email',
                     'role',
                     'language',
                     'time_zone',
-                    'layout'
-                ))
-                ->where(array(
-                    'user_id' => $userId
+                    'layout',
+                    'api_key',
+                    'api_secret'
                 ));
+
+                // get user info by apiKey
+                if ($isApiKey) {
+                    $select->where(array(
+                        'api_key' => $userId
+                    ));
+                }
+                else {
+                    $select->where(array(
+                        'user_id' => $userId
+                    ));
+                }
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -78,5 +98,22 @@ class Base extends Sql
         }
 
         return $userInfo;
+    }
+
+    /**
+     * Remove the user cache
+     *
+     * @param integer $userId
+     * @return void
+     */
+    protected function removeUserCache($userId)
+    {
+        // clear cache by id
+        $cacheName = CacheUtilities::getCacheName(self::CACHE_USER_BY_ID . $userId, array(false));
+        $this->staticCacheInstance->removeItem($cacheName);
+
+        // clear cache by api key
+        $cacheName = CacheUtilities::getCacheName(self::CACHE_USER_BY_ID . $userId, array(true));
+        $this->staticCacheInstance->removeItem($cacheName);
     }
 }
