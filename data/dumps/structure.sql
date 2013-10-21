@@ -14,7 +14,22 @@ CREATE TABLE IF NOT EXISTS `modules` (
 
 INSERT INTO `modules` (`id`, `name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
 (1, 'Application', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Core module, make the first application initialization', ''),
-(2, 'Users', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Allows to users logon and logoff ', '');
+(2, 'Users', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Allows to users logon and logoff ', ''),
+(3, 'XmlRpc', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Allows to use web services via XmlRpc server', '');
+
+CREATE TABLE IF NOT EXISTS `xmlrpc_classes` (
+    `namespace` varchar(50) NOT NULL,
+    `path` varchar(100) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`namespace`, `path`, `module`),
+    FOREIGN KEY (module) REFERENCES modules(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `xmlrpc_classes` (`namespace`, `path`, `module`) VALUES
+('application', 'Application\\XmlRpc\\Handler', 1),
+('users', 'Users\\XmlRpc\\Handler', 2);
 
 CREATE TABLE IF NOT EXISTS `localizations` (
     `language` varchar(2) NOT NULL,
@@ -67,7 +82,10 @@ CREATE TABLE IF NOT EXISTS `acl_resources` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `acl_resources` (`id`, `resource`, `module`) VALUES
-(1, 'application administration', 1);
+(1, 'application administration', 1),
+(2, 'application xmlrpc get localizations', 1),
+(3, 'users xmlrpc view user info', 2),
+(4, 'users xmlrpc set user time zone', 2);
 
 CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -93,9 +111,12 @@ CREATE TABLE IF NOT EXISTS `users` (
     `language` varchar(2) DEFAULT NULL,
     `time_zone` varchar(100) NOT NULL,
     `layout` varchar(50) DEFAULT NULL,
+    `api_key` varchar(50) NOT NULL DEFAULT '',
+    `api_secret` varchar(50) NOT NULL DEFAULT '',
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `nick_name` (`nick_name`),
     UNIQUE KEY `email` (`email`),
+    UNIQUE KEY `api_key` (`api_key`),
     FOREIGN KEY (role) REFERENCES acl_roles(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -107,8 +128,8 @@ CREATE TABLE IF NOT EXISTS `users` (
         ON DELETE SET NULL       
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `users` (`user_id`, `nick_name`, `email`, `password`, `salt`, `role`) VALUES
-(1, 'esase', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1);
+INSERT INTO `users` (`user_id`, `nick_name`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
+(1, 'esase', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
 
 CREATE TABLE IF NOT EXISTS `acl_resources_connections_settings` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -176,15 +197,15 @@ CREATE TABLE IF NOT EXISTS `settings` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `settings` (`id`, `name`, `label`, `desc`, `type`, `required`, `check`, `order`, `category`, `module`, `language_sensitive`) VALUES
-(1, 'application_generator', '', '', 'system', 0, '', 0, NULL, 1, 0),
-(2, 'application_generator_version', '', '', 'system', 0, '', 0, NULL, 1, 0),
-(3, 'application_site_name', 'Site name', '', 'text', 1, '', 1, NULL, 1, 1),
-(4, 'application_site_email', 'Site email', '', 'text', 1, '', 2, NULL, 1, 0),
-(5, 'application_meta_description', 'Meta description', '', 'text', 1, '', 3, NULL, 1, 1),
-(6, 'application_meta_keywords', 'Meta keywords', '', 'text', 1, '', 4, NULL, 1, 1),
-(7, 'application_js_cache', 'Js cache', '', 'checkbox', 0, '', 5, NULL, 1, 0),
-(8, 'application_js_cache_gzip', 'Enable gzip for js cache', '', 'checkbox', 0, '', 6, NULL, 1, 0),
-(9, 'application_css_cache', 'Css cache', '', 'checkbox', 0, '', 7, NULL, 1, 0),
+(1,  'application_generator', '', '', 'system', 0, '', 0, NULL, 1, 0),
+(2,  'application_generator_version', '', '', 'system', 0, '', 0, NULL, 1, 0),
+(3,  'application_site_name', 'Site name', '', 'text', 1, '', 1, NULL, 1, 1),
+(4,  'application_site_email', 'Site email', '', 'text', 1, '', 2, NULL, 1, 0),
+(5,  'application_meta_description', 'Meta description', '', 'text', 1, '', 3, NULL, 1, 1),
+(6,  'application_meta_keywords', 'Meta keywords', '', 'text', 1, '', 4, NULL, 1, 1),
+(7,  'application_js_cache', 'Js cache', '', 'checkbox', 0, '', 5, NULL, 1, 0),
+(8,  'application_js_cache_gzip', 'Enable gzip for js cache', '', 'checkbox', 0, '', 6, NULL, 1, 0),
+(9,  'application_css_cache', 'Css cache', '', 'checkbox', 0, '', 7, NULL, 1, 0),
 (10, 'application_css_cache_gzip', 'Enable gzip for css cache', '', 'checkbox', 0, '', 8, NULL, 1, 0);
 
 CREATE TABLE IF NOT EXISTS `settings_values` (
@@ -236,6 +257,9 @@ CREATE TABLE IF NOT EXISTS `events` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
-(1, 'user.login', 2, 'User login desc'),
-(2, 'user.login.failed', 2, 'User login failed desc'),
-(3, 'user.logout', 2, 'User logout desc');
+(1, 'application.get.localizations.xmlrpc', 2, 'Application get localizations via XmlRpc desc'),
+(2, 'user.login', 2, 'User login desc'),
+(3, 'user.login.failed', 2, 'User login failed desc'),
+(4, 'user.logout', 2, 'User logout desc'),
+(5, 'user.get.info.xmlrpc', 2, 'User get info via XmlRpc desc'),
+(6, 'user.set.timezone.xmlrpc', 2, 'User set time zone via XmlRpc desc');

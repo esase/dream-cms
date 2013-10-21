@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2013-10-04 16:22+0600\n"
+"PO-Revision-Date: 2013-10-20 14:59+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -46,3 +46,18 @@ msgstr "Сбой при входе пользователя"
 
 msgid "User logout desc"
 msgstr "Выход пользователя из сайта"
+
+msgid "User get info via XmlRpc desc"
+msgstr "Запрос данных пользователя с помощью XmlRpc"
+
+msgid "User get info (guest) via XmlRpc"
+msgstr "Гость получил данные пользователя \"%s\" с помощью XmlRpc"
+
+msgid "User get info via XmlRpc"
+msgstr "\"%s\" получил данные пользователя \"%s\" с помощью XmlRpc"
+
+msgid "User set time zone via XmlRpc desc"
+msgstr "Установка часового пояса пользователя через XmlRpc"
+
+msgid "User set time zone via XmlRpc"
+msgstr "Пользователь \"%s\" изменил свой часовой пояс через XmlRpc"

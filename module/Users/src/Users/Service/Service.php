@@ -5,8 +5,28 @@ namespace Users\Service;
 use Application\Service\Service as ApplicationService;
 use Application\Model\Acl as AclModel;
 
+use Zend\Permissions\Acl\Acl as Acl;
+use Zend\Permissions\Acl\Role\GenericRole as Role;
+use Zend\Permissions\Acl\Resource\GenericResource as Resource;
+
 class Service extends ApplicationService
 {
+    /**
+     * Get user info
+     *
+     * @param integer $userId
+     * @param boolean $isApiKey
+     * @return array
+     */
+    public static function getUserInfo($userId, $isApiKey = false)
+    {
+        $user = self::$serviceManager
+            ->get('Application\Model\ModelManager')
+            ->getInstance('Users\Model\Base');
+
+        return $user->getUserInfoById($userId, $isApiKey); 
+    }
+
     /**
      * Check permission
      *
@@ -19,6 +39,11 @@ class Service extends ApplicationService
         // admin can do everything
         if (self::$currentUserIdentity->role == AclModel::DEFAULT_ROLE_ADMIN) {
             return true;
+        }
+
+        // init acl
+        if (!self::$currentAcl) {
+            self::initAcl();
         }
 
         // check resource existing
@@ -62,5 +87,43 @@ class Service extends ApplicationService
         }
 
         return false;
+    }
+
+    /**
+     * Init acl
+     *
+     * @return void
+     */
+    protected static function initAcl()
+    {
+        $acl = new Acl();
+        $acl->addRole(new Role(self::$currentUserIdentity->role));
+
+        $aclModel = self::$serviceManager
+            ->get('Application\Model\ModelManager')
+            ->getInstance('Application\Model\Acl');
+
+        // get acl resources
+        if (null != ($resources = $aclModel->
+                getAclResources(self::$currentUserIdentity->role, self::$currentUserIdentity->user_id))) {
+
+            // process acl resources
+            $resourcesInfo = array();
+            foreach ($resources as $resource) {
+                // add new resource
+                $acl->addResource(new Resource($resource['resource']));
+
+                // add resource's action
+                $resource['permission'] == AclModel::ACTION_ALLOWED
+                    ? $acl->allow(self::$currentUserIdentity->role, $resource['resource'])
+                    : $acl->deny(self::$currentUserIdentity->role, $resource['resource']);
+
+                $resourcesInfo[$resource['resource']] = $resource;
+            }
+
+            self::$currentAclResources = $resourcesInfo;
+        };
+
+        self::$currentAcl = $acl;
     }
 }
