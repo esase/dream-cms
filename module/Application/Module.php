@@ -102,7 +102,7 @@ class Module
         $logger = new Logger();
         $logger->addWriter($writer);
 
-        $logger->info('memory usage: ' . round(memory_get_usage(true) / 1024) . 'Mb');
+        $logger->info('memory usage: ' . memory_get_usage(true) / 1024 / 1024 . 'Mb');
         $logger->info('page execution time: ' . (microtime(true) - APPLICATION_START));
 
         // get sql profiler
