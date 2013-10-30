@@ -45,41 +45,4 @@ class AdminMenu extends Base
 
         return $layouts;
     }
-
-    /**
-     * Get default active layouts
-     *
-     * @return array
-     */
-    public function getDefaultActiveLayouts()
-    {
-        // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_LAYOUTS_ACTIVE);
-
-        // check data in cache
-        if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
-            $select = $this->select();
-            $select->from('layouts')
-                ->columns(array(
-                    'name'
-                ))
-                ->order('type')
-                ->where(array(
-                    'type' => self::LAYOUT_TYPE_SYSTEM
-                ))
-                ->where
-                    ->or->equalTo('type', self::LAYOUT_TYPE_CUSTOM)
-                    ->and->equalTo('active', self::LAYOUT_ACTIVE);
-
-            $statement = $this->prepareStatementForSqlObject($select);
-            $resultSet = new ResultSet;
-            $resultSet->initialize($statement->execute());
-            $layouts = $resultSet->toArray();
-
-            // save data in cache
-            $this->staticCacheInstance->setItem($cacheName, $layouts);
-        }
-
-        return $layouts;
-    }
 }
