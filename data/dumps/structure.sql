@@ -34,14 +34,15 @@ INSERT INTO `xmlrpc_classes` (`namespace`, `path`, `module`) VALUES
 CREATE TABLE IF NOT EXISTS `localizations` (
     `language` varchar(2) NOT NULL,
     `locale` varchar(5) NOT NULL,
+    `description` varchar(50) NOT NULL,
     `default` tinyint(1) unsigned NOT NULL,
     PRIMARY KEY (`language`),
     KEY `default` (`default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `localizations` (`language`, `locale`, `default`) VALUES
-('en', 'en_US', 1),
-('ru', 'ru_RU', 0);
+INSERT INTO `localizations` (`language`, `locale`, `description`, `default`) VALUES
+('en', 'en_US', 'English', 1),
+('ru', 'ru_RU', 'Русский', 0);
 
 CREATE TABLE IF NOT EXISTS `layouts` (
     `name` varchar(50) NOT NULL,
@@ -74,18 +75,25 @@ INSERT INTO `acl_roles` (`id`, `name`, `type`) VALUES
 CREATE TABLE IF NOT EXISTS `acl_resources` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `resource` varchar(50) NOT NULL,
+    `description` varchar(150) NOT NULL,
     `module` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE(`resource`),
     FOREIGN KEY (module) REFERENCES modules(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `acl_resources` (`id`, `resource`, `module`) VALUES
-(1, 'application administration', 1),
-(2, 'application xmlrpc get localizations', 1),
-(3, 'users xmlrpc view user info', 2),
-(4, 'users xmlrpc set user time zone', 2);
+INSERT INTO `acl_resources` (`id`, `resource`, `description`, `module`) VALUES
+(1, 'modules_administration_index', 'ACL - Possibility to view modules in administration panel', 1),
+(2, 'settings_administration_index', 'ACL - Possibility to change site settings in administration panel', 1),
+(3, 'localizations_administration_index', 'ACL - Possibility to view site localizations in administration panel', 1),
+(4, 'layouts_administration_index', 'ACL - Possibility to view site layouts in administration panel', 1),
+(5, 'acl_administration_index', 'ACL - Possibility to view site ACL in administration panel', 1),
+(6, 'xmlrpc_get_localizations', 'ACL - Possibility to get site localizations via XmlRpc', 1),
+(7, 'users_administration_index', 'ACL - Possibility to view users in administration panel', 2),
+(8, 'xmlrpc_view_user_info', 'ACL - Possibility to view user\'s info via XmlRpc', 2),
+(9, 'xmlrpc_set_user_timezone', 'ACL - Possibility to change user\'s timezone via XmlRpc', 2);
 
 CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -257,9 +265,30 @@ CREATE TABLE IF NOT EXISTS `events` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
-(1, 'application.get.localizations.xmlrpc', 2, 'Application get localizations via XmlRpc desc'),
-(2, 'user.login', 2, 'User login desc'),
-(3, 'user.login.failed', 2, 'User login failed desc'),
-(4, 'user.logout', 2, 'User logout desc'),
-(5, 'user.get.info.xmlrpc', 2, 'User get info via XmlRpc desc'),
-(6, 'user.set.timezone.xmlrpc', 2, 'User set time zone via XmlRpc desc');
+(1, 'get_localizations_via_xmlrpc', 1, 'Event - Get localizations via XmlRpc'),
+(2, 'user_login', 2, 'Event - User login'),
+(3, 'user_login_failed', 2, 'Event - User login failed'),
+(4, 'user_logout', 2, 'Event - User logout'),
+(5, 'get_user_info_via_xmlrpc', 2, 'Event - Get user\'s info via XmlRpc'),
+(6, 'set_user_timezone_via_xmlrpc', 2, 'Event - Set user\'s timezone via XmlRpc');
+
+CREATE TABLE IF NOT EXISTS `admin_menu` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `controller` varchar(255) NOT NULL,
+    `action` varchar(255) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    `order` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES modules(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`) VALUES
+(1, 'Modules', 'modules_administration', 'index', 1, 1),
+(2, 'Site settings', 'settings_administration', 'index', 1, 2),
+(3, 'Localizations', 'localizations_administration', 'index', 1, 3),
+(4, 'Layouts', 'layouts_administration', 'index', 1, 4),
+(5, 'Access Control List', 'acl_administration', 'index', 1, 5),
+(6, 'Users', 'users_administration', 'index', 2, 6);

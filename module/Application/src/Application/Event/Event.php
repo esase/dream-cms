@@ -14,7 +14,7 @@ class Event
     /**
      * Application get localizations by xmlrpc event
      */
-    const APPLICATION_GET_LOCALIZATIONS = 'application.get.localizations.xmlrpc';
+    const APPLICATION_GET_LOCALIZATIONS = 'get_localizations_via_xmlrpc';
 
     /**
      * Fire event

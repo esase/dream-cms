@@ -7,7 +7,6 @@ use Users\Service\Service as UsersService;
 use XmlRpc\Exception\XmlRpcActionDenied;
 use DateTimeZone;
 use Users\Event\Event as UsersEvent;
-use Application\Model\Acl as AclModel;
 
 class Handler extends AbstractHandler
 {
@@ -56,17 +55,17 @@ class Handler extends AbstractHandler
         }
 
         // check user permission
-        if (!UsersService::checkPermission('users xmlrpc set user time zone')) {
+        if (!UsersService::checkPermission('xmlrpc_set_user_timezone')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
         // update user's time zone
-        if (true == ($result = $this->getModel()->setUserTimeZone($this->
-                userIdentity->user_id, $timeZone))) {
+        if (true == ($result = $this->getModel()->
+                setUserTimeZone($this->userIdentity->user_id, $timeZone))) {
 
             // fire event
             UsersEvent::fireEvent(UsersEvent::USER_SET_TIMEZONE_XMLRPC, $this->userIdentity->user_id,
-                    $this->userIdentity->user_id, 'User set time zone via XmlRpc', array($this->userIdentity->nick_name));
+                    $this->userIdentity->user_id, 'Event - Set user\'s timezone via XmlRpc message', array($this->userIdentity->nick_name));
 
             return self::SUCCESSFULLY_RESPONSE;
         }
@@ -83,17 +82,18 @@ class Handler extends AbstractHandler
     public function getUserInfo($userId)
     {
         // check user permissions
-        if (!UsersService::checkPermission('users xmlrpc view user info')) {
+        if (!UsersService::checkPermission('xmlrpc_view_user_info')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
+        // get user info
         if (false !== ($userInfo = $this->getModel()->getUserInfoById($userId))) {
             // fire event
-            $eventDesc = $this->userIdentity->user_id == AclModel::DEFAULT_GUEST_ID
-                ? 'User get info (guest) via XmlRpc'
-                : 'User get info via XmlRpc';
+            $eventDesc = UsersService::isGuest()
+                ? 'Event - User get info (guest) via XmlRpc'
+                : 'Event - User get info (user) via XmlRpc';
 
-            $eventDescParams = $this->userIdentity->user_id == AclModel::DEFAULT_GUEST_ID
+            $eventDescParams = UsersService::isGuest()
                 ? array($userInfo->nick_name)
                 : array($this->userIdentity->nick_name, $userInfo->nick_name);
 

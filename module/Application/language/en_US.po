@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-10-20 15:05+0600\n"
+"PO-Revision-Date: 2013-10-30 11:03+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,36 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "List of modules"
+msgstr "List of modules"
+
+msgid "Access Control List"
+msgstr "Access Control List"
+
+msgid "Layouts"
+msgstr "Layouts"
+
+msgid "Localizations"
+msgstr "Localizations"
+
+msgid "Site settings"
+msgstr "Site settings"
+
+msgid "Modules"
+msgstr "Modules"
+
+msgid "Select Part"
+msgstr "Select Part"
+
+msgid "Select language"
+msgstr "Select language"
+
+msgid "Welcome"
+msgstr "Welcome, %s"
+
+msgid "Back to site"
+msgstr "Back to site"
 
 msgid "Submit"
 msgstr "Submit"
@@ -35,11 +65,35 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
-msgid "Application get localizations via XmlRpc desc"
-msgstr "Get localizations through the XmlRpc"
+msgid "Event - Get localizations via XmlRpc"
+msgstr "Get localizations via the XmlRpc"
 
-msgid "Application get localizations (guest) via XmlRpc"
+msgid "Event - Get localizations (guest) via XmlRpc"
 msgstr "Guest has gotten localizations via XmlRpc"
 
-msgid "Application get localizations via XmlRpc"
+msgid "Event - Get localizations (user) via XmlRpc"
 msgstr "\"%s\" has gotten localizations via XmlRpc"
+
+msgid "A 403 error occurred"
+msgstr "A 403 error occurred"
+
+msgid "Your request is forbidden"
+msgstr "Your request is forbidden"
+
+msgid "ACL - Possibility to view modules in administration panel"
+msgstr "Possibility to view modules in administration panel"
+
+msgid "ACL - Possibility to get site localizations via XmlRpc"
+msgstr "Possibility to get site localizations via XmlRpc"
+
+msgid "ACL - Possibility to change site settings in administration panel"
+msgstr "Possibility to change site settings in administration panel"
+
+msgid "ACL - Possibility to view site localizations in administration panel"
+msgstr "Possibility to view site localizations in administration panel"
+
+msgid "ACL - Possibility to view site layouts in administration panel"
+msgstr "Possibility to view site layouts in administration panel"
+
+msgid "ACL - Possibility to view site ACL in administration panel"
+msgstr "Possibility to view site ACL in administration panel"

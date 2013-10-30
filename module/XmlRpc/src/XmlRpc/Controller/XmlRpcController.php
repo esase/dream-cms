@@ -53,6 +53,7 @@ class XmlRpcController extends AbstractActionController
                     $userIdentity->$fieldName = $value;
                 }
 
+                // init user identity
                 UsersService::setCurrentUserIdentity($userIdentity);
             }
         }

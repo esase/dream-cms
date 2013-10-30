@@ -404,7 +404,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             $this->assertFalse(UsersService::checkPermission($resource));
         }
 
-        sleep($actionsReset);
+        sleep($actionsReset +  1);
 
         // all created acl resources are active again
         $this->initAcl($role);

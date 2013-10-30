@@ -14,17 +14,15 @@
 
         <!-- Le styles -->
         <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icons/favicon.ico', 'images')))
-                        ->prependStylesheet($this->asset('bootstrap-responsive.min.css', 'css'))
-                        ->prependStylesheet($this->asset('style.css', 'css'))
-                       ->prependStylesheet($this->asset('bootstrap.min.css', 'css')) ?>
+                ->prependStylesheet($this->asset('bootstrap-responsive.css', 'css'))
+                ->prependStylesheet($this->asset('bootstrap.css', 'css')) ?>
 
         <!-- Scripts -->
 
         <?php echo $this->headScript()
                 ->prependFile($this->asset('html5.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
-                ->prependFile($this->asset('functions.js'))
-                ->prependFile($this->asset('bootstrap.min.js'))
-                ->prependFile($this->asset('jquery.min.js')) ?>
+                ->prependFile($this->asset('bootstrap.js'))
+                ->prependFile($this->asset('jquery-1.10.2.js')) ?>
 
     </head>
     <body>

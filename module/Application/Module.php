@@ -3,9 +3,11 @@
 namespace Application;
 
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
+use Zend\Http\Response;
 
 use Application\Model\Acl as AclModel;
 use Application\Service\Service as ApplicationService;
+use Users\Service\Service as UsersService;
 
 use StdClass;
 use DateTime;
@@ -57,6 +59,11 @@ class Module
     protected $defaultLocalization;
 
     /**
+     * Administration area
+     */
+    const ADMINISTRATION_AREA = 'administration';
+
+    /**
      * Init
      *
      * @param object $moduleManager
@@ -83,6 +90,11 @@ class Module
             $this, 'initUserLocalization'
         ), 100);
 
+        // check administration privileges
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+            $this, 'checkAdministrationPrivileges'
+        ));
+
         $config = $this->serviceManager->get('Config');
 
         // init profiler
@@ -90,6 +102,43 @@ class Module
             $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, array(
                 $this, 'initProfiler'
             ));
+        }
+    }
+
+    /**
+     * Check administration privileges
+     *
+     * @param object $e MvcEvent
+     */
+    public function checkAdministrationPrivileges(MvcEvent $e)
+    {
+        $matches = $e->getRouteMatch();
+
+        $controller = $matches->getParam('controller');
+        $action = $matches->getParam('action');
+
+        // check controller name
+        if (false !== ($result = stristr($controller, self::ADMINISTRATION_AREA))) {
+            if ($e->getResponse()->getStatusCode() != Response::STATUS_CODE_404) {
+                // check action permission
+                if (UsersService::checkPermission($controller . '_' . $action)) {
+                    // load admin layout
+                    $e->getTarget()->layout('layout/administration');
+                }
+                else {
+                    // redirect to forbidden page
+                    $response = $e->getResponse();
+                    $router = $e->getRouter();
+                    $url = $router->assemble(array('controller' =>
+                            'error', 'action' => 'forbidden'), array('name' => 'application'));
+
+                    // populate and return the response
+                    $response->setStatusCode(Response::STATUS_CODE_302);
+                    $response->getHeaders()->addHeaderLine('Location', $url);
+
+                    return $response;
+                }
+            }
         }
     }
 
@@ -426,9 +475,29 @@ class Module
                 'getSetting' => 'Application\View\Helper\Setting',
                 'asset' => 'Application\View\Helper\Asset',
                 'headScript' => 'Application\View\Helper\HeadScript',
-                'headlink' => 'Application\View\Helper\HeadLink'
+                'headlink' => 'Application\View\Helper\HeadLink',
+                'isGuest' => 'Application\View\Helper\IsGuest',
+                'userIdentity' => 'Application\View\Helper\UserIdentity',
+                'checkPermission' => 'Application\View\Helper\CheckPermission',
+                'localizations' => 'Application\View\Helper\Localizations',
             ),
             'factories' => array(
+                'AdminMenu' =>  function($serviceManager)
+                {
+                    $adminMenu = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\AdminMenu');
+
+                    return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
+                },
+                'currentRoute' =>  function($serviceManager)
+                {
+                    $router = $this->serviceManager->get('router');
+                    $request = $this->serviceManager->get('request');
+                    $matches = $router->match($request);
+
+                    return new \Application\View\Helper\CurrentRoute($matches, $request->getQuery());
+                },
                 'flashMessages' => function($serviceManager)
                 {
                     $flashmessenger = $serviceManager->getServiceLocator()

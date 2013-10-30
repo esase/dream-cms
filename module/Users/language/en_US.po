@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-10-20 14:59+0600\n"
+"PO-Revision-Date: 2013-10-30 11:15+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,12 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Users"
+msgstr "Users"
+
+msgid "Logout"
+msgstr "Logout"
 
 msgid "Login"
 msgstr "Login"
@@ -29,35 +35,44 @@ msgstr "A record with the supplied identity could not be found."
 msgid "You've been logged out"
 msgstr "You've been logged out"
 
-msgid "User successfully been logged out"
+msgid "Event - User successfully been logged out"
 msgstr "User \"%s\" successfully been logged out"
 
-msgid "User successfully logged"
+msgid "Event - User successfully logged"
 msgstr "User \"%s\" successfully logged"
 
-msgid "User login failed"
+msgid "Event - User login failed message"
 msgstr "User login failed (user name is \"%s\")"
 
-msgid "User login desc"
+msgid "Event - User login"
 msgstr "User login"
 
-msgid "User login failed desc"
+msgid "Event - User login failed"
 msgstr "User login failed"
 
-msgid "User logout desc"
+msgid "Event - User logout"
 msgstr "User logout"
 
-msgid "User get info via XmlRpc desc"
-msgstr "Get user data via XmlRpc"
+msgid "Event - Get user's info via XmlRpc"
+msgstr "Get user's info via XmlRpc"
 
-msgid "User get info (guest) via XmlRpc"
+msgid "Event - User get info (guest) via XmlRpc"
 msgstr "Guest has gotten user data of \"%s\" via the XmlRpc"
 
-msgid "User get info via XmlRpc"
+msgid "Event - User get info (user) via XmlRpc"
 msgstr "\"%s\" has gotten user data of \"%s\" via the XmlRpc"
 
-msgid "User set time zone via XmlRpc desc"
-msgstr "Set user's time zone via XmlRpc"
+msgid "Event - Set user's timezone via XmlRpc"
+msgstr "Set user's timezone via XmlRpc"
 
-msgid "User set time zone via XmlRpc"
+msgid "Event - Set user's timezone via XmlRpc message"
 msgstr "User \"%s\" set his time zone via XmlRpc"
+
+msgid "ACL - Possibility to view users in administration panel"
+msgstr "Possibility to view users in administration panel"
+
+msgid "ACL - Possibility to view user's info via XmlRpc"
+msgstr "Possibility to view user's info via XmlRpc"
+
+msgid "ACL - Possibility to change user's timezone via XmlRpc"
+msgstr "Possibility to change user's timezone via XmlRpc"

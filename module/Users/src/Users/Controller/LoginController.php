@@ -22,9 +22,9 @@ class LoginController extends BaseController
     public function indexAction()
     {
         $userIdentity = $this->getAuthService()->getIdentity();
-       
+
         // if already login, redirect to success page
-        if ($userIdentity->role !== Acl::DEFAULT_ROLE_GUEST){
+        if (!$this->isGuest()){
             return $this->redirect()->toRoute('application');
         }
 
@@ -45,16 +45,17 @@ class LoginController extends BaseController
                 $result = $this->getAuthService()->authenticate(); 
                 if ($result->isValid()) {
                     // save user id
-                    $this->getAuthService()->getStorage()->write($this->getAuthService()->
-                            getAdapter()->getResultRowObject(array('user_id')));
+                    $this->getAuthService()->getStorage()->
+                            write($this->getAuthService()->getAdapter()->getResultRowObject(array('user_id')));
 
                     // get updated Identity again 
                     $userIdentity = $this->getAuthService()->getIdentity();
 
                     // fire event
                     UsersEvent::fireEvent(UsersEvent::USER_LOGIN, $userIdentity->user_id,
-                            $userIdentity->user_id, 'User successfully logged', array($request->getPost('nickname')));
+                            $userIdentity->user_id, 'Event - User successfully logged', array($request->getPost('nickname')));
 
+                    //TODO: there is need to check referrer 
                     return $this->redirect()->toRoute('application');
                 }
                 else {
@@ -68,7 +69,7 @@ class LoginController extends BaseController
 
                     // fire event
                     UsersEvent::fireEvent(UsersEvent::USER_LOGIN_FAILED, 0,
-                            Acl::DEFAULT_ROLE_GUEST, 'User login failed', array($request->getPost('nickname')));
+                            Acl::DEFAULT_ROLE_GUEST, 'Event - User login failed message', array($request->getPost('nickname')));
 
                     return $this->redirect()->toRoute('application', array('controller' => 'login'));
                 }

@@ -56,6 +56,10 @@ class LoginControllerTest extends PHPUnit_Framework_TestCase
 
         $this->controller = new \Users\Controller\LoginController();
 
+        // add controller plugins
+        $this->controller->getPluginManager()
+                ->setInvokableClass('isGuest', 'Application\Controller\Plugin\IsGuest');
+
         $this->request    = new Request();
         $this->routeMatch = new RouteMatch(array('controller' => 'index'));
         $this->event      = new MvcEvent();

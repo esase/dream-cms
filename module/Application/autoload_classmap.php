@@ -3,7 +3,7 @@
 return array(
     'FirePHP' => APPLICATION_ROOT . '/vendor/FirePHP/fb.php',
     'Minify\JSMin' => APPLICATION_ROOT . '/vendor/Minify/JSMin.php',
-    'Minify\CSSmin' => APPLICATION_ROOT . '/vendor/Minify/CSS',
+    'Minify\CSSmin' => APPLICATION_ROOT . '/vendor/Minify/CSSmin.php',
     'Application\Test\ApplicationBootstrap'           => __DIR__ . '/test/Bootstrap.php',
     'Application\Test\Controller\IndexControllerTest' => __DIR__ . '/test/Application/src/Application/Controller/IndexControllerTest.php',
     'Application\Test\View\Helper\HeadLinkTest'       => __DIR__ . '/test/Application/src/Application/View/Helper/HeadLinkTest.php',

@@ -23,12 +23,15 @@ return array(
             'application' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/[:languge[/:controller[/:action[/:id]]]]',
+                    'route'    => '/[:languge[/:controller[/:action[/:id][/page/:page][/order_by/:order_by][/:order_type]]]]',
                     'constraints' => array(
                         'languge' => '[a-z]{2}',
                         'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'  => '[0-9]+'
+                        'id'     => '[0-9]+',
+                        'page' => '[0-9]+',
+                        'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'order_type' => 'asc|desc',
                     ),
                     'defaults' => array(
                         'controller' => 'Home',
@@ -64,6 +67,14 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'home' => 'Application\Controller\IndexController',
+            'error' => 'Application\Controller\ErrorController',
+            'modules_administration' => 'Application\Controller\ModuleAdministrationController',
+        )
+    ),
+    'controller_plugins' => array(
+        'invokables' => array(
+            'checkPermission' => 'Application\Controller\Plugin\CheckPermission',
+            'isGuest' => 'Application\Controller\Plugin\IsGuest',
         )
     ),
     'view_manager' => array(
@@ -71,7 +82,8 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
-            'notifications' => __DIR__ . '/../view/%s/partials/notifications.phtml'
+            'notifications' => __DIR__ . '/../view/%s/partials/notifications.phtml',
+            'tabs' => __DIR__ . '/../view/%s/partials/tabs.phtml'
         )
     )
 );

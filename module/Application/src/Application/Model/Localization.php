@@ -29,6 +29,7 @@ class Localization extends Base
                 ->columns(array(
                     'language',
                     'locale',
+                    'description',
                     'default'
                 ))
                 ->order('default desc');
@@ -43,6 +44,7 @@ class Localization extends Base
                     $localizations[$localization['language']] = array(
                         'language' => $localization['language'],
                         'locale' => $localization['locale'],
+                        'description' => $localization['description'],
                         'default' => $localization['default']
                     );
                 }

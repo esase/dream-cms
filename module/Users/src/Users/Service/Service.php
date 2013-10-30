@@ -28,6 +28,16 @@ class Service extends ApplicationService
     }
 
     /**
+     * Check is guest or not
+     *
+     * @return boolean
+     */
+    public static function isGuest()
+    {
+        return self::getCurrentUserIdentity()->user_id == AclModel::DEFAULT_GUEST_ID;
+    }
+
+    /**
      * Check permission
      *
      * @param string $resource

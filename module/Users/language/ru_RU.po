@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2013-10-20 14:59+0600\n"
+"PO-Revision-Date: 2013-10-30 11:15+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -14,8 +14,14 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-msgid "You've been logged out"
-msgstr "Вы успешно вышли из системы"
+msgid "Users"
+msgstr "Пользователи"
+
+msgid "Logout"
+msgstr "Выход"
+
+msgid "Login"
+msgstr "Логин"
 
 msgid "NickName"
 msgstr "Никнейм"
@@ -23,41 +29,50 @@ msgstr "Никнейм"
 msgid "Password"
 msgstr "Пароль"
 
-msgid "Login"
-msgstr "Логин"
-
 msgid "A record with the supplied identity could not be found."
 msgstr "Запись идентифицирующую личность не может быть найдена."
 
-msgid "User successfully been logged out"
+msgid "You've been logged out"
+msgstr "Вы успешно вышли из системы"
+
+msgid "Event - User successfully been logged out"
 msgstr "Пользователь \"%s\" успешно вышел из системы"
 
-msgid "User successfully logged"
+msgid "Event - User successfully logged"
 msgstr "Пользователь \"%s\" успешно вошел на сайт"
 
-msgid "User login failed"
+msgid "Event - User login failed message"
 msgstr "Вход в систему не удался (имя пользователя - \"%s\")"
 
-msgid "User login desc"
+msgid "Event - User login"
 msgstr "Вход пользователя на сайт"
 
-msgid "User login failed desc"
+msgid "Event - User login failed"
 msgstr "Сбой при входе пользователя"
 
-msgid "User logout desc"
-msgstr "Выход пользователя из сайта"
+msgid "Event - User logout"
+msgstr "Выход пользователя с сайта"
 
-msgid "User get info via XmlRpc desc"
-msgstr "Запрос данных пользователя с помощью XmlRpc"
+msgid "Event - Get user's info via XmlRpc"
+msgstr "Запрос данных о пользователе с помощью XmlRpc"
 
-msgid "User get info (guest) via XmlRpc"
-msgstr "Гость получил данные пользователя \"%s\" с помощью XmlRpc"
+msgid "Event - User get info (guest) via XmlRpc"
+msgstr "Гость получил данные о пользователе \"%s\" с помощью XmlRpc"
 
-msgid "User get info via XmlRpc"
-msgstr "\"%s\" получил данные пользователя \"%s\" с помощью XmlRpc"
+msgid "Event - User get info (user) via XmlRpc"
+msgstr "\"%s\" получил данные о пользователе \"%s\" с помощью XmlRpc"
 
-msgid "User set time zone via XmlRpc desc"
+msgid "Event - Set user's timezone via XmlRpc"
 msgstr "Установка часового пояса пользователя через XmlRpc"
 
-msgid "User set time zone via XmlRpc"
+msgid "Event - Set user's timezone via XmlRpc message"
 msgstr "Пользователь \"%s\" изменил свой часовой пояс через XmlRpc"
+
+msgid "ACL - Possibility to view users in administration panel"
+msgstr "Возможность просматривать пользователей в панели администрирования"
+
+msgid "ACL - Possibility to view user's info via XmlRpc"
+msgstr "Возможность просмотра информации о пользователе через XmlRpc"
+
+msgid "ACL - Possibility to change user's timezone via XmlRpc"
+msgstr "Возможность изменения часового пояса пользователя через XmlRpc"
