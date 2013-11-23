@@ -69,6 +69,7 @@ return array(
             'home' => 'Application\Controller\IndexController',
             'error' => 'Application\Controller\ErrorController',
             'modules_administration' => 'Application\Controller\ModuleAdministrationController',
+            'settings_administration' => 'Application\Controller\SettingAdministrationController'
         )
     ),
     'controller_plugins' => array(
@@ -82,8 +83,6 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
-            'notifications' => __DIR__ . '/../view/%s/partials/notifications.phtml',
-            'tabs' => __DIR__ . '/../view/%s/partials/tabs.phtml'
         )
     )
 );

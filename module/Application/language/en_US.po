@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-10-30 11:03+0600\n"
+"PO-Revision-Date: 2013-11-23 15:00+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,189 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Default time zone"
+msgstr "Default time zone"
+
+msgid "SHORT"
+msgstr "Short format"
+
+msgid "MEDIUM"
+msgstr "Medium format"
+
+msgid "LONG"
+msgstr "Long format"
+
+msgid "FULL"
+msgstr "Full format"
+
+msgid "Default date format"
+msgstr "Default date format"
+
+msgid "Max year in calendar"
+msgstr "Max year in calendar"
+
+msgid "Min year in calendar"
+msgstr "Min year in calendar"
+
+msgid "Year should be in range from 1902 to 2037"
+msgstr "Year should be in range from 1902 to 2037"
+
+msgid "Settings have been saved"
+msgstr "Settings have been saved"
+
+msgid "Captcha line noise level"
+msgstr "Captcha line noise level"
+
+msgid "Captcha dot noise level"
+msgstr "Captcha dot noise level"
+
+msgid "Captcha height"
+msgstr "Captcha height"
+
+msgid "Captcha width"
+msgstr "Captcha width"
+
+msgid "Enable gzip for css cache"
+msgstr "Enable gzip for css cache"
+
+msgid "Enable css cache"
+msgstr "Enable css cache"
+
+msgid "Enable gzip for js cache"
+msgstr "Enable gzip for js cache"
+
+msgid "Enable js cache"
+msgstr "Enable js cache"
+
+msgid "Meta keywords"
+msgstr "Meta keywords"
+
+msgid "Meta description"
+msgstr "Meta description"
+
+msgid "Site email"
+msgstr "Site email"
+
+msgid "Site name"
+msgstr "Site name"
+
+msgid "Calendar"
+msgstr "Calendar"
+
+msgid "Cache"
+msgstr "Cache"
+
+msgid "Main settings"
+msgstr "Main settings"
+
+msgid "Please verify you are human"
+msgstr "Please verify you are human"
+
+msgid "Captcha value is wrong"
+msgstr "Captcha value is wrong"
+
+msgid "You need to select the checkbox"
+msgstr "You need to select the checkbox"
+
+msgid "The input does not appear to be a valid Uri"
+msgstr "The input does not appear to be a valid Uri"
+
+msgid "The input does not match the expected structure for a DNS hostname"
+msgstr "The input does not match the expected structure for a DNS hostname"
+
+msgid ""
+"The input appears to be a DNS hostname but cannot match TLD against known "
+"list"
+msgstr ""
+"The input appears to be a DNS hostname but cannot match TLD against known "
+"list"
+
+msgid "The input appears to be a DNS hostname but cannot extract TLD part"
+msgstr "The input appears to be a DNS hostname but cannot extract TLD part"
+
+msgid ""
+"The input appears to be a local network name but local network names are not "
+"allowed"
+msgstr ""
+"The input appears to be a local network name but local network names are not "
+"allowed"
+
+msgid "The input appears to be an IP address, but IP addresses are not allowed"
+msgstr ""
+"The input appears to be an IP address, but IP addresses are not allowed"
+
+msgid "The input does not appear to be a valid URI hostname"
+msgstr "The input does not appear to be a valid URI hostname"
+
+msgid "The input does not appear to be a valid local network name"
+msgstr "The input does not appear to be a valid local network name"
+
+msgid ""
+"The input appears to be a DNS hostname but cannot match against hostname "
+"schema for TLD '%tld%'"
+msgstr ""
+"The input appears to be a DNS hostname but cannot match against hostname "
+"schema for TLD '%tld%'"
+
+msgid ""
+"The input appears to be a DNS hostname but contains a dash in an invalid "
+"position"
+msgstr ""
+"The input appears to be a DNS hostname but contains a dash in an invalid "
+"position"
+
+msgid ""
+"The input appears to be a DNS hostname but the given punycode notation "
+"cannot be decoded"
+msgstr ""
+"The input appears to be a DNS hostname but the given punycode notation "
+"cannot be decoded"
+
+msgid "The input exceeds the allowed length"
+msgstr "The input exceeds the allowed length"
+
+msgid "'%localPart%' is not a valid local part for the email address"
+msgstr "'%localPart%' is not a valid local part for the email address"
+
+msgid "'%localPart%' can not be matched against quoted-string format"
+msgstr "'%localPart%' can not be matched against quoted-string format"
+
+msgid "'%localPart%' can not be matched against dot-atom format"
+msgstr "'%localPart%' can not be matched against dot-atom format"
+
+msgid ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+msgstr ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+
+msgid ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+msgstr ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+
+msgid "'%hostname%' is not a valid hostname for the email address"
+msgstr "'%hostname%' is not a valid hostname for the email address"
+
+msgid ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
+msgstr ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
+
+msgid "Invalid type given. String expected"
+msgstr "Invalid type given. String expected"
+
+msgid "The input does not appear to be a float"
+msgstr "The input does not appear to be a float"
+
+msgid "List of settings"
+msgstr "List of settings"
 
 msgid "List of modules"
 msgstr "List of modules"

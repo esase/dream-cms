@@ -1,6 +1,8 @@
 <?php echo $this->doctype(); ?>
+<?php $this->declareVars('languageDirection') ?>
+<?php $this->languageDirection = $this->localizations()->getCurrentLocalization()['direction'] ?>
 
-<html lang="en">
+<html dir="<?php echo $this->languageDirection ?>" lang="<?php echo $this->localizations()->getCurrentLocalization()['language'] ?>">
     <head>
         <meta charset="utf-8">
         <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -14,18 +16,20 @@
 
         <!-- Le styles -->
         <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icons/favicon.ico', 'images')))
-                ->prependStylesheet($this->asset('bootstrap-responsive.css', 'css'))
-                ->prependStylesheet($this->asset('bootstrap.css', 'css'))
-                ->appendStylesheet($this->asset('administration.css', 'css')) ?>
+                ->prependStylesheet($this->asset(($this->languageDirection == 'ltr' ? 'bootstrap-responsive.css' : 'bootstrap-responsive.rtl.css'), 'css'))
+                ->prependStylesheet($this->asset(($this->languageDirection == 'ltr' ? 'bootstrap.css' : 'bootstrap.rtl.css'), 'css'))
+                ->appendStylesheet($this->asset('jquery-ui.css', 'css'))
+                ->appendStylesheet($this->asset(($this->languageDirection == 'ltr' ? 'administration.css' : 'administration.rtl.css'), 'css')) ?>
 
         <!-- Scripts -->
         <?php echo $this->headScript()
-                ->prependFile($this->asset('html5.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
-                ->prependFile($this->asset('bootstrap.js'))
-                ->prependFile($this->asset('jquery-1.10.2.js')) ?>
+                ->prependFile($this->asset('jquery-1.10.2.js'))
+                ->appendFile($this->asset('bootstrap.js'))
+                ->appendFile($this->asset('jquery-ui.js'))
+                ->appendFile($this->asset('html5.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
+        ?>
     </head>
     <body>
-
         <!-- nav bar -->
         <div class="navbar">
             <div class="navbar-inner">
@@ -85,8 +89,8 @@
                                 </li>
                             <?php endif; ?>
                         </ul>
-                        <!-- right menu items -->
-                        <ul class="nav pull-right">
+                        <!-- extra menu items -->
+                        <ul class="nav pull-<?php if ($this->languageDirection == 'ltr'): ?>right<?php else: ?>left<?php endif; ?>">
                             <li>
                                 <a href="<?php echo  $this->url('application', array('controller' => 'home')) ?>">
                                     <i class="icon-home"></i>

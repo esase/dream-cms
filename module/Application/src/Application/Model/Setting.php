@@ -25,6 +25,41 @@ class Setting extends Base
     const CACHE_TAG_SETTINGS = 'Tag_Application_Settings';
 
     /**
+     * System settings flag
+     */
+    const SYS_SETTINGS_FLAG = 'system';
+
+    /**
+     * Settings array devider
+     */
+    const SETTINGS_ARRAY_DEVIDER = ';';
+
+    /**
+     * Remove settings cache
+     *
+     * @param string $language
+     * @return void
+     */
+    public function removeSettingsCache($language)
+    {
+        $this->staticCacheInstance->clearByTags(array(
+            self::CACHE_TAG_SETTINGS
+        ));
+    }
+
+    /**
+     * Get settings cache name
+     *
+     * @param string $language
+     * @return string
+     */
+    protected function getSettingsCacheName($language)
+    {
+        // generate cache name
+        return CacheUtilities::getCacheName(self::CACHE_SETTINGS_BY_LANGUAGE . $language);
+    }
+
+    /**
      * Get all settings
      *
      * @param string $language
@@ -32,8 +67,8 @@ class Setting extends Base
      */
     protected function getAllSettings($language)
     {
-        // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_SETTINGS_BY_LANGUAGE . $language);
+        // get cache name
+        $cacheName = $this->getSettingsCacheName($language);
 
         // check data in cache
         if (null === ($settings = $this->staticCacheInstance->getItem($cacheName))) {
@@ -71,7 +106,10 @@ class Setting extends Base
 
             $settings = array();
             foreach ($resultSet as $setting) {
-                $settings[$setting['name']] = $setting['value'];
+                $settingValue = explode(self::SETTINGS_ARRAY_DEVIDER, $setting['value']);
+                $settings[$setting['name']] = count($settingValue) == 1 // check is array or not
+                    ? current($settingValue)
+                    : $settingValue;
             }
 
             // save data in cache
@@ -98,11 +136,7 @@ class Setting extends Base
         }
 
         if (isset(self::$settings[$language][$settingName])) {
-            $setting = explode(';', self::$settings[$language][$settingName]);
-
-            return count($setting) == 1
-                ? current($setting)
-                : $setting;
+            return self::$settings[$language][$settingName];
         }
 
         return false;

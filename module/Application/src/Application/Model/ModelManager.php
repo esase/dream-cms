@@ -2,13 +2,21 @@
 
 namespace Application\Model;
 
+use Zend\Db\Adapter\Adapter;
+
 class ModelManager
 {
     /**
-     * Service manager
+     * Adapter
      * @var object
      */
-    private $serviceManager;
+    private $adapter;
+
+    /**
+     * Cache
+     * @var object
+     */
+    private $cache;
 
     /**
      * List of models instances
@@ -21,9 +29,10 @@ class ModelManager
      * 
      * @param object $serviceManager
      */
-    public function __construct($serviceManager)
+    public function __construct(Adapter $adapter, $cache)
     {
-        $this->serviceManager = $serviceManager;
+        $this->adapter = $adapter;
+        $this->cache = $cache;
     }
 
     /**
@@ -42,9 +51,7 @@ class ModelManager
             return $this->instances[$modelName];
         }
 
-        $this->instances[$modelName] = new $modelName($this->serviceManager->
-                get('Zend\Db\Adapter\Adapter'), $this->serviceManager->get('Cache\Static'));
-
+        $this->instances[$modelName] = new $modelName($this->adapter, $this->cache);
         return $this->instances[$modelName];
     }
 }

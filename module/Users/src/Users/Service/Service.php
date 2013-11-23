@@ -28,6 +28,16 @@ class Service extends ApplicationService
     }
 
     /**
+     * Check is admin or not
+     *
+     * @return boolean
+     */
+    public static function isAdmin()
+    {
+        return self::getCurrentUserIdentity()->user_id == AclModel::DEFAULT_ROLE_ADMIN;
+    }
+
+    /**
      * Check is guest or not
      *
      * @return boolean

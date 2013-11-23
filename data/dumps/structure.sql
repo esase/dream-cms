@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS `modules` (
     `description` text NOT NULL,
     `dependences` varchar(255) NOT NULL,
     PRIMARY KEY (`id`),
-    KEY `type` (`type`, `active`)
+    KEY `type` (`type`, `active`),
+    UNIQUE `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `modules` (`id`, `name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
@@ -36,13 +37,14 @@ CREATE TABLE IF NOT EXISTS `localizations` (
     `locale` varchar(5) NOT NULL,
     `description` varchar(50) NOT NULL,
     `default` tinyint(1) unsigned NOT NULL,
+    `direction` enum('rtl','ltr') NOT NULL,
     PRIMARY KEY (`language`),
     KEY `default` (`default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `localizations` (`language`, `locale`, `description`, `default`) VALUES
-('en', 'en_US', 'English', 1),
-('ru', 'ru_RU', 'Русский', 0);
+INSERT INTO `localizations` (`language`, `locale`, `description`, `default`, `direction`) VALUES
+('en', 'en_US', 'English', 1, 'ltr'),
+('ru', 'ru_RU', 'Русский', 0, 'ltr');
 
 CREATE TABLE IF NOT EXISTS `layouts` (
     `name` varchar(50) NOT NULL,
@@ -182,18 +184,26 @@ CREATE TABLE IF NOT EXISTS `settings_categories` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `settings_categories` (`id`, `name`, `module`) VALUES
+(1, 'Main settings', 1),
+(2, 'Cache', 1),
+(3, 'Captcha', 1),
+(4, 'Calendar', 1),
+(5, 'SEO', 1);
+
 CREATE TABLE IF NOT EXISTS `settings` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(50) NOT NULL,
     `label` varchar(150) NOT NULL,
-    `desc` varchar(255) NOT NULL,
-    `type` enum('date','text','textarea','html_textarea','checkbox','select','radio', 'system') NOT NULL,
+    `type` enum('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'system') NOT NULL,
     `required` tinyint(1) unsigned NOT NULL,
-    `check` enum('integer','float_number','string','email','url') NOT NULL,
     `order` smallint(5) unsigned NOT NULL,
     `category` int(10) unsigned DEFAULT NULL,
     `module` int(10) unsigned NOT NULL,
     `language_sensitive` tinyint(1) NOT NULL DEFAULT '1',
+    `values_provider` varchar(255) NOT NULL,
+    `check` varchar(255) NOT NULL,
+    `check_message` varchar(150) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
     FOREIGN KEY (category) REFERENCES settings_categories(id)
@@ -204,22 +214,30 @@ CREATE TABLE IF NOT EXISTS `settings` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `settings` (`id`, `name`, `label`, `desc`, `type`, `required`, `check`, `order`, `category`, `module`, `language_sensitive`) VALUES
-(1,  'application_generator', '', '', 'system', 0, '', 0, NULL, 1, 0),
-(2,  'application_generator_version', '', '', 'system', 0, '', 0, NULL, 1, 0),
-(3,  'application_site_name', 'Site name', '', 'text', 1, '', 1, NULL, 1, 1),
-(4,  'application_site_email', 'Site email', '', 'text', 1, '', 2, NULL, 1, 0),
-(5,  'application_meta_description', 'Meta description', '', 'text', 1, '', 3, NULL, 1, 1),
-(6,  'application_meta_keywords', 'Meta keywords', '', 'text', 1, '', 4, NULL, 1, 1),
-(7,  'application_js_cache', 'Js cache', '', 'checkbox', 0, '', 5, NULL, 1, 0),
-(8,  'application_js_cache_gzip', 'Enable gzip for js cache', '', 'checkbox', 0, '', 6, NULL, 1, 0),
-(9,  'application_css_cache', 'Css cache', '', 'checkbox', 0, '', 7, NULL, 1, 0),
-(10, 'application_css_cache_gzip', 'Enable gzip for css cache', '', 'checkbox', 0, '', 8, NULL, 1, 0);
+INSERT INTO `settings` (`id`, `name`, `label`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+(1, 'application_generator', '', 'system', 0, 0, NULL, 1, 0, '', '', ''),
+(2, 'application_generator_version', '', 'system', 0, 0, NULL, 1, 0, '', '', ''),
+(3, 'application_site_name', 'Site name', 'text', 1, 1, 1, 1, 1, '', '', ''),
+(4, 'application_site_email', 'Site email', 'email', 1, 1, 1, 1, 0, '', '', ''),
+(5, 'application_meta_description', 'Meta description', 'text', 1, 3, 5, 1, 1, '', '', ''),
+(6, 'application_meta_keywords', 'Meta keywords', 'text', 1, 4, 5, 1, 1, '', '', ''),
+(7, 'application_js_cache', 'Enable js cache', 'checkbox', 0, 5, 2, 1, 0, '', '', ''),
+(8, 'application_js_cache_gzip', 'Enable gzip for js cache', 'checkbox', 0, 6, 2, 1, 0, '', '', ''),
+(9, 'application_css_cache', 'Enable css cache', 'checkbox', 0, 7, 2, 1, 0, '', '', ''),
+(10, 'application_css_cache_gzip', 'Enable gzip for css cache', 'checkbox', 0, 8, 2, 1, 0, '', '', ''),
+(11, 'application_captcha_width', 'Captcha width', 'integer', 1, 9, 3, 1, 0, '', '', ''),
+(12, 'application_captcha_height', 'Captcha height', 'integer', 1, 10, 3, 1, 0, '', '', ''),
+(13, 'application_captcha_dot_noise', 'Captcha dot noise level', 'integer', 1, 11, 3, 1, 0, '', '', ''),
+(14, 'application_captcha_line_noise', 'Captcha line noise level', 'integer', 1, 12, 3, 1, 0, '', '', ''),
+(15, 'application_calendar_min_year', 'Min year in calendar', 'integer', 1, 1, 4, 1, 0, '', 'return intval(''{value}'') >= 1902 and intval(''{value}'') <= 2037;', 'Year should be in range from 1902 to 2037'),
+(16, 'application_calendar_max_year', 'Max year in calendar', 'integer', 1, 2, 4, 1, 0, '', 'return intval(''{value}'') >= 1902 and intval(''{value}'') <= 2037;', 'Year should be in range from 1902 to 2037'),
+(17, 'application_default_date_format', 'Default date format', 'select', 1, 3, 1, 1, 1, '', '', ''),
+(18, 'application_default_time_zone', 'Default time zone', 'select', 1, 4, 1, 1, 0, 'return array_combine(DateTimeZone::listIdentifiers(), DateTimeZone::listIdentifiers());', '', '');
 
 CREATE TABLE IF NOT EXISTS `settings_values` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `setting_id` int(10) unsigned NOT NULL,
-    `value` varchar(255) NOT NULL,
+    `value` text NOT NULL,
     `language` varchar(2) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `setting` (`setting_id`, `language`),
@@ -235,13 +253,21 @@ INSERT INTO `settings_values` (`id`, `setting_id`, `value`, `language`) VALUES
 (1,  1,  'Dream CMS', NULL),
 (2,  2,  '0.9.0', NULL),
 (3,  3,  'Dream CMS demo site', NULL),
-(4,  4,  '', NULL),
+(4,  4,  'my_site@mail.com', NULL),
 (5,  5,  'Dream CMS', NULL),
 (6,  6,  'php,dream cms,zend framework2', NULL),
 (7,  7,  1, NULL),
 (8,  8,  1, NULL),
 (9,  9,  1, NULL),
-(10, 10, 1, NULL);
+(10, 10, 1, NULL),
+(11, 11, 220, NULL),
+(12, 12, 88, NULL),
+(13, 13, 40, NULL),
+(14, 14, 4, NULL),
+(15, 15, '1902', NULL),
+(16, 16, '2037', NULL),
+(17, 17, 'SHORT', NULL),
+(18, 18, 'UTC', NULL);
 
 CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
     `setting_id` int(10) unsigned NOT NULL,
@@ -251,6 +277,12 @@ CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `settings_predefined_values` (`setting_id`, `value`) VALUES
+(17, 'FULL'),
+(17, 'LONG'),
+(17, 'MEDIUM'),
+(17, 'SHORT');
 
 CREATE TABLE IF NOT EXISTS `events` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

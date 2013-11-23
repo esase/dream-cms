@@ -22,6 +22,7 @@ class Asset extends AbstractHelper
      */
     public function __invoke($fileName, $type = 'js', $module = self::DEFAULT_MODULE)
     {
+        //TODO: There need to implement cache
         $baseFilePath = ApplicationService::getLayoutPath();
 
         // get file url

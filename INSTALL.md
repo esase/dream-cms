@@ -18,6 +18,7 @@
         6. public/layouts_cache/js
         7. public/layouts/base
         8. public/layouts
+        9. public/captcha
 
 ## APACHE SETTINGS
 

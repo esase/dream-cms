@@ -11,7 +11,6 @@ namespace Users\Controller;
 
 use Zend\View\Model\ViewModel;
 use Application\Model\Acl as Acl;
-use Users\Form\LoginForm; 
 use Users\Event\Event as UsersEvent;
 
 class LoginController extends BaseController
@@ -30,13 +29,17 @@ class LoginController extends BaseController
 
         // generate login form
         $request  = $this->getRequest();
-        $loginForm = new LoginForm($this->getTranslator());
+
+        // get login form
+        $loginForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Users\Form\Login');
 
         if ($request->isPost()) {
             // fill form with received values
-            $loginForm->setData($request->getPost());
+            $loginForm->getForm()->setData($request->getPost());
 
-            if ($loginForm->isValid()) {
+            if ($loginForm->getForm()->isValid()) {
                 // check authentication
                 $this->getAuthService()->getAdapter()
                    ->setIdentity($request->getPost('nickname'))
@@ -77,7 +80,7 @@ class LoginController extends BaseController
         }
 
         return new ViewModel(array(
-            'loginForm' => $loginForm
+            'loginForm' => $loginForm->getForm()
         ));
     }
 }

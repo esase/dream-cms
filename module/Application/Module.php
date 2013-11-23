@@ -11,6 +11,7 @@ use Users\Service\Service as UsersService;
 
 use StdClass;
 use DateTime;
+use Locale;
 
 use Zend\Authentication\Result as AuthenticationResult;
 use Zend\Authentication\Storage;
@@ -286,11 +287,9 @@ class Module
      */
     protected function initTimeZone()
     {
-        $config = $this->serviceManager->get('Config');
-
         $defaultTimeZone = !empty($this->userIdentity->time_zone)
             ? $this->userIdentity->time_zone
-            : $config['default_timezone'];
+            : ApplicationService::getSetting('application_default_time_zone');
 
         // change time zone settings
         if ($defaultTimeZone != date_default_timezone_get()) {
@@ -334,7 +333,7 @@ class Module
 
         // init default localization
         $this->localizations = $localization->getAllLocalizations();
-        $acceptLanguage = \Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
+        $acceptLanguage = Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
 
         $defaultLanguage = !empty($this->userIdentity->language)
             ? $this->userIdentity->language
@@ -349,6 +348,9 @@ class Module
         $translator = $this->serviceManager->get('translator');
         $translator->setLocale($this->defaultLocalization['locale']);
         $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
+
+        // init default localization
+        Locale::setDefault($this->defaultLocalization['locale']);
 
         AbstractValidator::setDefaultTranslator($translator);
         ApplicationService::setCurrentLocalization($this->defaultLocalization);
@@ -371,32 +373,11 @@ class Module
             ? $layout->getLayoutsByName($this->userIdentity->layout)
             : $layout->getDefaultActiveLayouts();
 
-        // add layouts paths    
+        // add layouts paths for each module
         foreach ($this->moduleManager->getModules() as $module) {
             foreach ($activeLayouts as $layoutInfo) {
                 $templatePathResolver->addPath('module/' . $module . '/view/' . $layoutInfo['name']);    
             }
-        }
-
-        // process template map
-        $templatePathResolver = $this->serviceManager->get('Zend\View\Resolver\TemplateMapResolver');
-        $templateMap = array();
-        $activeLayouts = array_reverse($activeLayouts);
-
-        foreach ($templatePathResolver as $name => $path) {
-            foreach ($activeLayouts as $layoutInfo) {
-                $filePath = sprintf($path, $layoutInfo['name']);
-
-                // replace special path marker with current layout name
-                if (file_exists($filePath)) {
-                    $templateMap[$name] = $filePath;
-                    break;
-                }
-            }
-        }
-
-        if ($templateMap) {
-            $templatePathResolver->setMap($templateMap);
         }
 
         ApplicationService::setCurrentLayouts($activeLayouts);
@@ -429,6 +410,7 @@ class Module
             ApplicationService::setCurrentLocalization($this->localizations[$matches->getParam('languge')]);    
         }
 
+        Locale::setDefault($this->localizations[$matches->getParam('languge')]['locale']);
         $router->setDefaultParam('languge', $matches->getParam('languge'));
     }
 
@@ -449,7 +431,12 @@ class Module
             'factories' => array(
                 'Application\Model\ModelManager' => function($serviceManager)
                 {
-                    return new Model\ModelManager($serviceManager);
+                    return new Model\ModelManager($serviceManager->
+                            get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Cache\Static'));
+                },
+                'Application\Form\FormManager' => function($serviceManager)
+                {
+                    return new Form\FormManager($serviceManager->get('Translator'));
                 },
                 'Application\AuthService' => function($serviceManager)
                 {
@@ -482,7 +469,7 @@ class Module
                 'localizations' => 'Application\View\Helper\Localizations',
             ),
             'factories' => array(
-                'AdminMenu' =>  function($serviceManager)
+                'adminMenu' =>  function($serviceManager)
                 {
                     $adminMenu = $this->serviceManager
                         ->get('Application\Model\ModelManager')

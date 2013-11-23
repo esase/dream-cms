@@ -5,6 +5,18 @@ namespace Application\Service;
 class Service
 {
     /**
+     * Captcha directory name
+     * @var string
+     */
+    protected static $captchaDir = 'captcha';
+
+    /**
+     * Captcha font directory name
+     * @var string
+     */
+    protected static $captchaFontDir = 'font/captcha.ttf';
+
+    /**
      * Layouts directory name
      * @var string
      */
@@ -62,6 +74,17 @@ class Service
      * @var array
      */
     protected static $localizations;
+
+    /**
+     * Get application url
+     *
+     * @return array
+     */
+    public static function getApplicationUrl()
+    {
+        $serviceManager = self::$serviceManager;
+        return $serviceManager->get('Request')->getBaseUrl();
+    }
 
     /**
      * Set current user identity
@@ -204,6 +227,36 @@ class Service
 
         return $settingsModel->getSetting($settingName,
                 ($language ? $language : self::$currentLocalization['language']));
+    }
+
+    /**
+     * Get captcha path
+     *
+     * @return string
+     */
+    public function getCaptchaPath()
+    {
+        return APPLICATION_PUBLIC . '/' . self::$captchaDir . '/';
+    }
+
+    /**
+     * Get captcha font path
+     *
+     * @return string
+     */
+    public function getCaptchaFontPath()
+    {
+        return APPLICATION_PUBLIC . '/' . self::$captchaDir . '/' . self::$captchaFontDir;
+    }
+
+    /**
+     * Get captcha url
+     *
+     * @return string
+     */
+    public function getCaptchaUrl()
+    {
+        return self::getApplicationUrl() . '/' . self::$captchaDir . '/';
     }
 
     /**

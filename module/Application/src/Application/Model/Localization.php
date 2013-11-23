@@ -30,7 +30,8 @@ class Localization extends Base
                     'language',
                     'locale',
                     'description',
-                    'default'
+                    'default',
+                    'direction'
                 ))
                 ->order('default desc');
 
@@ -45,7 +46,8 @@ class Localization extends Base
                         'language' => $localization['language'],
                         'locale' => $localization['locale'],
                         'description' => $localization['description'],
-                        'default' => $localization['default']
+                        'default' => $localization['default'],
+                        'direction' => $localization['direction']
                     );
                 }
             }
