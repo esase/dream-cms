@@ -12,9 +12,9 @@ use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 class Service extends ApplicationService
 {
     /**
-     * Resource space devider
+     * Acl resource space devider
      */
-    const RESOURCE_SPACE_DEVIDER = '_';
+    const ACL_RESOURCE_SPACE_DEVIDER = '_';
 
     /**
      * Get user info
@@ -68,7 +68,7 @@ class Service extends ApplicationService
 
         // processing resource name
         $resource = str_replace(array(' ', '-'),
-                array(self::RESOURCE_SPACE_DEVIDER, self::RESOURCE_SPACE_DEVIDER), $resource);
+                array(self::ACL_RESOURCE_SPACE_DEVIDER, self::ACL_RESOURCE_SPACE_DEVIDER), $resource);
 
         // init acl
         if (!self::$currentAcl) {
