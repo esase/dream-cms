@@ -302,7 +302,8 @@ INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
 (3, 'user_login_failed', 2, 'Event - User login failed'),
 (4, 'user_logout', 2, 'Event - User logout'),
 (5, 'get_user_info_via_xmlrpc', 2, 'Event - Get user\'s info via XmlRpc'),
-(6, 'set_user_timezone_via_xmlrpc', 2, 'Event - Set user\'s timezone via XmlRpc');
+(6, 'set_user_timezone_via_xmlrpc', 2, 'Event - Set user\'s timezone via XmlRpc'),
+(7, 'change_settings', 1, 'Event - Settings change');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -318,9 +319,9 @@ CREATE TABLE IF NOT EXISTS `admin_menu` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`) VALUES
-(1, 'Modules', 'modules_administration', 'index', 1, 1),
-(2, 'Site settings', 'settings_administration', 'index', 1, 2),
-(3, 'Localizations', 'localizations_administration', 'index', 1, 3),
-(4, 'Layouts', 'layouts_administration', 'index', 1, 4),
-(5, 'Access Control List', 'acl_administration', 'index', 1, 5),
-(6, 'Users', 'users_administration', 'index', 2, 6);
+(1, 'Modules', 'modules-administration', 'index', 1, 1),
+(2, 'Site settings', 'settings-administration', 'index', 1, 2),
+(3, 'Localizations', 'localizations-administration', 'index', 1, 3),
+(4, 'Layouts', 'layouts-administration', 'index', 1, 4),
+(5, 'Access Control List', 'acl-administration', 'index', 1, 5),
+(6, 'Users', 'users-administration', 'index', 2, 6);

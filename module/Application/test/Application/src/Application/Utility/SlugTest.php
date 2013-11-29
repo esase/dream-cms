@@ -15,8 +15,11 @@ class SlugTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('test', Slug::slugify('test'));
         $this->assertEquals('', Slug::slugify(''));
-        $this->assertEquals('a_lublu_php', Slug::slugify('Я люблю PHP'));
-        $this->assertEquals('sihaphpga_da_haoki', Slug::slugify('私はPHPが大好き'));
-        $this->assertEquals('1_test', Slug::slugify('test asdsadsadsadsadas', 1, 6));
+        $this->assertEquals('a-lublu-php', Slug::slugify('Я люблю PHP'));
+        $this->assertEquals('sihaphpga-da-haoki', Slug::slugify('私はPHPが大好き'));
+        $this->assertEquals('1-test', Slug::slugify('test asdsadsadsadsadas', 1, 6));
+        $this->assertEquals('test-test', Slug::slugify('test test'));
+        $this->assertEquals('123-testtest-asd', Slug::slugify('123! test-test_$ asd'));
+        $this->assertEquals('test', Slug::slugify('&test!=....'));
     }
 }

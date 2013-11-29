@@ -13,6 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\EventManager\EventManagerInterface;
 use Users\Service\Service as UsersService;
 use Application\Form\Settings as SettingsForm;
+use Application\Event\Event as ApplicationEvent;
 
 class AbstractAdministrationController extends AbstractActionController
 {
@@ -69,6 +70,18 @@ class AbstractAdministrationController extends AbstractActionController
                 if ($settingsForm->getForm()->isValid()) {
                     if (true === ($result = $settings->
                             saveSettings($settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
+
+                        // fire event
+                        $eventDesc = UsersService::isGuest()
+                            ? 'Event - Settings change (guest)'
+                            : 'Event - Settings change (user)';
+
+                        $eventDescParams = UsersService::isGuest()
+                            ? array($module)
+                            : array(UsersService::getCurrentUserIdentity()->nick_name, $module);
+
+                        ApplicationEvent::fireEvent(ApplicationEvent::
+                            APPLICATION_CHANGE_SETTINGS, 0, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                         $this->flashMessenger()
                             ->setNamespace('success')

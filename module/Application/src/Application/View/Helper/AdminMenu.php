@@ -23,7 +23,7 @@ class AdminMenu extends AbstractHelper
         if ($menu) {
             foreach ($menu as $menuItem) {
                 // check user permission
-                if (!UsersService::checkPermission($menuItem['controller'] . '_' . $menuItem['action'], false)) {
+                if (!UsersService::checkPermission($menuItem['controller'] . ' ' . $menuItem['action'], false)) {
                     continue;
                 }
 

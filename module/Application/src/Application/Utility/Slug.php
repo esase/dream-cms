@@ -15,10 +15,12 @@ class Slug
      * @param string $spaceDevider
      * @return string
      */
-    public static function slugify($title, $objectId = 0, $maxChars = 50, $spaceDevider = '_')
+    public static function slugify($title, $objectId = 0, $maxChars = 50, $spaceDevider = '-')
     {
         $transliterator = Transliterator::create('Any-Latin; Latin-ASCII; Lower();');
-        $title = preg_replace('/[-\s]+/', $spaceDevider, $transliterator->transliterate($title));
+        $title = preg_replace('/[^0-9a-z\s]/i', '', $transliterator->transliterate($title));
+        $title = str_replace(' ', $spaceDevider, $title);
+
         $slug = $objectId ? $objectId . $spaceDevider . $title : $title;
 
         return strlen($slug) > $maxChars

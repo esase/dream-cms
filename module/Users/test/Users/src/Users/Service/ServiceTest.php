@@ -266,7 +266,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $role = AclModel::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
-            'test application settings administration'
+            'test_application_settings_administration'
         );
 
         $this->addAclResources($testResources, true, $role);
@@ -314,7 +314,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $role = AclModel::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
-            'test application settings administration'
+            'test_application_settings_administration'
         );
 
         $this->addAclResources($testResources, true, $role);
@@ -367,7 +367,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $role =AclModel::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
-            'test application settings administration'
+            'test_application_settings_administration'
         );
 
         $this->addAclResources($testResources, true, $role);
@@ -422,8 +422,8 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $role = AclModel::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
-            'test application settings administration',
-            'test application modules administration'
+            'test_application_settings_administration',
+            'test_application_modules_administration'
         );
 
         $this->addAclResources($testResources, true, $role);
@@ -467,8 +467,8 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $role = AclModel::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
-            'test application settings administration',
-            'test application modules administration'
+            'test_application_settings_administration',
+            'test_application_modules_administration'
         );
 
         $this->addAclResources($testResources, true, $role);

@@ -5,6 +5,7 @@ namespace XmlRpc\Model;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
 use Application\Utility\Cache as CacheUtilities;
+use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
 
 class Base extends Sql
 {
@@ -25,7 +26,7 @@ class Base extends Sql
      * @param object $adapter
      * @param object $staticCacheInstance
      */
-    public function __construct(Adapter $adapter, $staticCacheInstance)
+    public function __construct(Adapter $adapter, CacheAdapter $staticCacheInstance)
     {
         parent::__construct($adapter);
         $this->staticCacheInstance = $staticCacheInstance;

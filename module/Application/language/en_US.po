@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-11-23 15:00+0600\n"
+"PO-Revision-Date: 2013-11-29 14:35+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,9 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Save"
+msgstr "Save"
 
 msgid "Default time zone"
 msgstr "Default time zone"
@@ -247,6 +250,15 @@ msgstr "The input must contain only digits"
 
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
+
+msgid "Event - Settings change"
+msgstr "Change settings"
+
+msgid "Event - Settings change (guest)"
+msgstr "Guest has changed settings for the module \"%s\""
+
+msgid "Event - Settings change (user)"
+msgstr "\"%s\" has changed settings for the module \"%s\""
 
 msgid "Event - Get localizations via XmlRpc"
 msgstr "Get localizations via the XmlRpc"

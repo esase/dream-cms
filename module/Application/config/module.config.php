@@ -23,12 +23,12 @@ return array(
             'application' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/[:languge[/:controller[/:action[/:id][/page/:page][/order_by/:order_by][/:order_type]]]]',
+                    'route'    => '/[:languge[/:controller[/:action[/:slug][/page/:page][/order_by/:order_by][/:order_type]]]]',
                     'constraints' => array(
                         'languge' => '[a-z]{2}',
                         'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'slug'     => '[0-9a-z-_]+',
                         'page' => '[0-9]+',
                         'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'order_type' => 'asc|desc',
@@ -38,14 +38,7 @@ return array(
                         'action' => 'index'
                     )
                 ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Wildcard',
-                        'options' => array(
-                        )
-                    )
-                )
+                'may_terminate' => true
             )
         )
     ),

@@ -122,7 +122,7 @@ class Module
         if (false !== ($result = stristr($controller, self::ADMINISTRATION_AREA))) {
             if ($e->getResponse()->getStatusCode() != Response::STATUS_CODE_404) {
                 // check action permission
-                if (UsersService::checkPermission($controller . '_' . $action)) {
+                if (UsersService::checkPermission($controller . ' ' . $action)) {
                     // load admin layout
                     $e->getTarget()->layout('layout/administration');
                 }

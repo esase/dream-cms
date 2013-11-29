@@ -6,7 +6,7 @@
             <?php
                 $this->aclResource = !empty($tab['acl_resource'])
                     ? $tab['acl_resource'] // check tab permission for specific acl resource
-                    : $tab['controller'] . '_' . $tab['action']; // check tab permission for specific controller and action
+                    : $tab['controller'] . ' ' . $tab['action']; // check tab permission for specific controller and action
 
                 // check permission
                 if (!$this->checkPermission($this->aclResource)) {
