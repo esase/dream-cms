@@ -459,12 +459,13 @@ class CustomFormBuilder extends Form
      * FormInterface::VALUES_* constants to shape the behavior.
      *
      * @param boolean $localizeData
+     * @param  int $flag
      * @return array|object
      * @throws Exception\DomainException
      */
-    public function getData($localizeData = true)
+    public function getData($localizeData = true, $flag = FormInterface::VALUES_NORMALIZED)
     {
-        $formData = parent::getData(FormInterface::VALUES_NORMALIZED);
+        $formData = parent::getData($flag);
 
         // process form data
         $processedData = array();
