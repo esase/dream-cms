@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-11-29 14:35+0600\n"
+"PO-Revision-Date: 2013-12-12 16:36+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,22 +14,94 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+msgid "Page range should be greater than 0"
+msgstr "Page range should be greater than 0"
+
+msgid "Per page step should be greater than 0"
+msgstr "Per page step should be greater than 0"
+
+msgid "Max per page range should be greater than 0"
+msgstr "Max per page range should be greater than 0"
+
+msgid "Min per page range should be greater than 0"
+msgstr "Min per page range should be greater than 0"
+
+msgid "Default per page value should be greater than 0"
+msgstr "Default per page value should be greater than 0"
+
+msgid "Page range"
+msgstr "Page range"
+
+msgid "Per page step"
+msgstr "Per page step"
+
+msgid "Max per page range"
+msgstr "Max per page range"
+
+msgid "Min per page range"
+msgstr "Min per page range"
+
+msgid "Default per page value"
+msgstr "Default per page value"
+
+msgid "Pagination"
+msgstr "Pagination"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "member"
+msgstr "Member"
+
+msgid "guest"
+msgstr "Guest"
+
+msgid "admin"
+msgstr "Admin"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Nothing found"
+msgstr "Nothing found"
+
+msgid "The input does not appear to be a valid datetime"
+msgstr "The input does not appear to be a valid datetime"
+
+msgid "List of ACL roles"
+msgstr "List of ACL roles"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Per page"
+msgstr "Per page"
+
+msgid "custom"
+msgstr "Custom"
+
+msgid "system"
+msgstr "System"
+
 msgid "Save"
 msgstr "Save"
 
 msgid "Default time zone"
 msgstr "Default time zone"
 
-msgid "SHORT"
+msgid "short"
 msgstr "Short format"
 
-msgid "MEDIUM"
+msgid "medium"
 msgstr "Medium format"
 
-msgid "LONG"
+msgid "long"
 msgstr "Long format"
 
-msgid "FULL"
+msgid "full"
 msgstr "Full format"
 
 msgid "Default date format"

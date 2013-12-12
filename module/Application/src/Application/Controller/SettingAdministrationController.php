@@ -20,7 +20,7 @@ class SettingAdministrationController extends AbstractAdministrationController
     public function indexAction()
     {
         return new ViewModel(array(
-            'settingsForm' => parent::settingsForm('application', 'settings_administration')
+            'settingsForm' => parent::settingsForm('application', 'settings-administration')
         ));
     }
 }

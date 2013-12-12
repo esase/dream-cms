@@ -91,7 +91,7 @@ INSERT INTO `acl_resources` (`id`, `resource`, `description`, `module`) VALUES
 (2, 'settings_administration_index', 'ACL - Possibility to change site settings in administration panel', 1),
 (3, 'localizations_administration_index', 'ACL - Possibility to view site localizations in administration panel', 1),
 (4, 'layouts_administration_index', 'ACL - Possibility to view site layouts in administration panel', 1),
-(5, 'acl_administration_index', 'ACL - Possibility to view site ACL in administration panel', 1),
+(5, 'acl_administration_list', 'ACL - Possibility to view site ACL in administration panel', 1),
 (6, 'xmlrpc_get_localizations', 'ACL - Possibility to get site localizations via XmlRpc', 1),
 (7, 'users_administration_index', 'ACL - Possibility to view users in administration panel', 2),
 (8, 'xmlrpc_view_user_info', 'ACL - Possibility to view user\'s info via XmlRpc', 2),
@@ -189,7 +189,8 @@ INSERT INTO `settings_categories` (`id`, `name`, `module`) VALUES
 (2, 'Cache', 1),
 (3, 'Captcha', 1),
 (4, 'Calendar', 1),
-(5, 'SEO', 1);
+(5, 'SEO', 1),
+(6, 'Pagination', 1);
 
 CREATE TABLE IF NOT EXISTS `settings` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -232,7 +233,12 @@ INSERT INTO `settings` (`id`, `name`, `label`, `type`, `required`, `order`, `cat
 (15, 'application_calendar_min_year', 'Min year in calendar', 'integer', 1, 1, 4, 1, 0, '', 'return intval(''{value}'') >= 1902 and intval(''{value}'') <= 2037;', 'Year should be in range from 1902 to 2037'),
 (16, 'application_calendar_max_year', 'Max year in calendar', 'integer', 1, 2, 4, 1, 0, '', 'return intval(''{value}'') >= 1902 and intval(''{value}'') <= 2037;', 'Year should be in range from 1902 to 2037'),
 (17, 'application_default_date_format', 'Default date format', 'select', 1, 3, 1, 1, 1, '', '', ''),
-(18, 'application_default_time_zone', 'Default time zone', 'select', 1, 4, 1, 1, 0, 'return array_combine(DateTimeZone::listIdentifiers(), DateTimeZone::listIdentifiers());', '', '');
+(18, 'application_default_time_zone', 'Default time zone', 'select', 1, 4, 1, 1, 0, 'return array_combine(DateTimeZone::listIdentifiers(), DateTimeZone::listIdentifiers());', '', ''),
+(19, 'application_per_page', 'Default per page value', 'integer', 1, 1, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Default per page value should be greater than 0'),
+(20, 'application_min_per_page_range', 'Min per page range', 'integer', 1, 2, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Min per page range should be greater than 0'),
+(21, 'application_max_per_page_range', 'Max per page range', 'integer', 1, 3, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Max per page range should be greater than 0'),
+(22, 'application_per_page_step', 'Per page step', 'integer', 1, 4, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Per page step should be greater than 0'),
+(23, 'application_page_range', 'Page range', 'integer', 1, 5, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Page range should be greater than 0');
 
 CREATE TABLE IF NOT EXISTS `settings_values` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -266,8 +272,13 @@ INSERT INTO `settings_values` (`id`, `setting_id`, `value`, `language`) VALUES
 (14, 14, 4, NULL),
 (15, 15, '1902', NULL),
 (16, 16, '2037', NULL),
-(17, 17, 'SHORT', NULL),
-(18, 18, 'UTC', NULL);
+(17, 17, 'short', NULL),
+(18, 18, 'UTC', NULL),
+(19, 19, 10, NULL),
+(20, 20, 10, NULL),
+(21, 21, 100, NULL),
+(22, 22, 10, NULL),
+(23, 23, 10, NULL);
 
 CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
     `setting_id` int(10) unsigned NOT NULL,
@@ -279,10 +290,10 @@ CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `settings_predefined_values` (`setting_id`, `value`) VALUES
-(17, 'FULL'),
-(17, 'LONG'),
-(17, 'MEDIUM'),
-(17, 'SHORT');
+(17, 'full'),
+(17, 'long'),
+(17, 'medium'),
+(17, 'short');
 
 CREATE TABLE IF NOT EXISTS `events` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -323,5 +334,5 @@ INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order
 (2, 'Site settings', 'settings-administration', 'index', 1, 2),
 (3, 'Localizations', 'localizations-administration', 'index', 1, 3),
 (4, 'Layouts', 'layouts-administration', 'index', 1, 4),
-(5, 'Access Control List', 'acl-administration', 'index', 1, 5),
+(5, 'Access Control List', 'acl-administration', 'list', 1, 5),
 (6, 'Users', 'users-administration', 'index', 2, 6);

@@ -459,6 +459,8 @@ class Module
     {
         return array(
             'invokables' => array(
+                'urlParamsEncode' => 'Application\View\Helper\UrlParamsEncode',
+                'date' => 'Application\View\Helper\Date',
                 'getSetting' => 'Application\View\Helper\Setting',
                 'asset' => 'Application\View\Helper\Asset',
                 'headScript' => 'Application\View\Helper\HeadScript',

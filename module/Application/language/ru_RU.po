@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-11-29 14:35+0600\n"
+"PO-Revision-Date: 2013-12-12 16:36+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -14,22 +14,94 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+msgid "Page range should be greater than 0"
+msgstr "Диапазон страниц должен быть больше 0"
+
+msgid "Per page step should be greater than 0"
+msgstr "Шаг должен быть больше 0"
+
+msgid "Max per page range should be greater than 0"
+msgstr "Максимальный диапазон страниц должен быть больше 0"
+
+msgid "Min per page range should be greater than 0"
+msgstr "Минимальный диапазон страниц должен быть больше 0"
+
+msgid "Default per page value should be greater than 0"
+msgstr "Количество результатов на страницу по умолчанию должно быть больше 0"
+
+msgid "Page range"
+msgstr "Диапазон страниц"
+
+msgid "Per page step"
+msgstr "Результатов на страницу - шаг"
+
+msgid "Max per page range"
+msgstr "Максимальный диапазон страниц"
+
+msgid "Min per page range"
+msgstr "Минимальный диапазон страниц"
+
+msgid "Default per page value"
+msgstr "Количество результатов на страницу по умолчанию"
+
+msgid "Pagination"
+msgstr "Пейджинг"
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "member"
+msgstr "Пользователь"
+
+msgid "guest"
+msgstr "Гость"
+
+msgid "admin"
+msgstr "Администратор"
+
+msgid "Filter"
+msgstr "Фильтр"
+
+msgid "Nothing found"
+msgstr "Ничего не найдено"
+
+msgid "The input does not appear to be a valid datetime"
+msgstr "Неправильный формат даты"
+
+msgid "List of ACL roles"
+msgstr "Список ACL ролей"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Name"
+msgstr "Название"
+
+msgid "Per page"
+msgstr "Результатов на странице"
+
+msgid "custom"
+msgstr "Пользовательский ресурс"
+
+msgid "system"
+msgstr "Системный ресурс"
+
 msgid "Save"
 msgstr "Сохранить"
 
 msgid "Default time zone"
 msgstr "Часовой пояс по умолчанию"
 
-msgid "SHORT"
+msgid "short"
 msgstr "Краткий формат"
 
-msgid "MEDIUM"
+msgid "medium"
 msgstr "Средний формат"
 
-msgid "LONG"
+msgid "long"
 msgstr "Длинный формат"
 
-msgid "FULL"
+msgid "full"
 msgstr "Полный формат"
 
 msgid "Default date format"

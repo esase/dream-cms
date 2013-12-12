@@ -1,0 +1,34 @@
+<?php echo $this->render('application/acl-administration/_header') ?>
+<?php echo $this->partial('partials/tabs', array('tabs' => $this->baseTabs)) ?>
+
+<?php echo $this->partial('partials/table_grid', array(
+    'controller' => 'acl-administration',
+    'action' => 'list',
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Name'),
+            'order_name' => 'name'
+        ),
+        2 => array(
+            'title' => $this->translate('Type'),
+            'order_name' => 'type'
+        )
+    ),
+    'filter_form' => $this->filter_form,
+    'paginator' => $this->paginator,
+    'helpers' => array(
+        'name' => 'translate',
+        'type' => 'translate'
+    ),
+    'helpers_options' => array(
+    ),
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc'
+)) ?>

@@ -12,6 +12,12 @@ class AbstractCustomForm implements CustomFormInterface
     protected $form;
 
     /**
+     * Form method
+     * @var string
+     */
+    protected $method = 'post';
+
+    /**
      * Form name
      * @var string
      */
@@ -55,7 +61,7 @@ class AbstractCustomForm implements CustomFormInterface
         // get form builder
         if (!$this->form) {
             $this->form = new CustomFormBuilder($this->formName,
-                    $this->formElements, $this->translator, $this->ignoredElements);    
+                    $this->formElements, $this->translator, $this->ignoredElements, $this->method);    
         }
 
         return $this->form;

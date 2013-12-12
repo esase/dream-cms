@@ -23,15 +23,16 @@ return array(
             'application' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/[:languge[/:controller[/:action[/:slug][/page/:page][/order_by/:order_by][/:order_type]]]]',
+                    'route'    => '/[:languge[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:slug]]]]',
                     'constraints' => array(
                         'languge' => '[a-z]{2}',
                         'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'slug'     => '[0-9a-z-_]+',
                         'page' => '[0-9]+',
-                        'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'per_page' => '[0-9]+',
+                        'order_by' => '[a-zA-Z][a-zA-Z0-9-]*',
                         'order_type' => 'asc|desc',
+                        'slug'     => '[0-9a-z-_]+'
                     ),
                     'defaults' => array(
                         'controller' => 'Home',
@@ -61,8 +62,9 @@ return array(
         'invokables' => array(
             'home' => 'Application\Controller\IndexController',
             'error' => 'Application\Controller\ErrorController',
-            'modules_administration' => 'Application\Controller\ModuleAdministrationController',
-            'settings_administration' => 'Application\Controller\SettingAdministrationController'
+            'modules-administration' => 'Application\Controller\ModuleAdministrationController',
+            'settings-administration' => 'Application\Controller\SettingAdministrationController',
+            'acl-administration' => 'Application\Controller\AclAdministrationController'
         )
     ),
     'controller_plugins' => array(

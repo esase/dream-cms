@@ -183,13 +183,15 @@ class CustomFormBuilder extends Form
      *      array filters optional
      *      array validators optional
      * @param object $translator
+     * @param string $method
      * @param array $ignoredElements
      */
-    public function __construct($formName, array $formElements, Translator $translator, array $ignoredElements = array()) 
+    public function __construct($formName, array $formElements, Translator $translator, array $ignoredElements = array(), $method = 'post') 
     {
         parent::__construct($formName);
 
         $useFilters = true;
+        $this->setAttribute('method', ($method == 'post' ? $method : 'get'));
 
         // ignored elements
         $this->ignoredElements = array_merge(array('csrf', 'submit'), $ignoredElements);
@@ -456,13 +458,13 @@ class CustomFormBuilder extends Form
      * By default, retrieves normalized values; pass one of the
      * FormInterface::VALUES_* constants to shape the behavior.
      *
-     * @param  int $flag
+     * @param boolean $localizeData
      * @return array|object
      * @throws Exception\DomainException
      */
-    public function getData($flag = FormInterface::VALUES_NORMALIZED)
+    public function getData($localizeData = true)
     {
-        $formData = parent::getData($flag);
+        $formData = parent::getData(FormInterface::VALUES_NORMALIZED);
 
         // process form data
         $processedData = array();
@@ -473,8 +475,9 @@ class CustomFormBuilder extends Form
             }
 
             // convert from localized data
-            $processedData[$fieldName] = LocaleUtility::convertFromLocalizedValue($fieldValue, $this->customElements[$fieldName]);
-
+            $processedData[$fieldName] = $localizeData
+                ? LocaleUtility::convertFromLocalizedValue($fieldValue, $this->customElements[$fieldName])
+                : $fieldValue;
         }
 
         return $processedData;

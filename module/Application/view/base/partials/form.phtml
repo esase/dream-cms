@@ -1,15 +1,27 @@
-<?php echo $this->partial('partials/notifications') ?>
+<?php if (!isset($this->notifications) || $this->notifications === true): ?>
+    <?php echo $this->partial('partials/notifications') ?>
+<?php endif; ?>
 
 <?php
-    $this->declareVars('language', 'formCategories', 'openCategories', 'category');
+    $this->declareVars('language', 'formCategories', 'openCategories', 'category', 'formOptions');
     $this->language = $this->localizations()->getCurrentLocalization()['language'];
     $this->formCategories = new ArrayObject();
     $this->openCategories = new ArrayObject();
+    $this->formOptions = array(
+        'controller' => $this->controller,
+        'action' => (!empty($this->action) ? $this->action : 'index')
+    );
+
+    // add extra form options
+    if (!empty($this->extraFormOptions) && is_array($this->extraFormOptions)) {
+        $this->formOptions = array_merge($this->formOptions, $this->extraFormOptions);
+    }
 ?>
 
 <?php
     // group form elements by categories
-    $this->form->setAttribute('action', $this->url('application', array('controller' => $this->controller)));
+    $this->form->setAttribute('action', $this->url('application', $this->formOptions));
+
     $this->form->prepare();
 
     foreach ($this->form as $element) {

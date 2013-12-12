@@ -14,6 +14,7 @@ use Zend\EventManager\EventManagerInterface;
 use Users\Service\Service as UsersService;
 use Application\Form\Settings as SettingsForm;
 use Application\Event\Event as ApplicationEvent;
+use Application\Utility\Pagination as PaginationUtility;
 
 class AbstractAdministrationController extends AbstractActionController
 {
@@ -22,6 +23,86 @@ class AbstractAdministrationController extends AbstractActionController
      * @var object  
      */
     protected $translator;
+
+    /**
+     * Order by value
+     * @var string
+     */
+    protected $orderBy = null;
+
+    /**
+     * Order type value
+     * @var string
+     */
+    protected $orderType = null;
+
+    /**
+     * Per page value
+     * @var integer
+     */
+    protected $perPage = null;
+
+    /**
+     * Page value
+     * @var integer
+     */
+    protected $page = null;
+
+    /**
+     * Get page value
+     *
+     * @return integer
+     */
+    public function getPage()
+    {
+        if ($this->page === null) {
+            $this->page = $this->params()->fromRoute('page', 1);
+        }
+
+        return $this->page; 
+    }
+
+    /**
+     * Get order by value
+     *
+     * @return string
+     */
+    public function getOrderBy()
+    {
+        if ($this->orderBy === null) {
+            $this->orderBy = $this->params()->fromRoute('order_by');
+        }
+
+        return $this->orderBy;
+    }
+
+    /**
+     * Get order type
+     *
+     * @return string
+     */
+    public function getOrderType()
+    {
+        if ($this->orderType === null) {
+            $this->orderType = $this->params()->fromRoute('order_type');
+        }
+
+        return $this->orderType;
+    }
+
+    /**
+     * Get per page value
+     *
+     * @return string
+     */
+    public function getPerPage()
+    {
+        if ($this->perPage === null) {
+            $this->perPage  = $this->params()->fromRoute('per_page');
+        }
+
+        return $this->perPage; 
+    }
 
     /**
      * Get translation

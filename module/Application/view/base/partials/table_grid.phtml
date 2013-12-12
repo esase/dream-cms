@@ -1,0 +1,141 @@
+<?php
+    use Application\Utility\Pagination as PaginationUtility;
+
+    $this->declareVars('baseUrlParams', 'filterParams', 'paginationCount', 'perPageRanges');
+
+    // get per page ranges
+    $this->perPageRanges = PaginationUtility::getPerPageRanges();
+
+    $this->paginationCount = $this->paginator
+        ? $this->paginator->count()
+        : 0;
+
+    // get base url params
+    $this->baseUrlParams = array(
+        'controller' => $this->controller,
+        'action' => $this->action,
+        'order_by' => $this->order_by,
+        'order_type' => $this->order_type 
+    );
+
+    // process per page value
+    $this->per_page = PaginationUtility::processPerPage($this->per_page);
+
+    // init default order values
+    if (!$this->order_by) {
+        $this->order_by = $this->default_order;
+    }
+
+    // init default order type
+    if (!$this->order_type) {
+        $this->order_type = $this->default_order_type;
+    }
+
+    // init filter params
+    $this->filterParams = !empty($this->filter_form) && $this->filter_form->isValid()
+        ? $this->urlParamsEncode($this->filter_form->getData(false))
+        : array();
+?>
+
+<!-- filters, per page sections -->
+<?php if ($this->paginationCount || !empty($this->filter_form)) : ?>
+    <ul class="nav nav-pills">
+        <?php if (!empty($this->filter_form)) : ?>
+            <li class="dropdown <?php if (!$this->filter_form->isValid()) : ?>open<?php endif; ?>">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <?php echo $this->translate('Filter') ?>
+                    <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu">
+                    <div class="filter-form">
+                        <?php echo $this->partial('partials/form', array(
+                            'form' => $this->filter_form,
+                            'controller' => $this->controller,
+                            'action' => $this->action,
+                            'notifications' => false,
+                            'extraFormOptions' => array(
+                                'per_page' => $this->per_page,
+                                'order_by' => $this->order_by,
+                                'order_type' => $this->order_type
+                            )
+                        )); ?>
+                    </div>
+                </div>
+            </li>
+        <?php endif; ?>
+        <?php if ($this->paginationCount && count($this->perPageRanges) > 1) : ?>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <?php echo $this->translate('Per page') ?> - <?php echo $this->per_page ?>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <?php foreach ($this->perPageRanges as $perPage) : ?>
+                        <li <?php if ($this->per_page == $perPage) : ?>class="disabled"<?php endif; ?>>
+                            <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array('per_page' => $perPage)), array('query' => $this->filterParams)) ?>"><?php echo $perPage ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+        <?php endif; ?>
+    </ul>
+<?php endif; ?>
+
+<?php if ($this->paginationCount): ?>
+    <!-- table grid -->
+    <table class="table">
+        <thead>
+        <?php foreach ($this->headers as $index => $header) : ?>
+            <th>
+                <?php if (empty($header['order_name'])) : ?>
+                    <?php echo $header['title'] ?>
+                <?php else: ?>
+                    <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array(
+                        'per_page' => $this->per_page,
+                        'order_type' => ($this->order_type == 'asc' ? 'desc' : 'asc'),
+                        'order_by' => $header['order_name']
+                    )), array('query' => $this->filterParams)) ?>">
+                        <?php echo $header['title'] ?>
+
+                        <!-- order direction icon -->
+                        <?php if ($this->order_by == $header['order_name']): ?>
+                            <img src="<?php  echo $this->asset('icons/s_' . $this->order_type . '.png', 'images') ?>" alt="<?php echo $this->escapeHtmlAttr($this->order_type) ?>" />
+                        <?php endif; ?>
+                    </a>
+                <?php endif; ?>
+            </th>
+        <?php endforeach; ?>
+        </thead>
+        <tbody>
+        <?php foreach ($paginator as $data) : ?>
+            <tr>
+                <?php foreach ($data as $fieldName => $fieldValue) : ?>
+                    <td>
+                        <?php if (!empty($this->helpers[$fieldName])) : ?>
+                            <?php
+                                echo empty($this->helpers_options[$fieldName])
+                                    ? $this->{$this->helpers[$fieldName]}($fieldValue)
+                                    : $this->{$this->helpers[$fieldName]}($fieldValue, $this->helpers_options[$fieldName])
+                            ?>
+                        <?php else: ?>
+                            <?php echo $this->escapeHtml($fieldValue) ?>
+                        <?php endif; ?>                        
+                    </td>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <?php
+        // get pagination control
+        echo $this->paginationControl($this->paginator, 'Sliding', 'partials/slide_paginator', array(
+            'route' => 'application',
+            'params' => array_merge($this->baseUrlParams, array('per_page' => $this->per_page)),
+            'queries' => $this->filterParams,
+            'queries_encode' => false
+        ))
+    ?>
+<?php else: ?>
+    <div class="alert"><?php echo $this->translate('Nothing found') ?></div>
+<?php endif; ?>
