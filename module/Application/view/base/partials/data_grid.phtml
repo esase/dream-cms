@@ -200,7 +200,7 @@
                     $selectCheckbox = new Element\Checkbox($this->multipleActionsSelectorId);
                     $selectCheckbox->setUseHiddenElement(false);
                     $selectCheckbox->setAttributes(array(
-                        'onclick' => "$('input[name=\'{$this->multipleActionsItemsName}\']:enabled').attr('checked', this.checked)",
+                        'onclick' => "$('input[name=\'{$this->multipleActionsItemsName}\']:enabled').prop('checked', this.checked)",
                         'id' => $this->multipleActionsSelectorId
                     ));
 
@@ -307,7 +307,8 @@
             'selectorErrorContent' : '<?php echo $this->escapeJs($this->translate('You need to select some of checkboxes below')) ?>',
             'selectorErrorTime' : <?php echo (int) $this->multipleActionsErrorDisplayTime ?>,
             'confirmButtonTitle' : '<?php echo $this->escapeJs($this->translate('Yes')) ?>',
-            'cancelButtonTitle' : '<?php echo $this->escapeJs($this->translate('No')) ?>'
+            'cancelButtonTitle' : '<?php echo $this->escapeJs($this->translate('No')) ?>',
+            'langDirection' : '<?php echo $this->escapeJs($this->languageDirection) ?>'
         });
     <?php $this->inlineScript()->captureEnd() ?>
 <?php endif; ?>

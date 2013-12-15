@@ -6,10 +6,10 @@
 function DataGrid(options)
 {
     /**
-     * Form id
-     * @var string
+     * Form
+     * @var object
      */
-    this.formId = options.formId;
+    this.$form = $(options.formId);
 
     /**
      * Links class
@@ -59,8 +59,48 @@ function DataGrid(options)
      */
     this.cancelButtonTitle = options.cancelButtonTitle;
 
+    /**
+     * Language direction
+     * @var string
+     */
+    this.langDirection = options.langDirection;
+
+    /**
+     * Error time handler
+     * @var object
+     */
+    this.errorTimeHandler;
+
     // init data grid
     this._initDataGrid();
+}
+
+/**
+ * Show error
+ *
+ * @return void
+ */
+DataGrid.prototype._showError = function()
+{
+    var $popover = $(this.selectorId);
+    $popover.popover("destroy");
+
+    if (this.errorTimeHandler) {
+        clearTimeout(this.errorTimeHandler);
+    }
+
+    $popover.popover({
+        trigger: "manual",
+        placement: (this.langDirection == 'ltr' ?  "right" : "left"),
+        title : this.selectorErrorTitle,
+        content: this.selectorErrorContent
+    });
+
+    $popover.popover("show");
+
+    this.errorTimeHandler = setTimeout(function () {
+        $popover.popover("hide")
+    }, this.selectorErrorTime);
 }
 
 /**
@@ -75,25 +115,8 @@ DataGrid.prototype._initDataGrid = function()
     $(this.linksClass).click(function(event){
         event.preventDefault();
 
-        var $form = $(self.formId);
-
-        // check the selected items
-        var $checkboxItem = $form.find('input[name="' + self.items + '"]:enabled:checked');
-
-        if (!$checkboxItem.val()) {
-            var $popover = $(self.selectorId);
-            $popover.popover({
-                trigger: "manual",
-                placement: "right",
-                title : self.selectorErrorTitle,
-                content: self.selectorErrorContent
-            });
-
-            $popover.popover("show");
-
-            setTimeout(function () {
-                $popover.popover("hide")
-            }, self.selectorErrorTime);
+        if (!self._checkCheckedItems()) {
+            self._showError();
         }
         else {
             // check confirm attr
@@ -103,6 +126,7 @@ DataGrid.prototype._initDataGrid = function()
                 var $link = $(this);
                 $link.popover("destroy");
 
+                // confirm buttons
                 var $confirmButtons = $('<a action="confirm">' +
                             self.confirmButtonTitle + '</a>&nbsp;<a action="cancel">' + self.cancelButtonTitle + '</a>')
                     .attr('class', 'btn')
@@ -111,8 +135,12 @@ DataGrid.prototype._initDataGrid = function()
 
                         switch($(this).attr('action')) {
                             case 'confirm' :
-                                // send a form
-                                $form.attr('action', $link.attr('href')).submit();
+                                if (!self._checkCheckedItems()) {
+                                    self._showError();
+                                }
+                                else {
+                                    self.$form.attr('action', $link.attr('href')).submit();
+                                }
                                 break;
                         }
 
@@ -131,8 +159,22 @@ DataGrid.prototype._initDataGrid = function()
                 $link.popover("show");
             }
             else {
-                $form.attr('action', $(this).attr('href')).submit();
+                self.$form.attr('action', $(this).attr('href')).submit();
             }
         }
     });
+}
+
+/**
+ * Check checked items
+ *
+ * @return boolean
+ */
+DataGrid.prototype._checkCheckedItems= function()
+{
+    // check selected items
+    var $checkboxItem = this.$form
+        .find('input[name="' + this.items + '"]:enabled:checked');
+
+    return $checkboxItem.val() ? true : false;
 }
