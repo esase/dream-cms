@@ -30,6 +30,12 @@ use Zend\Log\Logger as Logger;
 class Module
 {
     /**
+     * Init admin layout
+     * @param boolean
+     */
+    protected $initAdminlayout = false;
+
+    /**
      * Service managerzend
      * @var object
      */
@@ -94,6 +100,11 @@ class Module
         // check administration privileges
         $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
             $this, 'checkAdministrationPrivileges'
+        ), 2);
+
+        // load admin layout
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+            $this, 'loadAdministrationLayout'
         ));
 
         $config = $this->serviceManager->get('Config');
@@ -107,6 +118,18 @@ class Module
     }
 
     /**
+     * Load administration layout
+     *
+     * @param object $e MvcEvent
+     */
+    public function loadAdministrationLayout(MvcEvent $e)
+    {
+        if ($this->initAdminlayout) {
+            $e->getTarget()->layout('layout/administration');
+        }
+    }
+
+    /**
      * Check administration privileges
      *
      * @param object $e MvcEvent
@@ -114,24 +137,19 @@ class Module
     public function checkAdministrationPrivileges(MvcEvent $e)
     {
         $matches = $e->getRouteMatch();
-
         $controller = $matches->getParam('controller');
         $action = $matches->getParam('action');
 
-        // check controller name
+        // check the controller name
         if (false !== ($result = stristr($controller, self::ADMINISTRATION_AREA))) {
             if ($e->getResponse()->getStatusCode() != Response::STATUS_CODE_404) {
                 // check action permission
-                if (UsersService::checkPermission($controller . ' ' . $action)) {
-                    // load admin layout
-                    $e->getTarget()->layout('layout/administration');
-                }
-                else {
+                if (!UsersService::checkPermission($controller . ' ' . $action)) {
                     // redirect to forbidden page
                     $response = $e->getResponse();
                     $router = $e->getRouter();
-                    $url = $router->assemble(array('controller' =>
-                            'error', 'action' => 'forbidden'), array('name' => 'application'));
+                    $url = $router->assemble(array('controller' => 'error', 'action' => 'forbidden'),
+                            array('name' => 'application'));
 
                     // populate and return the response
                     $response->setStatusCode(Response::STATUS_CODE_302);
@@ -139,6 +157,8 @@ class Module
 
                     return $response;
                 }
+
+                $this->initAdminlayout = true;
             }
         }
     }
@@ -468,6 +488,7 @@ class Module
                 'isGuest' => 'Application\View\Helper\IsGuest',
                 'userIdentity' => 'Application\View\Helper\UserIdentity',
                 'checkPermission' => 'Application\View\Helper\CheckPermission',
+                'routesPermission' => 'Application\View\Helper\RoutesPermission',
                 'localizations' => 'Application\View\Helper\Localizations',
             ),
             'factories' => array(

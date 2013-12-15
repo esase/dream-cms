@@ -46,3 +46,7 @@ img#captcha-image {
 table.table {
     margin-top:20px;
 }
+
+table.table th.selector-items {
+    width: 20px;
+}

@@ -95,7 +95,9 @@ INSERT INTO `acl_resources` (`id`, `resource`, `description`, `module`) VALUES
 (6, 'xmlrpc_get_localizations', 'ACL - Possibility to get site localizations via XmlRpc', 1),
 (7, 'users_administration_index', 'ACL - Possibility to view users in administration panel', 2),
 (8, 'xmlrpc_view_user_info', 'ACL - Possibility to view user\'s info via XmlRpc', 2),
-(9, 'xmlrpc_set_user_timezone', 'ACL - Possibility to change user\'s timezone via XmlRpc', 2);
+(9, 'xmlrpc_set_user_timezone', 'ACL - Possibility to change user\'s timezone via XmlRpc', 2),
+(10, 'acl_administration_add_role', 'ACL - Possibility to add new ACL roles in administration panel', 1),
+(11, 'acl_administration_delete_roles', 'ACL - Possibility to delete ACL roles in administration panel', 1);
 
 CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -314,7 +316,8 @@ INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
 (4, 'user_logout', 2, 'Event - User logout'),
 (5, 'get_user_info_via_xmlrpc', 2, 'Event - Get user\'s info via XmlRpc'),
 (6, 'set_user_timezone_via_xmlrpc', 2, 'Event - Set user\'s timezone via XmlRpc'),
-(7, 'change_settings', 1, 'Event - Settings change');
+(7, 'change_settings', 1, 'Event - Settings change'),
+(8, 'delete_acl_role', 1, 'Event - ACL role delete');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

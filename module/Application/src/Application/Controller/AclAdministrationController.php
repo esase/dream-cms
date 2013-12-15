@@ -11,6 +11,8 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Users\Service\Service as UsersService;
+use Application\Event\Event as ApplicationEvent;
 
 class AclAdministrationController extends AbstractAdministrationController
 {
@@ -40,10 +42,47 @@ class AclAdministrationController extends AbstractAdministrationController
     public function indexAction()
     {
         // redirect to list action
-        return $this->redirect()->toRoute('application', array(
-            'controller' => 'acl-administration',
-            'action' => 'list'
-        )); 
+        return $this->redirectTo('acl-administration', 'list', false);
+    }
+
+    /**
+     * Delete selected roles
+     */
+    public function deleteRolesAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($rolesIds = $request->getPost('roles', null))) {
+                if (true === ($result = $this->getModel()->deleteRoles($rolesIds))) {
+                    // fire the event
+                    $eventDesc = UsersService::isGuest()
+                        ? 'Event - ACL role deleted (guest)'
+                        : 'Event - ACL role deleted (user)';
+
+                    foreach ($rolesIds as $roleId) {
+                        $eventDescParams = UsersService::isGuest()
+                            ? array($roleId)
+                            : array(UsersService::getCurrentUserIdentity()->nick_name, $roleId);
+
+                        ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_DELETE_ACL_ROLE,
+                                $roleId, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    }
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected roles have been deleted'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage(($result ? $result : $this->getTranslator()->translate('Error occurred')));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('acl-administration', 'list');
     }
 
     /**

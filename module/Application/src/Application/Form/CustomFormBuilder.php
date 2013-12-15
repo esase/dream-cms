@@ -578,7 +578,7 @@ class CustomFormBuilder extends Form
             'attributes' => array(
                 'id' => $name,
                 'value' => $this->translator->translate(($label ? $label : 'Submit')),
-                'class' => 'btn btn-primary'
+                'class' => 'btn'
             ),
             'options' => array(
                 'label' => ' ',

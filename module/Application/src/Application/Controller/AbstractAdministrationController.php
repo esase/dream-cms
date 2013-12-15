@@ -77,6 +77,30 @@ class AbstractAdministrationController extends AbstractActionController
     }
 
     /**
+     * Redirect to
+     *
+     * @param string $controller
+     * @param string $action
+     * @param boolean $useReferer
+     * @param string $route
+     * @return object
+     */
+    protected function redirectTo($controller, $action, $useReferer = true, $route = 'application')
+    {
+        $request = $this->getRequest();
+
+        // check the referer
+        if ($useReferer && null != ($referer = $request->getHeader('Referer'))) {
+            return $this->redirect()->toUrl($referer->uri());
+        }
+
+        return $this->redirect()->toRoute($route, array(
+            'controller' => $controller,
+            'action' => $action
+        )); 
+    }
+
+    /**
      * Get order type
      *
      * @return string
@@ -152,7 +176,7 @@ class AbstractAdministrationController extends AbstractActionController
                     if (true === ($result = $settings->
                             saveSettings($settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
 
-                        // fire event
+                        // fire the event
                         $eventDesc = UsersService::isGuest()
                             ? 'Event - Settings change (guest)'
                             : 'Event - Settings change (user)';

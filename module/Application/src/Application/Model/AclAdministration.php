@@ -6,9 +6,41 @@ use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Application\Utility\Pagination as PaginationUtility;
 use Application\Service\Service as ApplicationService;
+use Zend\Db\Sql\Predicate\In as InPredicate;
 
 class AclAdministration extends Acl
 {
+    /**
+     * Delete roles
+     *
+     * @param array $roles
+     * @return boolean|string
+     */
+    public function deleteRoles(array $roles)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('acl_roles')
+                ->where(array(
+                    'type' => self::ROLE_TYPE_CUSTOM,
+                    new InPredicate('id', $roles)
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            return $e->getMessage();
+        }
+
+        return $result->count() ? true : false;
+    }
+
     /**
      * Get roles
      *

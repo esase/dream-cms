@@ -22,6 +22,11 @@ class Event
     const APPLICATION_CHANGE_SETTINGS = 'change_settings';
 
     /**
+     * Application ACL role delete event
+     */
+    const APPLICATION_DELETE_ACL_ROLE = 'delete_acl_role';
+
+    /**
      * Fire event
      *
      * @param string $event

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-12-12 16:36+0600\n"
+"PO-Revision-Date: 2013-12-15 16:35+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,36 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Selected roles will be deleted. Are you sure?"
+msgstr "Selected roles will be deleted. Are you sure?"
+
+msgid "No"
+msgstr "No"
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "Delete selected"
+msgstr "Delete selected"
+
+msgid "Add a new role"
+msgstr "Add a new role"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Error occurred"
+msgstr "Error occurred"
+
+msgid "Selected roles have been deleted"
+msgstr "Selected roles have been deleted"
+
+msgid "You need to select some of checkboxes below"
+msgstr "You need to select some of checkboxes below"
+
+msgid "Error"
+msgstr "Error"
 
 msgid "Page range should be greater than 0"
 msgstr "Page range should be greater than 0"
@@ -341,6 +371,15 @@ msgstr "Guest has gotten localizations via XmlRpc"
 msgid "Event - Get localizations (user) via XmlRpc"
 msgstr "\"%s\" has gotten localizations via XmlRpc"
 
+msgid "Event - ACL role delete"
+msgstr "ACL role delete"
+
+msgid "Event - ACL role delete (guest)"
+msgstr "Guest has deleted the ACL role with id - \"%d\""
+
+msgid "Event - ACL role delete (user)"
+msgstr "\"%s\" has deleted the ACL role with id - \"%d\""
+
 msgid "A 403 error occurred"
 msgstr "A 403 error occurred"
 
@@ -364,3 +403,9 @@ msgstr "Possibility to view site layouts in administration panel"
 
 msgid "ACL - Possibility to view site ACL in administration panel"
 msgstr "Possibility to view site ACL in administration panel"
+
+msgid "ACL - Possibility to add new ACL roles in administration panel"
+msgstr "ACL - Possibility to add new ACL roles in administration panel"
+
+msgid "ACL - Possibility to delete ACL roles in administration panel"
+msgstr "ACL - Possibility to delete ACL roles in administration panel"
