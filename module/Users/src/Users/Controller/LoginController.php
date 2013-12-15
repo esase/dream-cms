@@ -11,7 +11,6 @@ namespace Users\Controller;
 
 use Zend\View\Model\ViewModel;
 use Application\Model\Acl as Acl;
-use Users\Form\LoginForm; 
 use Users\Event\Event as UsersEvent;
 
 class LoginController extends BaseController
@@ -22,21 +21,25 @@ class LoginController extends BaseController
     public function indexAction()
     {
         $userIdentity = $this->getAuthService()->getIdentity();
-       
+
         // if already login, redirect to success page
-        if ($userIdentity->role !== Acl::DEFAULT_ROLE_GUEST){
+        if (!$this->isGuest()){
             return $this->redirect()->toRoute('application');
         }
 
         // generate login form
         $request  = $this->getRequest();
-        $loginForm = new LoginForm($this->getTranslator());
+
+        // get login form
+        $loginForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Users\Form\Login');
 
         if ($request->isPost()) {
             // fill form with received values
-            $loginForm->setData($request->getPost());
+            $loginForm->getForm()->setData($request->getPost());
 
-            if ($loginForm->isValid()) {
+            if ($loginForm->getForm()->isValid()) {
                 // check authentication
                 $this->getAuthService()->getAdapter()
                    ->setIdentity($request->getPost('nickname'))
@@ -45,16 +48,17 @@ class LoginController extends BaseController
                 $result = $this->getAuthService()->authenticate(); 
                 if ($result->isValid()) {
                     // save user id
-                    $this->getAuthService()->getStorage()->write($this->getAuthService()->
-                            getAdapter()->getResultRowObject(array('user_id')));
+                    $this->getAuthService()->getStorage()->
+                            write($this->getAuthService()->getAdapter()->getResultRowObject(array('user_id')));
 
                     // get updated Identity again 
                     $userIdentity = $this->getAuthService()->getIdentity();
 
                     // fire event
                     UsersEvent::fireEvent(UsersEvent::USER_LOGIN, $userIdentity->user_id,
-                            $userIdentity->user_id, 'User successfully logged', array($request->getPost('nickname')));
+                            $userIdentity->user_id, 'Event - User successfully logged', array($request->getPost('nickname')));
 
+                    //TODO: there is need to check referrer 
                     return $this->redirect()->toRoute('application');
                 }
                 else {
@@ -68,7 +72,7 @@ class LoginController extends BaseController
 
                     // fire event
                     UsersEvent::fireEvent(UsersEvent::USER_LOGIN_FAILED, 0,
-                            Acl::DEFAULT_ROLE_GUEST, 'User login failed', array($request->getPost('nickname')));
+                            Acl::DEFAULT_ROLE_GUEST, 'Event - User login failed message', array($request->getPost('nickname')));
 
                     return $this->redirect()->toRoute('application', array('controller' => 'login'));
                 }
@@ -76,7 +80,7 @@ class LoginController extends BaseController
         }
 
         return new ViewModel(array(
-            'loginForm' => $loginForm
+            'loginForm' => $loginForm->getForm()
         ));
     }
 }

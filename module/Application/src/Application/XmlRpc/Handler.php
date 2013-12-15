@@ -18,16 +18,16 @@ class Handler extends AbstractHandler
     public function getLocalizations()
     {
         // check user permission
-        if (!UsersService::checkPermission('application xmlrpc get localizations')) {
+        if (!UsersService::checkPermission('xmlrpc_get_localizations')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
         // fire event
-        $eventDesc = $this->userIdentity->user_id == AclModel::DEFAULT_GUEST_ID
-            ? 'Application get localizations (guest) via XmlRpc'
-            : 'Application get localizations via XmlRpc';
+        $eventDesc = UsersService::isGuest()
+            ? 'Event - Get localizations (guest) via XmlRpc'
+            : 'Event - Get localizations (user) via XmlRpc';
 
-        $eventDescParams = $this->userIdentity->user_id == AclModel::DEFAULT_GUEST_ID
+        $eventDescParams = UsersService::isGuest()
             ? array()
             : array($this->userIdentity->nick_name);
 

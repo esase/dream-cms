@@ -23,26 +23,23 @@ return array(
             'application' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/[:languge[/:controller[/:action[/:id]]]]',
+                    'route'    => '/[:languge[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:slug]]]]',
                     'constraints' => array(
                         'languge' => '[a-z]{2}',
                         'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'  => '[0-9]+'
+                        'page' => '[0-9]+',
+                        'per_page' => '[0-9]+',
+                        'order_by' => '[a-zA-Z][a-zA-Z0-9-]*',
+                        'order_type' => 'asc|desc',
+                        'slug'     => '[0-9a-z-_]+'
                     ),
                     'defaults' => array(
                         'controller' => 'Home',
                         'action' => 'index'
                     )
                 ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Wildcard',
-                        'options' => array(
-                        )
-                    )
-                )
+                'may_terminate' => true
             )
         )
     ),
@@ -64,6 +61,16 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'home' => 'Application\Controller\IndexController',
+            'error' => 'Application\Controller\ErrorController',
+            'modules-administration' => 'Application\Controller\ModuleAdministrationController',
+            'settings-administration' => 'Application\Controller\SettingAdministrationController',
+            'acl-administration' => 'Application\Controller\AclAdministrationController'
+        )
+    ),
+    'controller_plugins' => array(
+        'invokables' => array(
+            'checkPermission' => 'Application\Controller\Plugin\CheckPermission',
+            'isGuest' => 'Application\Controller\Plugin\IsGuest',
         )
     ),
     'view_manager' => array(
@@ -71,7 +78,6 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
-            'notifications' => __DIR__ . '/../view/%s/partials/notifications.phtml'
         )
     )
 );

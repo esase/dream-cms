@@ -1,0 +1,79 @@
+<?php if (!isset($this->notifications) || $this->notifications === true): ?>
+    <?php echo $this->partial('partials/notifications') ?>
+<?php endif; ?>
+
+<?php
+    $this->declareVars('language', 'formCategories', 'openCategories', 'category', 'formOptions');
+    $this->language = $this->localizations()->getCurrentLocalization()['language'];
+    $this->formCategories = new ArrayObject();
+    $this->openCategories = new ArrayObject();
+    $this->formOptions = array(
+        'controller' => $this->controller,
+        'action' => (!empty($this->action) ? $this->action : 'index')
+    );
+
+    // add extra form options
+    if (!empty($this->extraFormOptions) && is_array($this->extraFormOptions)) {
+        $this->formOptions = array_merge($this->formOptions, $this->extraFormOptions);
+    }
+?>
+
+<?php
+    // group form elements by categories
+    $this->form->setAttribute('action', $this->url('application', $this->formOptions));
+
+    $this->form->prepare();
+
+    foreach ($this->form as $element) {
+        $this->category = null != $element->getOption('category')
+            ? $element->getOption('category')
+            : false;
+
+        isset($this->formCategories[$this->category])
+            ? $this->formCategories[$this->category] .= $this->formRow($element)
+            : $this->formCategories[$this->category] = $this->formRow($element);
+
+        if ($element->getMessages() && !in_array($this->category, (array) $this->openCategories)) {
+            $this->openCategories[] = $this->category;
+        }
+    }
+?>
+
+<?php
+    echo $this->form()->openTag($this->form);
+    echo $this->partial('partials/accordion', array(
+        'name' => 'settings-accordion',
+        'items' => $this->formCategories,
+        'openCategories' => $this->openCategories
+    ));
+    echo $this->form()->closeTag();
+?>
+
+<?php if ($form->initHtmlAreaScript()): ?>
+    <script type="text/javascript" src="<?php echo $this->asset('tinymce/jquery.tinymce.min.js') ?>"></script>
+    <script type="text/javascript">
+        $('.htmlarea').tinymce({
+            directionality : '<?php echo $this->localizations()->getCurrentLocalization()['direction'] ?>',
+            script_url : '<?php echo $this->asset('tinymce/tinymce.min.js') ?>',
+            language : "<?php echo $this->language ?>",
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+        });
+    </script>
+<?php endif; ?>
+
+<?php if ($form->initDateScript()): ?>
+    <script type="text/javascript" src="<?php echo $this->asset('jquery_i18n/jquery.ui.datepicker-' . $this->language . '.js') ?>"></script>
+    <script type="text/javascript">
+        $(".date").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            regional: '<?php echo $this->language ?>',
+            yearRange: '<?php echo $this->getSetting('application_calendar_min_year') ?>:<?php echo $this->getSetting('application_calendar_max_year') ?>'
+        });
+    </script>
+<?php endif; ?>

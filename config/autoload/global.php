@@ -12,7 +12,6 @@
  */
 
 return array(
-    'default_timezone' => 'Europe/Moscow',
     'php_settings' => array(
         'mbstring.internal_encoding' => 'UTF-8'
     ),

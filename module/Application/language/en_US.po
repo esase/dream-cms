@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-10-20 15:05+0600\n"
+"PO-Revision-Date: 2013-12-15 16:35+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,324 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Selected roles will be deleted. Are you sure?"
+msgstr "Selected roles will be deleted. Are you sure?"
+
+msgid "No"
+msgstr "No"
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "Delete selected"
+msgstr "Delete selected"
+
+msgid "Add a new role"
+msgstr "Add a new role"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Error occurred"
+msgstr "Error occurred"
+
+msgid "Selected roles have been deleted"
+msgstr "Selected roles have been deleted"
+
+msgid "You need to select some of checkboxes below"
+msgstr "You need to select some of checkboxes below"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Page range should be greater than 0"
+msgstr "Page range should be greater than 0"
+
+msgid "Per page step should be greater than 0"
+msgstr "Per page step should be greater than 0"
+
+msgid "Max per page range should be greater than 0"
+msgstr "Max per page range should be greater than 0"
+
+msgid "Min per page range should be greater than 0"
+msgstr "Min per page range should be greater than 0"
+
+msgid "Default per page value should be greater than 0"
+msgstr "Default per page value should be greater than 0"
+
+msgid "Page range"
+msgstr "Page range"
+
+msgid "Per page step"
+msgstr "Per page step"
+
+msgid "Max per page range"
+msgstr "Max per page range"
+
+msgid "Min per page range"
+msgstr "Min per page range"
+
+msgid "Default per page value"
+msgstr "Default per page value"
+
+msgid "Pagination"
+msgstr "Pagination"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "member"
+msgstr "Member"
+
+msgid "guest"
+msgstr "Guest"
+
+msgid "admin"
+msgstr "Admin"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Nothing found"
+msgstr "Nothing found"
+
+msgid "The input does not appear to be a valid datetime"
+msgstr "The input does not appear to be a valid datetime"
+
+msgid "List of ACL roles"
+msgstr "List of ACL roles"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Per page"
+msgstr "Per page"
+
+msgid "custom"
+msgstr "Custom"
+
+msgid "system"
+msgstr "System"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Default time zone"
+msgstr "Default time zone"
+
+msgid "short"
+msgstr "Short format"
+
+msgid "medium"
+msgstr "Medium format"
+
+msgid "long"
+msgstr "Long format"
+
+msgid "full"
+msgstr "Full format"
+
+msgid "Default date format"
+msgstr "Default date format"
+
+msgid "Max year in calendar"
+msgstr "Max year in calendar"
+
+msgid "Min year in calendar"
+msgstr "Min year in calendar"
+
+msgid "Year should be in range from 1902 to 2037"
+msgstr "Year should be in range from 1902 to 2037"
+
+msgid "Settings have been saved"
+msgstr "Settings have been saved"
+
+msgid "Captcha line noise level"
+msgstr "Captcha line noise level"
+
+msgid "Captcha dot noise level"
+msgstr "Captcha dot noise level"
+
+msgid "Captcha height"
+msgstr "Captcha height"
+
+msgid "Captcha width"
+msgstr "Captcha width"
+
+msgid "Enable gzip for css cache"
+msgstr "Enable gzip for css cache"
+
+msgid "Enable css cache"
+msgstr "Enable css cache"
+
+msgid "Enable gzip for js cache"
+msgstr "Enable gzip for js cache"
+
+msgid "Enable js cache"
+msgstr "Enable js cache"
+
+msgid "Meta keywords"
+msgstr "Meta keywords"
+
+msgid "Meta description"
+msgstr "Meta description"
+
+msgid "Site email"
+msgstr "Site email"
+
+msgid "Site name"
+msgstr "Site name"
+
+msgid "Calendar"
+msgstr "Calendar"
+
+msgid "Cache"
+msgstr "Cache"
+
+msgid "Main settings"
+msgstr "Main settings"
+
+msgid "Please verify you are human"
+msgstr "Please verify you are human"
+
+msgid "Captcha value is wrong"
+msgstr "Captcha value is wrong"
+
+msgid "You need to select the checkbox"
+msgstr "You need to select the checkbox"
+
+msgid "The input does not appear to be a valid Uri"
+msgstr "The input does not appear to be a valid Uri"
+
+msgid "The input does not match the expected structure for a DNS hostname"
+msgstr "The input does not match the expected structure for a DNS hostname"
+
+msgid ""
+"The input appears to be a DNS hostname but cannot match TLD against known "
+"list"
+msgstr ""
+"The input appears to be a DNS hostname but cannot match TLD against known "
+"list"
+
+msgid "The input appears to be a DNS hostname but cannot extract TLD part"
+msgstr "The input appears to be a DNS hostname but cannot extract TLD part"
+
+msgid ""
+"The input appears to be a local network name but local network names are not "
+"allowed"
+msgstr ""
+"The input appears to be a local network name but local network names are not "
+"allowed"
+
+msgid "The input appears to be an IP address, but IP addresses are not allowed"
+msgstr ""
+"The input appears to be an IP address, but IP addresses are not allowed"
+
+msgid "The input does not appear to be a valid URI hostname"
+msgstr "The input does not appear to be a valid URI hostname"
+
+msgid "The input does not appear to be a valid local network name"
+msgstr "The input does not appear to be a valid local network name"
+
+msgid ""
+"The input appears to be a DNS hostname but cannot match against hostname "
+"schema for TLD '%tld%'"
+msgstr ""
+"The input appears to be a DNS hostname but cannot match against hostname "
+"schema for TLD '%tld%'"
+
+msgid ""
+"The input appears to be a DNS hostname but contains a dash in an invalid "
+"position"
+msgstr ""
+"The input appears to be a DNS hostname but contains a dash in an invalid "
+"position"
+
+msgid ""
+"The input appears to be a DNS hostname but the given punycode notation "
+"cannot be decoded"
+msgstr ""
+"The input appears to be a DNS hostname but the given punycode notation "
+"cannot be decoded"
+
+msgid "The input exceeds the allowed length"
+msgstr "The input exceeds the allowed length"
+
+msgid "'%localPart%' is not a valid local part for the email address"
+msgstr "'%localPart%' is not a valid local part for the email address"
+
+msgid "'%localPart%' can not be matched against quoted-string format"
+msgstr "'%localPart%' can not be matched against quoted-string format"
+
+msgid "'%localPart%' can not be matched against dot-atom format"
+msgstr "'%localPart%' can not be matched against dot-atom format"
+
+msgid ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+msgstr ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+
+msgid ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+msgstr ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+
+msgid "'%hostname%' is not a valid hostname for the email address"
+msgstr "'%hostname%' is not a valid hostname for the email address"
+
+msgid ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
+msgstr ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
+
+msgid "Invalid type given. String expected"
+msgstr "Invalid type given. String expected"
+
+msgid "The input does not appear to be a float"
+msgstr "The input does not appear to be a float"
+
+msgid "List of settings"
+msgstr "List of settings"
+
+msgid "List of modules"
+msgstr "List of modules"
+
+msgid "Access Control List"
+msgstr "Access Control List"
+
+msgid "Layouts"
+msgstr "Layouts"
+
+msgid "Localizations"
+msgstr "Localizations"
+
+msgid "Site settings"
+msgstr "Site settings"
+
+msgid "Modules"
+msgstr "Modules"
+
+msgid "Select Part"
+msgstr "Select Part"
+
+msgid "Select language"
+msgstr "Select language"
+
+msgid "Welcome"
+msgstr "Welcome, %s"
+
+msgid "Back to site"
+msgstr "Back to site"
 
 msgid "Submit"
 msgstr "Submit"
@@ -35,11 +353,59 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
-msgid "Application get localizations via XmlRpc desc"
-msgstr "Get localizations through the XmlRpc"
+msgid "Event - Settings change"
+msgstr "Change settings"
 
-msgid "Application get localizations (guest) via XmlRpc"
+msgid "Event - Settings change (guest)"
+msgstr "Guest has changed settings for the module \"%s\""
+
+msgid "Event - Settings change (user)"
+msgstr "\"%s\" has changed settings for the module \"%s\""
+
+msgid "Event - Get localizations via XmlRpc"
+msgstr "Get localizations via the XmlRpc"
+
+msgid "Event - Get localizations (guest) via XmlRpc"
 msgstr "Guest has gotten localizations via XmlRpc"
 
-msgid "Application get localizations via XmlRpc"
+msgid "Event - Get localizations (user) via XmlRpc"
 msgstr "\"%s\" has gotten localizations via XmlRpc"
+
+msgid "Event - ACL role delete"
+msgstr "ACL role delete"
+
+msgid "Event - ACL role delete (guest)"
+msgstr "Guest has deleted the ACL role with id - \"%d\""
+
+msgid "Event - ACL role delete (user)"
+msgstr "\"%s\" has deleted the ACL role with id - \"%d\""
+
+msgid "A 403 error occurred"
+msgstr "A 403 error occurred"
+
+msgid "Your request is forbidden"
+msgstr "Your request is forbidden"
+
+msgid "ACL - Possibility to view modules in administration panel"
+msgstr "Possibility to view modules in administration panel"
+
+msgid "ACL - Possibility to get site localizations via XmlRpc"
+msgstr "Possibility to get site localizations via XmlRpc"
+
+msgid "ACL - Possibility to change site settings in administration panel"
+msgstr "Possibility to change site settings in administration panel"
+
+msgid "ACL - Possibility to view site localizations in administration panel"
+msgstr "Possibility to view site localizations in administration panel"
+
+msgid "ACL - Possibility to view site layouts in administration panel"
+msgstr "Possibility to view site layouts in administration panel"
+
+msgid "ACL - Possibility to view site ACL in administration panel"
+msgstr "Possibility to view site ACL in administration panel"
+
+msgid "ACL - Possibility to add new ACL roles in administration panel"
+msgstr "ACL - Possibility to add new ACL roles in administration panel"
+
+msgid "ACL - Possibility to delete ACL roles in administration panel"
+msgstr "ACL - Possibility to delete ACL roles in administration panel"

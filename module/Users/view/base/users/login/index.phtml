@@ -1,16 +1,11 @@
-<?php
-$title = $this->translate('Login');
-$this->headTitle($title);
-?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-<?php echo $this->partial('notifications') ?>
+<?php $this->declareVars('pageTitle') ?>
+<?php $this->pageTitle = $this->translate('Login') ?>
 
-<?php
-$form = $this->loginForm;
-$form->setAttribute('action', $this->url('application', array('controller' => 'login')));
-$form->prepare();
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
-echo $this->form()->openTag($form);
-echo $this->formCollection($form);
-echo $this->form()->closeTag();
-?>
+<h1><?php echo $this->escapeHtml($this->pageTitle); ?></h1>
+
+<?php echo $this->partial('partials/form', array(
+    'form' => $this->loginForm,
+    'controller' => 'login'
+)); ?>

@@ -7,11 +7,11 @@ class Cache
     /**
      * Get cache name
      * 
-     * @param $methodName
+     * @param string $methodName
      * @param array $argsList
      * @return string
      */
-    public function getCacheName($methodName, array $argsList = array())
+    public static function getCacheName($methodName, array $argsList = array())
     {
         return md5($methodName . self::processArgs($argsList));
     }

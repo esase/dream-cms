@@ -1,0 +1,69 @@
+<?php use Application\Model\Acl as AclModel ?>
+<?php echo $this->render('application/acl-administration/_header') ?>
+<?php echo $this->partial('partials/tabs', array('tabs' => $this->baseTabs)) ?>
+
+<?php echo $this->partial('partials/data_grid', array(
+    'controller' => 'acl-administration',
+    'action' => 'list',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Name'),
+            'order_name' => 'name'
+        ),
+        2 => array(
+            'title' => $this->translate('Type'),
+            'order_name' => 'type'
+        )
+    ),
+    'paginator' => $this->paginator,
+    'helpers' => array(
+        'name' => 'translate',
+        'type' => 'translate'
+    ),
+    'helpers_options' => array(
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+            'new_role' => array(
+                'name' => $this->translate('Add a new role'),
+                'controller' => 'acl-administration',
+                'action' => 'add-role',
+                'check_acl' => true
+            )
+        ),
+        'multiple_actions' => array(
+            'delete' => array(
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'acl-administration',
+                'action' => 'delete-roles',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected roles will be deleted. Are you sure?')
+            )
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'acl-roles',
+        'multiple_actions' => array(
+            'items_name' => 'roles[]'
+        )
+    ),
+    'actions_extra_check' => array(
+        'multiple_actions' => array(
+            'system_items' => array(
+                'param' => 'type',
+                'condition' =>  'return "{value}" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+            )
+        )
+    )
+)) ?>

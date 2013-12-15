@@ -1,0 +1,9 @@
+<ul class="nav nav-tabs">
+    <?php foreach ($this->routesPermission($this->tabs) as $tab) : ?>
+        <li<?php if ($this->currentRoute()->getController() == $tab['controller'] && $this->currentRoute()->getAction() == $tab['action']): ?> class="active"<?php endif; ?>>
+            <a href="<?php echo $this->url(null, array('controller' => $tab['controller'], 'action' => $tab['action'])) ?>">
+                <?php echo $this->escapeHtml($tab['name']) ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+</ul>

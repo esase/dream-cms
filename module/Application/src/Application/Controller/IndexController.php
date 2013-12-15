@@ -16,6 +16,5 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        //$this->model = $this->getServiceLocator()->get('Application\Model\Builder')->getInstance('Application\Model\Acl');
     }
 }

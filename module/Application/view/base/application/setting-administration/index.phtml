@@ -1,0 +1,6 @@
+<?php echo $this->render('application/setting-administration/_header') ?>
+<?php echo $this->partial('partials/tabs', array('tabs' => $this->baseTabs)); ?>
+<?php echo $this->partial('partials/form', array(
+    'form' => $this->settingsForm,
+    'controller' => 'settings-administration'
+)); ?>

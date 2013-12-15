@@ -3,12 +3,15 @@
 namespace Application;
 
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
+use Zend\Http\Response;
 
 use Application\Model\Acl as AclModel;
 use Application\Service\Service as ApplicationService;
+use Users\Service\Service as UsersService;
 
 use StdClass;
 use DateTime;
+use Locale;
 
 use Zend\Authentication\Result as AuthenticationResult;
 use Zend\Authentication\Storage;
@@ -26,6 +29,12 @@ use Zend\Log\Logger as Logger;
 
 class Module
 {
+    /**
+     * Init admin layout
+     * @param boolean
+     */
+    protected $initAdminlayout = false;
+
     /**
      * Service managerzend
      * @var object
@@ -57,6 +66,11 @@ class Module
     protected $defaultLocalization;
 
     /**
+     * Administration area
+     */
+    const ADMINISTRATION_AREA = 'administration';
+
+    /**
      * Init
      *
      * @param object $moduleManager
@@ -83,6 +97,16 @@ class Module
             $this, 'initUserLocalization'
         ), 100);
 
+        // check administration privileges
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+            $this, 'checkAdministrationPrivileges'
+        ), 2);
+
+        // load admin layout
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+            $this, 'loadAdministrationLayout'
+        ));
+
         $config = $this->serviceManager->get('Config');
 
         // init profiler
@@ -90,6 +114,52 @@ class Module
             $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, array(
                 $this, 'initProfiler'
             ));
+        }
+    }
+
+    /**
+     * Load administration layout
+     *
+     * @param object $e MvcEvent
+     */
+    public function loadAdministrationLayout(MvcEvent $e)
+    {
+        if ($this->initAdminlayout) {
+            $e->getTarget()->layout('layout/administration');
+        }
+    }
+
+    /**
+     * Check administration privileges
+     *
+     * @param object $e MvcEvent
+     */
+    public function checkAdministrationPrivileges(MvcEvent $e)
+    {
+        $matches = $e->getRouteMatch();
+        $controller = $matches->getParam('controller');
+        $action = $matches->getParam('action');
+
+        // check the controller name
+        if (false !== ($result = stristr($controller, self::ADMINISTRATION_AREA))) {
+            if ($e->getResponse()->getStatusCode() != Response::STATUS_CODE_404) {
+                // check action permission
+                if (!UsersService::checkPermission($controller . ' ' . $action)) {
+                    // redirect to forbidden page
+                    $response = $e->getResponse();
+                    $router = $e->getRouter();
+                    $url = $router->assemble(array('controller' => 'error', 'action' => 'forbidden'),
+                            array('name' => 'application'));
+
+                    // populate and return the response
+                    $response->setStatusCode(Response::STATUS_CODE_302);
+                    $response->getHeaders()->addHeaderLine('Location', $url);
+
+                    return $response;
+                }
+
+                $this->initAdminlayout = true;
+            }
         }
     }
 
@@ -102,7 +172,7 @@ class Module
         $logger = new Logger();
         $logger->addWriter($writer);
 
-        $logger->info('memory usage: ' . round(memory_get_usage(true) / 1024) . 'Mb');
+        $logger->info('memory usage: ' . memory_get_usage(true) / 1024 / 1024 . 'Mb');
         $logger->info('page execution time: ' . (microtime(true) - APPLICATION_START));
 
         // get sql profiler
@@ -237,11 +307,9 @@ class Module
      */
     protected function initTimeZone()
     {
-        $config = $this->serviceManager->get('Config');
-
         $defaultTimeZone = !empty($this->userIdentity->time_zone)
             ? $this->userIdentity->time_zone
-            : $config['default_timezone'];
+            : ApplicationService::getSetting('application_default_time_zone');
 
         // change time zone settings
         if ($defaultTimeZone != date_default_timezone_get()) {
@@ -285,7 +353,7 @@ class Module
 
         // init default localization
         $this->localizations = $localization->getAllLocalizations();
-        $acceptLanguage = \Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
+        $acceptLanguage = Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
 
         $defaultLanguage = !empty($this->userIdentity->language)
             ? $this->userIdentity->language
@@ -300,6 +368,9 @@ class Module
         $translator = $this->serviceManager->get('translator');
         $translator->setLocale($this->defaultLocalization['locale']);
         $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
+
+        // init default localization
+        Locale::setDefault($this->defaultLocalization['locale']);
 
         AbstractValidator::setDefaultTranslator($translator);
         ApplicationService::setCurrentLocalization($this->defaultLocalization);
@@ -322,32 +393,11 @@ class Module
             ? $layout->getLayoutsByName($this->userIdentity->layout)
             : $layout->getDefaultActiveLayouts();
 
-        // add layouts paths    
+        // add layouts paths for each module
         foreach ($this->moduleManager->getModules() as $module) {
             foreach ($activeLayouts as $layoutInfo) {
                 $templatePathResolver->addPath('module/' . $module . '/view/' . $layoutInfo['name']);    
             }
-        }
-
-        // process template map
-        $templatePathResolver = $this->serviceManager->get('Zend\View\Resolver\TemplateMapResolver');
-        $templateMap = array();
-        $activeLayouts = array_reverse($activeLayouts);
-
-        foreach ($templatePathResolver as $name => $path) {
-            foreach ($activeLayouts as $layoutInfo) {
-                $filePath = sprintf($path, $layoutInfo['name']);
-
-                // replace special path marker with current layout name
-                if (file_exists($filePath)) {
-                    $templateMap[$name] = $filePath;
-                    break;
-                }
-            }
-        }
-
-        if ($templateMap) {
-            $templatePathResolver->setMap($templateMap);
         }
 
         ApplicationService::setCurrentLayouts($activeLayouts);
@@ -380,6 +430,7 @@ class Module
             ApplicationService::setCurrentLocalization($this->localizations[$matches->getParam('languge')]);    
         }
 
+        Locale::setDefault($this->localizations[$matches->getParam('languge')]['locale']);
         $router->setDefaultParam('languge', $matches->getParam('languge'));
     }
 
@@ -400,7 +451,12 @@ class Module
             'factories' => array(
                 'Application\Model\ModelManager' => function($serviceManager)
                 {
-                    return new Model\ModelManager($serviceManager);
+                    return new Model\ModelManager($serviceManager->
+                            get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Cache\Static'));
+                },
+                'Application\Form\FormManager' => function($serviceManager)
+                {
+                    return new Form\FormManager($serviceManager->get('Translator'));
                 },
                 'Application\AuthService' => function($serviceManager)
                 {
@@ -423,12 +479,35 @@ class Module
     {
         return array(
             'invokables' => array(
+                'urlParamsEncode' => 'Application\View\Helper\UrlParamsEncode',
+                'date' => 'Application\View\Helper\Date',
                 'getSetting' => 'Application\View\Helper\Setting',
                 'asset' => 'Application\View\Helper\Asset',
                 'headScript' => 'Application\View\Helper\HeadScript',
-                'headlink' => 'Application\View\Helper\HeadLink'
+                'headlink' => 'Application\View\Helper\HeadLink',
+                'isGuest' => 'Application\View\Helper\IsGuest',
+                'userIdentity' => 'Application\View\Helper\UserIdentity',
+                'checkPermission' => 'Application\View\Helper\CheckPermission',
+                'routesPermission' => 'Application\View\Helper\RoutesPermission',
+                'localizations' => 'Application\View\Helper\Localizations',
             ),
             'factories' => array(
+                'adminMenu' =>  function($serviceManager)
+                {
+                    $adminMenu = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\AdminMenu');
+
+                    return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
+                },
+                'currentRoute' =>  function($serviceManager)
+                {
+                    $router = $this->serviceManager->get('router');
+                    $request = $this->serviceManager->get('request');
+                    $matches = $router->match($request);
+
+                    return new \Application\View\Helper\CurrentRoute($matches, $request->getQuery());
+                },
                 'flashMessages' => function($serviceManager)
                 {
                     $flashmessenger = $serviceManager->getServiceLocator()

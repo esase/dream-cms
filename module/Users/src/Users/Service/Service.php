@@ -12,6 +12,11 @@ use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 class Service extends ApplicationService
 {
     /**
+     * Acl resource space devider
+     */
+    const ACL_RESOURCE_SPACE_DEVIDER = '_';
+
+    /**
      * Get user info
      *
      * @param integer $userId
@@ -28,6 +33,26 @@ class Service extends ApplicationService
     }
 
     /**
+     * Check is admin or not
+     *
+     * @return boolean
+     */
+    public static function isAdmin()
+    {
+        return self::getCurrentUserIdentity()->user_id == AclModel::DEFAULT_ROLE_ADMIN;
+    }
+
+    /**
+     * Check is guest or not
+     *
+     * @return boolean
+     */
+    public static function isGuest()
+    {
+        return self::getCurrentUserIdentity()->user_id == AclModel::DEFAULT_GUEST_ID;
+    }
+
+    /**
      * Check permission
      *
      * @param string $resource
@@ -40,6 +65,10 @@ class Service extends ApplicationService
         if (self::$currentUserIdentity->role == AclModel::DEFAULT_ROLE_ADMIN) {
             return true;
         }
+
+        // processing resource name
+        $resource = str_replace(array(' ', '-'),
+                array(self::ACL_RESOURCE_SPACE_DEVIDER, self::ACL_RESOURCE_SPACE_DEVIDER), $resource);
 
         // init acl
         if (!self::$currentAcl) {

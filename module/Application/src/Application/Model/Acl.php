@@ -44,6 +44,16 @@ class Acl extends Base
     const ACTION_DISALLOWED = 'disallowed';
 
     /**
+     * Role type system
+     */
+    const ROLE_TYPE_SYSTEM = 'system';
+
+    /**
+     * Role type custom
+     */
+    const ROLE_TYPE_CUSTOM = 'custom';
+
+    /**
      * Increase acl action
      *
      * @param integer $userId
