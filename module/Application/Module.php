@@ -140,12 +140,12 @@ class Module
         $controller = $matches->getParam('controller');
         $action = $matches->getParam('action');
 
-        // check the controller name
+        // check the controller's name
         if (false !== ($result = stristr($controller, self::ADMINISTRATION_AREA))) {
             if ($e->getResponse()->getStatusCode() != Response::STATUS_CODE_404) {
-                // check action permission
-                if (!UsersService::checkPermission($controller . ' ' . $action)) {
-                    // redirect to forbidden page
+                // check the action's permission
+                if (!UsersService::checkPermission($controller . ' ' . $action, false)) {
+                    // redirect to the forbidden page
                     $response = $e->getResponse();
                     $router = $e->getRouter();
                     $url = $router->assemble(array('controller' => 'error', 'action' => 'forbidden'),
@@ -492,6 +492,10 @@ class Module
                 'localizations' => 'Application\View\Helper\Localizations',
             ),
             'factories' => array(
+                'booleanValue' =>  function($serviceManager)
+                {
+                    return new \Application\View\Helper\BooleanValue($serviceManager->getServiceLocator()->get('Translator'));
+                },
                 'adminMenu' =>  function($serviceManager)
                 {
                     $adminMenu = $this->serviceManager

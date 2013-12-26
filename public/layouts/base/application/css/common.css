@@ -49,3 +49,8 @@ table.table {
 table.table th.selector-items {
     width: 20px;
 }
+
+table.table td.action {
+    text-align: right;
+    width: 24px;
+}

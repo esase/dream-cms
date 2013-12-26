@@ -16,9 +16,10 @@ class RoutesPermission extends AbstractHelper
      *      boolean check_acl optional
      *      string acl_resource optional
      * @param boolean $increaseActions
+     * @param boolean $collectDisallowed
      * @return array
      */
-    public function __invoke(array $routes, $increaseActions = false)
+    public function __invoke(array $routes, $increaseActions = false, $collectDisallowed = false)
     {
         $processedRoutes = array();
 
@@ -30,9 +31,14 @@ class RoutesPermission extends AbstractHelper
                         ? $route['acl_resource'] // check permission for specific acl resource
                         : $route['controller'] . ' ' . $route['action']; // check permission for specific controller and action
 
-                // check permission
+                // check a permission
                 if (!UsersService::checkPermission($aclResource, $increaseActions)) {
-                    continue;
+                    if (!$collectDisallowed) {
+                        continue;
+                    }
+                    else {
+                        $route['permission'] = false;
+                    }
                 }
             }
 

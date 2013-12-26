@@ -66,49 +66,85 @@ class Service extends ApplicationService
             return true;
         }
 
-        // processing resource name
+        // process a resource name
         $resource = str_replace(array(' ', '-'),
                 array(self::ACL_RESOURCE_SPACE_DEVIDER, self::ACL_RESOURCE_SPACE_DEVIDER), $resource);
 
-        // init acl
+        // init a acl
         if (!self::$currentAcl) {
             self::initAcl();
         }
 
-        // check resource existing
+        // check the resource existing
         if (self::$currentAclResources && array_key_exists($resource, self::$currentAclResources)) {
-            // check permission
+            // check the permission
             $permissionResult = self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource);
 
-            // update actions counter
-            if (self::$currentAclResources[$resource]['actions_limit'] && $increaseActions) {
-                $currentTime = time();
+            $currentTime = time();
 
-                // check expired date (expired date must be active)
-                if (!self::$currentAclResources[$resource]['date_end'] ||
-                        self::$currentAclResources[$resource]['date_end'] >= $currentTime) {
+            // check the date start is should be empty or active
+            if (self::$currentAclResources[$resource]['date_start']
+                        && self::$currentAclResources[$resource]['date_start'] > $currentTime) {
 
-                    // check reset actions time
-                    $resetActions = false;
+                return $permissionResult;
+            }
 
+            // check the date end is should be empty or active
+            if (self::$currentAclResources[$resource]['date_end']
+                        && self::$currentAclResources[$resource]['date_end'] < $currentTime) {
+
+                return $permissionResult;
+            }
+
+            // check the resource's actions limit
+            if (self::$currentAclResources[$resource]['actions_limit']) {
+                $updateAclResources = false;
+
+                // do we need reset all actions?
+                if (self::$currentAclResources[$resource]['actions']) {
                     if (self::$currentAclResources[$resource]['actions_reset'] && $currentTime >=
                             self::$currentAclResources[$resource]['actions_last_reset'] +
                             self::$currentAclResources[$resource]['actions_reset']) {
 
-                        $resetActions = true;
-                    }
-
-                    // increase actions counter
-                    if ($resetActions || true == $permissionResult) {
+                        // reset the resource's actions
                         $aclModel = self::$serviceManager
                             ->get('Application\Model\ModelManager')
                             ->getInstance('Application\Model\Acl');
 
                         $result = $aclModel->increaseAclAction(self::$currentUserIdentity->user_id,
-                                self::$currentAclResources[$resource], $resetActions);
+                                self::$currentAclResources[$resource], true, ($increaseActions ? 1 : 0));
 
-                        $permissionResult = $result === true ?:false;
+                        if (true !== $result) {
+                            return false;
+                        }
+
+                        $updateAclResources = true;
                     }
+                }
+
+                // increase actions
+                if ($increaseActions && !$updateAclResources && $permissionResult === true) {
+                    // increase the resource's actions
+                    $aclModel = self::$serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\Acl');
+
+                    $result = $aclModel->
+                            increaseAclAction(self::$currentUserIdentity->user_id, self::$currentAclResources[$resource]);
+
+                    if (true !== $result) {
+                        return false;
+                    }
+
+                    $updateAclResources = true;
+                }
+
+                // update all acl resources
+                if ($updateAclResources) {
+                    self::initAcl();
+                    return $permissionResult === false
+                        ? self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource)
+                        : $permissionResult;
                 }
             }
 
@@ -132,7 +168,7 @@ class Service extends ApplicationService
             ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\Acl');
 
-        // get acl resources
+        // get assigned acl resources
         if (null != ($resources = $aclModel->
                 getAclResources(self::$currentUserIdentity->role, self::$currentUserIdentity->user_id))) {
 

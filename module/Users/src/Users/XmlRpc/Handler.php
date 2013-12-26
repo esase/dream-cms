@@ -65,7 +65,7 @@ class Handler extends AbstractHandler
 
             // fire event
             UsersEvent::fireEvent(UsersEvent::USER_SET_TIMEZONE_XMLRPC, $this->userIdentity->user_id,
-                    $this->userIdentity->user_id, 'Event - Set user\'s timezone via XmlRpc message', array($this->userIdentity->nick_name));
+                    $this->userIdentity->user_id, 'Event - Timezone set by user via XmlRpc', array($this->userIdentity->nick_name));
 
             return self::SUCCESSFULLY_RESPONSE;
         }
@@ -90,8 +90,8 @@ class Handler extends AbstractHandler
         if (false !== ($userInfo = $this->getModel()->getUserInfoById($userId))) {
             // fire event
             $eventDesc = UsersService::isGuest()
-                ? 'Event - User get info (guest) via XmlRpc'
-                : 'Event - User get info (user) via XmlRpc';
+                ? 'Event - User\'s info was obtained by guest via XmlRpc'
+                : 'Event - User\'s info was obtained by user via XmlRpc';
 
             $eventDescParams = UsersService::isGuest()
                 ? array($userInfo->nick_name)

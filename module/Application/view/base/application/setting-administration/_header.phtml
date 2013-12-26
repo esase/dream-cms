@@ -9,16 +9,3 @@
     <?php echo $this->escapeHtml($this->pageTitle) ?>
   </h1>
 </div>
-
-<?php $this->declareVars('baseTabs') ?>
-
-<?php
-  $this->baseTabs = array(
-      'list' => array(
-      'name' => $this->translate('List of settings'),
-      'controller' => 'settings-administration',
-      'action' => 'index',
-      'check_acl' => true
-    ) 
-  );
-?>

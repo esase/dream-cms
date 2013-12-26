@@ -27,6 +27,31 @@ class Event
     const APPLICATION_DELETE_ACL_ROLE = 'delete_acl_role';
 
     /**
+     * Application ACL role add event
+     */
+    const APPLICATION_ADD_ACL_ROLE = 'add_acl_role';
+
+    /**
+     * Application ACL role edit event
+     */
+    const APPLICATION_EDIT_ACL_ROLE = 'edit_acl_role';
+ 
+    /**
+     * Application ACL resource allow event
+     */
+    const APPLICATION_ALLOW_ACL_RESOURCE = 'allow_acl_resource';
+ 
+    /**
+     * Application ACL resource disallow event
+     */
+    const APPLICATION_DISALLOW_ACL_RESOURCE = 'disallow_acl_resource';
+
+    /**
+     * Application ACL resource edit settings event
+     */
+    const APPLICATION_EDIT_ACL_RESOURCE_SETTINGS = 'edit_acl_resource_settings';
+
+    /**
      * Fire event
      *
      * @param string $event

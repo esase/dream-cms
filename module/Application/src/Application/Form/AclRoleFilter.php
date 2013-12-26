@@ -4,7 +4,7 @@ namespace Application\Form;
 
 use Application\Model\Acl as AclModel;
 
-class AclFilter extends AbstractCustomForm 
+class AclRoleFilter extends AbstractCustomForm 
 {
     /**
      * Form name
@@ -24,7 +24,7 @@ class AclFilter extends AbstractCustomForm
      */
     protected $formElements = array(
         0 => array(
-            'name' => 'type',
+            'name' => 'types',
             'type' => 'multicheckbox',
             'label' => 'Type',
             'values' => array(

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-12-15 16:35+0600\n"
+"PO-Revision-Date: 2013-12-26 22:03+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,66 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Resource's settings have been edited"
+msgstr "Resource's settings have been edited"
+
+msgid "Number of allowed actions"
+msgstr "Number of allowed actions"
+
+msgid "Number of actions is reset every N seconds"
+msgstr "Number of actions is reset every N seconds"
+
+msgid "This action is available since"
+msgstr "This action is available since"
+
+msgid "This action is available until"
+msgstr "This action is available until"
+
+msgid "Resource's settings"
+msgstr "Resource's settings"
+
+msgid "Selected resources have been disallowed"
+msgstr "Selected resources have been disallowed"
+
+msgid "Selected resources have been allowed"
+msgstr "Selected resources have been allowed"
+
+msgid "Disallowed"
+msgstr "Disallowed"
+
+msgid "Allowed"
+msgstr "Allowed"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Application"
+msgstr "Application"
+
+msgid "Module"
+msgstr "Module"
+
+msgid "Disallow selected"
+msgstr "Disallow selected"
+
+msgid "Allow selected"
+msgstr "Allow selected"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Browse resources"
+msgstr "Browse resources"
+
+msgid "Edit the role"
+msgstr "Edit the role"
+
+msgid "Role has been edited"
+msgstr "Role has been edited"
+
+msgid "Role has been added"
+msgstr "Role has been added"
 
 msgid "Selected roles will be deleted. Are you sure?"
 msgstr "Selected roles will be deleted. Are you sure?"
@@ -26,8 +86,8 @@ msgstr "Yes"
 msgid "Delete selected"
 msgstr "Delete selected"
 
-msgid "Add a new role"
-msgstr "Add a new role"
+msgid "Add a role"
+msgstr "Add a role"
 
 msgid "Actions"
 msgstr "Actions"
@@ -98,8 +158,8 @@ msgstr "Nothing found"
 msgid "The input does not appear to be a valid datetime"
 msgstr "The input does not appear to be a valid datetime"
 
-msgid "List of ACL roles"
-msgstr "List of ACL roles"
+msgid "List of roles"
+msgstr "List of roles"
 
 msgid "Type"
 msgstr "Type"
@@ -180,10 +240,10 @@ msgid "Meta description"
 msgstr "Meta description"
 
 msgid "Site email"
-msgstr "Site email"
+msgstr "Site's email"
 
 msgid "Site name"
-msgstr "Site name"
+msgstr "Site's name"
 
 msgid "Calendar"
 msgstr "Calendar"
@@ -321,10 +381,10 @@ msgid "Modules"
 msgstr "Modules"
 
 msgid "Select Part"
-msgstr "Select Part"
+msgstr "Select a part"
 
 msgid "Select language"
-msgstr "Select language"
+msgstr "Select a language"
 
 msgid "Welcome"
 msgstr "Welcome, %s"
@@ -353,32 +413,77 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
-msgid "Event - Settings change"
-msgstr "Change settings"
+msgid "Event - Editing settings"
+msgstr "Editing settings"
 
-msgid "Event - Settings change (guest)"
-msgstr "Guest has changed settings for the module \"%s\""
+msgid "Event - Settings were changed by guest"
+msgstr "Guest changed settings for the module \"%s\""
 
-msgid "Event - Settings change (user)"
-msgstr "\"%s\" has changed settings for the module \"%s\""
+msgid "Event - Settings were changed by user"
+msgstr "\"%s\" changed settings for the module \"%s\""
 
-msgid "Event - Get localizations via XmlRpc"
-msgstr "Get localizations via the XmlRpc"
+msgid "Event - Getting localizations via XmlRpc"
+msgstr "Getting localizations via XmlRpc"
 
-msgid "Event - Get localizations (guest) via XmlRpc"
-msgstr "Guest has gotten localizations via XmlRpc"
+msgid "Event - Localizations were got by guest via XmlRpc"
+msgstr "Guest got localizations via XmlRpc"
 
-msgid "Event - Get localizations (user) via XmlRpc"
-msgstr "\"%s\" has gotten localizations via XmlRpc"
+msgid "Event - Localizations were got by user via XmlRpc"
+msgstr "\"%s\" got localizations via XmlRpc"
 
-msgid "Event - ACL role delete"
-msgstr "ACL role delete"
+msgid "Event - Deleting ACL roles"
+msgstr "Deleting ACL roles"
 
-msgid "Event - ACL role delete (guest)"
-msgstr "Guest has deleted the ACL role with id - \"%d\""
+msgid "Event - ACL role deleted by guest"
+msgstr "Guest deleted the ACL role with id - \"%d\""
 
-msgid "Event - ACL role delete (user)"
-msgstr "\"%s\" has deleted the ACL role with id - \"%d\""
+msgid "Event - ACL role deleteted by user"
+msgstr "\"%s\" deleted the ACL role with id - \"%d\""
+
+msgid "Event - Adding ACL roles"
+msgstr "Adding ACL roles"
+
+msgid "Event - ACL role added by guest"
+msgstr "Guest added the ACL role with id - \"%d\""
+
+msgid "Event - ACL role added by user"
+msgstr "\"%s\" added the ACL role with id - \"%d\""
+
+msgid "Event - Editing ACL roles"
+msgstr "Editing ACL roles"
+
+msgid "Event - ACL role edited by guest"
+msgstr "Guest edited the ACL role with id - \"%d\""
+
+msgid "Event - ACL role edited by user"
+msgstr "\"%s\" edited the ACL role with id - \"%d\""
+
+msgid "Event - Allowing ACL resources"
+msgstr "Allowing ACL resources"
+
+msgid "Event - ACL resource allowed by guest"
+msgstr "Guest allowed the ACL resource with id - \"%d\""
+
+msgid "Event - ACL resource allowed by user"
+msgstr "\"%s\" allowed the ACL resource with id - \"%d\""
+
+msgid "Event - Disallowing ACL resources"
+msgstr "Disallowing ACL resources"
+
+msgid "Event - ACL resource disallowed by guest"
+msgstr "Guest disallowed the ACL resource with id - \"%d\""
+
+msgid "Event - ACL resource disallowed by user"
+msgstr "\"%s\" disallowed the ACL resource with id - \"%d\""
+
+msgid "Event - Editing ACL resources settings"
+msgstr "Editing ACL resources settings"
+
+msgid "Event - ACL resource settings edited by guest"
+msgstr "Guest edited the ACL resource's settings with id - \"%d\""
+
+msgid "Event - ACL resource settings edited by user"
+msgstr "\"%s\" edited the ACL resource's settings with id - \"%d\""
 
 msgid "A 403 error occurred"
 msgstr "A 403 error occurred"
@@ -386,26 +491,41 @@ msgstr "A 403 error occurred"
 msgid "Your request is forbidden"
 msgstr "Your request is forbidden"
 
-msgid "ACL - Possibility to view modules in administration panel"
-msgstr "Possibility to view modules in administration panel"
+msgid "ACL - Viewing site's modules"
+msgstr "Viewing site's modules"
 
-msgid "ACL - Possibility to get site localizations via XmlRpc"
-msgstr "Possibility to get site localizations via XmlRpc"
+msgid "ACL - Getting site's localizations via XmlRpc"
+msgstr "Getting site's localizations via XmlRpc"
 
-msgid "ACL - Possibility to change site settings in administration panel"
-msgstr "Possibility to change site settings in administration panel"
+msgid "ACL - Editing site's settings"
+msgstr "Editing site's settings"
 
-msgid "ACL - Possibility to view site localizations in administration panel"
-msgstr "Possibility to view site localizations in administration panel"
+msgid "ACL - Viewing site's localizations"
+msgstr "Viewing site's localizations"
 
-msgid "ACL - Possibility to view site layouts in administration panel"
-msgstr "Possibility to view site layouts in administration panel"
+msgid "ACL - Viewing site's layouts"
+msgstr "Viewing site's layouts"
 
-msgid "ACL - Possibility to view site ACL in administration panel"
-msgstr "Possibility to view site ACL in administration panel"
+msgid "ACL - Viewing ACL roles"
+msgstr "Viewing ACL roles"
 
-msgid "ACL - Possibility to add new ACL roles in administration panel"
-msgstr "ACL - Possibility to add new ACL roles in administration panel"
+msgid "ACL - Adding ACL roles"
+msgstr "Adding ACL roles"
 
-msgid "ACL - Possibility to delete ACL roles in administration panel"
-msgstr "ACL - Possibility to delete ACL roles in administration panel"
+msgid "ACL - Deleting ACL roles"
+msgstr "Deleting ACL roles"
+
+msgid "ACL - Editing ACL roles"
+msgstr "Editing ACL roles"
+
+msgid "ACL - Browsing ACL resources"
+msgstr "Browsing ACL resources"
+
+msgid "ACL - Allowing ACL resources"
+msgstr "Allowing ACL resources"
+
+msgid "ACL - Disallowing ACL resources"
+msgstr "Disallowing ACL resources"
+
+msgid "ACL - Editing ACL resources settings"
+msgstr "Editing ACL resources settings"

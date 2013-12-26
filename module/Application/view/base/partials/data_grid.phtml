@@ -11,7 +11,8 @@
         'controller' => $this->controller,
         'action' => $this->action,
         'order_by' => $this->order_by,
-        'order_type' => $this->order_type 
+        'order_type' => $this->order_type,
+        'slug' => $this->slug
     );
 
     // init per page
@@ -48,7 +49,7 @@
     $this->languageDirection = $this->localizations()->getCurrentLocalization()['direction'];
 
     // init data grid regular actions
-    $this->declareVars('regularActions', 'actionsInitialized');
+    $this->declareVars('regularActions', 'actionsInitialized', 'regularActionsCount');
     $this->actionsInitialized = false;
 
     // process regular actions
@@ -58,11 +59,12 @@
                 $this->routesPermission($this->actions['regular_actions']))) {
 
             $this->actionsInitialized = true;
+            $this->regularActionsCount = count($this->regularActions);
         }
     }
 
     // init data grid multiple actions
-    $this->declareVars('multipleActions', 'multipleActionsCount');
+    $this->declareVars('multipleActions', 'multipleActionsCount', 'multipleActionParams');
 
     // process multiple actions
     if (!empty($this->actions['multiple_actions'])) {
@@ -93,6 +95,19 @@
         ? 'items[]'
         : $this->actions_options['multiple_actions']['items_name'];
 
+    // init data grid single actions
+    $this->declareVars('singleActions', 'singleActionsCount');
+
+    // process single actions
+    if (!empty($this->actions['single_actions'])) {
+        // check actions permissions
+        if (null != ($this->singleActions =
+                $this->routesPermission($this->actions['single_actions']))) {
+
+            $this->singleActionsCount = count($this->singleActions);
+        }
+    }
+
     // init form name
     $this->declareVars('formName');
     $this->formName = empty($this->actions_options['form_name'])
@@ -117,10 +132,11 @@
                             'controller' => $this->controller,
                             'action' => $this->action,
                             'notifications' => false,
-                            'extraFormOptions' => array(
+                            'params' => array(
                                 'per_page' => $this->per_page,
                                 'order_by' => $this->order_by,
-                                'order_type' => $this->order_type
+                                'order_type' => $this->order_type,
+                                'slug' => $this->slug
                             )
                         )); ?>
                     </div>
@@ -138,24 +154,36 @@
                 <ul class="dropdown-menu">
                     <?php if ($this->multipleActionsCount) : ?>
                         <?php foreach ($this->multipleActions as $action) : ?>
+                            <?php
+                                $this->multipleActionParams = array(
+                                    'controller' => $action['controller'],
+                                    'action' => $action['action']  
+                                );
+
+                                if (!empty($action['params']) && is_array($action['params'])) {
+                                    $this->multipleActionParams = array_merge($this->multipleActionParams, $action['params']);
+                                }
+                            ?>
                             <li>
-                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action'])) ?>">
+                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('application', $this->multipleActionParams) ?>">
                                     <?php echo $action['name'] ?>
                                 </a>
                             </li>
                         <?php endforeach; ?>
-                        <?php if ($this->regularActions) : ?>
+                        <?php if ($this->regularActionsCount) : ?>
                             <li class="divider"></li>
                         <?php endif; ?>
                     <?php endif; ?>
                     <!-- regular actions -->
-                    <?php foreach ($this->regularActions as $action) : ?>
-                        <li>
-                            <a href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action'])) ?>">
-                                <?php echo $action['name'] ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
+                    <?php if ($this->regularActionsCount) : ?>
+                        <?php foreach ($this->regularActions as $action) : ?>
+                            <li>
+                                <a href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action'])) ?>">
+                                    <?php echo $action['name'] ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </ul>
             </li>
         <?php endif; ?>
@@ -181,7 +209,7 @@
 <!-- notifications -->
 <?php echo $this->partial('partials/notifications') ?>
 
-<!-- data grid -->
+<!-- the data grid -->
 <?php if ($this->paginationCount): ?>
 
     <?php if ($this->multipleActionsCount) : ?>
@@ -192,7 +220,7 @@
         <?php echo $this->form()->openTag($form) ?>
     <?php endif; ?>
 
-    <table class="table">
+    <table class="table table-hover">
         <thead>
         <?php if ($this->multipleActionsCount) : ?>    
             <th class="selector-items">
@@ -271,6 +299,31 @@
                         <?php endif; ?>                        
                     </td>
                 <?php endforeach; ?>
+                <?php if ($this->singleActionsCount) : ?>
+                    <?php foreach ($this->singleActions as $action) : ?>
+                        <td class="action">
+                            <?php
+                                // extra check
+                                if (!empty($this->actions_extra_check['single_actions'][$action['action']])) {
+                                    foreach ($this->actions_extra_check['single_actions'][$action['action']] as $check) {
+                                        if (isset($check['param'], $check['condition'])) {
+                                            if (false === ($result = eval(str_replace('{value}', $data->{$check['param']}, $check['condition'])))) {
+                                                continue 2;
+                                            }
+                                        }
+                                    }
+                                }
+                            ?>
+                            <a class="single-actions" href="<?php echo $this->url('application', array(
+                                    'controller' => $action['controller'],
+                                    'action' => $action['action'],
+                                    'slug' => (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']]))) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+
+                                <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
+                            </a>
+                        </td>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tr>
         <?php endforeach; ?>
         </tbody>
@@ -280,7 +333,7 @@
         <?php echo $this->form()->closeTag() ?>
     <?php endif; ?>
  
-    <!-- pagination -->
+    <!-- a pagination -->
     <?php
         echo $this->paginationControl($this->paginator, 'Sliding', 'partials/slide_paginator', array(
             'route' => 'application',
@@ -294,13 +347,13 @@
 <?php endif; ?>
 
 <?php if ($this->multipleActionsCount) : ?>
-    <!-- append the data grid js file -->
+    <!-- append a data grid's js file -->
     <?php $this->headScript()->appendFile($this->asset('data_grid.js')) ?>
 
     <?php $this->inlineScript()->captureStart() ?>
         var dataGrid = new DataGrid({
             'formId' : '#<?php echo $this->escapeJs($this->formName) ?>',
-            'linksClass' : 'a.multiple-actions',
+            'multipleActionsClass' : 'a.multiple-actions',
             'items' : '<?php echo $this->escapeJs($this->multipleActionsItemsName) ?>',
             'selectorId' : '#<?php echo $this->escapeJs($this->multipleActionsSelectorId) ?>',
             'selectorErrorTitle' : '<?php echo $this->escapeJs($this->translate('Error')) ?>',

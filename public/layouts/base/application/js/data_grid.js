@@ -12,10 +12,10 @@ function DataGrid(options)
     this.$form = $(options.formId);
 
     /**
-     * Links class
+     * Multiple actions class
      * @var string
      */
-    this.linksClass = options.linksClass;
+    this.multipleActionsClass = options.multipleActionsClass;
 
     /**
      * Items uid
@@ -112,7 +112,8 @@ DataGrid.prototype._initDataGrid = function()
 {
     var self = this;
 
-    $(this.linksClass).click(function(event){
+    // init multiple actions clicks
+    $(this.multipleActionsClass).click(function(event){
         event.preventDefault();
 
         if (!self._checkCheckedItems()) {

@@ -87,17 +87,22 @@ CREATE TABLE IF NOT EXISTS `acl_resources` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `acl_resources` (`id`, `resource`, `description`, `module`) VALUES
-(1, 'modules_administration_index', 'ACL - Possibility to view modules in administration panel', 1),
-(2, 'settings_administration_index', 'ACL - Possibility to change site settings in administration panel', 1),
-(3, 'localizations_administration_index', 'ACL - Possibility to view site localizations in administration panel', 1),
-(4, 'layouts_administration_index', 'ACL - Possibility to view site layouts in administration panel', 1),
-(5, 'acl_administration_list', 'ACL - Possibility to view site ACL in administration panel', 1),
-(6, 'xmlrpc_get_localizations', 'ACL - Possibility to get site localizations via XmlRpc', 1),
-(7, 'users_administration_index', 'ACL - Possibility to view users in administration panel', 2),
-(8, 'xmlrpc_view_user_info', 'ACL - Possibility to view user\'s info via XmlRpc', 2),
-(9, 'xmlrpc_set_user_timezone', 'ACL - Possibility to change user\'s timezone via XmlRpc', 2),
-(10, 'acl_administration_add_role', 'ACL - Possibility to add new ACL roles in administration panel', 1),
-(11, 'acl_administration_delete_roles', 'ACL - Possibility to delete ACL roles in administration panel', 1);
+(1,  'xmlrpc_get_localizations', 'ACL - Getting site\'s localizations via XmlRpc', 1),
+(2,  'xmlrpc_view_user_info', 'ACL - Getting user\'s info via XmlRpc', 2),
+(3,  'xmlrpc_set_user_timezone', 'ACL - Editing user\'s timezone via XmlRpc', 2),
+(4,  'modules_administration_index', 'ACL - Viewing site\'s modules', 1),
+(5,  'settings_administration_index', 'ACL - Editing site\'s settings', 1),
+(6,  'localizations_administration_index', 'ACL - Viewing site\'s localizations', 1),
+(7,  'layouts_administration_index', 'ACL - Viewing site\'s layouts', 1),
+(8,  'users_administration_index', 'ACL - Viewing users', 2),
+(9,  'acl_administration_list', 'ACL - Viewing ACL roles', 1),
+(10, 'acl_administration_add_role', 'ACL - Adding ACL roles', 1),
+(11, 'acl_administration_delete_roles', 'ACL - Deleting ACL roles', 1),
+(12, 'acl_administration_edit_role', 'ACL - Editing ACL roles', 1),
+(13, 'acl_administration_browse_resources', 'ACL - Browsing ACL resources', 1),
+(14, 'acl_administration_allow_resources', 'ACL - Allowing ACL resources', 1),
+(15, 'acl_administration_disallow_resources', 'ACL - Disallowing ACL resources', 1),
+(16, 'acl_administration_resource_settings', 'ACL - Editing ACL resources settings', 1);
 
 CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -162,11 +167,12 @@ CREATE TABLE IF NOT EXISTS `acl_resources_connections_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `acl_resources_actions_track` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `connection_id` int(10) unsigned NOT NULL,
     `user_id` int(10) unsigned DEFAULT NULL,
     `actions` int(10) unsigned NOT NULL,
     `actions_last_reset` int(10) unsigned NOT NULL,
-    PRIMARY KEY (`connection_id`, `user_id`),
+    PRIMARY KEY (`id`),
     FOREIGN KEY (connection_id) REFERENCES acl_resources_connections(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -310,14 +316,19 @@ CREATE TABLE IF NOT EXISTS `events` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
-(1, 'get_localizations_via_xmlrpc', 1, 'Event - Get localizations via XmlRpc'),
-(2, 'user_login', 2, 'Event - User login'),
-(3, 'user_login_failed', 2, 'Event - User login failed'),
-(4, 'user_logout', 2, 'Event - User logout'),
-(5, 'get_user_info_via_xmlrpc', 2, 'Event - Get user\'s info via XmlRpc'),
-(6, 'set_user_timezone_via_xmlrpc', 2, 'Event - Set user\'s timezone via XmlRpc'),
-(7, 'change_settings', 1, 'Event - Settings change'),
-(8, 'delete_acl_role', 1, 'Event - ACL role delete');
+(1,  'get_localizations_via_xmlrpc', 1, 'Event - Getting localizations via XmlRpc'),
+(2,  'user_login', 2, 'Event - Users sign in'),
+(3,  'user_login_failed', 2, 'Event - Users logins failed'),
+(4,  'user_logout', 2, 'Event - Users sign out'),
+(5,  'get_user_info_via_xmlrpc', 2, 'Event - Getting user\'s info via XmlRpc'),
+(6,  'set_user_timezone_via_xmlrpc', 2, 'Event - Set users timezones via XmlRpc'),
+(7,  'change_settings', 1, 'Event - Editing settings'),
+(8,  'delete_acl_role', 1, 'Event - Deleting ACL roles'),
+(9,  'add_acl_role', 1, 'Event - Adding ACL roles'),
+(10, 'edit_acl_role', 1, 'Event - Editing ACL roles'),
+(11, 'allow_acl_resource', 1, 'Event - Allowing ACL resources'),
+(12, 'disallow_acl_resource', 1, 'Event - Disallowing ACL resources'),
+(13, 'edit_acl_resource_settings', 1, 'Event - Editing ACL resources settings');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

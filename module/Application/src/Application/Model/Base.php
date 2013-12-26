@@ -15,6 +15,11 @@ class Base extends Sql
      * Module by name
      */
     const CACHE_MODULE_BY_NAME = 'Application_Module_By_Name_';
+ 
+    /**
+     * Module action flag
+     */
+    const MODULE_ACTIVE = 1;
 
     /**
      * Static cache instance
@@ -40,7 +45,7 @@ class Base extends Sql
      * @param string $moduleName
      * @return array
      */
-    function getModuleInfo($moduleName)
+    public function getModuleInfo($moduleName)
     {
         // generate cache name
         $cacheName = CacheUtilities::getCacheName(self::CACHE_MODULE_BY_NAME . $moduleName);
@@ -72,6 +77,37 @@ class Base extends Sql
         }
 
         return $module;
+    }
+
+    /**
+     * Get active modules list
+     *
+     * @return array
+     */
+    public function getActiveModulesList()
+    {
+        $modulesList = array();
+
+        $select = $this->select();
+        $select->from('modules')
+            ->columns(array(
+                'id',
+                'name'
+            ))
+        ->where(array(
+            'active' => self::MODULE_ACTIVE
+        ))
+        ->order('id');
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        foreach ($resultSet as $module) {
+            $modulesList[$module->id] = $module->name;
+        }
+
+        return $modulesList;
     }
 
     /**

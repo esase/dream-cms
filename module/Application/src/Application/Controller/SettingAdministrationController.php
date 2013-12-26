@@ -9,10 +9,9 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class SettingAdministrationController extends AbstractAdministrationController
+class SettingAdministrationController extends AbstractBaseController
 {
     /**
      * Administration
@@ -20,7 +19,7 @@ class SettingAdministrationController extends AbstractAdministrationController
     public function indexAction()
     {
         return new ViewModel(array(
-            'settingsForm' => parent::settingsForm('application', 'settings-administration')
+            'settingsForm' => parent::settingsForm('application', 'settings-administration', 'index')
         ));
     }
 }

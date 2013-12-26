@@ -10,13 +10,13 @@
 namespace XmlRpc\Controller;
 
 use Zend\View\Model\ViewModel;
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Controller\AbstractBaseController;
 use Zend\XmlRpc\Server as XmlRpcServer;
 use Zend\XmlRpc\Server\Fault as XmlRpcServerFault;
 use Users\Service\Service as UsersService;
 use stdClass;
 
-class XmlRpcController extends AbstractActionController
+class XmlRpcController extends AbstractBaseController
 {
     /**
      * Model instance

@@ -9,33 +9,15 @@
 
 namespace Users\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Controller\AbstractBaseController;
 
-abstract class BaseController extends AbstractActionController
+abstract class BaseController extends AbstractBaseController
 {
     /**
      * Auth service
      * @var object  
      */
     protected $authService;
-
-    /**
-     * Translator
-     * @var object  
-     */
-    protected $translator;
-
-    /**
-     * Get translation
-     */
-    protected function getTranslator()
-    {
-        if (!$this->translator) {
-            $this->translator = $this->getServiceLocator()->get('Translator');
-        }
-
-        return $this->translator;
-    }
 
     /**
      * Get auth service

@@ -7,14 +7,15 @@
     $this->language = $this->localizations()->getCurrentLocalization()['language'];
     $this->formCategories = new ArrayObject();
     $this->openCategories = new ArrayObject();
+
     $this->formOptions = array(
         'controller' => $this->controller,
         'action' => (!empty($this->action) ? $this->action : 'index')
     );
 
     // add extra form options
-    if (!empty($this->extraFormOptions) && is_array($this->extraFormOptions)) {
-        $this->formOptions = array_merge($this->formOptions, $this->extraFormOptions);
+    if (!empty($this->params) && is_array($this->params)) {
+        $this->formOptions = array_merge($this->formOptions, $this->params);
     }
 ?>
 

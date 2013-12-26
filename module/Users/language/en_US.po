@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-10-30 11:15+0600\n"
+"PO-Revision-Date: 2013-12-20 15:35+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -35,44 +35,44 @@ msgstr "A record with the supplied identity could not be found."
 msgid "You've been logged out"
 msgstr "You've been logged out"
 
-msgid "Event - User successfully been logged out"
-msgstr "User \"%s\" successfully been logged out"
+msgid "Event - Getting user's info via XmlRpc"
+msgstr "Getting user's info via XmlRpc"
 
-msgid "Event - User successfully logged"
-msgstr "User \"%s\" successfully logged"
+msgid "Event - User's info was obtained by guest via XmlRpc"
+msgstr "Guest got info about \"%s\" via XmlRpc"
 
-msgid "Event - User login failed message"
-msgstr "User login failed (user name is \"%s\")"
+msgid "Event - User's info was obtained by user via XmlRpc"
+msgstr "\"%s\" got info about \"%s\" via XmlRpc"
 
-msgid "Event - User login"
-msgstr "User login"
+msgid "Event - Set users timezones via XmlRpc"
+msgstr "Set users timezones via XmlRpc"
+
+msgid "Event - Timezone set by user via XmlRpc"
+msgstr "\"%s\" set timezone via XmlRpc"
+
+msgid "Event - Users sign out"
+msgstr "Users sign out"
+
+msgid "Event - Users sign in"
+msgstr "Users sign in"
+
+msgid "Event - User successfully logged in"
+msgstr "\"%s\" successfully logged in"
+
+msgid "Event - User successfully logged out"
+msgstr "\"%s\" successfully logged out"
+
+msgid "Event - Users logins failed"
+msgstr "Users login failed"
 
 msgid "Event - User login failed"
-msgstr "User login failed"
+msgstr "\"%s\" login failed"
 
-msgid "Event - User logout"
-msgstr "User logout"
+msgid "ACL - Viewing users"
+msgstr "Viewing users"
 
-msgid "Event - Get user's info via XmlRpc"
-msgstr "Get user's info via XmlRpc"
+msgid "ACL - Getting user's info via XmlRpc"
+msgstr "Getting user's info via XmlRpc"
 
-msgid "Event - User get info (guest) via XmlRpc"
-msgstr "Guest has gotten user data of \"%s\" via the XmlRpc"
-
-msgid "Event - User get info (user) via XmlRpc"
-msgstr "\"%s\" has gotten user data of \"%s\" via the XmlRpc"
-
-msgid "Event - Set user's timezone via XmlRpc"
-msgstr "Set user's timezone via XmlRpc"
-
-msgid "Event - Set user's timezone via XmlRpc message"
-msgstr "User \"%s\" set his time zone via XmlRpc"
-
-msgid "ACL - Possibility to view users in administration panel"
-msgstr "Possibility to view users in administration panel"
-
-msgid "ACL - Possibility to view user's info via XmlRpc"
-msgstr "Possibility to view user's info via XmlRpc"
-
-msgid "ACL - Possibility to change user's timezone via XmlRpc"
-msgstr "Possibility to change user's timezone via XmlRpc"
+msgid "ACL - Editing user's timezone via XmlRpc"
+msgstr "Editing user's timezone via XmlRpc"

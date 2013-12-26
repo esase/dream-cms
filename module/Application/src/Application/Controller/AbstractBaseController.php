@@ -16,7 +16,7 @@ use Application\Form\Settings as SettingsForm;
 use Application\Event\Event as ApplicationEvent;
 use Application\Utility\Pagination as PaginationUtility;
 
-class AbstractAdministrationController extends AbstractActionController
+class AbstractBaseController extends AbstractActionController
 {
     /**
      * Translator
@@ -47,6 +47,26 @@ class AbstractAdministrationController extends AbstractActionController
      * @var integer
      */
     protected $page = null;
+
+    /**
+     * Slug
+     * @var string
+     */
+    protected $slug = null;
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        if ($this->slug === null) {
+            $this->slug = $this->params()->fromRoute('slug', -1);
+        }
+
+        return $this->slug; 
+    }
 
     /**
      * Get page value
@@ -81,11 +101,12 @@ class AbstractAdministrationController extends AbstractActionController
      *
      * @param string $controller
      * @param string $action
+     * @param array $params
      * @param boolean $useReferer
      * @param string $route
      * @return object
      */
-    protected function redirectTo($controller, $action, $useReferer = true, $route = 'application')
+    protected function redirectTo($controller = null, $action = null, array $params = array(), $useReferer = false, $route = 'application')
     {
         $request = $this->getRequest();
 
@@ -94,10 +115,11 @@ class AbstractAdministrationController extends AbstractActionController
             return $this->redirect()->toUrl($referer->uri());
         }
 
-        return $this->redirect()->toRoute($route, array(
-            'controller' => $controller,
-            'action' => $action
-        )); 
+        $urlParams = $params
+            ? array_merge(array('controller' => $controller, 'action' => $action), $params)
+            : array('controller' => $controller, 'action' => $action);
+
+        return $this->redirect()->toRoute($route, $urlParams); 
     }
 
     /**
@@ -145,13 +167,14 @@ class AbstractAdministrationController extends AbstractActionController
      *
      * @param string $module
      * @param string $controller
+     * @param string $action
      * @return object
      */
-    protected function settingsForm($module, $controller)
+    protected function settingsForm($module, $controller, $action)
     {
         $currentlanguage = UsersService::getCurrentLocalization()['language'];
 
-        // get settings form
+        // get an settings form
         $settingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Application\Form\Settings');
@@ -166,20 +189,25 @@ class AbstractAdministrationController extends AbstractActionController
             $settingsForm->addFormElements($settingsList);
             $request  = $this->getRequest();
 
-            // validate form
+            // validate the form
             if ($request->isPost()) {
-                // fill form with received values
+                // fill the form with received values
                 $settingsForm->getForm()->setData($request->getPost(), false);
 
                 // save data
                 if ($settingsForm->getForm()->isValid()) {
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->checkPermission())) {
+                        return $result;
+                    }
+
                     if (true === ($result = $settings->
                             saveSettings($settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
 
                         // fire the event
                         $eventDesc = UsersService::isGuest()
-                            ? 'Event - Settings change (guest)'
-                            : 'Event - Settings change (user)';
+                            ? 'Event - Settings were changed by guest'
+                            : 'Event - Settings were changed by user';
 
                         $eventDescParams = UsersService::isGuest()
                             ? array($module)
@@ -198,7 +226,7 @@ class AbstractAdministrationController extends AbstractActionController
                             ->addMessage($result);
                     }
 
-                    $this->redirect()->toRoute('application', array('controller' => $controller));
+                    $this->redirectTo($controller, $action);
                 }
             }
         }

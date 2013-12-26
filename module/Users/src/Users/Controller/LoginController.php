@@ -22,9 +22,9 @@ class LoginController extends BaseController
     {
         $userIdentity = $this->getAuthService()->getIdentity();
 
-        // if already login, redirect to success page
+        // if user already logged, redirect to home page
         if (!$this->isGuest()){
-            return $this->redirect()->toRoute('application');
+            return $this->redirectTo(); // home page
         }
 
         // generate login form
@@ -56,10 +56,10 @@ class LoginController extends BaseController
 
                     // fire event
                     UsersEvent::fireEvent(UsersEvent::USER_LOGIN, $userIdentity->user_id,
-                            $userIdentity->user_id, 'Event - User successfully logged', array($request->getPost('nickname')));
+                            $userIdentity->user_id, 'Event - User successfully logged in', array($request->getPost('nickname')));
 
-                    //TODO: there is need to check referrer 
-                    return $this->redirect()->toRoute('application');
+                    //TODO: there is need check a referrer
+                    return $this->redirectTo(); // home page
                 }
                 else {
                     // generate error messages
@@ -70,11 +70,11 @@ class LoginController extends BaseController
                         $this->flashMessenger()->addMessage($errorMessage);
                     }
 
-                    // fire event
+                    // fire the event
                     UsersEvent::fireEvent(UsersEvent::USER_LOGIN_FAILED, 0,
-                            Acl::DEFAULT_ROLE_GUEST, 'Event - User login failed message', array($request->getPost('nickname')));
+                            Acl::DEFAULT_ROLE_GUEST, 'Event - User login failed', array($request->getPost('nickname')));
 
-                    return $this->redirect()->toRoute('application', array('controller' => 'login'));
+                    return $this->redirectTo('login');
                 }
             } 
         }

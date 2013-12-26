@@ -4,6 +4,7 @@ namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Users\Service\Service as UsersService;
+use Zend\Http\Response;
 
 /**
  * Controller plugin for checking the user permission.
@@ -15,10 +16,28 @@ class CheckPermission extends AbstractPlugin
      *
      * @param string $resource
      * @param boolean $increaseActions
+     * @param boolean $showAccessDenied
      * @return boolean
      */
-    public function __invoke($resource, $increaseActions = true)
+    public function __invoke($resource = null, $increaseActions = true, $showAccessDenied = true)
     {
-        return UsersService::checkPermission($resource, $increaseActions);
+        // get ACL resource name
+        $resource = !$resource
+            ? $this->getController()->params('controller') . ' ' . $this->getController()->params('action')
+            : $resource;
+
+        // check the permission
+        if (false === ($result = UsersService::checkPermission($resource,
+                $increaseActions)) && $showAccessDenied) {
+
+            // redirect to access denied page
+            $this->getController()->getResponse()->setStatusCode(Response::STATUS_CODE_302);
+            $this->getController()->plugin('Redirect')->toRoute('application', array(
+                'controller' => 'error',
+                'action' => 'forbidden'
+            ));
+        }
+
+        return $result;
     }
 }

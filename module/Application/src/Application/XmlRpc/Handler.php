@@ -24,8 +24,8 @@ class Handler extends AbstractHandler
 
         // fire event
         $eventDesc = UsersService::isGuest()
-            ? 'Event - Get localizations (guest) via XmlRpc'
-            : 'Event - Get localizations (user) via XmlRpc';
+            ? 'Event - Localizations were got by guest via XmlRpc'
+            : 'Event - Localizations were got by user via XmlRpc';
 
         $eventDescParams = UsersService::isGuest()
             ? array()

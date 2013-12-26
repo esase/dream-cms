@@ -21,9 +21,9 @@ class LogoutController extends BaseController
                 ->addMessage($this->getTranslator()->translate('You\'ve been logged out'));
 
             UsersEvent::fireEvent(UsersEvent::USER_LOGOUT, $user->user_id,
-                $user->user_id, 'Event - User successfully been logged out', array($user->nick_name));
+                $user->user_id, 'Event - User successfully logged out', array($user->nick_name));
         }
 
-        return $this->redirect()->toRoute('application', array('controller' => 'login'));
+        return $this->redirectTo('login');
     }
 }
