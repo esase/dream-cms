@@ -198,7 +198,7 @@ class AbstractBaseController extends AbstractActionController
                 if ($settingsForm->getForm()->isValid()) {
                     // check the permission and increase permission's actions track
                     if (true !== ($result = $this->checkPermission())) {
-                        return $result;
+                        return $settingsForm->getForm();
                     }
 
                     if (true === ($result = $settings->

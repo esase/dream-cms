@@ -101,25 +101,23 @@ class Service extends ApplicationService
                 $updateAclResources = false;
 
                 // do we need reset all actions?
-                if (self::$currentAclResources[$resource]['actions']) {
-                    if (self::$currentAclResources[$resource]['actions_reset'] && $currentTime >=
-                            self::$currentAclResources[$resource]['actions_last_reset'] +
-                            self::$currentAclResources[$resource]['actions_reset']) {
+                if (self::$currentAclResources[$resource]['actions_reset'] && $currentTime >=
+                        self::$currentAclResources[$resource]['actions_last_reset'] +
+                        self::$currentAclResources[$resource]['actions_reset']) {
 
-                        // reset the resource's actions
-                        $aclModel = self::$serviceManager
-                            ->get('Application\Model\ModelManager')
-                            ->getInstance('Application\Model\Acl');
+                    // reset the resource's actions
+                    $aclModel = self::$serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\Acl');
 
-                        $result = $aclModel->increaseAclAction(self::$currentUserIdentity->user_id,
-                                self::$currentAclResources[$resource], true, ($increaseActions ? 1 : 0));
+                    $result = $aclModel->increaseAclAction(self::$currentUserIdentity->user_id,
+                            self::$currentAclResources[$resource], true, ($increaseActions ? 1 : 0));
 
-                        if (true !== $result) {
-                            return false;
-                        }
-
-                        $updateAclResources = true;
+                    if (true !== $result) {
+                        return false;
                     }
+
+                    $updateAclResources = true;
                 }
 
                 // increase actions
@@ -142,9 +140,7 @@ class Service extends ApplicationService
                 // update all acl resources
                 if ($updateAclResources) {
                     self::initAcl();
-                    return $permissionResult === false
-                        ? self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource)
-                        : $permissionResult;
+                    return self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource);
                 }
             }
 

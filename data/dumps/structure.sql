@@ -173,6 +173,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_actions_track` (
     `actions` int(10) unsigned NOT NULL,
     `actions_last_reset` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
+    KEY `actions_last_reset` (`actions_last_reset`),
     FOREIGN KEY (connection_id) REFERENCES acl_resources_connections(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,

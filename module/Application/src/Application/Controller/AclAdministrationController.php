@@ -481,8 +481,8 @@ class AclAdministrationController extends AbstractBaseController
                         : 'Event - ACL resource settings edited by user';
 
                     $eventDescParams = UsersService::isGuest()
-                        ? array($resourceSettings['connection'])
-                        : array(UsersService::getCurrentUserIdentity()->nick_name, $resourceSettings['connection']);
+                        ? array($resourceSettings['role'], $resourceSettings['resource'])
+                        : array(UsersService::getCurrentUserIdentity()->nick_name, $resourceSettings['role'], $resourceSettings['resource']);
 
                     ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_EDIT_ACL_RESOURCE_SETTINGS,
                             $resourceSettings['connection'], UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);

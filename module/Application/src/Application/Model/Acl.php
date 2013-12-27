@@ -137,7 +137,7 @@ class Acl extends Base
             if (!$result->current()) {
                 $values = array(
                     'connection_id' => $resource['id'],
-                    'actions' => 1,
+                    'actions' => $resetActions ? $resetValue : 1,
                     'actions_last_reset' => new Expression('unix_timestamp()')
                 );
 
@@ -147,37 +147,74 @@ class Acl extends Base
                     ));
                 }
 
-                $query = $this->insert()
+                $insert = $this->insert()
                     ->into('acl_resources_actions_track')
                     ->values($values);
+
+                $statement = $this->prepareStatementForSqlObject($insert);
+                $statement->execute();
             }
             else {
                 // update the existing acl action track
-                $actionsCounter = $resetActions
-                    ? $resetValue // reset all actions
-                    : new Expression('actions + 1'); // just increase it
-
-                $updateFields = array();
-                $updateFields['actions'] = $actionsCounter;
-
                 if ($resetActions) {
-                    $updateFields['actions_last_reset'] = new Expression('unix_timestamp()');
+                    $update = $this->update()
+                        ->table('acl_resources_actions_track')
+                        ->set(array(
+                            'actions' => $resetValue,
+                            'actions_last_reset' => new Expression('unix_timestamp()')
+                        ))
+                        ->where(array(
+                            'connection_id' => $resource['id']
+                        ));
+
+                    $userId != self::DEFAULT_GUEST_ID
+                        ? $update->where(array('user_id' => $userId))
+                        : $update->where->IsNull('user_id');
+
+                    $update->where(array('actions_last_reset' => $resource['actions_last_reset']));
+
+                    $statement = $this->prepareStatementForSqlObject($update);
+                    $result = $statement->execute();
+
+                    // action was reset before, just increase it
+                    if (!$result->count()) {
+                        // just increase the action
+                        $update = $this->update()
+                            ->table('acl_resources_actions_track')
+                            ->set(array(
+                                'actions' => new Expression('actions + 1')
+                            ))
+                            ->where(array(
+                                'connection_id' => $resource['id']
+                            ));
+        
+                        $userId != self::DEFAULT_GUEST_ID
+                            ? $update->where(array('user_id' => $userId))
+                            : $update->where->IsNull('user_id');
+    
+                        $statement = $this->prepareStatementForSqlObject($update);
+                        $statement->execute();
+                    }
                 }
+                else {
+                    // just increase the action
+                    $update = $this->update()
+                        ->table('acl_resources_actions_track')
+                        ->set(array(
+                            'actions' => new Expression('actions + 1')
+                        ))
+                        ->where(array(
+                            'connection_id' => $resource['id']
+                        ));
+    
+                    $userId != self::DEFAULT_GUEST_ID
+                        ? $update->where(array('user_id' => $userId))
+                        : $update->where->IsNull('user_id');
 
-                $query = $this->update()
-                    ->table('acl_resources_actions_track')
-                    ->set($updateFields)
-                    ->where(array(
-                        'connection_id' => $resource['id']
-                    ));
-
-                $userId != self::DEFAULT_GUEST_ID
-                    ? $query->where(array('user_id' => $userId))
-                    : $query->where->IsNull('user_id');
+                    $statement = $this->prepareStatementForSqlObject($update);
+                    $statement->execute();
+                }
             }
-
-            $statement = $this->prepareStatementForSqlObject($query);
-            $statement->execute();
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -255,7 +292,7 @@ class Acl extends Base
                             and
                         (c.date_end = 0 or (? <= c.date_end))    
                             and
-                        (c.actions_limit = 0 or i.actions is null or c.actions_limit > i.actions), "' .
+                        (c.actions_limit = 0 or i.actions is null or c.actions_limit >= i.actions), "' .
                         self::ACTION_ALLOWED . '", "' .
                         self::ACTION_DISALLOWED . '")',array($currentTime, $currentTime))
                 ),

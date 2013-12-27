@@ -54,12 +54,12 @@ class Handler extends AbstractHandler
             throw new XmlRpcActionDenied(self::REQUEST_DENIED_WRONG_TIME_ZONE);
         }
 
-        // check user permission
+        // check an user's permission
         if (!UsersService::checkPermission('xmlrpc_set_user_timezone')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
-        // update user's time zone
+        // update the user's time zone
         if (true == ($result = $this->getModel()->
                 setUserTimeZone($this->userIdentity->user_id, $timeZone))) {
 
