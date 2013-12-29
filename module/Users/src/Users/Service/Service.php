@@ -80,28 +80,17 @@ class Service extends ApplicationService
             // check the permission
             $permissionResult = self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource);
 
-            $currentTime = time();
-
-            // check the date start is should be empty or active
-            if (self::$currentAclResources[$resource]['date_start']
-                        && self::$currentAclResources[$resource]['date_start'] > $currentTime) {
-
-                return $permissionResult;
-            }
-
-            // check the date end is should be empty or active
-            if (self::$currentAclResources[$resource]['date_end']
-                        && self::$currentAclResources[$resource]['date_end'] < $currentTime) {
-
-                return $permissionResult;
-            }
-
             // check the resource's actions limit
             if (self::$currentAclResources[$resource]['actions_limit']) {
+                // check resource's dates states (the dates should be empty or active)
+                if (true !== ($result = self::isResourceDatesActive($resource))) {
+                    return $permissionResult;
+                }
+
                 $updateAclResources = false;
 
                 // do we need reset all actions?
-                if (self::$currentAclResources[$resource]['actions_reset'] && $currentTime >=
+                if (self::$currentAclResources[$resource]['actions_reset'] && time() >=
                         self::$currentAclResources[$resource]['actions_last_reset'] +
                         self::$currentAclResources[$resource]['actions_reset']) {
 
@@ -140,7 +129,22 @@ class Service extends ApplicationService
                 // update all acl resources
                 if ($updateAclResources) {
                     self::initAcl();
-                    return self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource);
+
+                    if (true !== ($permissionResult =
+                            self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource))) {
+
+                        // check resource's dates
+                        if (true === ($result = self::isResourceDatesActive($resource))) {
+                            // a previous action should be finished
+                            if ((int) self::$currentAclResources[$resource]['actions_limit'] ==
+                                        (int) self::$currentAclResources[$resource]['actions']) {
+
+                                return true;
+                            }
+                        }
+                    }
+
+                    return $permissionResult;
                 }
             }
 
@@ -148,6 +152,33 @@ class Service extends ApplicationService
         }
 
         return false;
+    }
+
+    /**
+     * Check resource's dates state
+     *
+     * @param string $resource
+     * @return boolean
+     */
+    protected static function isResourceDatesActive($resource)
+    {
+        $currentTime = time();
+
+        // a date start still not active
+        if (self::$currentAclResources[$resource]['date_start'] &&
+                    self::$currentAclResources[$resource]['date_start'] > $currentTime) {
+
+            return false;
+        }
+
+        // a date end still not active
+        if (self::$currentAclResources[$resource]['date_end'] &&
+                    self::$currentAclResources[$resource]['date_end'] < $currentTime) {
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

@@ -292,7 +292,7 @@ class Acl extends Base
                             and
                         (c.date_end = 0 or (? <= c.date_end))    
                             and
-                        (c.actions_limit = 0 or i.actions is null or c.actions_limit >= i.actions), "' .
+                        (c.actions_limit = 0 or i.actions is null or c.actions_limit > i.actions), "' .
                         self::ACTION_ALLOWED . '", "' .
                         self::ACTION_DISALLOWED . '")',array($currentTime, $currentTime))
                 ),
