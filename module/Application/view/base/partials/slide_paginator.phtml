@@ -1,6 +1,9 @@
 <?php
-    $this->declareVars('queries');
- 
+    $this->declareVars('queries', 'languageDirection');
+
+    // get language direction
+    $this->languageDirection = $this->localizations()->getCurrentLocalization()['direction'];
+
     if(!isset($this->params)) {
         $this->params = array();
     }
@@ -15,29 +18,10 @@
         : array();
 ?>
 
+
 <?php if ($this->pageCount > 1): ?>
-    <div class="pagination">
-        <ul>
-            <!-- Previous page link -->
-            <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif; ?>>
-                <?php if (isset($this->previous)): ?>
-                    <a href="<?php echo $this->url($this->route, array('page' => $this->previous) + $this->params, array('query' => $this->queries)); ?>">&lt;</a>
-                <?php else: ?>
-                    <span>&lt;</span>
-                <?php endif; ?>
-            </li>
-            <!-- Numbered page links -->
-            <?php foreach ($this->pagesInRange as $page): ?>
-                <li <?php if ($page == $this->current): ?>class="active"<?php endif; ?>>
-                    <?php if ($page != $this->current): ?>
-                        <a href="<?php echo $this->url($this->route, array('page' => $page) + $this->params, array('query' => $this->queries)); ?>">
-                            <?php echo $page; ?>
-                        </a>
-                    <?php else: ?>
-                        <span><?php echo $page; ?></span>
-                    <?php endif; ?>
-                </li>
-            <?php endforeach; ?>
+    <ul class="pagination">
+        <?php if ($this->languageDirection != 'ltr'): ?>
             <!-- Next page link -->
             <li <?php if (!isset($this->next)): ?>class="disabled"<?php endif; ?>>
                 <?php if (isset($this->next)): ?>
@@ -46,6 +30,52 @@
                     <span>&gt;</span>
                 <?php endif; ?>
             </li>
-        </ul>
-    </div>
+        <?php else: ?>
+            <!-- Previous page link -->
+            <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif; ?>>
+                <?php if (isset($this->previous)): ?>
+                    <a href="<?php echo $this->url($this->route, array('page' => $this->previous) + $this->params, array('query' => $this->queries)); ?>">&lt;</a>
+                <?php else: ?>
+                    <span>&lt;</span>
+                <?php endif; ?>
+            </li>
+        <?php endif; ?>
+
+        <!-- Numbered page links -->
+        <?php if ($this->languageDirection != 'ltr'): ?>
+            <?php $this->pagesInRange = array_reverse($this->pagesInRange) ?>            
+        <?php endif; ?>
+
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <li <?php if ($page == $this->current): ?>class="active"<?php endif; ?>>
+                <?php if ($page != $this->current): ?>
+                    <a href="<?php echo $this->url($this->route, array('page' => $page) + $this->params, array('query' => $this->queries)); ?>">
+                        <?php echo $page; ?>
+                    </a>
+                <?php else: ?>
+                    <span><?php echo $page; ?></span>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+
+        <?php if ($this->languageDirection != 'ltr'): ?>
+            <!-- Previous page link -->
+            <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif; ?>>
+                <?php if (isset($this->previous)): ?>
+                    <a href="<?php echo $this->url($this->route, array('page' => $this->previous) + $this->params, array('query' => $this->queries)); ?>">&lt;</a>
+                <?php else: ?>
+                    <span>&lt;</span>
+                <?php endif; ?>
+            </li>
+        <?php else: ?>
+            <!-- Next page link -->
+            <li <?php if (!isset($this->next)): ?>class="disabled"<?php endif; ?>>
+                <?php if (isset($this->next)): ?>
+                    <a href="<?php echo $this->url($this->route, array('page' => $this->next) + $this->params, array('query' => $this->queries)); ?>">&gt;</a>
+                <?php else: ?>
+                    <span>&gt;</span>
+                <?php endif; ?>
+            </li>
+        <?php endif; ?>
+    </ul>
 <?php endif; ?>

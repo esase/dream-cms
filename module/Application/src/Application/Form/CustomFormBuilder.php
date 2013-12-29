@@ -209,6 +209,8 @@ class CustomFormBuilder extends Form
             $elementValues   = isset($element['values']) ? $element['values'] : array();
             $elementAttrs    = isset($element['attributes']) && is_array($element['attributes']) ? $element['attributes'] : array();
 
+            $elementAttrs = array_merge(array('class' => 'form-control'), $elementAttrs);
+
             if (!empty($element['values_provider'])) {
                $valuesProvider =  eval($element['values_provider']);
                 if (!is_array($valuesProvider)) {
@@ -238,20 +240,22 @@ class CustomFormBuilder extends Form
                             'name' => 'callback',
                             'options' => array(
                                 'callback' => function($value) {
-                                    return \Users\Service\Service::isAdmin() // don't purify the content when user is the admin
+                                    $value  =  \Users\Service\Service::isAdmin() // don't purify the content when user is the admin
                                         ? $value
                                         : \HTMLPurifierStandalone::purify($value, array(
                                                 'Cache.DefinitionImpl' => null,
                                                 'HTML.SafeObject' => true,
                                                 'Output.FlashCompat' => true
                                         ));
+
+                                    return $value;
                                 }
                             )
                         )
                     ));
 
                     $this->initHtmlAreaScript = true;
-                    $elementAttrs = array_merge(array('class' => 'htmlarea', 'required' => false), $elementAttrs);
+                    $elementAttrs = array_merge($elementAttrs, array('class' => 'htmlarea', 'required' => false));
                     $elementType  = 'Textarea';
                     break;
                 case self::FIELD_DATE :
@@ -264,7 +268,7 @@ class CustomFormBuilder extends Form
                     );
 
                     $this->initDateScript = true;
-                    $elementAttrs = array_merge(array('class' => 'date'), $elementAttrs);
+                    $elementAttrs = array_merge($elementAttrs, array('class' => 'date form-control'));
                     $elementValue = LocaleUtility::convertToLocalizedValue($elementValue, $elementType);
                     $elementType  = 'Text';
                     break;
@@ -558,7 +562,8 @@ class CustomFormBuilder extends Form
                 'captcha' => $captchaImage
             ),
             'attributes' => array(
-                'id' => 'captcha'
+                'id' => 'captcha',
+                'class' => 'form-control'
             )
         ));
     }
@@ -578,7 +583,7 @@ class CustomFormBuilder extends Form
             'attributes' => array(
                 'id' => $name,
                 'value' => $this->translator->translate(($label ? $label : 'Submit')),
-                'class' => 'btn'
+                'class' => 'btn btn-default btn-submit'
             ),
             'options' => array(
                 'label' => ' ',

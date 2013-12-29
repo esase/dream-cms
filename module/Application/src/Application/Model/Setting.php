@@ -15,6 +15,12 @@ class Setting extends Base
     protected static $settings;
 
     /**
+     * Array fields
+     * @var array
+     */
+    protected $arrayFields = array('multiselect', 'multicheckbox');
+
+    /**
      * Cache settings by language
      */
     const CACHE_SETTINGS_BY_LANGUAGE = 'Application_Settings_By_Language_';
@@ -89,7 +95,8 @@ class Setting extends Base
             $mainSelect = $this->select();
             $mainSelect->from(array('a' => 'settings'))
                 ->columns(array(
-                    'name'
+                    'name',
+                    'type'
                 ))
                 ->join(
                     array('b' => 'settings_values'),
@@ -104,12 +111,10 @@ class Setting extends Base
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
 
+            // convert strings
             $settings = array();
             foreach ($resultSet as $setting) {
-                $settingValue = explode(self::SETTINGS_ARRAY_DEVIDER, $setting['value']);
-                $settings[$setting['name']] = count($settingValue) == 1 // check is array or not
-                    ? current($settingValue)
-                    : $settingValue;
+                $settings[$setting['name']] = $this->convertString($setting['type'], $setting['value']);
             }
 
             // save data in cache
@@ -120,6 +125,25 @@ class Setting extends Base
         }
 
         return $settings;
+    }
+
+    /**
+     * Convert string
+     *
+     * @param string $type
+     * @param string $value
+     * @return string|array
+     */
+    protected function convertString($type, $value)
+    {
+        if (in_array($type, $this->arrayFields)) {
+            $value = explode(self::SETTINGS_ARRAY_DEVIDER, $value);
+            return count($value) == 1 // check is array or not
+                ? current($value)
+                : $value;
+        }
+
+        return $value;
     }
 
     /**

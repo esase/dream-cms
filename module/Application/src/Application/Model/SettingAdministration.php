@@ -39,12 +39,14 @@ class SettingAdministration extends Setting
                         ? array('language' => $currentlanguage)
                         : array();
 
+                    $value = is_array($settingsValues[$setting['name']])
+                        ? implode(self::SETTINGS_ARRAY_DEVIDER, $settingsValues[$setting['name']])
+                        : (null != $settingsValues[$setting['name']] ? $settingsValues[$setting['name']] : '');
+
                     $query = $this->insert('settings_values')
                         ->values(array_merge(array(
                            'setting_id' => $setting['id'],
-                           'value' => is_array($settingsValues[$setting['name']])
-                                ? implode(self::SETTINGS_ARRAY_DEVIDER, $settingsValues[$setting['name']])
-                                : (null != $settingsValues[$setting['name']] ? $settingsValues[$setting['name']] : '')
+                           'value' => $value
                         ), $extraValues));
 
                     $statement = $this->prepareStatementForSqlObject($query);
@@ -131,10 +133,8 @@ class SettingAdministration extends Setting
             // processing settings list
             $settings = array();
             foreach ($resultSet as $setting) {
-                $settingValue = explode(self::SETTINGS_ARRAY_DEVIDER, $setting->value);
-                $settingValue = count($settingValue) == 1 // check is array or not
-                    ? current($settingValue)
-                    : $settingValue;
+                // convert an array
+                $settingValue = $this->convertString($setting->type, $setting->value);
 
                 $settings[$setting->id] = array(
                     'id' => $setting->id,

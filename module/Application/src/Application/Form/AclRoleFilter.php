@@ -24,8 +24,8 @@ class AclRoleFilter extends AbstractCustomForm
      */
     protected $formElements = array(
         0 => array(
-            'name' => 'types',
-            'type' => 'multicheckbox',
+            'name' => 'type',
+            'type' => 'select',
             'label' => 'Type',
             'values' => array(
                AclModel::ROLE_TYPE_SYSTEM => 'system',

@@ -267,7 +267,7 @@ class AclAdministration extends Acl
      * @param string $orderBy
      * @param string $orderType
      * @param array $filters
-     *      array types
+     *      string type
      * @return object
      */
     public function getRoles($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
@@ -293,9 +293,11 @@ class AclAdministration extends Acl
             ))
             ->order($orderBy . ' ' . $orderType);
 
-        // filter by types
-        if (!empty($filters['types']) && is_array($filters['types'])) {
-            $select->where->in('type', $filters['types']);
+        // filter by type
+        if (!empty($filters['type'])) {
+            $select->where(array(
+                'type' => $filters['type']
+            ));
         }
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));

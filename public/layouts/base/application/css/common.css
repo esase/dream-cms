@@ -1,17 +1,17 @@
+/* alert */
+div.alert {
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
 /* form */
 div.filter-form {
     padding: 20px;
-    min-width: 200px;
+    min-width: 275px;
 }
 
 div.filter-form form {
     margin: 0;
-}
-
-input[type="radio"],
-input[type="checkbox"] {
-    line-height: normal;
-    margin: 0 5px 5px 0;
 }
 
 legend {
@@ -21,11 +21,13 @@ legend {
 
 label {
     margin-top: 5px;
+    display: block;
 }
 
 /* form error messges */
 form ul {
-    margin: 0;    
+    margin: 0;
+    padding: 0;
 }
 
 form ul li {
@@ -33,6 +35,10 @@ form ul li {
     list-style: none outside none;
     margin-bottom: 10px;
     margin-top: 10px;
+}
+
+form .btn-submit {
+    margin-top:10px;    
 }
 
 /* captcha */
@@ -53,4 +59,13 @@ table.table th.selector-items {
 table.table td.action {
     text-align: right;
     width: 24px;
+}
+
+table.table th {
+    border-bottom: 0 !important;
+}
+
+/* breadcrumb */
+ol.breadcrumb {
+    margin-top: 20px;
 }

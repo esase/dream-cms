@@ -130,7 +130,7 @@ DataGrid.prototype._initDataGrid = function()
                 // confirm buttons
                 var $confirmButtons = $('<a action="confirm">' +
                             self.confirmButtonTitle + '</a>&nbsp;<a action="cancel">' + self.cancelButtonTitle + '</a>')
-                    .attr('class', 'btn')
+                    .attr('class', 'btn btn-default')
                     .click(function(event){
                         event.preventDefault();
 

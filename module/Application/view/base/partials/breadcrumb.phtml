@@ -2,7 +2,7 @@
 <?php $this->breadcrumb = $this->routesPermission($this->pages, false, true) ?>
 <?php $this->breadcrumbCount = count($this->breadcrumb) ?>
 
-<ul class="breadcrumb">
+<ol class="breadcrumb">
     <?php for ($i = 0; $i < $this->breadcrumbCount; $i++) : ?>
         <?php
             // get base url
@@ -26,7 +26,6 @@
                     <?php echo $this->escapeHtml($this->breadcrumb[$i]['name']) ?>
                 </a>
             <?php endif; ?>
-            <span class="divider">/</span>
         </li>
     <?php endfor; ?>
-</ul>
+</ol>
