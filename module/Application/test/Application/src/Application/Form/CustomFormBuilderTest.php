@@ -165,7 +165,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $form->setData(array('test' => '2 nov. 2013'), false);
         $this->assertTrue($form->isValid());
         $values = $form->getData();
-        $this->assertEquals($values['test'], 1383350400);
+        $this->assertEquals($values['test'], 1383386400); 
     }
 
     /**
