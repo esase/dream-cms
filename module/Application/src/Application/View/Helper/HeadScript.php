@@ -136,9 +136,6 @@ class HeadScript extends \Zend\View\Helper\HeadScript
 
                     $cacheFilePath = $layoutCachePath . $cacheFile;
 
-                    // minify js
-                    $content = \Minify\JSMin::minify($content);
-
                     // write cache
                     $this->genCacheFile($cacheFilePath, $content);
 

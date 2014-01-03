@@ -151,10 +151,6 @@ class HeadLink extends \Zend\View\Helper\HeadLink
 
                     $cacheFilePath = $layoutCachePath . $cacheFile;
 
-                    // minify css
-                    $minify = new \Minify\CSSmin();
-                    $content = $minify->run($content);
-
                     // write cache
                     $this->genCacheFile($cacheFilePath, $content);
 

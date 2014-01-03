@@ -7,6 +7,7 @@ use Zend\Http\Response;
 
 use Application\Model\Acl as AclModel;
 use Application\Service\Service as ApplicationService;
+use Application\View\Resolver\TemplatePathStack;
 use Users\Service\Service as UsersService;
 
 use StdClass;
@@ -367,6 +368,8 @@ class Module
         // init translator settings
         $translator = $this->serviceManager->get('translator');
         $translator->setLocale($this->defaultLocalization['locale']);
+
+        // add a cache for translator
         $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
 
         // init default localization
@@ -382,7 +385,15 @@ class Module
      */
     protected function initlayout()
     {
-        $templatePathResolver = $this->serviceManager->get('Zend\View\Resolver\TemplatePathStack');
+        // get a custom template path resolver
+        $templatePathResolver = $this->serviceManager->get('customTemplatePathStack');
+
+       // replace the default template path stack resolver with custom
+       $aggregateResolver = $this->serviceManager->get('Zend\View\Resolver\AggregateResolver');
+       $aggregateResolver
+            ->attach($templatePathResolver)
+            ->getIterator()
+            ->remove($this->serviceManager->get('Zend\View\Resolver\TemplatePathStack'));
 
         $layout = $this->serviceManager
             ->get('Application\Model\ModelManager')
@@ -449,6 +460,10 @@ class Module
     {
         return array(
             'factories' => array(
+                'customTemplatePathStack' => function($serviceManager)
+                {
+                    return new TemplatePathStack($serviceManager->get('Cache\Dynamic'));
+                },
                 'Application\Model\ModelManager' => function($serviceManager)
                 {
                     return new Model\ModelManager($serviceManager->
