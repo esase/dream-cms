@@ -33,26 +33,15 @@ return array(
         'save_handler' => null
     ),
     'static_cache' => array(
-        'type' => 'filesystem',
-        'options' => array(
-            'writable' => true,
-            'readable' => true,
-            'cache_dir' => APPLICATION_ROOT . '/data/cache',
-            'dir_level' => 1,
-            'ttl' => 0 // cache never will be expired
-        )
+        'writable' => true,
+        'readable' => true,
+        'cache_dir' => APPLICATION_ROOT . '/data/cache',
+        'dir_level' => 1,
+        'ttl' => 0 // cache never will be expired
     ),
     'dynamic_cache' => array(
-        'type' => 'memcached',
-        'options' => array(
-            'writable' => true,
-            'readable' => true,
-            'ttl' => 600, // 10 minutes,
-            'servers' => array(
-                'localhost',
-                11211
-            )
-        )
+        'writable' => true,
+        'readable' => true
     ),
     'db' => array(
         'driver' => 'Pdo',
@@ -63,44 +52,6 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-            'Cache\Static' => function ($serviceManager)
-            {
-                $config = $serviceManager->get('Config');
-                $cache =\Zend\Cache\StorageFactory::factory(array(
-                    'adapter' => array(
-                        'name' => $config['static_cache']['type']
-                    ),
-                    'plugins' => array(
-                        // Don't throw exceptions on cache errors
-                        'exception_handler' => array(
-                            'throw_exceptions' => false
-                        ),
-                        'Serializer'
-                    )
-                ));
-
-                $cache->setOptions($config['static_cache']['options']);
-                return $cache;
-            },
-            'Cache\Dynamic' => function ($serviceManager)
-            {
-                $config = $serviceManager->get('Config');
-                $cache = \Zend\Cache\StorageFactory::factory(array(
-                    'adapter' => array(
-                        'name' => $config['dynamic_cache']['type']
-                    ),
-                    'plugins' => array(
-                        // Don't throw exceptions on cache errors
-                        'exception_handler' => array(
-                            'throw_exceptions' => false
-                        ),
-                        'Serializer'
-                    )
-                ));
-
-                $cache->setOptions($config['dynamic_cache']['options']);
-                return $cache;
-            },
             'Zend\Session\SessionManager' => function ($serviceManager)
             {
                 $config = $serviceManager->get('config');

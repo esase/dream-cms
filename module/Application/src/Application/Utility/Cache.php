@@ -2,8 +2,59 @@
 
 namespace Application\Utility;
 
+use Application\Service\Service as ApplicationService;
+use Application\Utility\FileSystem;
+
 class Cache
 {
+    /**
+     * System files
+     * @var array
+     */
+    protected static $systemFiles = array(
+        '.htaccess'
+    );
+
+    /**
+     * Clear static cache
+     *
+     * @return boolean
+     */
+    public static function clearStaticCache()
+    {
+        return ApplicationService::getServiceManager()->get('Cache\Static')->flush();
+    }
+
+    /**
+     * Clear dynamic cache
+     *
+     * @return boolean
+     */
+    public static function clearDynamicCache()
+    {
+        return ApplicationService::getServiceManager()->get('Cache\Dynamic')->flush();
+    }
+
+    /**
+     * Clear js cache
+     *
+     * @return boolean
+     */
+    public static function clearJsCache()
+    {
+        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath('js'), self::$systemFiles);
+    }
+
+    /**
+     * Clear css cache
+     *
+     * @return boolean
+     */
+    public static function clearCssCache()
+    {
+        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath(), self::$systemFiles);
+    }
+
     /**
      * Get cache name
      * 

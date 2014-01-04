@@ -174,17 +174,16 @@ class AbstractBaseController extends AbstractActionController
     {
         $currentlanguage = UsersService::getCurrentLocalization()['language'];
 
-        // get an settings form
+        // get settings form
         $settingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Application\Form\Settings');
 
-        // get settngs list
+        // get settings list
         $settings = $this->getServiceLocator()
             ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\SettingAdministration');
 
-        // get settings list
         if (false !== ($settingsList = $settings->getSettingsList($module, $currentlanguage))) {
             $settingsForm->addFormElements($settingsList);
             $request  = $this->getRequest();

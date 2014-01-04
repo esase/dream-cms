@@ -27,6 +27,7 @@ use Zend\Mvc\MvcEvent;
 
 use Zend\Log\Writer\FirePhp as FirePhp;
 use Zend\Log\Logger as Logger;
+use Zend\Cache\StorageFactory as CacheStorageFactory;
 
 class Module
 {
@@ -460,6 +461,62 @@ class Module
     {
         return array(
             'factories' => array(
+                'Cache\Static' => function ($serviceManager)
+                {
+                    $cache = CacheStorageFactory::factory(array(
+                        'adapter' => array(
+                            'name' => 'filesystem'
+                        ),
+                        'plugins' => array(
+                            // Don't throw exceptions on cache errors
+                            'exception_handler' => array(
+                                'throw_exceptions' => false
+                            ),
+                            'Serializer'
+                        )
+                    ));
+    
+                    $cache->setOptions($serviceManager->get('Config')['static_cache']);
+                    return $cache;
+                },
+                'Cache\Dynamic' => function ($serviceManager)
+                {
+                    // get an active cache engine
+                    $cacheEngine = ApplicationService::getSetting('application_dynamic_cache');
+
+                    $cache = CacheStorageFactory::factory(array(
+                        'adapter' => array(
+                            'name' => $cacheEngine
+                        ),
+                        'plugins' => array(
+                            // Don't throw exceptions on cache errors
+                            'exception_handler' => array(
+                                'throw_exceptions' => false
+                            ),
+                            'Serializer'
+                        )
+                    ));
+
+                    $cacheOptions = array_merge($serviceManager->get('Config')['dynamic_cache'], array(
+                        'ttl' => ApplicationService::getSetting('application_dynamic_cache_life_time')
+                    ));
+
+                    // add extra options
+                    switch ($cacheEngine) {
+                        case 'memcached' :
+                            $cacheOptions = array_merge($cacheOptions, array(
+                                'servers' => array(
+                                    ApplicationService::getSetting('application_memcache_host'),
+                                    ApplicationService::getSetting('application_memcache_port')
+                                )
+                            ));
+                            break;
+                        default :
+                    }
+
+                    $cache->setOptions($cacheOptions);
+                    return $cache;
+                },
                 'customTemplatePathStack' => function($serviceManager)
                 {
                     return new TemplatePathStack($serviceManager->get('Cache\Dynamic'));

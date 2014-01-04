@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-12-27 13:15+0600\n"
+"PO-Revision-Date: 2014-01-04 16:34+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,60 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Select a needed cache"
+msgstr "Выберите нужный кэш"
+
+msgid "Clear"
+msgstr "Oчистка"
+
+msgid "Css cache"
+msgstr "Кэш css"
+
+msgid "Js cache"
+msgstr "Кэш js"
+
+msgid "Dynamic cache (translations, template paths, etc)"
+msgstr "Динамический кэш (переводы, пути шаблонов и т.д.)"
+
+msgid "Static cache (DB queries, etc)"
+msgstr "Статический кэш (запросы БД, и т.д.)"
+
+msgid "Clear cache"
+msgstr "Очистить кэш"
+
+msgid "Selected caches have been cleared"
+msgstr "Выбранные кэши были очищены"
+
+msgid "Error clearing caches"
+msgstr "Ошибка очистки кэша в \"%s\""
+
+msgid "Extension is not loaded"
+msgstr "Расширение не загружено"
+
+msgid "wincache"
+msgstr "WinCache"
+
+msgid "xcache"
+msgstr "XCache"
+
+msgid "apc"
+msgstr "APC"
+
+msgid "memcached"
+msgstr "Memcached"
+
+msgid "Memcache port"
+msgstr "Порт сервера memcache"
+
+msgid "Memcache host"
+msgstr "Адрес сервера memcache"
+
+msgid "Dynamic cache life time"
+msgstr "Время жизни динамического кэша"
+
+msgid "Dynamic cache engine"
+msgstr "Динамический кэш"
 
 msgid "Resource's settings have been edited"
 msgstr "Настройки ресурса были отредактированы"
@@ -480,6 +534,15 @@ msgstr ""
 "\"%s\" отредактировал настройки ACL ресурса с идентификатором роли - \"%d\" "
 "и идентификатором ресурса - \"%d\""
 
+msgid "Event - Clearing site's cache"
+msgstr "Очистка кэша сайта"
+
+msgid "Event - Cache cleared by guest"
+msgstr "Гость очистил кэш - \"%s\""
+
+msgid "Event - Cache cleared by user"
+msgstr "\"%s\" очистил кэш - \"%s\""
+
 msgid "A 403 error occurred"
 msgstr "Произошла 403 ошибка"
 
@@ -524,3 +587,6 @@ msgstr "Запрет ACL ресурсов"
 
 msgid "ACL - Editing ACL resources settings"
 msgstr "Редактирование настроек ACL ресурсов"
+
+msgid "ACL - Clearing site's cache"
+msgstr "Очистка кэша сайта"

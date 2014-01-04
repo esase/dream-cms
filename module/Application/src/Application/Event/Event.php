@@ -52,6 +52,11 @@ class Event
     const APPLICATION_EDIT_ACL_RESOURCE_SETTINGS = 'edit_acl_resource_settings';
 
     /**
+     * Application clear cache event
+     */
+    const APPLICATION_CLEAR_CACHE = 'clear_cache';
+
+    /**
      * Fire event
      *
      * @param string $event

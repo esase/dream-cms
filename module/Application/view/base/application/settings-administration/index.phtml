@@ -3,18 +3,7 @@
 <?php $this->headTitle($this->subPageTitle) ?>
 
 <!-- render a header -->
-<?php echo $this->render('application/setting-administration/_header') ?>
-
-<?php
-    $this->baseTabs = array(
-        'list' => array(
-        'name' => $this->subPageTitle,
-        'controller' => 'settings-administration',
-        'action' => 'index',
-        'check_acl' => true
-        ) 
-    );
-?>
+<?php echo $this->render('application/settings-administration/_header') ?>
 
 <!-- render tabs -->
 <?php echo $this->partial('partials/tabs', array(

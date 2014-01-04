@@ -2,8 +2,6 @@
 
 namespace Application\Form;
 
-use Application\Model\Acl as AclModel;
-
 class AclRole extends AbstractCustomForm 
 {
     /**

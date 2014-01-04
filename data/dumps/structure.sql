@@ -102,7 +102,8 @@ INSERT INTO `acl_resources` (`id`, `resource`, `description`, `module`) VALUES
 (13, 'acl_administration_browse_resources', 'ACL - Browsing ACL resources', 1),
 (14, 'acl_administration_allow_resources', 'ACL - Allowing ACL resources', 1),
 (15, 'acl_administration_disallow_resources', 'ACL - Disallowing ACL resources', 1),
-(16, 'acl_administration_resource_settings', 'ACL - Editing ACL resources settings', 1);
+(16, 'acl_administration_resource_settings', 'ACL - Editing ACL resources settings', 1),
+(17, 'settings_administration_clear_cache', 'ACL - Clearing site\'s cache', 1);
 
 CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -212,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
     `module` int(10) unsigned NOT NULL,
     `language_sensitive` tinyint(1) NOT NULL DEFAULT '1',
     `values_provider` varchar(255) NOT NULL,
-    `check` varchar(255) NOT NULL,
+    `check` text NOT NULL,
     `check_message` varchar(150) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
@@ -247,7 +248,11 @@ INSERT INTO `settings` (`id`, `name`, `label`, `type`, `required`, `order`, `cat
 (20, 'application_min_per_page_range', 'Min per page range', 'integer', 1, 2, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Min per page range should be greater than 0'),
 (21, 'application_max_per_page_range', 'Max per page range', 'integer', 1, 3, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Max per page range should be greater than 0'),
 (22, 'application_per_page_step', 'Per page step', 'integer', 1, 4, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Per page step should be greater than 0'),
-(23, 'application_page_range', 'Page range', 'integer', 1, 5, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Page range should be greater than 0');
+(23, 'application_page_range', 'Page range', 'integer', 1, 5, 6, 1, 0, '', 'return intval(''{value}'') > 0;', 'Page range should be greater than 0'),
+(24, 'application_dynamic_cache', 'Dynamic cache engine', 'select', 1, 1, 2, 1, 0, '', 'switch(''{value}'') {\r\n    case ''xcache'' :\r\n        return extension_loaded(''xcache'');\r\n    case ''wincache'' :\r\n        return extension_loaded(''wincache'');\r\n    case ''apc'' :\r\n        return (version_compare(''3.1.6'', phpversion(''apc'')) > 0) || !ini_get(''apc.enabled'') ? false : true;\r\n    default :\r\n        $v = (string) phpversion(''memcached'');\r\n        $extMemcachedMajorVersion = ($v !== '''') ? (int) $v[0] : 0;\r\n\r\n        return $extMemcachedMajorVersion < 1 ? false : true;\r\n}', 'Extension is not loaded'),
+(25, 'application_dynamic_cache_life_time', 'Dynamic cache life time', 'integer', 1, 2, 2, 1, 0, '', '', ''),
+(26, 'application_memcache_host', 'Memcache host', 'text', 1, 3, 2, 1, 0, '', '', ''),
+(27, 'application_memcache_port', 'Memcache port', 'integer', 1, 4, 2, 1, 0, '', '', '');
 
 CREATE TABLE IF NOT EXISTS `settings_values` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -287,7 +292,11 @@ INSERT INTO `settings_values` (`id`, `setting_id`, `value`, `language`) VALUES
 (20, 20, 10, NULL),
 (21, 21, 100, NULL),
 (22, 22, 10, NULL),
-(23, 23, 10, NULL);
+(23, 23, 10, NULL),
+(24, 24, 'memcached', NULL),
+(25, 25, '600', NULL),
+(26, 26, 'localhost', NULL),
+(27, 27, '11211', NULL);
 
 CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
     `setting_id` int(10) unsigned NOT NULL,
@@ -302,7 +311,11 @@ INSERT INTO `settings_predefined_values` (`setting_id`, `value`) VALUES
 (17, 'full'),
 (17, 'long'),
 (17, 'medium'),
-(17, 'short');
+(17, 'short'),
+(24, 'memcached'),
+(24, 'apc'),
+(24, 'xcache'),
+(24, 'wincache');
 
 CREATE TABLE IF NOT EXISTS `events` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -329,7 +342,8 @@ INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
 (10, 'edit_acl_role', 1, 'Event - Editing ACL roles'),
 (11, 'allow_acl_resource', 1, 'Event - Allowing ACL resources'),
 (12, 'disallow_acl_resource', 1, 'Event - Disallowing ACL resources'),
-(13, 'edit_acl_resource_settings', 1, 'Event - Editing ACL resources settings');
+(13, 'edit_acl_resource_settings', 1, 'Event - Editing ACL resources settings'),
+(14, 'clear_cache', 1, 'Event - Clearing site\'s cache');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

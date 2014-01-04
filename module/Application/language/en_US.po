@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-12-27 13:15+0600\n"
+"PO-Revision-Date: 2014-01-04 16:34+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,60 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Select a needed cache"
+msgstr "Select a needed cache"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Css cache"
+msgstr "Css cache"
+
+msgid "Js cache"
+msgstr "Js cache"
+
+msgid "Dynamic cache (translations, template paths, etc)"
+msgstr "Dynamic cache (translations, template paths, etc)"
+
+msgid "Static cache (DB queries, etc)"
+msgstr "Static cache (DB queries, etc)"
+
+msgid "Clear cache"
+msgstr "Clear cache"
+
+msgid "Selected caches have been cleared"
+msgstr "Selected caches have been cleared"
+
+msgid "Error clearing caches"
+msgstr "Error clearing caches in \"%s\""
+
+msgid "Extension is not loaded"
+msgstr "Extension is not loaded"
+
+msgid "wincache"
+msgstr "WinCache"
+
+msgid "xcache"
+msgstr "XCache"
+
+msgid "apc"
+msgstr "APC"
+
+msgid "memcached"
+msgstr "Memcached"
+
+msgid "Memcache port"
+msgstr "Memcache port"
+
+msgid "Memcache host"
+msgstr "Memcache host"
+
+msgid "Dynamic cache life time"
+msgstr "Dynamic cache life time"
+
+msgid "Dynamic cache engine"
+msgstr "Dynamic cache engine"
 
 msgid "Resource's settings have been edited"
 msgstr "Resource's settings have been edited"
@@ -489,6 +543,15 @@ msgstr ""
 "\"%s\" edited the ACL resource's settings with role id - \"%d\" and resource "
 "id - \"%d\""
 
+msgid "Event - Clearing site's cache"
+msgstr "Clearing site's cache"
+
+msgid "Event - Cache cleared by guest"
+msgstr "Guest cleared cache - \"%s\""
+
+msgid "Event - Cache cleared by user"
+msgstr "\"%s\" cleared cache - \"%s\""
+
 msgid "A 403 error occurred"
 msgstr "A 403 error occurred"
 
@@ -533,3 +596,6 @@ msgstr "Disallowing ACL resources"
 
 msgid "ACL - Editing ACL resources settings"
 msgstr "Editing ACL resources settings"
+
+msgid "ACL - Clearing site's cache"
+msgstr "Clearing site's cache"

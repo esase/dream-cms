@@ -63,7 +63,7 @@ return array(
             'home' => 'Application\Controller\IndexController',
             'error' => 'Application\Controller\ErrorController',
             'modules-administration' => 'Application\Controller\ModuleAdministrationController',
-            'settings-administration' => 'Application\Controller\SettingAdministrationController',
+            'settings-administration' => 'Application\Controller\SettingsAdministrationController',
             'acl-administration' => 'Application\Controller\AclAdministrationController'
         )
     ),
@@ -71,6 +71,7 @@ return array(
         'invokables' => array(
             'checkPermission' => 'Application\Controller\Plugin\CheckPermission',
             'isGuest' => 'Application\Controller\Plugin\IsGuest',
+            'getSetting' => 'Application\Controller\Plugin\Setting'
         )
     ),
     'view_manager' => array(
