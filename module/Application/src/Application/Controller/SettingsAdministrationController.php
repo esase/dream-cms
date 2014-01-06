@@ -21,6 +21,36 @@ class SettingsAdministrationController extends AbstractBaseController
      */
     public function indexAction()
     {
+        // remember some settings before change 
+        $jsCache = $this->getSetting('application_js_cache');
+        $jsCacheGzip = $this->getSetting('application_js_cache_gzip');
+
+        $cssCache = $this->getSetting('application_css_cache');
+        $cssCacheGzip = $this->getSetting('application_css_cache_gzip');
+
+        // clear js and css cache
+        $eventManager = ApplicationEvent::getEventManager();
+        $eventManager->attach(ApplicationEvent::APPLICATION_CHANGE_SETTINGS, function ($e)
+                use ($jsCache, $jsCacheGzip, $cssCache, $cssCacheGzip) {
+
+            // get post values
+            $post = $this->getRequest()->getPost();
+
+            // clear js cache
+            if ($jsCache <> $post['application_js_cache'] ||
+                    $jsCacheGzip <> $post['application_js_cache_gzip']) {
+
+                CacheUtility::clearJsCache();
+            }
+
+            // clear css cache
+            if ($cssCache <> $post['application_css_cache'] ||
+                    $cssCacheGzip <> $post['application_css_cache_gzip']) {
+
+                CacheUtility::clearCssCache();
+            }
+        });
+
         return new ViewModel(array(
             'settingsForm' => parent::settingsForm('application', 'settings-administration', 'index')
         ));

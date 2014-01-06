@@ -8,14 +8,6 @@ use Application\Utility\FileSystem;
 class Cache
 {
     /**
-     * System files
-     * @var array
-     */
-    protected static $systemFiles = array(
-        '.htaccess'
-    );
-
-    /**
      * Clear static cache
      *
      * @return boolean
@@ -42,7 +34,7 @@ class Cache
      */
     public static function clearJsCache()
     {
-        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath('js'), self::$systemFiles);
+        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath('js'));
     }
 
     /**
@@ -52,7 +44,7 @@ class Cache
      */
     public static function clearCssCache()
     {
-        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath(), self::$systemFiles);
+        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath());
     }
 
     /**

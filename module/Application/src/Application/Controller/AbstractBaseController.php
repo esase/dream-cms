@@ -212,8 +212,8 @@ class AbstractBaseController extends AbstractActionController
                             ? array($module)
                             : array(UsersService::getCurrentUserIdentity()->nick_name, $module);
 
-                        ApplicationEvent::fireEvent(ApplicationEvent::
-                            APPLICATION_CHANGE_SETTINGS, 0, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                        ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_CHANGE_SETTINGS,
+                                $module, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                         $this->flashMessenger()
                             ->setNamespace('success')

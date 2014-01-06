@@ -56,6 +56,7 @@ class SettingAdministration extends Setting
 
             // clear cache
             $this->removeSettingsCache($currentlanguage);
+            self::$settings = null;
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
