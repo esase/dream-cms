@@ -15,6 +15,7 @@ use Zend\XmlRpc\Server as XmlRpcServer;
 use Zend\XmlRpc\Server\Fault as XmlRpcServerFault;
 use Users\Service\Service as UsersService;
 use stdClass;
+use Users\Model\Base as UsersModelBase;
 
 class XmlRpcController extends AbstractBaseController
 {
@@ -45,7 +46,9 @@ class XmlRpcController extends AbstractBaseController
     {
         // get user info by api key
         if (null != ($apiKey = $this->getRequest()->getQuery()->apiKey)) {
-            if (null != ($userInfo = UsersService::getUserInfo($apiKey, true))) {
+            if (null != ($userInfo =
+                    UsersService::getUserInfo($apiKey, UsersModelBase::USER_INFO_BY_API_KEY))) {
+
                 // fill the user's info
                 $userIdentity = new stdClass();
 

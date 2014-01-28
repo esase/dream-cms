@@ -1,8 +1,5 @@
 <?php
-    $this->declareVars('queries', 'languageDirection');
-
-    // get language direction
-    $this->languageDirection = $this->localizations()->getCurrentLocalization()['direction'];
+    $this->declareVars('queries');
 
     if(!isset($this->params)) {
         $this->params = array();
@@ -21,7 +18,7 @@
 
 <?php if ($this->pageCount > 1): ?>
     <ul class="pagination">
-        <?php if ($this->languageDirection != 'ltr'): ?>
+        <?php if (!$this->localizations()->isCurrentLanguageLtr()): ?>
             <!-- Next page link -->
             <li <?php if (!isset($this->next)): ?>class="disabled"<?php endif; ?>>
                 <?php if (isset($this->next)): ?>
@@ -42,7 +39,7 @@
         <?php endif; ?>
 
         <!-- Numbered page links -->
-        <?php if ($this->languageDirection != 'ltr'): ?>
+        <?php if (!$this->localizations()->isCurrentLanguageLtr()): ?>
             <?php $this->pagesInRange = array_reverse($this->pagesInRange) ?>            
         <?php endif; ?>
 
@@ -58,7 +55,7 @@
             </li>
         <?php endforeach; ?>
 
-        <?php if ($this->languageDirection != 'ltr'): ?>
+        <?php if (!$this->localizations()->isCurrentLanguageLtr()): ?>
             <!-- Previous page link -->
             <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif; ?>>
                 <?php if (isset($this->previous)): ?>

@@ -5,18 +5,18 @@ namespace Users\Model;
 class XmlRpc extends Base
 {
     /**
-     * Get user info by Id
+     * Get user info
      *
      * @param integer $userId
-     * @param boolean $isApiKey
+     * @param string $field
      * @return array
      */
-    public function getUserInfoById($userId, $isApiKey = false)
+    public function getUserInfo($userId, $field = null)
     {
-        if (null != ($userInfo = parent::getUserInfoById($userId, $isApiKey))) {
+        if (null != ($userInfo = parent::getUserInfo($userId, $field))) {
             // remove all private fields
             foreach ($this->privateFields as $privateField) {
-                if (!empty($userInfo[$privateField])) {
+                if (isset($userInfo[$privateField])) {
                     unset($userInfo[$privateField]);
                 }
             }

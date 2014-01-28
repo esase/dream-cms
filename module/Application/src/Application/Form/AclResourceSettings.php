@@ -85,14 +85,14 @@ class AclResourceSettings extends AbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // file the form with default values
+            // fill the form with default values
             $this->formElements['actions_limit']['value'] = $this->actionsLimit;
             $this->formElements['actions_reset']['value'] = $this->actionsReset;
             $this->formElements['date_start']['value'] = $this->dateStart;
             $this->formElements['date_end']['value'] = $this->dateEnd;
 
             $this->form = new CustomFormBuilder($this->formName,
-                    $this->formElements, $this->translator, $this->ignoredElements, $this->method);    
+                    $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
         return $this->form;

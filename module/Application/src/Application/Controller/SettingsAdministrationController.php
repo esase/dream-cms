@@ -95,6 +95,9 @@ class SettingsAdministrationController extends AbstractBaseController
                             case 'dynamic' :
                                 $clearResult =  CacheUtility::clearDynamicCache();
                                 break;
+                            case 'config' :
+                                $clearResult =  CacheUtility::clearConfigCache();
+                                break;
                             case 'js' :
                                 $clearResult = CacheUtility::clearJsCache();
                                 break;

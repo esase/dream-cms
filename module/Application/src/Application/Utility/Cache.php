@@ -28,6 +28,16 @@ class Cache
     }
 
     /**
+     * Clear config cache
+     *
+     * @return boolean
+     */
+    public static function clearConfigCache()
+    {
+        return FileSystem::deleteFiles(ApplicationService::getConfigCachePath());
+    }
+
+    /**
      * Clear js cache
      *
      * @return boolean

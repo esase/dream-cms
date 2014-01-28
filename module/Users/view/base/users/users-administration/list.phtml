@@ -1,0 +1,127 @@
+<?php use Application\Model\Acl as AclModel ?>
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('List of users') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('users/users-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partials/tabs', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partials/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'users-administration',
+            'action' => 'list',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partials/data_grid', array(
+    'controller' => 'users-administration',
+    'action' => 'list',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('NickName'),
+            'order_name' => 'nickname'
+        ),
+        2 => array(
+            'title' => $this->translate('Email'),
+            'order_name' => 'email'
+        ),
+        3 => array(
+            'title' => $this->translate('Status')
+        ),
+        4 => array(
+            'title' => $this->translate('Registered date'),
+            'order_name' => 'registered'
+        ),
+        5 => array(
+            'title' => $this->translate('Role')
+        )
+    ),
+    'paginator' => $this->paginator,
+    'helpers' => array(
+        'role' => 'translate',
+        'status' => 'translate',
+        'registered' => 'date'
+    ),
+    'helpers_options' => array(
+        'registered' => array(
+            'type' => 'date'
+        )
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+            0 => array(
+                'name' => $this->translate('Add a user'),
+                'controller' => 'users-administration',
+                'action' => 'add-user',
+                'check_acl' => true
+            )
+        ),
+        'multiple_actions' => array(
+            0 => array(
+                'name' => $this->translate('Approve selected'),
+                'controller' => 'users-administration',
+                'action' => 'approve',
+                'check_acl' => true
+            ),
+            1 => array(
+                'name' => $this->translate('Disapprove selected'),
+                'controller' => 'users-administration',
+                'action' => 'disapprove',
+                'check_acl' => true
+            ),
+            2 => array(
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'users-administration',
+                'action' => 'delete',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected users will be deleted. Are you sure?')
+            )
+        ),
+        'single_actions' => array(
+            0 => array(
+                'name' => $this->translate('Edit the user'),
+                'controller' => 'users-administration',
+                'action' => 'edit-user',
+                'check_acl' => true,
+                'image' => $this->asset('icons/edit_action.png', 'images')
+            )
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'users',
+        'multiple_actions' => array(
+            'items_name' => 'users[]'
+        )
+    ),
+    'actions_extra_check' => array(
+        'multiple_actions' => array(
+            'system_user' => array(
+                'param' => 'id',
+                'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
+            )
+        )
+    )
+)) ?>

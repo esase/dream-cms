@@ -20,12 +20,17 @@ class Acl extends Base
     const DEFAULT_ROLE_GUEST  = 2;
 
     /**
-     * Default guest id id
+     * Default user's id
+     */
+    const DEFAULT_USER_ID  = 1;
+
+    /**
+     * Default guest's id
      */
     const DEFAULT_GUEST_ID  = -1;
 
     /**
-     * Default system id
+     * Default system's id
      */
     const DEFAULT_SYSTEM_ID  = 0;
 
@@ -53,6 +58,42 @@ class Acl extends Base
      * Role type custom
      */
     const ROLE_TYPE_CUSTOM = 'custom';
+
+    /**
+     * Get list of all roles
+     *
+     * @param boolean $excludeGuest
+     * @return array
+     */
+    public function getRolesList($excludeGuest = true)
+    {
+        $rolesList = array();
+
+        $select = $this->select();
+        $select->from('acl_roles')
+            ->columns(array(
+                'id',
+                'name'
+            ));
+
+        if ($excludeGuest) {
+            $select->where(array(
+                new NotInPredicate('id', array(self::DEFAULT_ROLE_GUEST))
+            ));
+        }
+
+        $select->order('id');
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        foreach ($resultSet as $role) {
+            $rolesList[$role->id] = $role->name;
+        }
+
+        return $rolesList;
+    }
 
     /**
      * Get role info

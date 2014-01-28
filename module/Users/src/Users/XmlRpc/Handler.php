@@ -87,7 +87,7 @@ class Handler extends AbstractHandler
         }
 
         // get user info
-        if (false !== ($userInfo = $this->getModel()->getUserInfoById($userId))) {
+        if (false !== ($userInfo = $this->getModel()->getUserInfo($userId))) {
             // fire event
             $eventDesc = UsersService::isGuest()
                 ? 'Event - User\'s info was obtained by guest via XmlRpc'

@@ -22,6 +22,7 @@ class ClearCache extends AbstractCustomForm
             'values' => array(
                 'static'  => 'Static cache (DB queries, etc)',
                 'dynamic' => 'Dynamic cache (translations, template paths, etc)',
+                'config' => 'Application config cache',
                 'js' => 'Js cache',
                 'css' => 'Css cache',
             )

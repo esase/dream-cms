@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2013-12-20 15:35+0600\n"
+"PO-Revision-Date: 2014-01-28 14:29+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,204 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "We have sent a new password to your email"
+msgstr "Мы послали новый пароль на вашу электронную почту"
+
+msgid "Password reset"
+msgstr "Восстановление пароля"
+
+msgid "An account password reseted notification"
+msgstr "Уведомление об сбросе пароля"
+
+msgid "Password reseted message"
+msgstr "Сообщение об сбросе пароля"
+
+msgid "Password reseted title"
+msgstr "Заголовок об сбросе пароля"
+
+msgid "An account confirm reset password notification"
+msgstr "Уведомление об подтверждении сброса пароля"
+
+msgid "Reset password confirmation message"
+msgstr "Сообщение подтверждения сброса пароля"
+
+msgid "Reset password confirmation title"
+msgstr "Заголовок подтверждения сброса пароля"
+
+msgid "Email not found"
+msgstr "E-mail не найден"
+
+msgid "Your email"
+msgstr "Ваш адрес электронной почты"
+
+msgid ""
+"We sent a message with a confirmation code. You should confirm the password "
+"reset"
+msgstr ""
+"Мы отправили сообщение с кодом подтверждения. Вы должны подтвердить сброс "
+"пароля"
+
+msgid "Have you forgotten your password or nickname?"
+msgstr "Вы забыли свой ​​пароль или ник?"
+
+msgid "Send notification about users deletions"
+msgstr "Отправлять уведомления об удалении пользователей"
+
+msgid "Send notification about users registrations"
+msgstr "Отправлять уведомления об регистрации пользователей"
+
+msgid "An account register email notification"
+msgstr "Уведомление регистрации учетной записи"
+
+msgid "An account confirm email notification"
+msgstr "Уведомление подтверждения адреса электронной почты"
+
+msgid "An account delete notification"
+msgstr "Уведомление удаления учетной записи"
+
+msgid "An account disapprove notification"
+msgstr "Уведомление деактивации учетной записи"
+
+msgid "An account approve notification"
+msgstr "Уведомление активации учетной записи"
+
+msgid "Can't access your account?"
+msgstr "Не можете войти в свой аккаунт?"
+
+msgid "Create a new account"
+msgstr "Создать новую учетную запись"
+
+msgid "Edit account"
+msgstr "Изменить учетную запись"
+
+msgid "Your account will be active after checking"
+msgstr "Ваш профиль будет активным после проверки"
+
+msgid "Your account has been edited"
+msgstr "Ваша учетная запись была отредактирована"
+
+msgid "User activate"
+msgstr "Активирование пользователя"
+
+msgid "Activation code"
+msgstr "Код активации"
+
+msgid "Wrong activation code"
+msgstr "Неправильный код активации"
+
+msgid "Email confirmation title"
+msgstr "Заголовок подтверждение E-mail"
+
+msgid "Email confirmation message"
+msgstr "Сообщение подтверждение E-mail"
+
+msgid "Register a new user title"
+msgstr "Заголовок регистрации нового пользователя"
+
+msgid "Register a new user message"
+msgstr "Сообщение регистрации нового пользователя"
+
+msgid "We sent a message with a confirmation code to your registration e-mail"
+msgstr ""
+"Мы отправили сообщение с кодом подтверждения регистрации на ваш адрес "
+"электронной почты"
+
+msgid "Users auto confirm registrations"
+msgstr "Авто подтверждение регистраций"
+
+msgid "Register"
+msgstr "Регистрация"
+
+msgid "Allow users register"
+msgstr "Разрешить пользователям регистрироваться"
+
+msgid "Nickname should be greater than 0 and less or equal than 40"
+msgstr "Ник должен быть больше 0 и меньше или равно 40"
+
+msgid "User has been edited"
+msgstr "Пользователь был отредактирован"
+
+msgid "Edit the user"
+msgstr "Редактирование пользователя"
+
+msgid "Registered date"
+msgstr "Дата регистрации"
+
+msgid "User's max nickname length"
+msgstr "Максимальная длина ника пользователя"
+
+msgid "User's min nickname length"
+msgstr "Минимальная длина ника пользователя"
+
+msgid "Passwords do not match"
+msgstr "Пароли не совпадают"
+
+msgid "Email already used"
+msgstr "E-mail уже используется"
+
+msgid "Nickname already used"
+msgstr "Ник уже используется"
+
+msgid "Time zone"
+msgstr "Часовой пояс"
+
+msgid "Confirm password"
+msgstr "Подтвердите пароль"
+
+msgid "User has been added"
+msgstr "Пользователь был добавлен"
+
+msgid "User deleted message"
+msgstr "Сообщение удаления пользователя"
+
+msgid "User deleted title"
+msgstr "Заголовок удаления пользователя"
+
+msgid "Selected users have been deleted"
+msgstr "Выбранные пользователи были удалены"
+
+msgid "Remember me"
+msgstr "Запомнить меня"
+
+msgid "Supplied credential is invalid."
+msgstr "Удостоверение личности недействительно."
+
+msgid "User disapproved message"
+msgstr "Сообщение деактивации пользователя"
+
+msgid "User disapproved title"
+msgstr "Заголовок деактивации пользователя"
+
+msgid "User approved message"
+msgstr "Сообщение активации пользователя"
+
+msgid "User approved title"
+msgstr "Заголовок активации пользователя"
+
+msgid "Selected users have been approved"
+msgstr "Выбранные пользователи были активированы"
+
+msgid "Selected users have been disapproved"
+msgstr "Выбранные пользователи были дезактивированы"
+
+msgid "Selected users will be deleted. Are you sure?"
+msgstr "Выбранные пользователи будут удалены. Вы уверены?"
+
+msgid "Add a user"
+msgstr "Добавить пользователя"
+
+msgid "disapproved"
+msgstr "Не активен"
+
+msgid "approved"
+msgstr "Активен"
+
+msgid "Email"
+msgstr "Почта"
+
+msgid "List of users"
+msgstr "Список пользователей"
 
 msgid "Users"
 msgstr "Пользователи"
@@ -44,7 +242,7 @@ msgstr "Гость получил информацию о \"%s\" с помощь
 msgid "Event - User's info was obtained by user via XmlRpc"
 msgstr "\"%s\" получил информацию о \"%s\" с помощью XmlRpc"
 
-msgid "Event - Set users timezones via XmlRpc"
+msgid "Event - Setting users timezones via XmlRpc"
 msgstr "Установка пользовательских часовых поясов с помощью XmlRpc"
 
 msgid "Event - Timezone set by user via XmlRpc"
@@ -68,11 +266,97 @@ msgstr "Неудачный вход пользователей"
 msgid "Event - User login failed"
 msgstr "\"%s\" не удалось войти на сайт"
 
-msgid "ACL - Viewing users"
-msgstr "Просмотр пользователей"
+msgid "Event - Disapproving users"
+msgstr "Дезактивирование пользователей"
+
+msgid "Event - User disapproved by guest"
+msgstr "Гость дезактивировал пользователя с идентификатором - \"%d\""
+
+msgid "Event - User disapproved by user"
+msgstr "\"%s\" дезактивировал пользователя с идентификатором - \"%d\""
+
+msgid "Event - Approving users"
+msgstr "Активация пользователей"
+
+msgid "Event - User approved by guest"
+msgstr "Гость активировал пользователя с идентификатором - \"%d\""
+
+msgid "Event - User approved by user"
+msgstr "\"%s\" активировал пользователя с идентификатором - \"%d\""
+
+msgid "Event - User confirmed email"
+msgstr "\"%s\" подтвердил(а) свой email"
+
+msgid "Event - Deleting users"
+msgstr "Удаление пользователей"
+
+msgid "Event - User deleted by guest"
+msgstr "Гость удалил пользователя с идентификатором - \"%d\""
+
+msgid "Event - User deleted by user"
+msgstr "\"%s\" удалил пользователя с идентификатором - \"%d\""
+
+msgid "Event - Adding users"
+msgstr "Добавление пользователей"
+
+msgid "Event - User added by guest"
+msgstr "Гость добавил пользователя с идентификатором - \"%d\""
+
+msgid "Event - User added by user"
+msgstr "\"%s\" добавил пользователя с идентификатором - \"%d\""
+
+msgid "Event - User registered"
+msgstr "\"%s\" зарегистрировался(лась) на сайте с идентификатором - \"%d\""
+
+msgid "Event - Editing users"
+msgstr "Редактирование пользователей"
+
+msgid "Event - User edited by guest"
+msgstr "Гость отредактировал пользователя с идентификатором - \"%d\""
+
+msgid "Event - User edited by user"
+msgstr "\"%s\" отредактировал пользователя с идентификатором - \"%d\""
+
+msgid "Event - User edited"
+msgstr ""
+"\"%s\" отредактировал собственные регистрационные данные с идентификатором - "
+"\"%d\""
+
+msgid "Event - Resetting users passwords"
+msgstr "Восстановление паролей пользователей"
+
+msgid "Event - User reseted password"
+msgstr "\"%s\" с идентификатором - \"%d\" сбросил пароль"
+
+msgid "Event - Requesting reset users passwords"
+msgstr "Запрос сброса паролей пользователей"
+
+msgid "Event - User requested password reset"
+msgstr "\"%s\" с идентификатором - \"%d\" запросил сброс пароля"
+
+msgid "ACL - Viewing users in admin area"
+msgstr "Просмотр пользователей в админке"
 
 msgid "ACL - Getting user's info via XmlRpc"
 msgstr "Получение информации пользователя с помощью XmlRpc"
 
 msgid "ACL - Editing user's timezone via XmlRpc"
 msgstr "Редактирование часового пояса пользователя с помощью XmlRpc"
+
+msgid "ACL - Approving users in admin area"
+msgstr "Активация пользователей в админке"
+
+msgid "ACL - Disapproving users in admin area"
+msgstr "Дезактивирование пользователей в админке"
+
+msgid "ACL - Deleting users in admin area"
+msgstr "Удаление пользователей в админке"
+
+msgid "ACL - Adding users in admin area"
+msgstr "Добавление пользователей в админке"
+
+msgid "ACL - Editing users settings in admin area"
+msgstr "Редактирование настроек пользователей в админке"
+
+msgid "ACL - Editing users in admin area"
+msgstr "Редактирование пользователей в админке"

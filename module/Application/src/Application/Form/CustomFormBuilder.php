@@ -58,6 +58,12 @@ class CustomFormBuilder extends Form
     protected $ignoredElements = array();
 
     /**
+     * List of not validate fields
+     * @var array
+     */
+    protected $notValidatedElements = array();
+
+    /**
      * Default filters
      * @var array
      */
@@ -167,6 +173,16 @@ class CustomFormBuilder extends Form
     const FIELD_HTML_AREA = 'htmlarea';
 
     /**
+     * Notification message
+     */
+    const FIELD_NOTIFICATION_MESSAGE = 'notification_message';
+
+    /**
+     * Notification title
+     */
+    const FIELD_NOTIFICATION_TITLE = 'notification_title';
+
+    /**
      * Class constructor
      *
      * @param string $formName
@@ -174,6 +190,8 @@ class CustomFormBuilder extends Form
      *      string name required
      *      string type required
      *      string label optional
+     *      string description optional
+     *      array description_params optional
      *      string category label
      *      boolean|integer required optional
      *      string value optional
@@ -186,7 +204,8 @@ class CustomFormBuilder extends Form
      * @param string $method
      * @param array $ignoredElements
      */
-    public function __construct($formName, array $formElements, Translator $translator, array $ignoredElements = array(), $method = 'post') 
+    public function __construct($formName, array $formElements,
+        Translator $translator, array $ignoredElements = array(), array $notValidatedElements = array(), $method = 'post') 
     {
         parent::__construct($formName);
 
@@ -195,6 +214,9 @@ class CustomFormBuilder extends Form
 
         // ignored elements
         $this->ignoredElements = array_merge(array('csrf', 'submit'), $ignoredElements);
+
+        // not validated elements
+        $this->notValidatedElements = $notValidatedElements;
 
         $this->translator = $translator;
         $this->inputFilter = new InputFilter();
@@ -232,6 +254,7 @@ class CustomFormBuilder extends Form
             $extraOptions = array();
 
             switch ($elementType) {
+                case self::FIELD_NOTIFICATION_MESSAGE :
                 case self::FIELD_HTML_AREA :
                     // add custom filters
                     $element['filters'] = array_merge((isset($element['filters']) ? $element['filters'] : array()), array(
@@ -281,11 +304,9 @@ class CustomFormBuilder extends Form
                         )
                     );
 
-                    // add empty value
+                    // add an empty value
                     if ($elementType == self::FIELD_SELECT) {
-                        $elementValues = array_merge(array(
-                            '' => ''
-                        ), $elementValues);
+                        $elementValues = array('' => '') + $elementValues;
                     }
 
                     $elementType  = $elementType == self::FIELD_SELECT
@@ -412,6 +433,7 @@ class CustomFormBuilder extends Form
                     $this->addCaptcha($elementName, (!empty($element['label']) ? $element['label'] : null));
                     continue(2);
                 case self::FIELD_TEXT :
+                case self::FIELD_NOTIFICATION_TITLE :
                 default :
                     $elementType = 'Text';
             }
@@ -432,6 +454,11 @@ class CustomFormBuilder extends Form
                                 ? '*' . $this->translator->translate($element['label'])
                                 : $this->translator->translate($element['label']))
                         : null,
+                    'description' =>!empty($element['description'])
+                        ? !empty($element['description_params'])
+                            ? vsprintf($this->translator->translate($element['description']), $element['description_params'])
+                            : $this->translator->translate($element['description'])
+                        : null
                 ))
             ));
 
@@ -500,6 +527,13 @@ class CustomFormBuilder extends Form
      */
     public function setData($data, $convertValues = true)
     {
+        // unset not validated fields
+        foreach($this->notValidatedElements as $name) {
+            if (isset($data[$name])) {
+                unset($data[$name]);
+            }
+        }
+
         // convert localized values
         if ($convertValues) {
             foreach ($data as $fieldName => $fieldValue) {
@@ -558,12 +592,13 @@ class CustomFormBuilder extends Form
             'type' => self::FIELD_CAPTCHA,
             'name' => $name,
             'options' => array(
-                'label' => $this->translator->translate(($label ? $label : 'Please verify you are human')),
+                'label' => '*' . $this->translator->translate(($label ? $label : 'Please verify you are human')),
                 'captcha' => $captchaImage
             ),
             'attributes' => array(
                 'id' => 'captcha',
-                'class' => 'form-control'
+                'class' => 'form-control',
+                'required' => 'required'
             )
         ));
     }

@@ -36,6 +36,12 @@ class AbstractCustomForm implements CustomFormInterface
     protected $ignoredElements = array();
 
     /**
+     * List of not validated elements
+     * @var array
+     */
+    protected $notValidatedElements = array();
+
+    /**
      * Translator
      * @var object
      */
@@ -60,8 +66,8 @@ class AbstractCustomForm implements CustomFormInterface
     {
         // get form builder
         if (!$this->form) {
-            $this->form = new CustomFormBuilder($this->formName,
-                    $this->formElements, $this->translator, $this->ignoredElements, $this->method);    
+            $this->form = new CustomFormBuilder($this->formName, $this->formElements,
+                $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
         return $this->form;

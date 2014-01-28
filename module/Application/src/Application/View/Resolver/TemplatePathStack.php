@@ -44,7 +44,7 @@ class TemplatePathStack extends BaseTemplatePathStack
      */
     public function resolve($name, Renderer $renderer = null)
     {
-        // generate cache name
+        // generate a cache name
         $cacheName = CacheUtilities::getCacheName(self::CACHE_TEMPLATE_PATH, array(
             $name,
             $renderer

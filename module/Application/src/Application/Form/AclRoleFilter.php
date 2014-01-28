@@ -19,6 +19,12 @@ class AclRoleFilter extends AbstractCustomForm
     protected $method = 'get';
 
     /**
+     * List of not validated elements
+     * @var array
+     */
+    protected $notValidatedElements = array('submit');
+
+    /**
      * Form elements
      * @var array
      */

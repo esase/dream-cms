@@ -1,0 +1,41 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Edit the user') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->translate('List of users')) ?>
+
+<!-- render a header -->
+<?php echo $this->render('users/users-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partials/tabs', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partials/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->translate('List of users'),
+            'controller' => 'users-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ),
+        'edit_user' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'users-administration',
+            'action' => 'edit-user',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('partials/form', array(
+    'form' => $this->userForm,
+    'controller' => 'users-administration',
+    'action' => 'edit-user',
+    'params' => array(
+        'slug' => $this->user['user_id']
+    )
+)); ?>

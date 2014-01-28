@@ -10,12 +10,12 @@ class Slug
      * Slugify title
      * 
      * @param string $title
-     * @param integer $objectId
      * @param integer $maxChars
      * @param string $spaceDevider
+     * @param integer $objectId
      * @return string
      */
-    public static function slugify($title, $objectId = 0, $maxChars = 50, $spaceDevider = '-')
+    public static function slugify($title, $maxChars = 100, $spaceDevider = '-', $objectId = 0)
     {
         $transliterator = Transliterator::create('Any-Latin; Latin-ASCII; Lower();');
         $title = preg_replace('/[^0-9a-z\s]/i', '', $transliterator->transliterate($title));

@@ -359,7 +359,7 @@ class AclAdministrationController extends AbstractBaseController
 
         $filters = array();
 
-        // get filter form
+        // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Application\Form\AclRoleFilter');

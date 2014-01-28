@@ -1,5 +1,7 @@
 <?php
 
+use Zend\Stdlib\ArrayUtils;
+
 define('SYSTEM_MODULES_CONFIG', __DIR__ . '/modules/system.php');
 define('CUSTOM_MODULES_CONFIG', __DIR__ . '/modules/custom.php');
 
@@ -10,8 +12,9 @@ defined('APPLICATION_ENV')
 // get list of modules
 $systemModules = require_once SYSTEM_MODULES_CONFIG;
 $customModules = require_once CUSTOM_MODULES_CONFIG;
+$extraConfig   = require_once 'application.config.' . APPLICATION_ENV. '.php';
 
-return array(
+return ArrayUtils::merge(array(
     'modules' => array_merge($systemModules, $customModules),
     'module_listener_options' => array(
         'config_glob_paths'    => array(
@@ -20,6 +23,6 @@ return array(
         'module_paths' => array(
             './module',
             './vendor',
-        ),
+        )       
     ),
-);
+), $extraConfig);

@@ -3,8 +3,8 @@
 return array(
     'controllers' => array(
         'invokables' => array(
-            'login' => 'Users\Controller\LoginController',
-            'logout' => 'Users\Controller\LogoutController'
+            'users-administration' => 'Users\Controller\UsersAdministrationController',
+            'user' => 'Users\Controller\UserController'
         )
     ),
     'router' => array(

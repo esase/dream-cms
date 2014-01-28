@@ -2,8 +2,18 @@
 
 namespace Application\Service;
 
+use stdClass;
+use Zend\Permissions\Acl\Acl;
+use Zend\ServiceManager\ServiceManager;
+
 class Service
 {
+    /**
+     * Cache config directory name
+     * @var string
+     */
+    protected static $cacheConfigDir = 'data/cache/config';
+
     /**
      * Captcha directory name
      * @var string
@@ -92,7 +102,7 @@ class Service
      * @param object $userIdentity
      * @return void
      */
-    public static function setCurrentUserIdentity(\stdClass $userIdentity)
+    public static function setCurrentUserIdentity(stdClass $userIdentity)
     {
         self::$currentUserIdentity = $userIdentity;
     }
@@ -134,7 +144,7 @@ class Service
      * @param object $acl
      * @return void
      */
-    public static function setCurrentAcl(\Zend\Permissions\Acl\Acl $acl)
+    public static function setCurrentAcl(Acl $acl)
     {
         self::$currentAcl = $acl;
     }
@@ -155,7 +165,7 @@ class Service
      * @param object $serviceManager
      * @return void
      */
-    public static function setServiceManager(\Zend\ServiceManager\ServiceManager $serviceManager)
+    public static function setServiceManager(ServiceManager $serviceManager)
     {
         self::$serviceManager = $serviceManager;
     }
@@ -213,6 +223,16 @@ class Service
     }
 
     /**
+     * Get default localization
+     *
+     * @return array
+     */
+    public static function getDefaultLocalization()
+    {
+        return current(self::$localizations);
+    }
+
+    /**
      * Get setting
      *
      * @param string $settingName
@@ -230,11 +250,21 @@ class Service
     }
 
     /**
+     * Get config path
+     *
+     * @return string
+     */
+    public static function getConfigCachePath()
+    {
+        return APPLICATION_ROOT . '/' . self::$cacheConfigDir;
+    }
+
+    /**
      * Get captcha path
      *
      * @return string
      */
-    public function getCaptchaPath()
+    public static function getCaptchaPath()
     {
         return APPLICATION_PUBLIC . '/' . self::$captchaDir . '/';
     }
@@ -244,7 +274,7 @@ class Service
      *
      * @return string
      */
-    public function getCaptchaFontPath()
+    public static function getCaptchaFontPath()
     {
         return APPLICATION_PUBLIC . '/' . self::$captchaDir . '/' . self::$captchaFontDir;
     }
@@ -254,7 +284,7 @@ class Service
      *
      * @return string
      */
-    public function getCaptchaUrl()
+    public static function getCaptchaUrl()
     {
         return self::getApplicationUrl() . '/' . self::$captchaDir . '/';
     }
@@ -264,7 +294,7 @@ class Service
      *
      * @return string
      */
-    public function getLayoutPath()
+    public static function getLayoutPath()
     {
         return APPLICATION_PUBLIC . '/' . self::$layoutsDir . '/';
     }
@@ -274,7 +304,7 @@ class Service
      *
      * @return string
      */
-    public function getLayoutDir()
+    public static function getLayoutDir()
     {
         return self::$layoutsDir;
     }
@@ -285,7 +315,7 @@ class Service
      * @param string $type
      * @return string
      */
-    public function getLayoutCachePath($type = 'css')
+    public static function getLayoutCachePath($type = 'css')
     {
         return APPLICATION_PUBLIC . '/' .
                 ($type == 'css' ? self::$layoutsCacheCssDir : self::$layoutsCacheJsDir) . '/';
@@ -297,7 +327,7 @@ class Service
      * @param string $type
      * @return string
      */
-    public function getLayoutCacheDir($type = 'css')
+    public static function getLayoutCacheDir($type = 'css')
     {
         return ($type == 'css' ? self::$layoutsCacheCssDir : self::$layoutsCacheJsDir);
     }

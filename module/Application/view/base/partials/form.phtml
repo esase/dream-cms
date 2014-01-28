@@ -4,7 +4,7 @@
 
 <?php
     $this->declareVars('language', 'formCategories', 'openCategories', 'category', 'formOptions');
-    $this->language = $this->localizations()->getCurrentLocalization()['language'];
+    $this->language = $this->localizations()->getCurrentLanguage();
     $this->formCategories = new ArrayObject();
     $this->openCategories = new ArrayObject();
 
@@ -26,15 +26,26 @@
     $this->form->prepare();
 
     foreach ($this->form as $element) {
+        //echo $element->getOption('description');
         $this->category = null != $element->getOption('category')
             ? $element->getOption('category')
             : false;
 
-        isset($this->formCategories[$this->category])
-            ? $this->formCategories[$this->category] .= $this->formRow($element)
-            : $this->formCategories[$this->category] = $this->formRow($element);
+        // generate a form element
+        $renderedElement = $this->formRow($element);
 
-        if ($element->getMessages() && !in_array($this->category, (array) $this->openCategories)) {
+        // get the element's description
+        if (null != ($elementDescription = $element->getOption('description'))) {
+            $renderedElement .= '<p class="help-block">' . $elementDescription . '</p>';
+        }
+
+        isset($this->formCategories[$this->category])
+            ? $this->formCategories[$this->category] .= $renderedElement
+            : $this->formCategories[$this->category]  = $renderedElement;
+
+        if ($element->getMessages() &&
+                    !in_array($this->category, (array) $this->openCategories)) {
+
             $this->openCategories[] = $this->category;
         }
     }
@@ -54,7 +65,7 @@
     <script type="text/javascript" src="<?php echo $this->asset('tinymce/jquery.tinymce.min.js') ?>"></script>
     <script type="text/javascript">
         $('.htmlarea').tinymce({
-            directionality : '<?php echo $this->localizations()->getCurrentLocalization()['direction'] ?>',
+            directionality : '<?php echo $this->localizations()->getCurrentLanguageDirection() ?>',
             script_url : '<?php echo $this->asset('tinymce/tinymce.min.js') ?>',
             language : "<?php echo $this->language ?>",
             plugins: [

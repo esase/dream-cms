@@ -44,10 +44,6 @@
     $this->declareVars('perPageRanges');
     $this->perPageRanges = PaginationUtility::getPerPageRanges();
 
-    // init language direction
-    $this->declareVars('languageDirection');
-    $this->languageDirection = $this->localizations()->getCurrentLocalization()['direction'];
-
     // init data grid regular actions
     $this->declareVars('regularActions', 'actionsInitialized', 'regularActionsCount');
     $this->actionsInitialized = false;
@@ -120,7 +116,7 @@
     <ul class="nav nav-pills">
         <?php if (!empty($this->filter_form)) : ?>
             <!-- filter form -->
-            <li class="dropdown <?php if ($this->languageDirection == 'ltr') : ?>pull-left<?php else: ?>pull-right<?php endif; ?><?php if (!$this->filter_form->isValid()) : ?>open<?php endif; ?>">
+            <li class="dropdown <?php if ($this->localizations()->isCurrentLanguageLtr()) : ?>pull-left<?php else: ?>pull-right<?php endif; ?><?php if (!$this->filter_form->isValid()) : ?> open<?php endif; ?>">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <?php echo $this->translate('Filter') ?>
                     <span class="caret"></span>
@@ -146,7 +142,7 @@
 
         <?php if ($this->actionsInitialized) : ?>
             <!-- multiple actions -->
-            <li class="dropdown <?php if ($this->languageDirection == 'ltr') : ?>pull-left<?php else: ?>pull-right<?php endif; ?>">
+            <li class="dropdown <?php if ($this->localizations()->isCurrentLanguageLtr()) : ?>pull-left<?php else: ?>pull-right<?php endif; ?>">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <?php echo $this->translate('Actions') ?>
                     <span class="caret"></span>
@@ -189,7 +185,7 @@
         <?php endif; ?>
         <!-- per page changer -->
         <?php if ($this->paginationCount && count($this->perPageRanges) > 1) : ?>
-            <li class="dropdown <?php if ($this->languageDirection == 'ltr') : ?>pull-right<?php else: ?>pull-left<?php endif; ?>">
+            <li class="dropdown <?php if ($this->localizations()->isCurrentLanguageLtr()) : ?>pull-right<?php else: ?>pull-left<?php endif; ?>">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <?php echo $this->translate('Per page') ?> - <?php echo $this->per_page ?>
                     <span class="caret"></span>
@@ -361,7 +357,7 @@
             'selectorErrorTime' : <?php echo (int) $this->multipleActionsErrorDisplayTime ?>,
             'confirmButtonTitle' : '<?php echo $this->escapeJs($this->translate('Yes')) ?>',
             'cancelButtonTitle' : '<?php echo $this->escapeJs($this->translate('No')) ?>',
-            'langDirection' : '<?php echo $this->escapeJs($this->languageDirection) ?>'
+            'langDirection' : '<?php echo $this->escapeJs($this->localizations()->getCurrentLanguageDirection()) ?>'
         });
     <?php $this->inlineScript()->captureEnd() ?>
 <?php endif; ?>

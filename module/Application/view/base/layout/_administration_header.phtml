@@ -1,8 +1,5 @@
 <?php echo $this->doctype(); ?>
-<?php $this->declareVars('languageDirection') ?>
-<?php $this->languageDirection = $this->localizations()->getCurrentLocalization()['direction'] ?>
-
-<html dir="<?php echo $this->languageDirection ?>" lang="<?php echo $this->localizations()->getCurrentLocalization()['language'] ?>">
+<html dir="<?php echo $this->localizations()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localizations()->getCurrentLanguage() ?>">
     <head>
         <meta charset="utf-8">
         <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -19,9 +16,9 @@
                 ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
                 ->prependStylesheet($this->asset('bootstrap.css', 'css'))
                 ->appendStylesheet($this->asset('jquery-ui.css', 'css'))
-                ->appendStylesheet($this->asset(($this->languageDirection == 'ltr' ? 'administration.css' : 'administration.rtl.css'), 'css')) ?>
+                ->appendStylesheet($this->asset(($this->localizations()->isCurrentLanguageLtr() ? 'administration.css' : 'administration.rtl.css'), 'css')) ?>
 
-        <?php if ($this->languageDirection == 'rtl'): ?>
+        <?php if (!$this->localizations()->isCurrentLanguageLtr()): ?>
             <?php $this->headLink()->appendStylesheet($this->asset('bootstrap.rtl.css', 'css')) ?>
         <?php endif; ?>
 
@@ -52,7 +49,7 @@
                     </a>
                 </div>
                 <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-<?php if ($this->languageDirection == 'ltr'): ?>left<?php else: ?>right<?php endif; ?>">
+                    <ul class="nav navbar-nav navbar-<?php if ($this->localizations()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">
                         <?php if (count($this->adminMenu())): ?>
                             <!-- select part -->
                             <li class="dropdown">
@@ -80,7 +77,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <?php foreach ($this->localizations()->getAllLocalizations() as $localization) : ?>
-                                        <li <?php if ($this->localizations()->getCurrentLocalization()['language'] == $localization['language']): ?>class="disabled"<?php endif; ?>>
+                                        <li <?php if ($this->localizations()->getCurrentLanguage() == $localization['language']): ?>class="disabled"<?php endif; ?>>
                                             <a href="<?php echo  $this->url(null, array_merge(array(
                                                     'languge' => $localization['language'],
                                                     'controller' => $this->currentRoute()->getController(),
@@ -96,7 +93,7 @@
                             </li>
                         <?php endif; ?>
                     </ul>
-                    <ul class="nav navbar-nav navbar-<?php if ($this->languageDirection == 'ltr'): ?>right<?php else: ?>left<?php endif; ?>">
+                    <ul class="nav navbar-nav navbar-<?php if ($this->localizations()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
                         <li>
                             <a href="<?php echo  $this->url('application') ?>">
                                 <span class="glyphicon glyphicon-home"></span>
@@ -110,8 +107,16 @@
                                     <?php echo sprintf($this->translate('Welcome'), $this->userIdentity()->nick_name) ?><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    <?php if ($this->checkPermission('users_administration_edit_user')): ?>
+                                        <li>
+                                            <a href="<?php echo  $this->url('application', array('controller' => 'users-administration', 'action' => 'edit-user', 'slug' => $this->userIdentity()->user_id)) ?>">
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                                <?php echo $this->translate('Edit account') ?>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
                                     <li>
-                                        <a href="<?php echo  $this->url('application', array('controller' => 'logout')) ?>">
+                                        <a href="<?php echo  $this->url('application', array('controller' => 'user', 'action' => 'logout')) ?>">
                                             <span class="glyphicon glyphicon-off"></span>
                                             <?php echo $this->translate('Logout') ?>
                                         </a>

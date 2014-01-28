@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-01-04 16:34+0600\n"
+"PO-Revision-Date: 2014-01-27 14:43+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,58 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "It used for caching  template paths, language translations, etc"
+msgstr ""
+"Это используется для кэширования путей шаблонов, языковых переводов и т.д."
+
+msgid "This value will be visible in a browser title"
+msgstr "Это значение будет видно в заголовке браузера"
+
+msgid "Value should be greater than 0"
+msgstr "Значение должно быть больше 0"
+
+msgid "The input is less than %min% characters long"
+msgstr "Введеное значение меньше %min% символов длиной"
+
+msgid "Application config cache"
+msgstr "Кэш конфигураций приложения"
+
+msgid "SMTP password"
+msgstr "SMTP пароль"
+
+msgid "SMTP user"
+msgstr "SMTP пользователь"
+
+msgid "SMTP port"
+msgstr "SMTP порт"
+
+msgid "SMTP host"
+msgstr "SMTP хост"
+
+msgid "Use SMTP"
+msgstr "Использовать SMTP"
+
+msgid "From"
+msgstr "От"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Email notifications settings"
+msgstr "Настройки почтовых уведомлений"
+
+msgid "Email notifications"
+msgstr "Почтовые уведомления"
+
+msgid "Approve selected"
+msgstr "Активировать выбранное"
+
+msgid "Disapprove selected"
+msgstr "Дезактивировать выбранное"
+
+msgid "Role"
+msgstr "Роль"
 
 msgid "Select a needed cache"
 msgstr "Выберите нужный кэш"
@@ -534,6 +586,14 @@ msgstr ""
 "\"%s\" отредактировал настройки ACL ресурса с идентификатором роли - \"%d\" "
 "и идентификатором ресурса - \"%d\""
 
+msgid "Event - Sending email notifications"
+msgstr "Отправка уведомлений по электронной почте"
+
+msgid "Event - Email notification will be send"
+msgstr ""
+"Уведомление будет отправлено на этот адрес электронной почты - \"%s\" с "
+"заголовком сообщения - \"%s\""
+
 msgid "Event - Clearing site's cache"
 msgstr "Очистка кэша сайта"
 
@@ -549,44 +609,44 @@ msgstr "Произошла 403 ошибка"
 msgid "Your request is forbidden"
 msgstr "Ваш запрос запрещен"
 
-msgid "ACL - Viewing site's modules"
-msgstr "Просмотр модулей сайта"
+msgid "ACL - Viewing site's modules in admin area"
+msgstr "Просмотр модулей сайта в админке"
 
 msgid "ACL - Getting site's localizations via XmlRpc"
 msgstr "Получение локализации сайта через XMLRPC"
 
-msgid "ACL - Editing site's settings"
-msgstr "Изменение настроек сайта"
+msgid "ACL - Editing site's settings in admin area"
+msgstr "Изменение настроек сайта в админке"
 
-msgid "ACL - Viewing site's localizations"
-msgstr "Просмотр локализаций сайта"
+msgid "ACL - Viewing site's localizations in admin area"
+msgstr "Просмотр локализаций сайта в админке"
 
-msgid "ACL - Viewing site's layouts"
-msgstr "Просмотр макетов сайтов"
+msgid "ACL - Viewing site's layouts in admin area"
+msgstr "Просмотр макетов сайтов в админке"
 
-msgid "ACL - Viewing ACL roles"
-msgstr "Просмотр ACL ролей"
+msgid "ACL - Viewing ACL roles in admin area"
+msgstr "Просмотр ACL ролей в админке"
 
-msgid "ACL - Adding ACL roles"
-msgstr "Добавление ACL ролей"
+msgid "ACL - Adding ACL roles in admin area"
+msgstr "Добавление ACL ролей в админке"
 
-msgid "ACL - Deleting ACL roles"
-msgstr "Удаление ACL ролей"
+msgid "ACL - Deleting ACL roles in admin area"
+msgstr "Удаление ACL ролей в админке"
 
-msgid "ACL - Editing ACL roles"
-msgstr "Редактирование ACL ролей"
+msgid "ACL - Editing ACL roles in admin area"
+msgstr "Редактирование ACL ролей в админке"
 
-msgid "ACL - Browsing ACL resources"
-msgstr "Обзор ACL ресурсов"
+msgid "ACL - Browsing ACL resources in admin area"
+msgstr "Обзор ACL ресурсов в админке"
 
-msgid "ACL - Allowing ACL resources"
-msgstr "Разрешение ACL ресурсов"
+msgid "ACL - Allowing ACL resources in admin area"
+msgstr "Разрешение ACL ресурсов в админке"
 
-msgid "ACL - Disallowing ACL resources"
-msgstr "Запрет ACL ресурсов"
+msgid "ACL - Disallowing ACL resources in admin area"
+msgstr "Запрет ACL ресурсов в админке"
 
-msgid "ACL - Editing ACL resources settings"
-msgstr "Редактирование настроек ACL ресурсов"
+msgid "ACL - Editing ACL resources settings in admin area"
+msgstr "Редактирование настроек ACL ресурсов в админке"
 
-msgid "ACL - Clearing site's cache"
-msgstr "Очистка кэша сайта"
+msgid "ACL - Clearing site's cache in admin area"
+msgstr "Очистка кэша сайта в админке"

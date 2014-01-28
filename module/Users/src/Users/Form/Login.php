@@ -29,11 +29,16 @@ class Login extends AbstractCustomForm
             'required' => true
         ),
         2 => array(
+            'name' => 'remember',
+            'type' => 'checkbox',
+            'label' => 'Remember me'
+        ),
+        3 => array(
             'name' => 'submit',
             'type' => 'submit',
             'label' => 'Save',
         ),
-        3 => array(
+        4 => array(
             'name' => 'csrf',
             'type' => 'csrf'
         ), 

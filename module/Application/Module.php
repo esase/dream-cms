@@ -6,9 +6,11 @@ use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Http\Response;
 
 use Application\Model\Acl as AclModel;
+use Users\Model\Base as UsersBaseModel;
 use Application\Service\Service as ApplicationService;
 use Application\View\Resolver\TemplatePathStack;
 use Users\Service\Service as UsersService;
+use Zend\Http\Header\SetCookie;
 
 use StdClass;
 use DateTime;
@@ -19,8 +21,6 @@ use Zend\Authentication\Storage;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 
-use Zend\Session\Container as SessionContainer;
-
 use Zend\Validator\AbstractValidator;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -28,6 +28,11 @@ use Zend\Mvc\MvcEvent;
 use Zend\Log\Writer\FirePhp as FirePhp;
 use Zend\Log\Logger as Logger;
 use Zend\Cache\StorageFactory as CacheStorageFactory;
+use Zend\ModuleManager\ModuleManager;
+
+use Zend\Session\Container as SessionContainer;
+use Zend\Session\SessionManager;
+use Zend\Console\Request as ConsoleRequest;
 
 class Module
 {
@@ -73,11 +78,21 @@ class Module
     const ADMINISTRATION_AREA = 'administration';
 
     /**
+     * Localization cookie
+     */ 
+    CONST LOCALIZATION_COOKIE = 'language';
+
+    /**
+     * Localization cookie expire
+     */ 
+    CONST LOCALIZATION_COOKIE_EXPIRE = 6912000; // 80 days
+
+    /**
      * Init
      *
      * @param object $moduleManager
      */
-    function init(\Zend\ModuleManager\ModuleManager $moduleManager)
+    function init(ModuleManager $moduleManager)
     {
         // get service manager
         $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
@@ -94,6 +109,13 @@ class Module
      */
     public function onBootstrap(MvcEvent $e)
     {
+        // log errors
+        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function($e){
+            if (null != ($exception = $e->getParam('exception'))) {
+                // TODO: add a logger here
+            }
+        });
+
         // init user localization
         $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
             $this, 'initUserLocalization'
@@ -262,6 +284,13 @@ class Module
         $this->userIdentity->role = AclModel::DEFAULT_ROLE_GUEST;
         $this->userIdentity->user_id = AclModel::DEFAULT_GUEST_ID;
 
+        $request = $this->serviceManager->get('Request');
+ 
+        // get language from cookie
+        if (!$request instanceof ConsoleRequest) {
+            $this->userIdentity->language = $request->getCookie()->{self::LOCALIZATION_COOKIE};
+        }
+
         $authService->getStorage()->write($this->userIdentity);
     }
 
@@ -285,10 +314,8 @@ class Module
                     ->get('Application\Model\ModelManager')
                     ->getInstance('Users\Model\Base');
 
-                if (null != ($userInfo = $user->
-                        getUserInfoById($authService->getIdentity()->user_id))) {
-
-                    // fill user identity with user data
+                if (null != ($userInfo = $user->getUserInfo($authService->getIdentity()->user_id))) {
+                    // fill the user identity with data
                     foreach($userInfo as $fieldName => $value) {
                         $this->userIdentity->$fieldName = $value;
                     }
@@ -422,6 +449,7 @@ class Module
      */
     public function initUserLocalization(MvcEvent $e)
     {
+        // get a router
         $router = $this->serviceManager->get('router');
         $matches = $e->getRouteMatch();
 
@@ -429,11 +457,15 @@ class Module
         if (!$matches->getParam('languge') ||
                     !array_key_exists($matches->getParam('languge'), $this->localizations)) {
 
+            // set default language
             $router->setDefaultParam('languge', $this->defaultLocalization['language']);
+
+            // remember user's choose language
+            $this->setUserLanguage($this->defaultLocalization['language']);
             return;
         }
 
-        // init user localization
+        // init an user localization
         if ($this->defaultLocalization['language'] != $matches->getParam('languge')) {
             $this->serviceManager
                 ->get('translator')
@@ -444,6 +476,38 @@ class Module
 
         Locale::setDefault($this->localizations[$matches->getParam('languge')]['locale']);
         $router->setDefaultParam('languge', $matches->getParam('languge'));
+
+        // remember user's choose language
+        $this->setUserLanguage($matches->getParam('languge'));
+    }
+
+    /**
+     * Set user's language
+     *
+     * @param string $language
+     * @return void
+     */
+    protected function setUserLanguage($language)
+    {
+        if (!$this->userIdentity->language || $this->userIdentity->language != $language) {
+            // save language
+            if ($this->userIdentity->role != AclModel::DEFAULT_ROLE_GUEST) {
+                $model = $this->serviceManager
+                    ->get('Application\Model\ModelManager')
+                    ->getInstance('Users\Model\Base')
+                    ->setUserLanguage($this->userIdentity->user_id, $language);
+            }
+
+            // set language cookie
+            $header = new SetCookie();
+            $header->setName(self::LOCALIZATION_COOKIE)
+                ->setValue($language)
+                ->setPath('/')
+                ->setExpires(time() + self::LOCALIZATION_COOKIE_EXPIRE);
+
+            $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
+            $this->userIdentity->language = $language;
+        }
     }
 
     /**
@@ -461,6 +525,40 @@ class Module
     {
         return array(
             'factories' => array(
+                'Zend\Session\SessionManager' => function ($serviceManager)
+                {
+                    $config = $serviceManager->get('config');
+
+                    // get session config
+                    $sessionConfig = new
+                    $config['session']['config']['class']();
+                    $sessionConfig->setOptions($config['session']['config']['options']);
+
+                    // get session storage
+                    $sessionStorage = new $config['session']['storage']();
+
+                    $sessionSaveHandler = null;
+                    if (!empty($config['session']['save_handler'])) {
+                        // class should be fetched from service manager since it
+                        // will require constructor arguments
+                        $sessionSaveHandler = $serviceManager->get($config['session']['save_handler']);
+                    }
+
+                    // get session manager
+                    $sessionManager = new SessionManager($sessionConfig,
+                    $sessionStorage, $sessionSaveHandler);
+
+                    if (!empty($config['session']['validators'])) {
+                        $chain = $sessionManager->getValidatorChain();
+    
+                        foreach ($config['session']['validators'] as $validator) {
+                            $chain->attach('session.validate', array(new $validator(), 'isValid'));
+                        }
+                    }
+
+                    SessionContainer::setDefaultManager($sessionManager);
+                    return $sessionManager;
+                },
                 'Cache\Static' => function ($serviceManager)
                 {
                     $cache = CacheStorageFactory::factory(array(
@@ -532,8 +630,8 @@ class Module
                 },
                 'Application\AuthService' => function($serviceManager)
                 {
-                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'),
-                            'users', 'nick_name', 'password', 'SHA1(CONCAT(MD5(?), salt))');
+                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'), 'users', 'nick_name',
+                            'password', 'SHA1(CONCAT(MD5(?), salt)) AND status = "' . UsersBaseModel::STATUS_APPROVED . '"');
 
                     $authService = new AuthenticationService();
                     $authService->setAdapter($authAdapter);
@@ -554,7 +652,6 @@ class Module
                 'urlParamsEncode' => 'Application\View\Helper\UrlParamsEncode',
                 'date' => 'Application\View\Helper\Date',
                 'getSetting' => 'Application\View\Helper\Setting',
-                'asset' => 'Application\View\Helper\Asset',
                 'headScript' => 'Application\View\Helper\HeadScript',
                 'headlink' => 'Application\View\Helper\HeadLink',
                 'isGuest' => 'Application\View\Helper\IsGuest',
@@ -564,6 +661,10 @@ class Module
                 'localizations' => 'Application\View\Helper\Localizations',
             ),
             'factories' => array(
+                'asset' =>  function($serviceManager)
+                {
+                    return new \Application\View\Helper\Asset($serviceManager->getServiceLocator()->get('Cache\Dynamic'));
+                },
                 'booleanValue' =>  function($serviceManager)
                 {
                     return new \Application\View\Helper\BooleanValue($serviceManager->getServiceLocator()->get('Translator'));

@@ -20,16 +20,15 @@ class Service extends ApplicationService
      * Get user info
      *
      * @param integer $userId
-     * @param boolean $isApiKey
+     * @param string $field
      * @return array
      */
-    public static function getUserInfo($userId, $isApiKey = false)
+    public static function getUserInfo($userId, $field = null)
     {
-        $user = self::$serviceManager
+        return self::$serviceManager
             ->get('Application\Model\ModelManager')
-            ->getInstance('Users\Model\Base');
-
-        return $user->getUserInfoById($userId, $isApiKey); 
+            ->getInstance('Users\Model\Base')
+            ->getUserInfo($userId, $field);
     }
 
     /**

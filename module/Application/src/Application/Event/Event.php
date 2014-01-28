@@ -57,18 +57,23 @@ class Event
     const APPLICATION_CLEAR_CACHE = 'clear_cache';
 
     /**
+     * Application send email notification
+     */
+    const APPLICATION_SEND_EMAIL_NOTIFICATION = 'send_email_notification';
+
+    /**
      * Fire event
      *
      * @param string $event
-     * @param integer $objectid
+     * @param integer|string $objectid
      * @param integer $userId
      * @param string $description
      * @param array $descriptionParams
-     * @return void
+     * @return object
      */
     public static function fireEvent($event, $objectid, $userId, $description, array $descriptionParams = array())
     {
-        self::getEventManager()->trigger($event, __METHOD__, array(
+        return self::getEventManager()->trigger($event, __METHOD__, array(
             'object_id' => $objectid,
             'description' => $description,
             'description_params' => $descriptionParams,

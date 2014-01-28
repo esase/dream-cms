@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-01-04 16:34+0600\n"
+"PO-Revision-Date: 2014-01-27 14:42+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,57 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "It used for caching  template paths, language translations, etc"
+msgstr "It used for caching  template paths, language translations, etc"
+
+msgid "This value will be visible in a browser title"
+msgstr "This value will be visible in a browser title"
+
+msgid "Value should be greater than 0"
+msgstr "Value should be greater than 0"
+
+msgid "The input is less than %min% characters long"
+msgstr "The input is less than %min% characters long"
+
+msgid "Application config cache"
+msgstr "Application config cache"
+
+msgid "SMTP password"
+msgstr "SMTP password"
+
+msgid "SMTP user"
+msgstr "SMTP user"
+
+msgid "SMTP port"
+msgstr "SMTP port"
+
+msgid "SMTP host"
+msgstr "SMTP host"
+
+msgid "Use SMTP"
+msgstr "Use SMTP"
+
+msgid "From"
+msgstr "From"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Email notifications settings"
+msgstr "Email notifications settings"
+
+msgid "Email notifications"
+msgstr "Email notifications"
+
+msgid "Approve selected"
+msgstr "Approve selected"
+
+msgid "Disapprove selected"
+msgstr "Disapprove selected"
+
+msgid "Role"
+msgstr "Role"
 
 msgid "Select a needed cache"
 msgstr "Select a needed cache"
@@ -552,50 +603,58 @@ msgstr "Guest cleared cache - \"%s\""
 msgid "Event - Cache cleared by user"
 msgstr "\"%s\" cleared cache - \"%s\""
 
+msgid "Event - Sending email notifications"
+msgstr "Sending email notifications"
+
+msgid "Event - Email notification will be send"
+msgstr ""
+"The  notification will be send at this email - \"%s\" with this subject - "
+"\"%s\""
+
 msgid "A 403 error occurred"
 msgstr "A 403 error occurred"
 
 msgid "Your request is forbidden"
 msgstr "Your request is forbidden"
 
-msgid "ACL - Viewing site's modules"
-msgstr "Viewing site's modules"
+msgid "ACL - Viewing site's modules in admin area"
+msgstr "Viewing site's modules in admin area"
 
 msgid "ACL - Getting site's localizations via XmlRpc"
 msgstr "Getting site's localizations via XmlRpc"
 
-msgid "ACL - Editing site's settings"
-msgstr "Editing site's settings"
+msgid "ACL - Editing site's settings in admin area"
+msgstr "Editing site's settings in admin area"
 
-msgid "ACL - Viewing site's localizations"
-msgstr "Viewing site's localizations"
+msgid "ACL - Viewing site's localizations in admin area"
+msgstr "Viewing site's localizations in admin area"
 
-msgid "ACL - Viewing site's layouts"
-msgstr "Viewing site's layouts"
+msgid "ACL - Viewing site's layouts in admin area"
+msgstr "Viewing site's layouts in admin area"
 
-msgid "ACL - Viewing ACL roles"
-msgstr "Viewing ACL roles"
+msgid "ACL - Viewing ACL roles in admin area"
+msgstr "Viewing ACL roles in admin area"
 
-msgid "ACL - Adding ACL roles"
-msgstr "Adding ACL roles"
+msgid "ACL - Adding ACL roles in admin area"
+msgstr "Adding ACL roles in admin area"
 
-msgid "ACL - Deleting ACL roles"
-msgstr "Deleting ACL roles"
+msgid "ACL - Deleting ACL roles in admin area"
+msgstr "Deleting ACL roles in admin area"
 
-msgid "ACL - Editing ACL roles"
-msgstr "Editing ACL roles"
+msgid "ACL - Editing ACL roles in admin area"
+msgstr "Editing ACL roles in admin area"
 
-msgid "ACL - Browsing ACL resources"
-msgstr "Browsing ACL resources"
+msgid "ACL - Browsing ACL resources in admin area"
+msgstr "Browsing ACL resources in admin area"
 
-msgid "ACL - Allowing ACL resources"
-msgstr "Allowing ACL resources"
+msgid "ACL - Allowing ACL resources in admin area"
+msgstr "Allowing ACL resources in admin area"
 
-msgid "ACL - Disallowing ACL resources"
-msgstr "Disallowing ACL resources"
+msgid "ACL - Disallowing ACL resources in admin area"
+msgstr "Disallowing ACL resources in admin area"
 
-msgid "ACL - Editing ACL resources settings"
-msgstr "Editing ACL resources settings"
+msgid "ACL - Editing ACL resources settings in admin area"
+msgstr "Editing ACL resources settings in admin area"
 
-msgid "ACL - Clearing site's cache"
-msgstr "Clearing site's cache"
+msgid "ACL - Clearing site's cache in admin area"
+msgstr "Clearing site's cache in admin area"

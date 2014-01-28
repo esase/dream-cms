@@ -150,22 +150,6 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $form  = new CustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
         $form->setData(array('test' => '02.11.2013'), false);
         $this->assertFalse($form->isValid());
-
-        // test a date convertation
-        $this->setLocale('fr_FR');
-        $field = array(
-            0 => array(
-                'name' => 'test',
-                'type' => 'date_unixtime',
-                'required' => true
-            )
-        );
-
-        $form  = new CustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '2 nov. 2013'), false);
-        $this->assertTrue($form->isValid());
-        $values = $form->getData();
-        $this->assertEquals($values['test'], 1383386400); 
     }
 
     /**

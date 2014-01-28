@@ -20,7 +20,6 @@ return array(
             'class' => 'Zend\Session\Config\SessionConfig',
             'options' => array(
                 'savePath' => APPLICATION_ROOT . '/data/sessions',
-                'cookieLifetime' => 0,
                 'cookieSecure' => false,
                 'cookieHttpOnly' => true
             )
@@ -35,9 +34,12 @@ return array(
     'static_cache' => array(
         'writable' => true,
         'readable' => true,
-        'cache_dir' => APPLICATION_ROOT . '/data/cache',
+        'cache_dir' => APPLICATION_ROOT . '/data/cache/application',
         'dir_level' => 1,
         'ttl' => 0 // cache never will be expired
+    ),
+    'view_manager' => array(
+        'layout' => 'layout/frontend'
     ),
     'dynamic_cache' => array(
         'writable' => true,
@@ -51,41 +53,7 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-            'Zend\Session\SessionManager' => function ($serviceManager)
-            {
-                $config = $serviceManager->get('config');
-
-                // get session config
-                $sessionConfig = new
-                $config['session']['config']['class']();
-                $sessionConfig->setOptions($config['session']['config']['options']);
-
-                // get session storage
-                $sessionStorage = new $config['session']['storage']();
-
-                $sessionSaveHandler = null;
-                if (!empty($config['session']['save_handler'])) {
-                    // class should be fetched from service manager since it
-                    // will require constructor arguments
-                    $sessionSaveHandler = $serviceManager->get($config['session']['save_handler']);
-                }
-
-                // get session manager
-                $sessionManager = new \Zend\Session\SessionManager($sessionConfig,
-                $sessionStorage, $sessionSaveHandler);
-                
-                if (!empty($config['session']['validators'])) {
-                    $chain = $sessionManager->getValidatorChain();
-
-                    foreach ($config['session']['validators'] as $validator) {
-                        $chain->attach('session.validate', array(new $validator(), 'isValid'));
-                    }
-                }
-
-                \Zend\Session\Container::setDefaultManager($sessionManager);
-                return $sessionManager;
-            }
+            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory'
         )
     )
 );

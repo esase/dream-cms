@@ -1,0 +1,16 @@
+<?php $this->declareVars('pageTitle') ?>
+<?php $this->pageTitle = $this->translate('User activate') ?>
+
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
+
+<h1><?php echo $this->escapeHtml($this->pageTitle); ?></h1>
+
+<!-- render a form -->
+<?php echo $this->partial('partials/form', array(
+    'form' => $this->activateForm,
+    'controller' => 'user',
+    'action' => 'activate',
+    'params' => array(
+        'slug' => $this->slug
+    )
+)); ?>

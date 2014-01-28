@@ -10,15 +10,16 @@
 ## PERMISSIONS
 
     1. Writable
-        1. data/cache
-        2. data/sessions
-        3. config/modules/custom.php
-        4. public/resources
-        5. public/layouts_cache/css
-        6. public/layouts_cache/js
-        7. public/layouts/base
-        8. public/layouts
-        9. public/captcha
+        1.  data/cache/application
+        2.  data/cache/config
+        3.  data/sessions
+        4.  config/modules/custom.php
+        5.  public/resources
+        6.  public/layouts_cache/css
+        7.  public/layouts_cache/js
+        8.  public/layouts/base
+        9.  public/layouts
+        10. public/captcha
 
 ## APACHE SETTINGS
 

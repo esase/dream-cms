@@ -14,10 +14,11 @@ class Setting extends AbstractPlugin
      * Get a setting
      *
      * @param string $setting
+     * @param string $language
      * @return string
      */
-    public function __invoke($setting)
+    public function __invoke($setting, $language = null)
     {
-        return UsersService::getSetting($setting);
+        return UsersService::getSetting($setting, $language);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Application\Form;
 
+use Application\Model\AclAdministration;
+
 class AclResourceFilter extends AbstractCustomForm 
 {
     /**
@@ -15,6 +17,18 @@ class AclResourceFilter extends AbstractCustomForm
      * @var string
      */
     protected $method = 'get';
+    
+    /**
+     * List of not validated elements
+     * @var array
+     */
+    protected $notValidatedElements = array('submit');
+
+    /**
+     * Model
+     * @var object
+     */
+    protected $model;
 
     /**
      * Form elements
@@ -53,11 +67,13 @@ class AclResourceFilter extends AbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // file the form with default values
-            $this->formElements['modules']['values'] = $this->model->getActiveModulesList();
+            if ($this->model) {
+                // fill the form with default values
+                $this->formElements['modules']['values'] = $this->model->getActiveModulesList();
+            }
 
             $this->form = new CustomFormBuilder($this->formName,
-                    $this->formElements, $this->translator, $this->ignoredElements, $this->method);    
+                    $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
         return $this->form;
@@ -69,7 +85,7 @@ class AclResourceFilter extends AbstractCustomForm
      * @param object $model
      * @return void
      */
-    public function setModel(\Application\Model\AclAdministration $model)
+    public function setModel(AclAdministration $model)
     {
         $this->model = $model;
     }

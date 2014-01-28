@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2013-12-20 15:35+0600\n"
+"PO-Revision-Date: 2014-01-28 14:29+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,202 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "We have sent a new password to your email"
+msgstr "We have sent a new password to your email"
+
+msgid "Password reset"
+msgstr "Password reset"
+
+msgid "An account password reseted notification"
+msgstr "An account password reseted notification"
+
+msgid "Password reseted message"
+msgstr "Password reseted message"
+
+msgid "Password reseted title"
+msgstr "Password reseted title"
+
+msgid "An account confirm reset password notification"
+msgstr "An account confirm reset password notification"
+
+msgid "Reset password confirmation message"
+msgstr "Reset password confirmation message"
+
+msgid "Reset password confirmation title"
+msgstr "Reset password confirmation title"
+
+msgid "Email not found"
+msgstr "Email not found"
+
+msgid "Your email"
+msgstr "Your email"
+
+msgid ""
+"We sent a message with a confirmation code. You should confirm the password "
+"reset"
+msgstr ""
+"We sent a message with a confirmation code. You should confirm the password "
+"reset"
+
+msgid "Have you forgotten your password or nickname?"
+msgstr "Have you forgotten your password or nickname?"
+
+msgid "Send notification about users deletions"
+msgstr "Send notification about users deletions"
+
+msgid "Send notification about users registrations"
+msgstr "Send notification about users registrations"
+
+msgid "An account register email notification"
+msgstr "An account register email notification"
+
+msgid "An account confirm email notification"
+msgstr "An account confirm email notification"
+
+msgid "An account delete notification"
+msgstr "An account delete notification"
+
+msgid "An account disapprove notification"
+msgstr "An account disapprove notification"
+
+msgid "An account approve notification"
+msgstr "An account approve notification"
+
+msgid "Can't access your account?"
+msgstr "Can't access your account?"
+
+msgid "Create a new account"
+msgstr "Create a new account"
+
+msgid "Edit account"
+msgstr "Edit account"
+
+msgid "Your account will be active after checking"
+msgstr "Your account will be active after checking"
+
+msgid "Your account has been edited"
+msgstr "Your account has been edited"
+
+msgid "User activate"
+msgstr "User activate"
+
+msgid "Activation code"
+msgstr "Activation code"
+
+msgid "Wrong activation code"
+msgstr "Wrong activation code"
+
+msgid "Email confirmation title"
+msgstr "Email confirmation title"
+
+msgid "Email confirmation message"
+msgstr "Email confirmation message"
+
+msgid "Register a new user title"
+msgstr "Register a new user title"
+
+msgid "Register a new user message"
+msgstr "Register a new user message"
+
+msgid "We sent a message with a confirmation code to your registration e-mail"
+msgstr "We sent a message with a confirmation code to your registration e-mail"
+
+msgid "Users auto confirm registrations"
+msgstr "Users auto confirm registrations"
+
+msgid "Register"
+msgstr "Register"
+
+msgid "Allow users register"
+msgstr "Allow users register"
+
+msgid "Nickname should be greater than 0 and less or equal than 40"
+msgstr "Nickname should be greater than 0 and less or equal than 40"
+
+msgid "User has been edited"
+msgstr "User has been edited"
+
+msgid "Edit the user"
+msgstr "Edit the user"
+
+msgid "Registered date"
+msgstr "Registered date"
+
+msgid "User's max nickname length"
+msgstr "User's max nickname length"
+
+msgid "User's min nickname length"
+msgstr "User's min nickname length"
+
+msgid "Passwords do not match"
+msgstr "Passwords do not match"
+
+msgid "Email already used"
+msgstr "Email already used"
+
+msgid "Nickname already used"
+msgstr "Nickname already used"
+
+msgid "Time zone"
+msgstr "Time zone"
+
+msgid "Confirm password"
+msgstr "Confirm password"
+
+msgid "User has been added"
+msgstr "User has been added"
+
+msgid "User deleted message"
+msgstr "User deleted message"
+
+msgid "User deleted title"
+msgstr "User deleted title"
+
+msgid "Selected users have been deleted"
+msgstr "Selected users have been deleted"
+
+msgid "Remember me"
+msgstr "Remember me"
+
+msgid "Supplied credential is invalid."
+msgstr "Supplied credential is invalid."
+
+msgid "User disapproved message"
+msgstr "User disapproved message"
+
+msgid "User disapproved title"
+msgstr "User disapproved title"
+
+msgid "User approved message"
+msgstr "User approved message"
+
+msgid "User approved title"
+msgstr "User approved title"
+
+msgid "Selected users have been approved"
+msgstr "Selected users have been approved"
+
+msgid "Selected users have been disapproved"
+msgstr "Selected users have been disapproved"
+
+msgid "Selected users will be deleted. Are you sure?"
+msgstr "Selected users will be deleted. Are you sure?"
+
+msgid "Add a user"
+msgstr "Add a user"
+
+msgid "disapproved"
+msgstr "Disapproved"
+
+msgid "approved"
+msgstr "Approved"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "List of users"
+msgstr "List of users"
 
 msgid "Users"
 msgstr "Users"
@@ -44,8 +240,8 @@ msgstr "Guest got info about \"%s\" via XmlRpc"
 msgid "Event - User's info was obtained by user via XmlRpc"
 msgstr "\"%s\" got info about \"%s\" via XmlRpc"
 
-msgid "Event - Set users timezones via XmlRpc"
-msgstr "Set users timezones via XmlRpc"
+msgid "Event - Setting users timezones via XmlRpc"
+msgstr "Setting users timezones via XmlRpc"
 
 msgid "Event - Timezone set by user via XmlRpc"
 msgstr "\"%s\" set timezone via XmlRpc"
@@ -68,11 +264,95 @@ msgstr "Users login failed"
 msgid "Event - User login failed"
 msgstr "\"%s\" login failed"
 
-msgid "ACL - Viewing users"
-msgstr "Viewing users"
+msgid "Event - Disapproving users"
+msgstr "Disapproving users"
+
+msgid "Event - User disapproved by guest"
+msgstr "Guest disapproved the user with id - \"%d\""
+
+msgid "Event - User disapproved by user"
+msgstr "\"%s\" disapproved the user with id - \"%d\""
+
+msgid "Event - Approving users"
+msgstr "Approving users"
+
+msgid "Event - User approved by guest"
+msgstr "Guest approved the user with id - \"%d\""
+
+msgid "Event - User approved by user"
+msgstr "\"%s\" approved the user with id - \"%d\""
+
+msgid "Event - User confirmed email"
+msgstr "\"%s\" confirmed his (her) email"
+
+msgid "Event - Deleting users"
+msgstr "Deleting users"
+
+msgid "Event - User deleted by guest"
+msgstr "Guest deleted the user with id - \"%d\""
+
+msgid "Event - User deleted by user"
+msgstr "\"%s\" deleted the user with id - \"%d\""
+
+msgid "Event - Adding users"
+msgstr "Adding users"
+
+msgid "Event - User added by guest"
+msgstr "Guest added the user with id - \"%d\""
+
+msgid "Event - User added by user"
+msgstr "\"%s\" added the user with id - \"%d\""
+
+msgid "Event - User registered"
+msgstr "\"%s\" registered on the site with id - \"%d\""
+
+msgid "Event - Editing users"
+msgstr "Editing users"
+
+msgid "Event - User edited by guest"
+msgstr "Guest edited the user with id - \"%d\""
+
+msgid "Event - User edited by user"
+msgstr "\"%s\" edited the user with id - \"%d\""
+
+msgid "Event - User edited"
+msgstr "\"%s\" edited own account info with id - \"%d\""
+
+msgid "Event - Resetting users passwords"
+msgstr "Resetting users passwords"
+
+msgid "Event - User reseted password"
+msgstr "\"%s\" with id - \"%d\" reseted own password"
+
+msgid "Event - Requesting reset users passwords"
+msgstr "Requesting reset users passwords"
+
+msgid "Event - User requested password reset"
+msgstr "\"%s\" with id - \"%d\" requested the password reset"
+
+msgid "ACL - Viewing users in admin area"
+msgstr "Viewing users in admin area"
 
 msgid "ACL - Getting user's info via XmlRpc"
 msgstr "Getting user's info via XmlRpc"
 
 msgid "ACL - Editing user's timezone via XmlRpc"
 msgstr "Editing user's timezone via XmlRpc"
+
+msgid "ACL - Approving users in admin area"
+msgstr "Approving users in admin area"
+
+msgid "ACL - Disapproving users in admin area"
+msgstr "Disapproving users in admin area"
+
+msgid "ACL - Deleting users in admin area"
+msgstr "Deleting users in admin area"
+
+msgid "ACL - Adding users in admin area"
+msgstr "Adding users in admin area"
+
+msgid "ACL - Editing users settings in admin area"
+msgstr "Editing users settings in admin area"
+
+msgid "ACL - Editing users in admin area"
+msgstr "Editing users in admin area"
