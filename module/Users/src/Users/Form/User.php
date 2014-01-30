@@ -133,7 +133,7 @@ class User extends AbstractCustomForm
             if ($this->avatar) {
                 $this->formElements['avatar']['extra_options']['preview'] = true;
                 $this->formElements['avatar']['extra_options']['file_url'] =
-                        ApplicationService::getResourcesUrl() . $this->model->getAvatarsDir() . $this->avatar;
+                        ApplicationService::getResourcesUrl() . $this->model->getThumbnailsDir() . $this->avatar;
             }
 
             // add extra validators

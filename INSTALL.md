@@ -21,6 +21,7 @@
         9.  public/layouts
         10. public/captcha
         11. public/resources/users
+        12. public/resources/users/thumbnails
 
 ## APACHE SETTINGS
 

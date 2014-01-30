@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-01-30 12:35+0600\n"
+"PO-Revision-Date: 2014-01-30 15:03+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,18 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Thumbnail height"
+msgstr "Высота миниатюры"
+
+msgid "Thumbnail width"
+msgstr "Ширина миниатюры"
+
+msgid "Avatar height"
+msgstr "Высота аватара"
+
+msgid "Avatar width"
+msgstr "Ширина аватара"
 
 msgid "Avatar deleting failed"
 msgstr "Удаление аватара не удалось"
@@ -135,7 +147,7 @@ msgid "Allow users register"
 msgstr "Разрешить пользователям регистрироваться"
 
 msgid "Nickname should be greater than 0 and less or equal than 40"
-msgstr "Ник должен быть больше 0 и меньше или равно 40"
+msgstr "Ник должен быть больше 0 и меньше или равен 40"
 
 msgid "User has been edited"
 msgstr "Пользователь был отредактирован"

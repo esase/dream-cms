@@ -208,15 +208,16 @@ CREATE TABLE IF NOT EXISTS `settings_categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `settings_categories` (`id`, `name`, `module`) VALUES
-(1, 'Main settings', 1),
-(2, 'Cache', 1),
-(3, 'Captcha', 1),
-(4, 'Calendar', 1),
-(5, 'SEO', 1),
-(6, 'Pagination', 1),
-(7, 'Email notifications settings', 1),
-(8, 'Main settings', 2),
-(9, 'Email notifications', 2);
+(1,  'Main settings', 1),
+(2,  'Cache', 1),
+(3,  'Captcha', 1),
+(4,  'Calendar', 1),
+(5,  'SEO', 1),
+(6,  'Pagination', 1),
+(7,  'Email notifications settings', 1),
+(8,  'Main settings', 2),
+(9,  'Email notifications', 2),
+(10, 'Avatar', 2);
 
 CREATE TABLE IF NOT EXISTS `settings` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -295,7 +296,11 @@ INSERT INTO `settings` (`id`, `name`, `label`, `description`, `type`, `required`
 (50, 'user_reset_password_title', 'Reset password confirmation title', 'An account confirm reset password notification', 'notification_title', 1, 13, 9, 2, 1, '', '', ''),
 (51, 'user_reset_password_message', 'Reset password confirmation message', '', 'notification_message', 1, 14, 9, 2, 1, '', '', ''),
 (52, 'user_password_reseted_title', 'Password reseted title', 'An account password reseted notification', 'notification_title', 1, 15, 9, 2, 1, '', '', ''),
-(53, 'user_password_reseted_message', 'Password reseted message', '', 'notification_message', 1, 16, 9, 2, 1, '', '', '');
+(53, 'user_password_reseted_message', 'Password reseted message', '', 'notification_message', 1, 16, 9, 2, 1, '', '', ''),
+(54, 'user_avatar_width', 'Avatar width', '', 'integer', 1, 1, 10, 2, 0, '', '', ''),
+(55, 'user_avatar_height', 'Avatar height', '', 'integer', 1, 2, 10, 2, 0, '', '', ''),
+(56, 'user_thumbnail_width', 'Thumbnail width', '', 'integer', 1, 3, 10, 2, 0, '', '', ''),
+(57, 'user_thumbnail_height', 'Thumbnail height', '', 'integer', 1, 4, 10, 2, 0, '', '', '');
 
 CREATE TABLE IF NOT EXISTS `settings_values` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -374,7 +379,11 @@ INSERT INTO `settings_values` (`id`, `setting_id`, `value`, `language`) VALUES
 (59, 52, 'Your password was reset', NULL),
 (60, 52, 'Ваш пароль был сброшен', 'ru'),
 (61, 53, '<p><b>Dear {RealName}</b>,</p>\r\n<p>Now your new password is: <b>{Password}</b></p>', NULL),
-(62, 53, '<p><b>Уважаемый(я) {RealName}</b>,</p>\r\n<p>Теперь ваш новый пароль: <b>{Password}</b></p>', 'ru');
+(62, 53, '<p><b>Уважаемый(я) {RealName}</b>,</p>\r\n<p>Теперь ваш новый пароль: <b>{Password}</b></p>', 'ru'),
+(63, 54,  '200', NULL),
+(64, 55,  '200', NULL),
+(65, 56,  '100', NULL),
+(66, 57,  '100', NULL);
 
 CREATE TABLE IF NOT EXISTS `settings_predefined_values` (
     `setting_id` int(10) unsigned NOT NULL,

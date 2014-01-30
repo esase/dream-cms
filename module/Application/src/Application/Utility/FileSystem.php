@@ -56,23 +56,15 @@ class FileSystem
      *      integer error
      *      integer size
      * @param string $path
-     * @param string $oldResourceFile
      * @return string|boolean
      */
-    public static function uploadResourceFile($objectId, $file, $path, $oldResourceFile = null)
+    public static function uploadResourceFile($objectId, $file, $path)
     {
         $fileInfo = pathinfo($file['name']);
         $fileName = $objectId . (!empty($fileInfo['extension']) ? '.' . $fileInfo['extension'] : null);
         $basePath = ApplicationService::getResourcesDir() . $path;
 
         if (is_writable($basePath)) {
-            // delete an old resourse file
-            if ($oldResourceFile) {
-                if (false === ($result = self::deleteResourceFile($oldResourceFile, $path))) {
-                    return $result;
-                }
-            }
-
             if (true === ($result = move_uploaded_file($file['tmp_name'], $basePath . $fileName))) {
                 return $fileName;
             }

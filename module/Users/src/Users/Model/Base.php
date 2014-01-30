@@ -13,6 +13,7 @@ use Application\Service\Service as ApplicationService;
 use Application\Model\Acl as AclBase;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Exception;
+use Application\Utility\Image as ImageUtility;
 
 class Base extends AbstractBase
 {
@@ -90,10 +91,10 @@ class Base extends AbstractBase
     protected $avatarsDir = 'users/';
 
     /**
-     * Avatars thumbs directory
+     * Thumbnails directory
      * @var string
      */
-    protected $avatarsThumbsDir = 'users/thumbs/';
+    protected $thumbnailsDir = 'users/thumbnails/';
 
     /**
      * Get avatars directory name
@@ -106,13 +107,13 @@ class Base extends AbstractBase
     }
 
     /**
-     * Get avatars thumbs directory name
+     * Get thumbnails directory name
      *
      * @return string
      */
-    public function getAvatarsThumbsDir()
+    public function getThumbnailsDir()
     {
-        return $this->avatarsThumbsDir;
+        return $this->thumbnailsDir;
     }
 
     /**
@@ -240,11 +241,28 @@ class Base extends AbstractBase
     {
         // upload the user's avatar
         if (!empty($avatar['name'])) {
+            // delete old avatar
+            if ($oldAvatar) {
+                if (true !== ($result = $this->deleteUserAvatar($oldAvatar))) {
+                    throw new Exception('Avatar deleting failed');
+                }
+            }
+
+            // upload the new
             if (false === ($avatarName =
-                    FileSystemUtility::uploadResourceFile($userId, $avatar, $this->avatarsDir, $oldAvatar))) {
+                    FileSystemUtility::uploadResourceFile($userId, $avatar, $this->avatarsDir))) {
 
                 throw new Exception('Avatar uploading failed');
             }
+
+            // resize the avatar
+            ImageUtility::resizeResourceImage($avatarName, $this->avatarsDir,
+                    (int) ApplicationService::getSetting('user_thumbnail_width'),
+                    (int) ApplicationService::getSetting('user_thumbnail_height'), $this->thumbnailsDir);
+
+            ImageUtility::resizeResourceImage($avatarName, $this->avatarsDir,
+                    (int) ApplicationService::getSetting('user_avatar_width'),
+                    (int) ApplicationService::getSetting('user_avatar_height'));
 
             $update = $this->update()
                 ->table('users')
@@ -258,7 +276,7 @@ class Base extends AbstractBase
         }
         elseif ($deleteAvatar && $oldAvatar) {
             // just delete the user's avatar
-            if (true !== ($result = FileSystemUtility::deleteResourceFile($oldAvatar, $this->avatarsDir))) {
+            if (true !== ($result = $this->deleteUserAvatar($oldAvatar))) {
                 throw new Exception('Avatar deleting failed');
             }
 
@@ -272,6 +290,29 @@ class Base extends AbstractBase
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
         }
+    }
+
+    /**
+     * Delete an user's avatar
+     *
+     * @param string $avatarName
+     * @return boolean
+     */
+    protected function deleteUserAvatar($avatarName)
+    {
+        $avatarTypes = array(
+            $this->thumbnailsDir,
+            $this->avatarsDir
+        );
+
+        // delete avatar
+        foreach ($avatarTypes as $path) {
+            if (true !== ($result = FileSystemUtility::deleteResourceFile($avatarName, $path))) {
+                return $result;
+            }
+        }
+
+        return true; 
     }
 
     /**
@@ -299,7 +340,9 @@ class Base extends AbstractBase
 
             // delete an avatar
             if ($userInfo['avatar']) {
-                FileSystemUtility::deleteResourceFile($userInfo['avatar'], $this->avatarsDir);
+                if (true !== ($avatarDeleteResult = $this->deleteUserAvatar($userInfo['avatar']))) {
+                    throw new Exception('Avatar deleting failed');
+                }
             }
 
             // clear a cache
