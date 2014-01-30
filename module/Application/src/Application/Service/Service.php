@@ -9,42 +9,6 @@ use Zend\ServiceManager\ServiceManager;
 class Service
 {
     /**
-     * Cache config directory name
-     * @var string
-     */
-    protected static $cacheConfigDir = 'data/cache/config';
-
-    /**
-     * Captcha directory name
-     * @var string
-     */
-    protected static $captchaDir = 'captcha';
-
-    /**
-     * Captcha font directory name
-     * @var string
-     */
-    protected static $captchaFontDir = 'font/captcha.ttf';
-
-    /**
-     * Layouts directory name
-     * @var string
-     */
-    protected static $layoutsDir = 'layouts';
-
-    /**
-     * Layouts cache css directory name
-     * @var string
-     */
-    protected static $layoutsCacheCssDir = 'layouts_cache/css';
-
-    /**
-     * Layouts cache js directory name
-     * @var string
-     */
-    protected static $layoutsCacheJsDir = 'layouts_cache/js';
-
-    /**
      * Current user identity
      * @var object
      */
@@ -256,7 +220,8 @@ class Service
      */
     public static function getConfigCachePath()
     {
-        return APPLICATION_ROOT . '/' . self::$cacheConfigDir;
+        return APPLICATION_ROOT .
+                '/' . self::$serviceManager->get('Config')['paths']['config_cache'];
     }
 
     /**
@@ -266,7 +231,8 @@ class Service
      */
     public static function getCaptchaPath()
     {
-        return APPLICATION_PUBLIC . '/' . self::$captchaDir . '/';
+        return APPLICATION_PUBLIC .
+                '/' . self::$serviceManager->get('Config')['paths']['captcha'] . '/';
     }
 
     /**
@@ -276,7 +242,9 @@ class Service
      */
     public static function getCaptchaFontPath()
     {
-        return APPLICATION_PUBLIC . '/' . self::$captchaDir . '/' . self::$captchaFontDir;
+        return APPLICATION_PUBLIC . '/' .
+                self::$serviceManager->get('Config')['paths']['captcha'] . '/' .
+                self::$serviceManager->get('Config')['paths']['captcha_font'];
     }
 
     /**
@@ -286,7 +254,8 @@ class Service
      */
     public static function getCaptchaUrl()
     {
-        return self::getApplicationUrl() . '/' . self::$captchaDir . '/';
+        return self::getApplicationUrl() . '/' .
+                self::$serviceManager->get('Config')['paths']['captcha'] . '/';
     }
 
     /**
@@ -296,7 +265,30 @@ class Service
      */
     public static function getLayoutPath()
     {
-        return APPLICATION_PUBLIC . '/' . self::$layoutsDir . '/';
+        return APPLICATION_PUBLIC . '/' .
+                self::$serviceManager->get('Config')['paths']['layouts'] . '/';
+    }
+
+    /**
+     * Get resources dir
+     *
+     * @return string
+     */
+    public static function getResourcesDir()
+    {
+        return APPLICATION_PUBLIC . '/' .
+                self::$serviceManager->get('Config')['paths']['resources'] . '/';
+    }
+
+    /**
+     * Get resources url
+     *
+     * @return string
+     */
+    public static function getResourcesUrl()
+    {
+        return self::getApplicationUrl() . '/' .
+                self::$serviceManager->get('Config')['paths']['resources'] . '/';
     }
 
     /**
@@ -306,7 +298,7 @@ class Service
      */
     public static function getLayoutDir()
     {
-        return self::$layoutsDir;
+        return self::$serviceManager->get('Config')['paths']['layouts'];
     }
 
     /**
@@ -317,8 +309,9 @@ class Service
      */
     public static function getLayoutCachePath($type = 'css')
     {
-        return APPLICATION_PUBLIC . '/' .
-                ($type == 'css' ? self::$layoutsCacheCssDir : self::$layoutsCacheJsDir) . '/';
+        return APPLICATION_PUBLIC . '/' . ($type == 'css'
+                ? self::$serviceManager->get('Config')['paths']['layouts_cache_css']
+                : self::$serviceManager->get('Config')['paths']['layouts_cache_js']) . '/';
     }
 
     /**
@@ -329,7 +322,9 @@ class Service
      */
     public static function getLayoutCacheDir($type = 'css')
     {
-        return ($type == 'css' ? self::$layoutsCacheCssDir : self::$layoutsCacheJsDir);
+        return ($type == 'css'
+                ? self::$serviceManager->get('Config')['paths']['layouts_cache_css']
+                : self::$serviceManager->get('Config')['paths']['layouts_cache_js']);
     }
 
     /**

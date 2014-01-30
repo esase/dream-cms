@@ -15,6 +15,7 @@ use Application\Model\Acl as AclBase;
 use Users\Service\Service as UsersService;
 use Users\Event\Event as UsersEvent;
 use Application\Utility\EmailNotification;
+use Users\Model\UsersAdministration as UsersAdministrationModel;
 
 class UsersAdministrationController extends AbstractBaseController
 {
@@ -73,6 +74,9 @@ class UsersAdministrationController extends AbstractBaseController
      */
     public function editUserAction()
     {
+        $imagine = new \Imagine\Gd\Imagine();
+        echo 'asdsad';
+        exit;
         // get the user info
         if (null == ($user = $this->getModel()->getUserInfo($this->getSlug()))) {
             return $this->createHttpNotFoundModel($this->getResponse());
@@ -83,7 +87,8 @@ class UsersAdministrationController extends AbstractBaseController
             ->get('Application\Form\FormManager')
             ->getInstance('Users\Form\User')
             ->setModel($this->getModel())
-            ->setUserId($user['user_id']);
+            ->setUserId($user['user_id'])
+            ->setUserAvatar($user['avatar']);
  
         // fill the form with default values
         $userForm->getForm()->setData($user);
@@ -91,8 +96,14 @@ class UsersAdministrationController extends AbstractBaseController
 
         // validate the form
         if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
             // fill the form with received values
-            $userForm->getForm()->setData($request->getPost(), false);
+            $userForm->getForm()->setData($post, false);
 
             // save data
             if ($userForm->getForm()->isValid()) {
@@ -102,8 +113,13 @@ class UsersAdministrationController extends AbstractBaseController
                 }
 
                 // edit the user
-                if (true == ($result = $this->
-                        getModel()->editUser($user['user_id'], $userForm->getForm()->getData()))) {
+                $status = $user['status'] == UsersAdministrationModel::STATUS_APPROVED ?:false;
+                $deleteAvatar = (int) $this->getRequest()->getPost('avatar_delete')
+                    ? true
+                    : false;
+
+                if (true === ($result = $this->getModel()->editUser($user, $userForm->
+                        getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
 
                     // event's description
                     $eventDesc = UsersService::isGuest()
@@ -125,7 +141,7 @@ class UsersAdministrationController extends AbstractBaseController
                 else {
                     $this->flashMessenger()
                         ->setNamespace('error')
-                        ->addMessage($result);
+                        ->addMessage($this->getTranslator()->translate($result));
                 }
 
                 return $this->redirectTo('users-administration', 'edit-user', array(
@@ -155,8 +171,14 @@ class UsersAdministrationController extends AbstractBaseController
 
         // validate the form
         if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
             // fill the form with received values
-            $userForm->getForm()->setData($request->getPost(), false);
+            $userForm->getForm()->setData($post, false);
 
             // save data
             if ($userForm->getForm()->isValid()) {
@@ -166,7 +188,8 @@ class UsersAdministrationController extends AbstractBaseController
                 }
 
                 // add a new user
-                $result = $this->getModel()->addUser($userForm->getForm()->getData());
+                $result = $this->getModel()->
+                        addUser($userForm->getForm()->getData(), true, $this->params()->fromFiles('avatar'));
 
                 if (is_numeric($result)) {
                     // event's description
@@ -189,7 +212,7 @@ class UsersAdministrationController extends AbstractBaseController
                 else {
                     $this->flashMessenger()
                         ->setNamespace('error')
-                        ->addMessage($result);
+                        ->addMessage($this->getTranslator()->translate($result));
                 }
 
                 return $this->redirectTo('users-administration', 'add-user');
@@ -247,10 +270,11 @@ class UsersAdministrationController extends AbstractBaseController
                             $userId, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     // delete the user
-                    if (true !== ($deleteResult = $this->getModel()->deleteUser($userId))) {
+                    if (true !== ($deleteResult = $this->getModel()->deleteUser($userInfo))) {
                         $this->flashMessenger()
                             ->setNamespace('error')
-                            ->addMessage(($deleteResult ? $deleteResult : $this->getTranslator()->translate('Error occurred')));
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
 
                         break;
                     }
@@ -318,7 +342,7 @@ class UsersAdministrationController extends AbstractBaseController
                     if (true !== ($approveResult = $this->getModel()->setUserStatus($userId))) {
                         $this->flashMessenger()
                             ->setNamespace('error')
-                            ->addMessage($approveResult);
+                            ->addMessage($this->getTranslator()->translate($approveResult));
 
                         break;
                     }
@@ -393,7 +417,7 @@ class UsersAdministrationController extends AbstractBaseController
                     if (true !== ($disapproveResult = $this->getModel()->setUserStatus($userId, false))) {
                         $this->flashMessenger()
                             ->setNamespace('error')
-                            ->addMessage($disapproveResult);
+                            ->addMessage($this->getTranslator()->translate($disapproveResult));
 
                         break;
                     }

@@ -338,7 +338,8 @@ class UserController extends AbstractBaseController
             ->get('Application\Form\FormManager')
             ->getInstance('Users\Form\User')
             ->setModel($this->getModel())
-            ->setUserId(UsersService::getCurrentUserIdentity()->user_id);
+            ->setUserId(UsersService::getCurrentUserIdentity()->user_id)
+            ->setUserAvatar(UsersService::getCurrentUserIdentity()->avatar);
 
         // fill the form with default values
         $userForm->getForm()->setData((array) UsersService::getCurrentUserIdentity());
@@ -346,8 +347,14 @@ class UserController extends AbstractBaseController
 
         // validate the form
         if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
             // fill the form with received values
-            $userForm->getForm()->setData($request->getPost(), false);
+            $userForm->getForm()->setData($post, false);
 
             // save data
             if ($userForm->getForm()->isValid()) {
@@ -355,8 +362,12 @@ class UserController extends AbstractBaseController
                 $status = (int) $this->getSetting('user_auto_confirm') ||
                         UsersService::getCurrentUserIdentity()->role ==  AclModel::DEFAULT_ROLE_ADMIN ? true : false;
 
-                if (true == ($result = $this->getModel()->
-                        editUser(UsersService::getCurrentUserIdentity()->user_id, $userForm->getForm()->getData(), $status))) {
+                $deleteAvatar = (int) $this->getRequest()->getPost('avatar_delete')
+                    ? true
+                    : false;
+
+                if (true == ($result = $this->getModel()->editUser((array) UsersService::getCurrentUserIdentity(),
+                        $userForm->getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
 
                     // fire the event
                     UsersEvent::fireEvent(UsersEvent::USER_EDIT, UsersService::getCurrentUserIdentity()->user_id,
@@ -490,15 +501,22 @@ class UserController extends AbstractBaseController
 
         // validate the form
         if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
             // fill the form with received values
-            $userForm->getForm()->setData($request->getPost(), false);
+            $userForm->getForm()->setData($post, false);
 
             // save data
             if ($userForm->getForm()->isValid()) {
                 // add a new user with a particular status
                 $status = (int) $this->getSetting('user_auto_confirm') ? true : false;
 
-                $result = $this->getModel()->addUser($userForm->getForm()->getData(), $status);
+                $result = $this->getModel()->
+                        addUser($userForm->getForm()->getData(), $status, $this->params()->fromFiles('avatar'));
 
                 // the user has been added
                 if (is_numeric($result)) {

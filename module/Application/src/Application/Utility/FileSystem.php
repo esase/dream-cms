@@ -4,6 +4,7 @@ namespace Application\Utility;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Application\Service\Service as ApplicationService;
 
 class FileSystem
 {
@@ -16,7 +17,7 @@ class FileSystem
     );
 
     /**
-     * Check directory
+     * Check a directory
      *
      * @param string $path
      * @return boolean
@@ -24,6 +25,60 @@ class FileSystem
     public static function isDirectoryEmpty($path)
     {
         return (($files = scandir($path)) && count($files) <= 2) ? true : false;
+    }
+
+    /**
+     * Delete a resource file
+     *
+     * @param string $file
+     * @param string $path
+     * @return boolean
+     */
+    public static function deleteResourceFile($file, $path)
+    {
+        $filePath = ApplicationService::getResourcesDir() . $path . $file;
+
+        if (file_exists($filePath)) {
+            return unlink($filePath);
+        }
+
+        return true;
+    }
+
+    /**
+     * Upload a resource file
+     *
+     * @param integer $objectId
+     * @param array $file
+     *      string name
+     *      string type
+     *      string tmp_name
+     *      integer error
+     *      integer size
+     * @param string $path
+     * @param string $oldResourceFile
+     * @return string|boolean
+     */
+    public static function uploadResourceFile($objectId, $file, $path, $oldResourceFile = null)
+    {
+        $fileInfo = pathinfo($file['name']);
+        $fileName = $objectId . (!empty($fileInfo['extension']) ? '.' . $fileInfo['extension'] : null);
+        $basePath = ApplicationService::getResourcesDir() . $path;
+
+        if (is_writable($basePath)) {
+            // delete an old resourse file
+            if ($oldResourceFile) {
+                if (false === ($result = self::deleteResourceFile($oldResourceFile, $path))) {
+                    return $result;
+                }
+            }
+
+            if (true === ($result = move_uploaded_file($file['tmp_name'], $basePath . $fileName))) {
+                return $fileName;
+            }
+        }
+
+        return false;
     }
 
     /**

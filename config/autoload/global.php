@@ -55,5 +55,14 @@ return array(
         'factories' => array(
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory'
         )
+    ),
+    'paths' => array(
+        'layouts_cache_css' => 'layouts_cache/css',
+        'layouts_cache_js' => 'layouts_cache/js',
+        'config_cache' => 'data/cache/config',
+        'captcha' => 'captcha',
+        'captcha_font' => 'font/captcha.ttf',
+        'resources' => 'resources',
+        'layouts' => 'layouts',
     )
 );

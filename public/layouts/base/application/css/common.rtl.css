@@ -41,6 +41,18 @@ form .btn-submit {
     margin-top:10px;    
 }
 
+form div.preview-file-wrapper,
+form div.preview-image-wrapper {
+    margin-top:20px;
+    margin-bottom:10px;
+}
+
+form div.preview-file-wrapper input[type="checkbox"],
+form div.preview-image-wrapper input[type="checkbox"] {
+    float: right;
+    margin: 3px 0 0 5px;
+}
+
 /* captcha */
 img#captcha-image {
     display: block;

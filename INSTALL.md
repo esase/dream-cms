@@ -20,6 +20,7 @@
         8.  public/layouts/base
         9.  public/layouts
         10. public/captcha
+        11. public/resources/users
 
 ## APACHE SETTINGS
 

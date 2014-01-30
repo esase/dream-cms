@@ -222,7 +222,7 @@ class AbstractBaseController extends AbstractActionController
                     else {
                         $this->flashMessenger()
                             ->setNamespace('error')
-                            ->addMessage($result);
+                            ->addMessage($this->getTranslator()->translate($result));
                     }
 
                     $this->redirectTo($controller, $action);

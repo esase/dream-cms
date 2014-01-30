@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `api_secret` varchar(50) NOT NULL DEFAULT '',
     `registered` date NOT NULL,
     `activation_code` varchar(20) NOT NULL,
+    `avatar` varchar(100) NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `nick_name` (`nick_name`),
     UNIQUE KEY `email` (`email`),

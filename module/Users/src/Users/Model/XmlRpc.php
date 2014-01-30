@@ -2,6 +2,8 @@
 
 namespace Users\Model;
 
+use Exception;
+
 class XmlRpc extends Base
 {
     /**

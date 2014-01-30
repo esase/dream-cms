@@ -16,18 +16,6 @@ use IntlDateFormatter;
 class CustomFormBuilder extends Form 
 {
     /**
-     * Init date script
-     * @var boolean
-     */
-    protected $initDateScript = false;
-
-    /**
-     * Init html area script
-     * @var boolean
-     */
-    protected $initHtmlAreaScript = false;
-
-    /**
      * Form custom elements
      * @var array
      */
@@ -148,6 +136,16 @@ class CustomFormBuilder extends Form
     const FIELD_CSRF = 'csrf';
 
     /**
+     * Image type
+     */
+    const FIELD_IMAGE = 'image';
+
+    /**
+     * File type
+     */
+    const FIELD_FILE = 'file';
+
+    /**
      * Csrf timeout
      */
     const CSRF_TIMEOUT = 1200;
@@ -200,6 +198,7 @@ class CustomFormBuilder extends Form
      *      array attributes optional
      *      array filters optional
      *      array validators optional
+     *      array extra_options optional
      * @param object $translator
      * @param string $method
      * @param array $ignoredElements
@@ -277,20 +276,18 @@ class CustomFormBuilder extends Form
                         )
                     ));
 
-                    $this->initHtmlAreaScript = true;
                     $elementAttrs = array_merge($elementAttrs, array('class' => 'htmlarea', 'required' => false));
                     $elementType  = 'Textarea';
                     break;
                 case self::FIELD_DATE :
                 case self::FIELD_DATE_UNIXTIME :
                     $elementValidators[] = array(
-                        'name' => 'datetime',
+                        'name' => 'dateTime',
                         'options' => array(
                             'dateType' => IntlDateFormatter::MEDIUM //input format
                         )
                     );
 
-                    $this->initDateScript = true;
                     $elementAttrs = array_merge($elementAttrs, array('class' => 'date form-control'));
                     $elementValue = LocaleUtility::convertToLocalizedValue($elementValue, $elementType);
                     $elementType  = 'Text';
@@ -298,7 +295,7 @@ class CustomFormBuilder extends Form
                 case self::FIELD_SELECT :
                 case self::FIELD_RADIO  :    
                     $elementValidators[] = array(
-                        'name' => 'inarray',
+                        'name' => 'inArray',
                         'options' => array(
                             'haystack' => array_keys($elementValues)
                         )
@@ -362,7 +359,7 @@ class CustomFormBuilder extends Form
                     );
 
                     $elementValidators[] = array(
-                        'name' => 'inarray',
+                        'name' => 'inArray',
                         'options' => array(
                             'haystack' => array(1)
                         )
@@ -384,6 +381,32 @@ class CustomFormBuilder extends Form
                     break;
                 case self::FIELD_HIDDEN :
                     $elementType  = 'Hidden';
+                    break;
+                case self::FIELD_FILE :
+                    $elementAttrs = array_merge($elementAttrs, array('class' => ''));
+                    $elementType  = 'File';
+                    $useFilters   = false;
+                    break;
+                case self::FIELD_IMAGE :
+                    $validMimeTypes = array(
+                        'image/gif',
+                        'image/jpeg',
+                        'image/png'
+                    );
+
+                    $elementValidators[] = array(
+                        'name' => 'fileMimeType',
+                        'options' => array(
+                            'message' => sprintf($this->translator->
+                                    translate('Alowed mime types are: %s'), implode(',', $validMimeTypes)),
+
+                            'mimeType' => $validMimeTypes
+                        )
+                    );
+
+                    $elementAttrs = array_merge($elementAttrs, array('class' => ''));
+                    $elementType  = 'File';
+                    $useFilters   = false;
                     break;
                 case self::FIELD_INTEGER :
                     $elementValidators[] = array(
@@ -448,13 +471,14 @@ class CustomFormBuilder extends Form
                 ), $elementAttrs),
                 'options' => array_merge($extraOptions, array(
                     'category' =>  !empty($element['category']) ? $element['category'] : null,
+                    'extra_options' =>  !empty($element['extra_options']) ? $element['extra_options'] : null,
                     'value_options' => $elementValues,
                     'label' => !empty($element['label'])
                         ? ($elementRequired
                                 ? '*' . $this->translator->translate($element['label'])
-                                : $this->translator->translate($element['label']))
+                                : $element['label'])
                         : null,
-                    'description' =>!empty($element['description'])
+                    'description' => !empty($element['description'])
                         ? !empty($element['description_params'])
                             ? vsprintf($this->translator->translate($element['description']), $element['description_params'])
                             : $this->translator->translate($element['description'])
@@ -617,7 +641,7 @@ class CustomFormBuilder extends Form
             'name' => $name,
             'attributes' => array(
                 'id' => $name,
-                'value' => $this->translator->translate(($label ? $label : 'Submit')),
+                'value' => ($label ? $label : 'Submit'),
                 'class' => 'btn btn-default btn-submit'
             ),
             'options' => array(
@@ -627,22 +651,15 @@ class CustomFormBuilder extends Form
     }
 
     /**
-     * Init date script
+     * Get an element type
      *
-     * @return boolean
+     * @param string $elementName
+     * @return string
      */
-    public function initDateScript()
+    public function getElementType($elementName)
     {
-        return $this->initDateScript;
-    }
-
-    /**
-     * Init htmlarea script
-     *
-     * @return boolean
-     */
-    public function initHtmlAreaScript()
-    {
-        return $this->initHtmlAreaScript;
+        return isset($this->customElements[$elementName])
+            ? $this->customElements[$elementName]
+            : null;
     }
 }

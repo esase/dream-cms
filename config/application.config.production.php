@@ -6,7 +6,6 @@ return array(
         'config_cache_key' => APPLICATION_ENV,
         'module_map_cache_enabled' => true,
         'module_map_cache_key' => APPLICATION_ENV,
-        'cache_dir' => APPLICATION_ROOT . '/data/cache/config',
-        'check_dependencies' => true
+        'cache_dir' => APPLICATION_ROOT . '/data/cache/config'
     )
 );

@@ -11,20 +11,11 @@ use Application\Utility\Cache as CacheUtilities;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Application\Service\Service as ApplicationService;
 use Application\Model\Acl as AclBase;
+use Application\Utility\FileSystem as FileSystemUtility;
+use Exception;
 
 class Base extends AbstractBase
 {
-    /**
-     * List of private fields
-     * @var array
-     */
-    protected $privateFields = array(
-        'email',
-        'api_key',
-        'api_secret',
-        'activation_code'
-    );
-
     /**
      * Cache user info
      */
@@ -82,6 +73,49 @@ class Base extends AbstractBase
     );
 
     /**
+     * List of private fields
+     * @var array
+     */
+    protected $privateFields = array(
+        'email',
+        'api_key',
+        'api_secret',
+        'activation_code'
+    );
+
+    /**
+     * Avatars directory
+     * @var string
+     */
+    protected $avatarsDir = 'users/';
+
+    /**
+     * Avatars thumbs directory
+     * @var string
+     */
+    protected $avatarsThumbsDir = 'users/thumbs/';
+
+    /**
+     * Get avatars directory name
+     *
+     * @return string
+     */
+    public function getAvatarsDir()
+    {
+        return $this->avatarsDir;
+    }
+
+    /**
+     * Get avatars thumbs directory name
+     *
+     * @return string
+     */
+    public function getAvatarsThumbsDir()
+    {
+        return $this->avatarsThumbsDir;
+    }
+
+    /**
      * Set user's status
      *
      * @param integer $userId
@@ -125,53 +159,58 @@ class Base extends AbstractBase
     /**
      * Edit user
      *
-     * @param integer $userId
      * @param array $userInfo
+     * @param array $formData
      *      string nick_name required
      *      string email required
      *      string password optional
      *      string time_zone optional
      * @param boolean $statusApproved
+     * @param array $avatar
+     * @param boolean $deleteAvatar
      * @return boolean|string
      */
-    public function editUser($userId, array $userInfo, $statusApproved = true)
+    public function editUser($userInfo, array $formData, $statusApproved = true, array $avatar = array(), $deleteAvatar = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             // generate a new slug
             $extraValues = array(
-                'slug' => $this->generateSlug($userId, $userInfo['nick_name'], 'users', 'user_id', self::USER_SLUG_LENGTH),
+                'slug' => $this->generateSlug($userInfo['user_id'], $formData['nick_name'], 'users', 'user_id', self::USER_SLUG_LENGTH),
                 'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED
             );
 
-            // regenerate user's password
-            if (!empty($userInfo['password'])) {
+            // regenerate the user's password
+            if (!empty($formData['password'])) {
                 // generate a password salt
                 $passwordSalt = $this->generateRandString();
 
                 $extraValues = array_merge($extraValues, array(
-                    'password' => $this->generatePassword($userInfo['password'], $passwordSalt),
+                    'password' => $this->generatePassword($formData['password'], $passwordSalt),
                     'salt' => $passwordSalt
                 ));
             }
             else {
                 // remove the empty password
-                unset($userInfo['password']);
+                unset($formData['password']);
             }
 
             $update = $this->update()
                 ->table('users')
-                ->set(array_merge($userInfo, $extraValues))
+                ->set(array_merge($formData, $extraValues))
                 ->where(array(
-                    'user_id' => $userId
+                    'user_id' => $userInfo['user_id']
                 ));
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
 
+            // upload the user's avatar
+            $this->uploadAvatar($userInfo['user_id'], $avatar, $userInfo['avatar'], $deleteAvatar);
+
             // clear a cache
-            $this->removeUserCache($userId);
+            $this->removeUserCache($userInfoId);
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -184,17 +223,111 @@ class Base extends AbstractBase
     }
 
     /**
-     * Add a new user
+     * Upload an avatar
+     *
+     * @param integer $userId
+     * @param array $avatar
+     *      string name
+     *      string type
+     *      string tmp_name
+     *      integer error
+     *      integer size
+     * @param string $oldAvatar
+     * @param boolean $deleteAvatar
+     * @return void
+     */
+    protected function uploadAvatar($userId, array $avatar, $oldAvatar = null, $deleteAvatar = false)
+    {
+        // upload the user's avatar
+        if (!empty($avatar['name'])) {
+            if (false === ($avatarName =
+                    FileSystemUtility::uploadResourceFile($userId, $avatar, $this->avatarsDir, $oldAvatar))) {
+
+                throw new Exception('Avatar uploading failed');
+            }
+
+            $update = $this->update()
+                ->table('users')
+                ->set(array(
+                    'avatar' => $avatarName
+                ))
+                ->where(array('user_id' => $userId));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+        }
+        elseif ($deleteAvatar && $oldAvatar) {
+            // just delete the user's avatar
+            if (true !== ($result = FileSystemUtility::deleteResourceFile($oldAvatar, $this->avatarsDir))) {
+                throw new Exception('Avatar deleting failed');
+            }
+
+            $update = $this->update()
+                ->table('users')
+                ->set(array(
+                    'avatar' => ''
+                ))
+                ->where(array('user_id' => $userId));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+        }
+    }
+
+    /**
+     * Delete an user
      *
      * @param array $userInfo
+     * @return boolean|string
+     */
+    public function deleteUser($userInfo)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('users')
+                ->where(array(
+                    'user_id' => $userInfo['user_id']
+                ))
+                ->where(array(
+                    new NotInPredicate('user_id', array(AclBase::DEFAULT_USER_ID))
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            // delete an avatar
+            if ($userInfo['avatar']) {
+                FileSystemUtility::deleteResourceFile($userInfo['avatar'], $this->avatarsDir);
+            }
+
+            // clear a cache
+            $this->removeUserCache($userId);
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            return $e->getMessage();
+        }
+
+        return $result->count() ? true : false;
+    }
+
+    /**
+     * Add a new user
+     *
+     * @param array $formData
      *      string nick_name required
      *      string email required
      *      string password required
      *      string time_zone optional
      * @param boolean $statusApproved
+     * @param array $avatar
      * @return integer|string
      */
-    public function addUser(array $userInfo, $statusApproved = true)
+    public function addUser(array $formData, $statusApproved = true, array $avatar = array())
     {
         $insertId = 0;
 
@@ -206,13 +339,13 @@ class Base extends AbstractBase
 
             $insert = $this->insert()
                 ->into('users')
-                ->values(array_merge($userInfo, array(
+                ->values(array_merge($formData, array(
                     'role' => Acl::DEFAULT_ROLE_MEMBER,
                     'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED,
                     'language' => ApplicationService::getCurrentLocalization()['language'],
                     'registered' => new Expression('now()'),
                     'salt' => $passwordSalt,
-                    'password' => $this->generatePassword($userInfo['password'], $passwordSalt),
+                    'password' => $this->generatePassword($formData['password'], $passwordSalt),
                     'api_secret' => $this->generateRandString(),
                     'activation_code' => !$statusApproved // generate an activation code
                         ? $this->generateRandString()
@@ -228,7 +361,7 @@ class Base extends AbstractBase
                 ->table('users')
                 ->set(array(
                     'api_key' => $insertId . $this->generateRandString(),
-                    'slug' => $this->generateSlug($insertId, $userInfo['nick_name'], 'users', 'user_id', self::USER_SLUG_LENGTH)
+                    'slug' => $this->generateSlug($insertId, $formData['nick_name'], 'users', 'user_id', self::USER_SLUG_LENGTH)
                 ))
                 ->where(array(
                     'user_id' => $insertId
@@ -236,6 +369,9 @@ class Base extends AbstractBase
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
+
+            // upload the user's avatar
+            $this->uploadAvatar($insertId, $avatar);
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -388,7 +524,8 @@ class Base extends AbstractBase
                     'api_key',
                     'api_secret',
                     'registered',
-                    'activation_code'
+                    'activation_code',
+                    'avatar'
                 ))
                 ->where(array(
                     $field => $userId

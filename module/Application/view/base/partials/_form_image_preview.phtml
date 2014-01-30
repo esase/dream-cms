@@ -1,0 +1,23 @@
+<?php
+    use Zend\Form\Element;
+?>
+
+<div class="preview-image-wrapper">
+    <div class="row">
+        <div class="col-sm-6 col-md-2">
+            <div class="thumbnail">
+                <img src="<?php echo $this->escapeHtmlAttr($this->file_url)?>?_rand=<?php echo time() ?>" alt="<?php echo $this->escapeHtmlAttr($this->name)?>">
+            </div>
+        </div>    
+    </div>
+    <?php if ($this->delete_option): ?>
+        <p class="help-block">
+            <?php
+                $deletePreview = new Element\Checkbox($this->name . '_delete');
+                $deletePreview->setUseHiddenElement(false);
+                echo $this->formCheckbox($deletePreview);                    
+            ?>
+            <?php echo $this->escapeHtml($this->translate('Delete image')) ?>
+        </p>
+    <?php endif; ?>
+</div>

@@ -78,7 +78,7 @@ class AclAdministrationController extends AbstractBaseController
 
                         $this->flashMessenger()
                             ->setNamespace('error')
-                            ->addMessage($allowResult);
+                            ->addMessage($this->getTranslator()->translate($allowResult));
 
                         break;
                     }
@@ -139,7 +139,7 @@ class AclAdministrationController extends AbstractBaseController
 
                         $this->flashMessenger()
                             ->setNamespace('error')
-                            ->addMessage($disallowResult);
+                            ->addMessage($this->getTranslator()->translate($disallowResult));
 
                         break;
                     }
@@ -191,7 +191,8 @@ class AclAdministrationController extends AbstractBaseController
                     if (true !== ($deleteResult = $this->getModel()->deleteRole($roleId))) {
                         $this->flashMessenger()
                             ->setNamespace('error')
-                            ->addMessage(($deleteResult ? $deleteResult : $this->getTranslator()->translate('Error occurred')));
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
 
                         break;
                     }
@@ -273,7 +274,7 @@ class AclAdministrationController extends AbstractBaseController
                 else {
                     $this->flashMessenger()
                         ->setNamespace('error')
-                        ->addMessage($result);
+                        ->addMessage($this->getTranslator()->translate($result));
                 }
 
                 return $this->redirectTo('acl-administration', 'edit-role', array(
@@ -335,7 +336,7 @@ class AclAdministrationController extends AbstractBaseController
                 else {
                     $this->flashMessenger()
                         ->setNamespace('error')
-                        ->addMessage($result);
+                        ->addMessage($this->getTranslator()->translate($result));
                 }
 
                 return $this->redirectTo('acl-administration', 'add-role');
@@ -494,7 +495,7 @@ class AclAdministrationController extends AbstractBaseController
                 else {
                     $this->flashMessenger()
                         ->setNamespace('error')
-                        ->addMessage($result);
+                        ->addMessage($this->getTranslator()->translate($result));
                 }
 
                 return $this->redirectTo('acl-administration', 'resource-settings', array(

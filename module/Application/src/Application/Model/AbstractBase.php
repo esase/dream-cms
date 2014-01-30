@@ -10,6 +10,7 @@ use Application\Utility\Slug;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Application\Utility\Cache as CacheUtilities;
+use Exception;
 
 abstract class AbstractBase extends Sql
 {

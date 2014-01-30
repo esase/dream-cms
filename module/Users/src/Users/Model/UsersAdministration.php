@@ -14,42 +14,6 @@ use Exception;
 class UsersAdministration extends Base
 {
     /**
-     * Delete user
-     *
-     * @param integer $userId
-     * @return boolean|string
-     */
-    public function deleteUser($userId)
-    {
-        try {
-            $this->adapter->getDriver()->getConnection()->beginTransaction();
-
-            $delete = $this->delete()
-                ->from('users')
-                ->where(array(
-                    'user_id' => $userId
-                ))
-                ->where(array(
-                    new NotInPredicate('user_id', array(AclBase::DEFAULT_USER_ID))
-                ));
-
-            $statement = $this->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
-
-            // clear a cache
-            $this->removeUserCache($userId);
-
-            $this->adapter->getDriver()->getConnection()->commit();
-        }
-        catch (Exception $e) {
-            $this->adapter->getDriver()->getConnection()->rollback();
-            return $e->getMessage();
-        }
-
-        return $result->count() ? true : false;
-    }
-
-    /**
      * Get users
      *
      * @param integer $page

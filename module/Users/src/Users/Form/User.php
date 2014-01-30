@@ -20,7 +20,7 @@ class User extends AbstractCustomForm
      * List of ignored elements
      * @var array
      */
-    protected $ignoredElements = array('confirm_password', 'captcha');
+    protected $ignoredElements = array('confirm_password', 'captcha', 'avatar');
 
     /**
      * Model instance
@@ -33,6 +33,12 @@ class User extends AbstractCustomForm
      * @var integer
      */
     protected $userId;
+
+    /**
+     * User avatar
+     * @var string
+     */
+    protected $avatar;
 
     /**
      * Captcha enabled flag
@@ -76,6 +82,17 @@ class User extends AbstractCustomForm
             'required' => false,
             'values' => array()
         ),
+        'avatar' => array(
+            'name' => 'avatar',
+            'type' => 'image',
+            'label' => 'Avatar',
+            'required' => false,
+            'extra_options' => array(
+                'file_url' => null,
+                'preview' => false,
+                'delete_option' => true
+            )
+        ),
         'captcha' => array(
             'name' => 'captcha',
             'type' => 'captcha'
@@ -109,6 +126,14 @@ class User extends AbstractCustomForm
             if ($this->userId) {
                 $this->formElements['password']['required'] = false;
                 $this->formElements['confirm_password']['required'] = false;
+                $this->formElements['avatar']['required'] = false;
+            }
+
+            // add preview for the avatar
+            if ($this->avatar) {
+                $this->formElements['avatar']['extra_options']['preview'] = true;
+                $this->formElements['avatar']['extra_options']['file_url'] =
+                        ApplicationService::getResourcesUrl() . $this->model->getAvatarsDir() . $this->avatar;
             }
 
             // add extra validators
@@ -193,6 +218,18 @@ class User extends AbstractCustomForm
     public function setUserId($userId)
     {
         $this->userId = $userId;
+        return $this;
+    }
+
+    /**
+     * Set a user avatar
+     *
+     * @param string $avatar
+     * @return object fluent interface
+     */
+    public function setUserAvatar($avatar)
+    {
+        $this->avatar = $avatar;
         return $this;
     }
 

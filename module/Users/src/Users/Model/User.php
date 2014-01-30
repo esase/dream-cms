@@ -3,6 +3,7 @@
 namespace Users\Model;
 
 use Zend\Db\ResultSet\ResultSet;
+use Exception;
 
 class User extends Base
 {
