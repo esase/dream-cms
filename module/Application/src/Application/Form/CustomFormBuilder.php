@@ -262,15 +262,15 @@ class CustomFormBuilder extends Form
                             'name' => 'callback',
                             'options' => array(
                                 'callback' => function($value) {
-                                    $value  =  \Users\Service\Service::isAdmin() // don't purify the content when user is the admin
-                                        ? $value
-                                        : \HTMLPurifierStandalone::purify($value, array(
-                                                'Cache.DefinitionImpl' => null,
-                                                'HTML.SafeObject' => true,
-                                                'Output.FlashCompat' => true
-                                        ));
+                                    $config = \HTMLPurifier_Config::createDefault();
+                                    $config->set('Cache.DefinitionImpl', null);
+                                    $config->set('HTML.SafeObject', true);
+                                    $config->set('Output.FlashCompat', true);
+                                    $purifier = new \HTMLPurifier($config);
 
-                                    return $value;
+                                    return \Users\Service\Service::isAdmin()
+                                        ? $value
+                                        : $purifier->purify($value);
                                 }
                             )
                         )

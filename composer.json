@@ -1,5 +1,9 @@
 {
     "require": {
-        "imagine/imagine": "~0.5.0"
-    }
+        "php": ">=5.4.0",
+        "imagine/imagine": "~0.5.0",
+        "zendframework/zendframework": "2.2.*",
+        "ezyang/htmlpurifier": "dev-master",
+        "firephp/firephp-core": "*"
+    }    
 }

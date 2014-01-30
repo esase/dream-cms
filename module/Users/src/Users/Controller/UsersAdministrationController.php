@@ -74,9 +74,6 @@ class UsersAdministrationController extends AbstractBaseController
      */
     public function editUserAction()
     {
-        $imagine = new \Imagine\Gd\Imagine();
-        echo 'asdsad';
-        exit;
         // get the user info
         if (null == ($user = $this->getModel()->getUserInfo($this->getSlug()))) {
             return $this->createHttpNotFoundModel($this->getResponse());
