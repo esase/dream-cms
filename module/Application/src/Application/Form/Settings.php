@@ -2,6 +2,8 @@
 
 namespace Application\Form;
 
+use Application\Form\CustomFormBuilder;
+
 class Settings extends AbstractCustomForm 
 {
     /**
@@ -17,12 +19,12 @@ class Settings extends AbstractCustomForm
     protected $formElements = array(
         0 => array(
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Save',
         ),
         1 => array(
             'name' => 'csrf',
-            'type' => 'csrf'
+            'type' => CustomFormBuilder::FIELD_CSRF
         ), 
     );
 }

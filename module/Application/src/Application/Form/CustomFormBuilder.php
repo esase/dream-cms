@@ -453,7 +453,9 @@ class CustomFormBuilder extends Form
                     $this->addSubmit($elementName, (!empty($element['label']) ? $element['label'] : null));
                     continue(2);
                 case self::FIELD_CAPTCHA :
-                    $this->addCaptcha($elementName, (!empty($element['label']) ? $element['label'] : null));
+                    $this->addCaptcha($elementName, (!empty($element['label'])
+                            ? $element['label'] : null), (!empty($element['category']) ? $element['category'] : null));
+
                     continue(2);
                 case self::FIELD_TEXT :
                 case self::FIELD_NOTIFICATION_TITLE :
@@ -596,9 +598,10 @@ class CustomFormBuilder extends Form
      *
      * @param string $name
      * @param string $label
+     * @param string $category
      * @return void
      */
-    protected function addCaptcha($name, $label = null)
+    protected function addCaptcha($name, $label = null, $category = null)
     {
         // pass captcha image options
         $captchaImage = new CaptchaImage(array(
@@ -617,7 +620,8 @@ class CustomFormBuilder extends Form
             'name' => $name,
             'options' => array(
                 'label' => '*' . $this->translator->translate(($label ? $label : 'Please verify you are human')),
-                'captcha' => $captchaImage
+                'captcha' => $captchaImage,
+                'category' =>  $category ? $category : null,
             ),
             'attributes' => array(
                 'id' => 'captcha',

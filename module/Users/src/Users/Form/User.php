@@ -53,57 +53,67 @@ class User extends AbstractCustomForm
     protected $formElements = array(
         'nick_name' => array(
             'name' => 'nick_name',
-            'type' => 'text',
+            'type' => CustomFormBuilder::FIELD_TEXT,
             'label' => 'NickName',
-            'required' => true
+            'required' => true,
+            'category' => 'General info',
+            'description' => 'Nickname description',
+            'description_params' => array(),
         ),
         'email' => array(
             'name' => 'email',
-            'type' => 'email',
+            'type' => CustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email',
-            'required' => true
+            'required' => true,
+            'category' => 'General info'
         ),
         'password' => array(
             'name' => 'password',
-            'type' => 'password',
+            'type' => CustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Password',
-            'required' => true
+            'required' => true,
+            'category' => 'General info'
         ),
         'confirm_password' => array(
             'name' => 'confirm_password',
-            'type' => 'password',
+            'type' => CustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Confirm password',
-            'required' => true
+            'required' => true,
+            'category' => 'General info'
         ),
         'time_zone' => array(
             'name' => 'time_zone',
-            'type' => 'select',
+            'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Time zone',
             'required' => false,
-            'values' => array()
+            'values' => array(),
+            'category' => 'Miscellaneous info',
+            'description' => 'Timezone description'
         ),
         'avatar' => array(
             'name' => 'avatar',
-            'type' => 'image',
+            'type' => CustomFormBuilder::FIELD_IMAGE,
             'label' => 'Avatar',
             'required' => false,
             'extra_options' => array(
                 'file_url' => null,
                 'preview' => false,
                 'delete_option' => true
-            )
+            ),
+            'category' => 'Miscellaneous info'
         ),
         'captcha' => array(
             'name' => 'captcha',
-            'type' => 'captcha'
+            'type' => CustomFormBuilder::FIELD_CAPTCHA,
+            'category' => 'Security image'
         ),
         'csrf' => array(
             'name' => 'csrf',
-            'type' => 'csrf'
+            'type' => CustomFormBuilder::FIELD_CSRF
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit',
         ),
     );
@@ -133,8 +143,14 @@ class User extends AbstractCustomForm
             if ($this->avatar) {
                 $this->formElements['avatar']['extra_options']['preview'] = true;
                 $this->formElements['avatar']['extra_options']['file_url'] =
-                        ApplicationService::getResourcesUrl() . $this->model->getThumbnailsDir() . $this->avatar;
+                        ApplicationService::getResourcesUrl() . UsersBase::getThumbnailsDir() . $this->avatar;
             }
+
+            // add descriptions params
+            $this->formElements['nick_name']['description_params'] = array(
+                ApplicationService::getSetting('user_nickname_min'),
+                ApplicationService::getSetting('user_nickname_max'),
+            );
 
             // add extra validators
             $this->formElements['confirm_password']['validators'] = array(

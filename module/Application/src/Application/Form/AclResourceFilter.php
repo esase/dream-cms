@@ -3,6 +3,7 @@
 namespace Application\Form;
 
 use Application\Model\AclAdministration;
+use Application\Form\CustomFormBuilder;
 
 class AclResourceFilter extends AbstractCustomForm 
 {
@@ -37,14 +38,14 @@ class AclResourceFilter extends AbstractCustomForm
     protected $formElements = array(
         'modules' => array(
             'name' => 'modules',
-            'type' => 'multiselect',
+            'type' => CustomFormBuilder::FIELD_MULTI_SELECT,
             'label' => 'Module',
             'values' => array(
             )
         ),
         'status' => array(
             'name' => 'status',
-            'type' => 'select',
+            'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
             'values' => array(
                 'allowed'  => 'Allowed',
@@ -53,7 +54,7 @@ class AclResourceFilter extends AbstractCustomForm
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Search',
         )
     );

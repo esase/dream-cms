@@ -27,21 +27,23 @@ class Forgot extends AbstractCustomForm
     protected $formElements = array(
         'email' => array(
             'name' => 'email',
-            'type' => 'email',
+            'type' => CustomFormBuilder::FIELD_EMAIL,
             'label' => 'Your email',
-            'required' => true
+            'required' => true,
+            'category' => 'Account recovery'
         ),
         'captcha' => array(
             'name' => 'captcha',
-            'type' => 'captcha'
+            'type' => CustomFormBuilder::FIELD_CAPTCHA,
+            'category' => 'Security image'
         ),
         'csrf' => array(
             'name' => 'csrf',
-            'type' => 'csrf'
+            'type' => CustomFormBuilder::FIELD_CSRF
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit',
         ),
     );

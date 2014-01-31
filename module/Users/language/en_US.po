@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-01-30 15:03+0600\n"
+"PO-Revision-Date: 2014-01-31 18:06+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,28 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Account recovery"
+msgstr "Account recovery"
+
+msgid "Activation"
+msgstr "Activation"
+
+msgid "Timezone description"
+msgstr "Date and time can be displayed based on your time zone"
+
+msgid "Nickname description"
+msgstr "Nickname's length should be more or equal %d and less or equal %d"
+
+msgid "Delete your account"
+msgstr "Delete your account"
+
+msgid ""
+"All of your content will be deleted. Are you sure you want to delete your "
+"account?"
+msgstr ""
+"All of your content will be deleted. Are you sure you want to delete your "
+"account?"
 
 msgid "Thumbnail height"
 msgstr "Thumbnail height"
@@ -314,6 +336,9 @@ msgstr "Guest deleted the user with id - \"%d\""
 
 msgid "Event - User deleted by user"
 msgstr "\"%s\" deleted the user with id - \"%d\""
+
+msgid "Event - User deleted"
+msgstr "\"%s\" deleted own account info with id - \"%d\""
 
 msgid "Event - Adding users"
 msgstr "Adding users"

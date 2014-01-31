@@ -33,21 +33,23 @@ class ActivationCode extends AbstractCustomForm
     protected $formElements = array(
         'activation_code' => array(
             'name' => 'activation_code',
-            'type' => 'text',
+            'type' => CustomFormBuilder::FIELD_TEXT,
             'label' => 'Activation code',
-            'required' => true
+            'required' => true,
+            'category' => 'Activation'
         ),
         'captcha' => array(
             'name' => 'captcha',
-            'type' => 'captcha'
+            'type' => CustomFormBuilder::FIELD_CAPTCHA,
+            'category' => 'Security image'
         ),
         'csrf' => array(
             'name' => 'csrf',
-            'type' => 'csrf'
+            'type' => CustomFormBuilder::FIELD_CSRF
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit',
         ),
     );

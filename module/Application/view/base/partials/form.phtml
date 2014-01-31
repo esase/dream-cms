@@ -105,7 +105,8 @@
     echo $this->partial('partials/accordion', array(
         'name' => 'settings-accordion',
         'items' => $this->formCategories,
-        'openCategories' => $this->openCategories
+        'openCategories' => $this->openCategories,
+        'categoriesAlwaysOpened' => $this->categoriesAlwaysOpened
     ));
     echo $this->form()->closeTag();
 ?>

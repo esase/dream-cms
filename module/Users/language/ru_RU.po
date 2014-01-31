@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-01-30 15:03+0600\n"
+"PO-Revision-Date: 2014-01-31 18:06+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,27 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Account recovery"
+msgstr "Восстановление аккаунта"
+
+msgid "Activation"
+msgstr "Активация"
+
+msgid "Timezone description"
+msgstr "Дата и время могут быть отображены на основе вашей временной зоны"
+
+msgid "Nickname description"
+msgstr "Длина ника должна быть больше или равна %d и меньше или равна %d"
+
+msgid "Delete your account"
+msgstr "Удалить свой ​​аккаунт"
+
+msgid ""
+"All of your content will be deleted. Are you sure you want to delete your "
+"account?"
+msgstr ""
+"Все ваши данные будут удалены. Вы уверены, что хотите удалить свой ​​аккаунт?"
 
 msgid "Thumbnail height"
 msgstr "Высота миниатюры"
@@ -316,6 +337,11 @@ msgstr "Гость удалил пользователя с идентифика
 
 msgid "Event - User deleted by user"
 msgstr "\"%s\" удалил пользователя с идентификатором - \"%d\""
+
+msgid "Event - User deleted"
+msgstr ""
+"\"%s\" удалил(а) собственные регистрационные данные с идентификатором - \"%d"
+"\""
 
 msgid "Event - Adding users"
 msgstr "Добавление пользователей"

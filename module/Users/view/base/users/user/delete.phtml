@@ -1,5 +1,5 @@
 <?php $this->declareVars('pageTitle') ?>
-<?php $this->pageTitle = $this->translate('Edit account') ?>
+<?php $this->pageTitle = $this->translate('Delete your account') ?>
 
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
@@ -7,8 +7,8 @@
 
 <!-- render a form -->
 <?php echo $this->partial('partials/form', array(
-    'form' => $this->userForm,
+    'form' => $this->deleteForm,
     'controller' => 'user',
-    'action' => 'edit',
+    'action' => 'delete',
     'categoriesAlwaysOpened' => true
 )); ?>

@@ -40,6 +40,9 @@ class Module
     public function getViewHelperConfig()
     {
         return array(
+            'invokables' => array(
+                'userAvatarUrl' => 'Users\View\Helper\UserAvatarUrl'
+            ),
         );
     }
 

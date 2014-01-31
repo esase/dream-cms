@@ -88,22 +88,22 @@ class Base extends AbstractBase
      * Avatars directory
      * @var string
      */
-    protected $avatarsDir = 'users/';
+    protected static $avatarsDir = 'users/';
 
     /**
      * Thumbnails directory
      * @var string
      */
-    protected $thumbnailsDir = 'users/thumbnails/';
+    protected static $thumbnailsDir = 'users/thumbnails/';
 
     /**
      * Get avatars directory name
      *
      * @return string
      */
-    public function getAvatarsDir()
+    public static function getAvatarsDir()
     {
-        return $this->avatarsDir;
+        return self::$avatarsDir;
     }
 
     /**
@@ -111,9 +111,9 @@ class Base extends AbstractBase
      *
      * @return string
      */
-    public function getThumbnailsDir()
+    public static function getThumbnailsDir()
     {
-        return $this->thumbnailsDir;
+        return self::$thumbnailsDir;
     }
 
     /**
@@ -250,17 +250,17 @@ class Base extends AbstractBase
 
             // upload the new
             if (false === ($avatarName =
-                    FileSystemUtility::uploadResourceFile($userId, $avatar, $this->avatarsDir))) {
+                    FileSystemUtility::uploadResourceFile($userId, $avatar, self::$avatarsDir))) {
 
                 throw new Exception('Avatar uploading failed');
             }
 
             // resize the avatar
-            ImageUtility::resizeResourceImage($avatarName, $this->avatarsDir,
+            ImageUtility::resizeResourceImage($avatarName, self::$avatarsDir,
                     (int) ApplicationService::getSetting('user_thumbnail_width'),
-                    (int) ApplicationService::getSetting('user_thumbnail_height'), $this->thumbnailsDir);
+                    (int) ApplicationService::getSetting('user_thumbnail_height'), self::$thumbnailsDir);
 
-            ImageUtility::resizeResourceImage($avatarName, $this->avatarsDir,
+            ImageUtility::resizeResourceImage($avatarName, self::$avatarsDir,
                     (int) ApplicationService::getSetting('user_avatar_width'),
                     (int) ApplicationService::getSetting('user_avatar_height'));
 
@@ -301,8 +301,8 @@ class Base extends AbstractBase
     protected function deleteUserAvatar($avatarName)
     {
         $avatarTypes = array(
-            $this->thumbnailsDir,
-            $this->avatarsDir
+            self::$thumbnailsDir,
+            self::$avatarsDir
         );
 
         // delete avatar

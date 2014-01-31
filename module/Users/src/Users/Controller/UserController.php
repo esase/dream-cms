@@ -324,11 +324,63 @@ class UserController extends AbstractBaseController
     }
 
     /**
+     * Delete the user
+     */
+    public function deleteAction()
+    {
+        if ($this->isGuest() ||
+                    UsersService::getCurrentUserIdentity()->user_id == AclModel::DEFAULT_USER_ID) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get the user delete form
+        $deleteForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Users\Form\Delete');
+
+        $request = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $deleteForm->getForm()->setData($request->getPost(), false);
+
+            // delete the user's account
+            if ($deleteForm->getForm()->isValid()) {
+                // fire the event
+                UsersEvent::fireEvent(UsersEvent::USER_DELETE, UsersService::getCurrentUserIdentity()->user_id,
+                        UsersService::getCurrentUserIdentity()->user_id,
+                        'Event - User deleted', array(UsersService::getCurrentUserIdentity()->nick_name,
+                        UsersService::getCurrentUserIdentity()->user_id));
+
+                if (true !== ($deleteResult = $this->getModel()->deleteUser((array) UsersService::getCurrentUserIdentity()))) {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate('Error occurred'));
+
+                    return $this->redirectTo('user', 'delete');
+                }
+                else {
+                    // clear user's identity
+                    $this->logoutUser();
+
+                    // redirect to home page
+                    return $this->redirectTo();
+                }
+            }
+        }
+
+        return new ViewModel(array(
+            'deleteForm' => $deleteForm->getForm()
+        ));
+    }
+
+    /**
      * Edit the user
      */
     public function editAction()
     {
-        // a guest can't edit the user's account
         if ($this->isGuest()) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }

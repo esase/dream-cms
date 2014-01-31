@@ -5,13 +5,13 @@ namespace Users\Form;
 use Application\Form\AbstractCustomForm;
 use Application\Form\CustomFormBuilder;
 
-class Login extends AbstractCustomForm 
+class Delete extends AbstractCustomForm 
 {
     /**
      * Form name
      * @var string
      */
-    protected $formName = 'login';
+    protected $formName = 'delete-user';
 
     /**
      * Form elements
@@ -19,26 +19,17 @@ class Login extends AbstractCustomForm
      */
     protected $formElements = array(
         0 => array(
-            'name' => 'nickname',
-            'type' => CustomFormBuilder::FIELD_TEXT,
-            'label' => 'NickName',
-            'required' => true
-        ),
-        1 => array(
-            'name' => 'password',
-            'type' => CustomFormBuilder::FIELD_PASSWORD,
-            'label' => 'Password',
-            'required' => true
-        ),
-        2 => array(
-            'name' => 'remember',
+            'name' => 'confirm',
             'type' => CustomFormBuilder::FIELD_CHECKBOX,
-            'label' => 'Remember me'
+            'label' => 'Confirm',
+            'description' => 'All of your content will be deleted. Are you sure you want to delete your account?',
+            'required' => true,
+            'category' => 'Deleting',
         ),
         3 => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Save',
+            'label' => 'Delete',
         ),
         4 => array(
             'name' => 'csrf',

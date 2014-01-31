@@ -3,6 +3,7 @@
 namespace Application\Form;
 
 use Application\Model\Acl as AclModel;
+use Application\Form\CustomFormBuilder;
 
 class AclResourceSettings extends AbstractCustomForm 
 {
@@ -43,35 +44,35 @@ class AclResourceSettings extends AbstractCustomForm
     protected $formElements = array(
         'actions_limit' => array(
             'name' => 'actions_limit',
-            'type' => 'integer',
+            'type' => CustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of allowed actions',
             'required' => false
         ),
         'actions_reset' => array(
             'name' => 'actions_reset',
-            'type' => 'integer',
+            'type' => CustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of actions is reset every N seconds',
             'required' => false
         ),
         'date_start' => array(
             'name' => 'date_start',
-            'type' => 'date_unixtime',
+            'type' => CustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available since',
             'required' => false
         ),
         'date_end' => array(
             'name' => 'date_end',
-            'type' => 'date_unixtime',
+            'type' => CustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available until',
             'required' => false
         ),
         'csrf' => array(
             'name' => 'csrf',
-            'type' => 'csrf'
+            'type' => CustomFormBuilder::FIELD_CSRF
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit',
         )
     );

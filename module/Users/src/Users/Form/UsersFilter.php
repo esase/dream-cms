@@ -40,17 +40,17 @@ class UsersFilter extends AbstractCustomForm
     protected $formElements = array(
         'nickname' => array(
             'name' => 'nickname',
-            'type' => 'text',
+            'type' => CustomFormBuilder::FIELD_TEXT,
             'label' => 'NickName'
         ),
         'email' => array(
             'name' => 'email',
-            'type' => 'text',
+            'type' => CustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email'
         ),
         'status' => array(
             'name' => 'status',
-            'type' => 'select',
+            'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
             'values' => array(
                BaseUsersModel::STATUS_APPROVED => 'approved',
@@ -59,14 +59,14 @@ class UsersFilter extends AbstractCustomForm
         ),
         'role' => array(
             'name' => 'role',
-            'type' => 'select',
+            'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Role',
             'values' => array(
             )
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => 'submit',
+            'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Search',
         )
     );
