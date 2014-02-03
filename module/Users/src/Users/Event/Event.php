@@ -65,4 +65,9 @@ class Event extends ApplicationEvent
      * User password reset request event
      */
     const USER_PASSWORD_RESET_REQUEST = 'user_password_reset_request';
+
+    /**
+     * User edit role event
+     */
+    const USER_EDIT_ROLE = 'user_edit_role';
 }

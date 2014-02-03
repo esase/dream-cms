@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-01-31 18:07+0600\n"
+"PO-Revision-Date: 2014-02-03 17:45+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,12 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Clean the action counter"
+msgstr "Очистить счетчик действий"
+
+msgid "Role already used"
+msgstr "Роль уже используется"
 
 msgid "Cache types"
 msgstr "Типы кэша"
@@ -680,3 +686,6 @@ msgstr "Редактирование настроек ACL ресурсов в а
 
 msgid "ACL - Clearing site's cache in admin area"
 msgstr "Очистка кэша сайта в админке"
+
+msgid "ACL - Using js in forms"
+msgstr "Использование JS в формах"

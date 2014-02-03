@@ -1,0 +1,58 @@
+<?php $this->declareVars('subPageTitle', 'parentSubPageTitle') ?>
+<?php $this->parentSubPageTitle = $this->translate('Browse allowed ACL resources') ?>
+<?php $this->subPageTitle = $this->translate($this->resourceSettings['resource_description']) ?>
+
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->parentSubPageTitle) ?>
+<?php $this->headTitle($this->user['nick_name']) ?>
+<?php $this->headTitle($this->translate('List of users')) ?>
+
+<!-- render a header -->
+<?php echo $this->render('users/users-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partials/tabs', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partials/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->translate('List of users'),
+            'controller' => 'users-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ),
+        'browse_acl_resources' => array(
+            'name' => $this->user['nick_name'] . ' - ' . $this->parentSubPageTitle,
+            'controller' => 'users-administration',
+            'action' => 'browse-acl-resources',
+            'check_acl' => true,
+            'params' => array(
+                'slug' => $this->user['user_id']
+            )
+        ),
+        'acl_resource_settings' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'users-administration',
+            'action' => 'acl-resource-settings',
+            'check_acl' => true,
+            'slug' => $this->user['user_id']
+        )
+    )
+)) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('partials/form', array(
+    'form' => $this->aclResourceSettingsForm,
+    'controller' => 'users-administration',
+    'action' => 'acl-resource-settings',
+    'params' => array(
+        'slug' => $this->resourceSettings['connection']
+    ),
+    'queries' => array(
+        'user' => $this->user['user_id']
+    )
+)); ?>

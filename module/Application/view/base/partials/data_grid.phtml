@@ -283,6 +283,9 @@
                     </td>
                 <?php endif; ?>
                 <?php foreach ($data as $fieldName => $fieldValue) : ?>
+                    <?php if (is_array($this->skipped_fields) && in_array($fieldName, $this->skipped_fields)) : ?>
+                        <?php continue ?>
+                    <?php endif; ?>
                     <td>
                         <?php if (!empty($this->helpers[$fieldName])) : ?>
                             <?php
@@ -292,7 +295,7 @@
                             ?>
                         <?php else: ?>
                             <?php echo $this->escapeHtml($fieldValue) ?>
-                        <?php endif; ?>                        
+                        <?php endif; ?>
                     </td>
                 <?php endforeach; ?>
                 <?php if ($this->singleActionsCount) : ?>
@@ -313,7 +316,8 @@
                             <a class="single-actions" href="<?php echo $this->url('application', array(
                                     'controller' => $action['controller'],
                                     'action' => $action['action'],
-                                    'slug' => (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']]))) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+                                    'slug' => (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']])),
+                                    array('query' => !empty($action['queries']) && is_array($action['queries']) ? $action['queries'] : null)) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
 
                                 <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                             </a>

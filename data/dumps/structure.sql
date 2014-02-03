@@ -109,7 +109,11 @@ INSERT INTO `acl_resources` (`id`, `resource`, `description`, `module`) VALUES
 (20, 'users_administration_delete', 'ACL - Deleting users in admin area', 2),
 (21, 'users_administration_add_user', 'ACL - Adding users in admin area', 2),
 (22, 'users_administration_settings', 'ACL - Editing users settings in admin area', 2),
-(23, 'users_administration_edit_user', 'ACL - Editing users in admin area', 2);
+(23, 'users_administration_edit_user', 'ACL - Editing users in admin area', 2),
+(24, 'application_use_js', 'ACL - Using js in forms', 1),
+(25, 'users_administration_edit_role', 'ACL - Editing users roles in admin area', 2),
+(26, 'users_administration_browse_acl_resources', 'ACL - Browsing allowed users ACL resources in admin area', 2),
+(27, 'users_administration_acl_resource_settings', 'ACL - Editing allowed users ACL resources settings in admin area', 2);
 
 CREATE TABLE IF NOT EXISTS `acl_resources_connections` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -438,7 +442,8 @@ INSERT INTO `events` (`id`, `name`, `module`, `description`) VALUES
 (19, 'user_edit', 2, 'Event - Editing users'),
 (20, 'send_email_notification', 1, 'Event - Sending email notifications'),
 (22, 'user_password_reset', 2, 'Event - Resetting users passwords'),
-(23, 'user_password_reset_request', 2, 'Event - Requesting reset users passwords');
+(23, 'user_password_reset_request', 2, 'Event - Requesting reset users passwords'),
+(24, 'user_edit_role', 2, 'Event - Editing users roles');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

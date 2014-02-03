@@ -11,7 +11,7 @@ namespace Users\Controller;
 
 use Zend\View\Model\ViewModel;
 use Application\Controller\AbstractBaseController;
-use Application\Model\Acl as AclBase;
+use Application\Model\Acl as AclBaseModel;
 use Users\Service\Service as UsersService;
 use Users\Event\Event as UsersEvent;
 use Application\Utility\EmailNotification;
@@ -66,6 +66,213 @@ class UsersAdministrationController extends AbstractBaseController
     {
         return new ViewModel(array(
             'settingsForm' => parent::settingsForm('users', 'users-administration', 'settings')
+        ));
+    }
+
+    /**
+     * Acl resource's settings
+     */
+    public function aclResourceSettingsAction()
+    {
+        // get the user info
+        if (null == ($user = $this->getModel()->getUserInfo($this->params()->
+                fromQuery('user', -1))) || $user['role'] == AclBaseModel::DEFAULT_ROLE_ADMIN) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get resource's settings info
+        if (null == ($resourceSettings =
+                $this->getAclModel()->getResourceSettings($this->getSlug(), $user['user_id']))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get an acl resource's settings form
+        $aclResourceSettingsForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Application\Form\AclResourceSettings')
+            ->setActionsLimit($resourceSettings['actions_limit'])
+            ->setActionsReset($resourceSettings['actions_reset'])
+            ->setDateStart($resourceSettings['date_start'])
+            ->setDateEnd($resourceSettings['date_end'])
+            ->showActionCleanCounter();
+
+        $request = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $aclResourceSettingsForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($aclResourceSettingsForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->checkPermission())) {
+                    return $result;
+                }
+
+                // edit settings
+                $cleanCounter = $this->params()->fromPost('clean_counter') ? true : false;
+                if (true == ($result = $this->getAclModel()->editResourceSettings(
+                        $resourceSettings['connection'], $aclResourceSettingsForm->getForm()->getData(), $user['user_id'], $cleanCounter))) {
+
+                    // fire the event
+                    $eventDesc = UsersService::isGuest()
+                        ? 'Event - ACL user\'s resource settings edited by guest'
+                        : 'Event - ACL user\'s resource settings edited by user';
+
+                    $eventDescParams = UsersService::isGuest()
+                        ? array($resourceSettings['role'], $resourceSettings['resource'], $user['user_id'])
+                        : array(UsersService::getCurrentUserIdentity()->nick_name, $resourceSettings['role'], $resourceSettings['resource'], $user['user_id']);
+
+                    UsersEvent::fireEvent(UsersEvent::APPLICATION_EDIT_ACL_RESOURCE_SETTINGS,
+                            $resourceSettings['connection'], UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Resource\'s settings have been edited'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('users-administration', 'acl-resource-settings', array(
+                    'slug' => $resourceSettings['connection']
+                ), false, array('user' => $user['user_id']));
+            }
+        }
+
+        return new ViewModel(array(
+            'user' => $user,
+            'resourceSettings' => $resourceSettings,
+            'aclResourceSettingsForm' => $aclResourceSettingsForm->getForm()
+        ));
+    }
+
+    /**
+     * Browse the user's allowed ACL resources
+     */
+    public function browseAclResourcesAction()
+    {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->checkPermission())) {
+            return $result;
+        }
+
+        // get the user info
+        if (null == ($user = $this->getModel()->getUserInfo($this->
+                getSlug())) || $user['role'] == AclBaseModel::DEFAULT_ROLE_ADMIN) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // we need only allowed ACL resources
+        $filters = array(
+            'status' => AclBaseModel::ACTION_ALLOWED
+        );
+
+        // get a filter form
+        $filterForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Application\Form\AclResourceFilter')
+            ->setModel($this->getAclModel())
+            ->hideStatusFilter(true);
+
+        $request = $this->getRequest();
+        $filterForm->getForm()->setData($request->getQuery(), false);
+
+        // check the filter form validation
+        if ($filterForm->getForm()->isValid()) {
+            $filters = array_merge($filterForm->getForm()->getData(), $filters);
+        }
+
+        // get data
+        $paginator = $this->getAclModel()->getResources($user['role'],
+                $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
+
+        return new ViewModel(array(
+            'slug' => $user['user_id'],
+            'filter_form' => $filterForm->getForm(),
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage(),
+            'user' => $user
+        ));
+    }
+
+    /**
+     * Edit the user's role
+     */
+    public function editRoleAction()
+    {
+        // get the user info
+        if (null == ($user = $this->getModel()->getUserInfo($this->
+                getSlug())) || $user['user_id'] == AclBaseModel::DEFAULT_USER_ID) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get a role form
+        $roleForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Users\Form\Role')
+            ->setModel($this->getAclModel());
+
+        // fill the form with default values
+        $roleForm->getForm()->setData($user);
+        $request = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $roleForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($roleForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->checkPermission())) {
+                    return $result;
+                }
+
+                if (true === ($result = $this->getModel()->
+                        editUserRole($user['user_id'], $roleForm->getForm()->getData()['role']))) {
+
+                    // event's description
+                    $eventDesc = UsersService::isGuest()
+                        ? 'Event - User\'s role edited by guest'
+                        : 'Event - User\'s role edited by user';
+
+                    // fire the event
+                    $eventDescParams = UsersService::isGuest()
+                        ? array($user['user_id'])
+                        : array(UsersService::getCurrentUserIdentity()->nick_name, $user['user_id']);
+
+                    UsersEvent::fireEvent(UsersEvent::USER_EDIT_ROLE,
+                            $user['user_id'], UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('User\'s role has been edited'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('users-administration', 'edit-role', array(
+                    'slug' => $user['user_id']
+                ));
+            }
+        }
+
+        return new ViewModel(array(
+            'roleForm' => $roleForm->getForm(),
+            'user' => $user
         ));
     }
 
@@ -247,7 +454,7 @@ class UsersAdministrationController extends AbstractBaseController
                 // delete selected users
                 foreach ($usersIds as $userId) {
                     // default user should not be deleted
-                    if ($userId == AclBase::DEFAULT_USER_ID ||
+                    if ($userId == AclBaseModel::DEFAULT_USER_ID ||
                                 null == ($userInfo = $this->getModel()->getUserInfo($userId))) { 
 
                         continue;
@@ -324,7 +531,7 @@ class UsersAdministrationController extends AbstractBaseController
                 // approve selected users
                 foreach ($usersIds as $userId) {
                     // default user should not be touched
-                    if ($userId == AclBase::DEFAULT_USER_ID ||
+                    if ($userId == AclBaseModel::DEFAULT_USER_ID ||
                                 null == ($userInfo = $this->getModel()->getUserInfo($userId))) { 
 
                         continue;
@@ -399,7 +606,7 @@ class UsersAdministrationController extends AbstractBaseController
 
                 // disapprove selected users
                 foreach ($usersIds as $userId) {
-                    if ($userId == AclBase::DEFAULT_USER_ID ||
+                    if ($userId == AclBaseModel::DEFAULT_USER_ID ||
                                 null == ($userInfo = $this->getModel()->getUserInfo($userId))) { // default user should not be touched
 
                         continue;

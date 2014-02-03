@@ -14,6 +14,46 @@ use Exception;
 class UsersAdministration extends Base
 {
     /**
+     * Edit the user's role
+     *
+     * @param integer $userId
+     * @param integer $roleId
+     * @return boolean|string
+     */
+    public function editUserRole($userId, $roleId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('users')
+                ->set(array(
+                    'role' => $roleId
+                ))
+                ->where(array(
+                    'user_id' => $userId
+                ))
+                ->where(array(
+                    new NotInPredicate('user_id', array(AclBase::DEFAULT_USER_ID))
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // clear a cache
+            $this->removeUserCache($userId);
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
      * Get users
      *
      * @param integer $page
@@ -51,7 +91,8 @@ class UsersAdministration extends Base
                 'nickname' => 'nick_name',
                 'email',
                 'status',
-                'registered'
+                'registered',
+                'role_id' => 'role'
             ))
             ->join(
                 array('b' => 'acl_roles'),

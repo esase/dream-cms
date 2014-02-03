@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-01-31 18:06+0600\n"
+"PO-Revision-Date: 2014-02-03 15:48+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,15 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Browse allowed ACL resources"
+msgstr "Просмотр разрешенных ACL ресурсов"
+
+msgid "User's role has been edited"
+msgstr "Роль пользователя отредактирована"
+
+msgid "Edit the user's role"
+msgstr "Редактировать роль пользователя"
 
 msgid "Account recovery"
 msgstr "Восстановление аккаунта"
@@ -174,7 +183,7 @@ msgid "User has been edited"
 msgstr "Пользователь был отредактирован"
 
 msgid "Edit the user"
-msgstr "Редактирование пользователя"
+msgstr "Редактировать пользователя"
 
 msgid "Registered date"
 msgstr "Дата регистрации"
@@ -381,6 +390,30 @@ msgstr "Запрос сброса паролей пользователей"
 msgid "Event - User requested password reset"
 msgstr "\"%s\" с идентификатором - \"%d\" запросил сброс пароля"
 
+msgid "Event - Editing users roles"
+msgstr "Редактирование пользовательских ролей"
+
+msgid "Event - User's role edited by guest"
+msgstr ""
+"Гость отредактировал пользовательскую роль. Идентификатор пользователя - \"%d"
+"\""
+
+msgid "Event - User's role edited by user"
+msgstr ""
+"\"%s\" отредактировал пользовательскую роль. Идентификатор пользователя - "
+"\"%d\""
+
+msgid "Event - ACL user's resource settings edited by guest"
+msgstr ""
+"Гость отредактировал настройки ACL ресурса с идентификатором роли - \"%d\" и "
+"идентификатором ресурса - \"%d\" для пользователя с идентификатором - \"%d\""
+
+msgid "Event - ACL user's resource settings edited by user"
+msgstr ""
+"\"%s\" отредактировал настройки ACL ресурса с идентификатором роли - \"%d\" "
+"и идентификатором ресурса - \"%d\" для пользователя с идентификатором - \"%d"
+"\""
+
 msgid "ACL - Viewing users in admin area"
 msgstr "Просмотр пользователей в админке"
 
@@ -407,3 +440,13 @@ msgstr "Редактирование настроек пользователей
 
 msgid "ACL - Editing users in admin area"
 msgstr "Редактирование пользователей в админке"
+
+msgid "ACL - Editing users roles in admin area"
+msgstr "Редактирование пользовательских ролей в админке"
+
+msgid "ACL - Browsing allowed users ACL resources in admin area"
+msgstr "Просмотр разрешенных ACL ресурсов пользователей в админке"
+
+msgid "ACL - Editing allowed users ACL resources settings in admin area"
+msgstr ""
+"Редактирование настроек разрешенных ACL ресурсов пользователей в админке"

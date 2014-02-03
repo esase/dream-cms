@@ -14,6 +14,12 @@ class AclResourceSettings extends AbstractCustomForm
     protected $formName = 'acl-resource-settings';
 
     /**
+     * List of ignored elements
+     * @var array
+     */
+    protected $ignoredElements = array('clean_counter');
+
+    /**
      * Actions limit
      * @var integer
      */
@@ -36,6 +42,12 @@ class AclResourceSettings extends AbstractCustomForm
      * @var integer
      */
     protected $dateEnd;
+
+    /**
+     * Show clear action counter
+     * @var boolean
+     */
+    protected $showCleanActionCounter = false;
 
     /**
      * Form elements
@@ -66,6 +78,12 @@ class AclResourceSettings extends AbstractCustomForm
             'label' => 'This action is available until',
             'required' => false
         ),
+        'clean_counter' => array(
+            'name' => 'clean_counter',
+            'type' => CustomFormBuilder::FIELD_CHECKBOX,
+            'label' => 'Clean the action counter',
+            'required' => false,
+        ),
         'csrf' => array(
             'name' => 'csrf',
             'type' => CustomFormBuilder::FIELD_CSRF
@@ -91,6 +109,11 @@ class AclResourceSettings extends AbstractCustomForm
             $this->formElements['actions_reset']['value'] = $this->actionsReset;
             $this->formElements['date_start']['value'] = $this->dateStart;
             $this->formElements['date_end']['value'] = $this->dateEnd;
+
+            // remove the clean action counter field
+            if (!$this->showCleanActionCounter) {
+                unset($this->formElements['clean_counter']);
+            }
 
             $this->form = new CustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
@@ -156,6 +179,17 @@ class AclResourceSettings extends AbstractCustomForm
             $this->dateEnd = $dateEnd;
         }
 
+        return $this;
+    }
+
+    /**
+     * Show the action clean counter
+     *
+     * @return object fluent interface
+     */
+    public function showActionCleanCounter()
+    {
+        $this->showCleanActionCounter = true;
         return $this;
     }
 }

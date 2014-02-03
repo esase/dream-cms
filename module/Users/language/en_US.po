@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-01-31 18:06+0600\n"
+"PO-Revision-Date: 2014-02-03 15:48+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,15 @@ msgstr ""
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Browse allowed ACL resources"
+msgstr "Browse allowed ACL resources"
+
+msgid "User's role has been edited"
+msgstr "User's role has been edited"
+
+msgid "Edit the user's role"
+msgstr "Edit the user's role"
 
 msgid "Account recovery"
 msgstr "Account recovery"
@@ -376,6 +385,25 @@ msgstr "Requesting reset users passwords"
 msgid "Event - User requested password reset"
 msgstr "\"%s\" with id - \"%d\" requested the password reset"
 
+msgid "Event - Editing users roles"
+msgstr "Editing users roles"
+
+msgid "Event - User's role edited by guest"
+msgstr "Guest edited the user's role. The user's id is - \"%d\""
+
+msgid "Event - User's role edited by user"
+msgstr "\"%s\" edited the user's role. The user's id is - \"%d\""
+
+msgid "Event - ACL user's resource settings edited by guest"
+msgstr ""
+"Guest edited the ACL resource's settings with role id - \"%d\" and resource "
+"id - \"%d\" for user with id - \"%d\""
+
+msgid "Event - ACL user's resource settings edited by user"
+msgstr ""
+"\"%s\" edited the ACL resource's settings with role id - \"%d\" and resource "
+"id - \"%d\" for user with id - \"%d\""
+
 msgid "ACL - Viewing users in admin area"
 msgstr "Viewing users in admin area"
 
@@ -402,3 +430,12 @@ msgstr "Editing users settings in admin area"
 
 msgid "ACL - Editing users in admin area"
 msgstr "Editing users in admin area"
+
+msgid "ACL - Editing users roles in admin area"
+msgstr "Editing users roles in admin area"
+
+msgid "ACL - Browsing allowed users ACL resources in admin area"
+msgstr "Browsing allowed users ACL resources in admin area"
+
+msgid "ACL - Editing allowed users ACL resources settings in admin area"
+msgstr "Editing allowed users ACL resources settings in admin area"

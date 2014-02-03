@@ -268,7 +268,8 @@ class CustomFormBuilder extends Form
                                     $config->set('Output.FlashCompat', true);
                                     $purifier = new \HTMLPurifier($config);
 
-                                    return \Users\Service\Service::isAdmin()
+                                    // clear js
+                                    return \Users\Service\Service::checkPermission('application_use_js')
                                         ? $value
                                         : $purifier->purify($value);
                                 }

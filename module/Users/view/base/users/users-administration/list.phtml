@@ -59,6 +59,9 @@
         )
     ),
     'paginator' => $this->paginator,
+    'skipped_fields' => array(
+        'role_id'  
+    ),
     'helpers' => array(
         'role' => 'translate',
         'status' => 'translate',
@@ -101,6 +104,20 @@
         ),
         'single_actions' => array(
             0 => array(
+                'name' => $this->translate('Edit the user\'s role'),
+                'controller' => 'users-administration',
+                'action' => 'edit-role',
+                'check_acl' => true,
+                'image' => $this->asset('icons/role_action.png', 'images', 'users')
+            ),
+            1 => array(
+                'name' => $this->translate('Browse allowed ACL resources'),
+                'controller' => 'users-administration',
+                'action' => 'browse-acl-resources',
+                'check_acl' => true,
+                'image' => $this->asset('icons/browse_action.png', 'images')
+            ),
+            2 => array(
                 'name' => $this->translate('Edit the user'),
                 'controller' => 'users-administration',
                 'action' => 'edit-user',
@@ -121,6 +138,20 @@
             'system_user' => array(
                 'param' => 'id',
                 'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
+            )
+        ),
+        'single_actions' => array(
+            'browse-acl-resources' => array(
+                0 => array(
+                    'param' => 'role_id',
+                    'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
+                )
+            ),
+            'edit-role' => array(
+                0 => array(
+                    'param' => 'id',
+                    'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
+                )
             )
         )
     )

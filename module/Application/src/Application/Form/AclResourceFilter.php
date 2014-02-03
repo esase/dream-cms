@@ -4,6 +4,7 @@ namespace Application\Form;
 
 use Application\Model\AclAdministration;
 use Application\Form\CustomFormBuilder;
+use Application\Model\Acl as AclBaseModel;
 
 class AclResourceFilter extends AbstractCustomForm 
 {
@@ -32,6 +33,12 @@ class AclResourceFilter extends AbstractCustomForm
     protected $model;
 
     /**
+     * Hide status filter
+     * @var boolean
+     */
+    protected $hideStatusFilter;
+
+    /**
      * Form elements
      * @var array
      */
@@ -48,8 +55,8 @@ class AclResourceFilter extends AbstractCustomForm
             'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
             'values' => array(
-                'allowed'  => 'Allowed',
-                'disallowed' => 'Disallowed'
+                AclBaseModel::ACTION_ALLOWED  => 'Allowed',
+                AclBaseModel::ACTION_DISALLOWED => 'Disallowed'
             )
         ),
         'submit' => array(
@@ -73,6 +80,11 @@ class AclResourceFilter extends AbstractCustomForm
                 $this->formElements['modules']['values'] = $this->model->getActiveModulesList();
             }
 
+            // hide the status filter
+            if ($this->hideStatusFilter) {
+                unset($this->formElements['status']);
+            }
+
             $this->form = new CustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
@@ -84,10 +96,21 @@ class AclResourceFilter extends AbstractCustomForm
      * Set model
      *
      * @param object $model
-     * @return void
+     * @return object fluent interface
      */
     public function setModel(AclAdministration $model)
     {
         $this->model = $model;
+        return $this;
+    }
+
+    /**
+     * Hide status filter
+     * @return object fluent interface
+     */
+    public function  hideStatusFilter()
+    {
+        $this->hideStatusFilter = true;
+        return $this;
     }
 }

@@ -1,12 +1,12 @@
-<?php use Application\Model\Acl as AclModel ?>
-
 <?php $this->declareVars('subPageTitle') ?>
-<?php $this->subPageTitle = $this->translate($this->roleInfo['name']) ?>
+<?php $this->subPageTitle = $this->translate('Browse allowed ACL resources')  ?>
+
 <?php $this->headTitle($this->subPageTitle) ?>
-<?php $this->headTitle($this->translate('List of roles')) ?>
+<?php $this->headTitle($this->user['nick_name']) ?>
+<?php $this->headTitle($this->translate('List of users')) ?>
 
 <!-- render a header -->
-<?php echo $this->render('application/acl-administration/_header') ?>
+<?php echo $this->render('users/users-administration/_header') ?>
 
 <!-- render tabs -->
 <?php echo $this->partial('partials/tabs', array(
@@ -18,24 +18,25 @@
 <?php echo $this->partial('partials/breadcrumb', array(
     'pages' => array(
         'list' => array(
-            'name' => $this->translate('List of roles'),
-            'controller' => 'acl-administration',
+            'name' => $this->translate('List of users'),
+            'controller' => 'users-administration',
             'action' => 'list',
             'check_acl' => true
         ),
-        'browse_resources' => array(
-            'name' => $this->subPageTitle,
-            'controller' => 'acl-administration',
-            'action' => 'browse-resources',
+        'browse_acl_resources' => array(
+            'name' => $this->user['nick_name'] . ' - ' . $this->subPageTitle,
+            'controller' => 'users-administration',
+            'action' => 'browse-acl-resources',
             'check_acl' => true
         )
     )
 )) ?>
 
+
 <!-- render a data grid -->
 <?php echo $this->partial('partials/data_grid', array(
-    'controller' => 'acl-administration',
-    'action' => 'browse-resources',
+    'controller' => 'users-administration',
+    'action' => 'browse-acl-resources',
     'slug' => $this->slug,
     'order_by' => $this->order_by,
     'order_type' => $this->order_type,
@@ -53,19 +54,19 @@
         ),
         2 => array(
             'title' => $this->translate('Module')
-        ),
-        3 => array(
-            'title' => $this->translate('Status')
         )
     ),
     'paginator' => $this->paginator,
+    'skipped_fields' => array(
+        'connection'  
+    ),
     'helpers' => array(
         'description' => 'translate',
         'module' => 'translate',
-        'connection' => 'booleanValue'
+        'conection' => 'booleanValue'
     ),
     'helpers_options' => array(
-        'connection' => array(
+        'conection' => array(
             'true_string' => $this->translate('Allowed'),
             'false_string' => $this->translate('Disallowed')
         )
@@ -74,48 +75,30 @@
         'regular_actions' => array(
         ),
         'multiple_actions' => array(
-            0 => array(
-                'name' => $this->translate('Allow selected'),
-                'controller' => 'acl-administration',
-                'action' => 'allow-resources',
-                'params' => array(
-                    'slug' =>  $this->slug 
-                ),
-                'check_acl' => true
-            ),
-            1 => array(
-                'name' => $this->translate('Disallow selected'),
-                'controller' => 'acl-administration',
-                'action' => 'disallow-resources',
-                'params' => array(
-                    'slug' =>  $this->slug 
-                ),
-                'check_acl' => true
-            )
         ),
         'single_actions' => array(
             0 => array(
                 'name' => $this->translate('Resource\'s settings'),
-                'controller' => 'acl-administration',
-                'action' => 'resource-settings',
+                'controller' => 'users-administration',
+                'action' => 'acl-resource-settings',
                 'check_acl' => true,
                 'image' => $this->asset('icons/settings_action.png', 'images'),
-                'param' => 'connection'
+                'param' => 'connection',
+                'queries' => array(
+                    'user' => $user['user_id']
+                )
             ),
         )
     ),
     'actions_options' => array(
         'action_identity' => 'id',
-        'form_name' => 'acl-resources',
-        'multiple_actions' => array(
-            'items_name' => 'resources[]'
-        )
+        'form_name' => 'acl-resources'
     ),
     'actions_extra_check' => array(
         'single_actions' => array(
             'resource-settings' => array(
                 0 => array(
-                    'param' => 'connection',
+                    'param' => 'conection',
                     'condition' =>  'return (int) "{value}" > 0;'
                 )
             )

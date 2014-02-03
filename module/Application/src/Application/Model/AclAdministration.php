@@ -9,9 +9,39 @@ use Application\Service\Service as ApplicationService;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\ResultSet\ResultSet;
 use Exception;
+use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 
 class AclAdministration extends Acl
 {
+    /**
+     * Is a role's name free
+     *
+     * @param string $roleName
+     * @param integer $roleId
+     * @return boolean
+     */
+    public function isRoleNameFree($roleName, $roleId = 0)
+    {
+        $select = $this->select();
+        $select->from('acl_roles')
+            ->columns(array(
+                'id'
+            ))
+            ->where(array('name' => $roleName));
+
+        if ($roleId) {
+            $select->where(array(
+                new NotInPredicate('id', array($roleId))
+            ));
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->current() ? false : true;
+    }
+
     /**
      * Edit role
      *
@@ -89,9 +119,10 @@ class AclAdministration extends Acl
      *      integer date_start
      *      integer date_end
      * @param integer $userId
+     * @param boolean $cleanActionCounter
      * @return integer|string
      */
-    public function editResourceSettings($connectionId, array $settings = array(), $userId = 0)
+    public function editResourceSettings($connectionId, array $settings = array(), $userId = 0, $cleanActionCounter = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -134,6 +165,19 @@ class AclAdministration extends Acl
                     ->values(array_merge($settings, $extraValues));
     
                 $statement = $this->prepareStatementForSqlObject($insert);
+                $statement->execute();
+            }
+
+            // clean the action counter
+            if ($cleanActionCounter && $userId) {
+                $delete = $this->delete()
+                    ->from('acl_resources_actions_track')
+                    ->where(array(
+                        'connection_id' => $connectionId,
+                        'user_id' => $userId
+                    ));
+
+                $statement = $this->prepareStatementForSqlObject($delete);
                 $statement->execute();
             }
 
@@ -352,7 +396,7 @@ class AclAdministration extends Acl
                 array('c' => 'acl_resources_connections'),
                 new Expression('a.id = c.resource and c.role = ' . (int) $roleId),
                 array(
-                    'conection' => 'id'
+                    'connection' => 'id'
                 ),
                 'left'
             )

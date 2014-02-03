@@ -233,7 +233,9 @@ class AclAdministrationController extends AbstractBaseController
         // get an acl role form
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclRole');
+            ->getInstance('Application\Form\AclRole')
+            ->setModel($this->getModel())
+            ->setRoleId($role['id']);
 
         $aclRoleForm->getForm()->setData($role);
 
@@ -297,7 +299,8 @@ class AclAdministrationController extends AbstractBaseController
         // get an acl role form
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclRole');
+            ->getInstance('Application\Form\AclRole')
+            ->setModel($this->getModel());
 
         $request  = $this->getRequest();
 

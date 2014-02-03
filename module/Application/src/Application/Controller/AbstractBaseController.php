@@ -103,10 +103,11 @@ class AbstractBaseController extends AbstractActionController
      * @param string $action
      * @param array $params
      * @param boolean $useReferer
+     * @param array $queries
      * @param string $route
      * @return object
      */
-    protected function redirectTo($controller = null, $action = null, array $params = array(), $useReferer = false, $route = 'application')
+    protected function redirectTo($controller = null, $action = null, array $params = array(), $useReferer = false, array $queries = array(), $route = 'application')
     {
         $request = $this->getRequest();
 
@@ -119,7 +120,7 @@ class AbstractBaseController extends AbstractActionController
             ? array_merge(array('controller' => $controller, 'action' => $action), $params)
             : array('controller' => $controller, 'action' => $action);
 
-        return $this->redirect()->toRoute($route, $urlParams); 
+        return $this->redirect()->toRoute($route, $urlParams, array('query' => $queries)); 
     }
 
     /**
