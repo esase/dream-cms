@@ -2,8 +2,8 @@
 
 use Zend\Stdlib\ArrayUtils;
 
-define('SYSTEM_MODULES_CONFIG', __DIR__ . '/modules/system.php');
-define('CUSTOM_MODULES_CONFIG', __DIR__ . '/modules/custom.php');
+define('SYSTEM_MODULES_CONFIG', __DIR__ . '/module/system.php');
+define('CUSTOM_MODULES_CONFIG', __DIR__ . '/module/custom.php');
 
 // define application environment
 defined('APPLICATION_ENV')

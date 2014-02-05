@@ -4,7 +4,7 @@ namespace Application\View\Resolver;
 
 use Zend\View\Resolver\TemplatePathStack as BaseTemplatePathStack;
 use Zend\View\Renderer\RendererInterface as Renderer;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
 
 /**
@@ -45,7 +45,7 @@ class TemplatePathStack extends BaseTemplatePathStack
     public function resolve($name, Renderer $renderer = null)
     {
         // generate a cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_TEMPLATE_PATH, array(
+        $cacheName = CacheUtility::getCacheName(self::CACHE_TEMPLATE_PATH, array(
             $name,
             $renderer
         ));

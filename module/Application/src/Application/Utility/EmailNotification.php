@@ -9,7 +9,7 @@ use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Application\Event\Event as ApplicationEvent;
-use Application\Model\Acl as AclModel;
+use Application\Model\Acl as AclModelBase;
 
 class EmailNotification
 {
@@ -31,7 +31,7 @@ class EmailNotification
     {
         // fire the event
         $result = ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_SEND_EMAIL_NOTIFICATION,
-                $email, AclModel::DEFAULT_SYSTEM_ID, 'Event - Email notification will be send', array($email, $subject));
+                $email, AclModelBase::DEFAULT_SYSTEM_ID, 'Event - Email notification will be send', array($email, $subject));
 
         if ($result->stopped()) {
             return false;

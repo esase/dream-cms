@@ -3,7 +3,7 @@
 namespace Application\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 
 class AdminMenu extends AbstractHelper
 {
@@ -23,7 +23,7 @@ class AdminMenu extends AbstractHelper
         if ($menu) {
             foreach ($menu as $menuItem) {
                 // check user permission
-                if (!UsersService::checkPermission($menuItem['controller'] . ' ' . $menuItem['action'], false)) {
+                if (!UserService::checkPermission($menuItem['controller'] . ' ' . $menuItem['action'], false)) {
                     continue;
                 }
 

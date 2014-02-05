@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\Form;
+
 use Zend\Mvc\I18n\Translator;
 
 class AbstractCustomForm implements CustomFormInterface 

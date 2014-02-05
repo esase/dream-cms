@@ -70,7 +70,7 @@ class Acl extends Base
         $rolesList = array();
 
         $select = $this->select();
-        $select->from('acl_roles')
+        $select->from('acl_role')
             ->columns(array(
                 'id',
                 'name'
@@ -106,7 +106,7 @@ class Acl extends Base
     public function getRoleInfo($id, $excludeSystem = true, $excludeAdministration = false)
     {
         $select = $this->select();
-        $select->from('acl_roles')
+        $select->from('acl_role')
             ->columns(array(
                 'id',
                 'name',
@@ -159,7 +159,7 @@ class Acl extends Base
 
             // check the track existing
             $select = $this->select();
-            $select->from('acl_resources_actions_track')
+            $select->from('acl_resource_action_track')
                 ->columns(array(
                     'id'
                 ))
@@ -189,7 +189,7 @@ class Acl extends Base
                 }
 
                 $insert = $this->insert()
-                    ->into('acl_resources_actions_track')
+                    ->into('acl_resource_action_track')
                     ->values($values);
 
                 $statement = $this->prepareStatementForSqlObject($insert);
@@ -199,7 +199,7 @@ class Acl extends Base
                 // update the existing acl action track
                 if ($resetActions) {
                     $update = $this->update()
-                        ->table('acl_resources_actions_track')
+                        ->table('acl_resource_action_track')
                         ->set(array(
                             'actions' => $resetValue,
                             'actions_last_reset' => new Expression('unix_timestamp()')
@@ -221,7 +221,7 @@ class Acl extends Base
                     if (!$result->count()) {
                         // just increase the action
                         $update = $this->update()
-                            ->table('acl_resources_actions_track')
+                            ->table('acl_resource_action_track')
                             ->set(array(
                                 'actions' => new Expression('actions + 1')
                             ))
@@ -240,7 +240,7 @@ class Acl extends Base
                 else {
                     // just increase the action
                     $update = $this->update()
-                        ->table('acl_resources_actions_track')
+                        ->table('acl_resource_action_track')
                         ->set(array(
                             'actions' => new Expression('actions + 1')
                         ))
@@ -280,7 +280,7 @@ class Acl extends Base
         $currentTime = time();
 
         $connectionSelect = $this->select();
-        $connectionSelect->from(array('d' => 'acl_resources_connections_settings'))
+        $connectionSelect->from(array('d' => 'acl_resource_connection_setting'))
             ->columns(array(
                 'id'
             ))
@@ -298,19 +298,19 @@ class Acl extends Base
             : 'i.user_id = ' . (int) $userId;
 
         $mainSelect = $this->select();
-        $mainSelect->from(array('a' => 'acl_resources_connections'))
+        $mainSelect->from(array('a' => 'acl_resource_connection'))
             ->columns(array(
                 'id'
             ))
             ->join(
-                array('b' => 'acl_resources'),
+                array('b' => 'acl_resource'),
                 'a.resource = b.id',
                 array(
                     'resource'
                 )
             )
             ->join(
-                array('c' => 'acl_resources_connections_settings'),
+                array('c' => 'acl_resource_connection_setting'),
                 new Expression('c.id = (' .$this->getSqlStringForSqlObject($connectionSelect) . ')'),
                 array(
                     'date_start',
@@ -321,7 +321,7 @@ class Acl extends Base
                 'left'
             )
             ->join(
-                array('i' => 'acl_resources_actions_track'),
+                array('i' => 'acl_resource_action_track'),
                 new Expression('i.connection_id = c.connection_id and ' . $extraTrackCondition),
                 array(
                     'actions',

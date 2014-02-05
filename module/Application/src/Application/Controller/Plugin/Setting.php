@@ -3,7 +3,7 @@
 namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 
 /**
  * Controller plugin for getting a setting.
@@ -19,6 +19,6 @@ class Setting extends AbstractPlugin
      */
     public function __invoke($setting, $language = null)
     {
-        return UsersService::getSetting($setting, $language);
+        return UserService::getSetting($setting, $language);
     }
 }

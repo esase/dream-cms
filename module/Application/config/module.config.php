@@ -63,7 +63,7 @@ return array(
             'home' => 'Application\Controller\IndexController',
             'error' => 'Application\Controller\ErrorController',
             'modules-administration' => 'Application\Controller\ModuleAdministrationController',
-            'settings-administration' => 'Application\Controller\SettingsAdministrationController',
+            'settings-administration' => 'Application\Controller\SettingAdministrationController',
             'acl-administration' => 'Application\Controller\AclAdministrationController'
         )
     ),

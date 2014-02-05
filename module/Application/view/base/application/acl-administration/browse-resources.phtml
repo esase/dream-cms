@@ -9,13 +9,13 @@
 <?php echo $this->render('application/acl-administration/_header') ?>
 
 <!-- render tabs -->
-<?php echo $this->partial('partials/tabs', array(
+<?php echo $this->partial('partial/tab', array(
     'tabs' => $this->baseTabs,
     'active' => 'list' // selected action is "list"
 )) ?>
 
 <!-- render a breadcrumb -->
-<?php echo $this->partial('partials/breadcrumb', array(
+<?php echo $this->partial('partial/breadcrumb', array(
     'pages' => array(
         'list' => array(
             'name' => $this->translate('List of roles'),
@@ -33,7 +33,7 @@
 )) ?>
 
 <!-- render a data grid -->
-<?php echo $this->partial('partials/data_grid', array(
+<?php echo $this->partial('partial/data_grid', array(
     'controller' => 'acl-administration',
     'action' => 'browse-resources',
     'slug' => $this->slug,
@@ -99,7 +99,7 @@
                 'controller' => 'acl-administration',
                 'action' => 'resource-settings',
                 'check_acl' => true,
-                'image' => $this->asset('icons/settings_action.png', 'images'),
+                'image' => $this->asset('icon/setting_action.png', 'image'),
                 'param' => 'connection'
             ),
         )

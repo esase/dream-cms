@@ -10,7 +10,7 @@
 namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 use Application\Event\Event as ApplicationEvent;
 
 class AclAdministrationController extends AbstractBaseController
@@ -61,7 +61,7 @@ class AclAdministrationController extends AbstractBaseController
         if ($request->isPost()) {
             if (null !== ($resourcesIds = $request->getPost('resources', null))) {
                 // event's description
-                $eventDesc = UsersService::isGuest()
+                $eventDesc = UserService::isGuest()
                    ? 'Event - ACL resource allowed by guest'
                    : 'Event - ACL resource allowed by user';
 
@@ -83,12 +83,12 @@ class AclAdministrationController extends AbstractBaseController
                         break;
                     }
 
-                    $eventDescParams = UsersService::isGuest()
+                    $eventDescParams = UserService::isGuest()
                         ? array($resourceId)
-                        : array(UsersService::getCurrentUserIdentity()->nick_name, $resourceId);
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $resourceId);
 
                     ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_ALLOW_ACL_RESOURCE,
-                            $resourceId, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            $resourceId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                 }
 
                 if (true === $allowResult) {
@@ -122,7 +122,7 @@ class AclAdministrationController extends AbstractBaseController
         if ($request->isPost()) {
             if (null !== ($resourcesIds = $request->getPost('resources', null))) {
                 // event's description
-                $eventDesc = UsersService::isGuest()
+                $eventDesc = UserService::isGuest()
                     ? 'Event - ACL resource disallowed by guest'
                     : 'Event - ACL resource disallowed by user';
 
@@ -144,12 +144,12 @@ class AclAdministrationController extends AbstractBaseController
                         break;
                     }
 
-                    $eventDescParams = UsersService::isGuest()
+                    $eventDescParams = UserService::isGuest()
                         ? array($resourceId)
-                        : array(UsersService::getCurrentUserIdentity()->nick_name, $resourceId);
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $resourceId);
 
                     ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_DISALLOW_ACL_RESOURCE,
-                            $resourceId, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            $resourceId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                 }
 
                 if (true === $disallowResult) {
@@ -176,7 +176,7 @@ class AclAdministrationController extends AbstractBaseController
         if ($request->isPost()) {
             if (null !== ($rolesIds = $request->getPost('roles', null))) {
                 // event's description
-                $eventDesc = UsersService::isGuest()
+                $eventDesc = UserService::isGuest()
                     ? 'Event - ACL role deleted by guest'
                     : 'Event - ACL role deleteted by user';
 
@@ -198,12 +198,12 @@ class AclAdministrationController extends AbstractBaseController
                     }
 
                     // fire the event
-                    $eventDescParams = UsersService::isGuest()
+                    $eventDescParams = UserService::isGuest()
                         ? array($roleId)
-                        : array(UsersService::getCurrentUserIdentity()->nick_name, $roleId);
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $roleId);
 
                     ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_DELETE_ACL_ROLE,
-                            $roleId, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            $roleId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                 }
 
                 if (true === $deleteResult) {
@@ -258,16 +258,16 @@ class AclAdministrationController extends AbstractBaseController
                         getModel()->editRole($role['id'], $aclRoleForm->getForm()->getData()))) {
 
                     // fire the event
-                    $eventDesc = UsersService::isGuest()
+                    $eventDesc = UserService::isGuest()
                         ? 'Event - ACL role edited by guest'
                         : 'Event - ACL role edited by user';
 
-                    $eventDescParams = UsersService::isGuest()
+                    $eventDescParams = UserService::isGuest()
                         ? array($role['id'])
-                        : array(UsersService::getCurrentUserIdentity()->nick_name, $role['id']);
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $role['id']);
 
                     ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_EDIT_ACL_ROLE,
-                            $role['id'], UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            $role['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -321,16 +321,16 @@ class AclAdministrationController extends AbstractBaseController
 
                 if (is_numeric($result)) {
                     // fire the event
-                    $eventDesc = UsersService::isGuest()
+                    $eventDesc = UserService::isGuest()
                         ? 'Event - ACL role added by guest'
                         : 'Event - ACL role added by user';
 
-                    $eventDescParams = UsersService::isGuest()
+                    $eventDescParams = UserService::isGuest()
                         ? array($result)
-                        : array(UsersService::getCurrentUserIdentity()->nick_name, $result);
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $result);
 
                     ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_ADD_ACL_ROLE,
-                            $result, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -453,7 +453,7 @@ class AclAdministrationController extends AbstractBaseController
         // get an acl resource's settings form
         $aclResourceSettingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclResourceSettings');
+            ->getInstance('Application\Form\AclResourceSetting');
 
         // fill the form with default values
         $aclResourceSettingsForm->setActionsLimit($resourceSettings['actions_limit'])
@@ -480,16 +480,16 @@ class AclAdministrationController extends AbstractBaseController
                         editResourceSettings($resourceSettings['connection'], $aclResourceSettingsForm->getForm()->getData()))) {
 
                     // fire the event
-                    $eventDesc = UsersService::isGuest()
+                    $eventDesc = UserService::isGuest()
                         ? 'Event - ACL resource settings edited by guest'
                         : 'Event - ACL resource settings edited by user';
 
-                    $eventDescParams = UsersService::isGuest()
+                    $eventDescParams = UserService::isGuest()
                         ? array($resourceSettings['role'], $resourceSettings['resource'])
-                        : array(UsersService::getCurrentUserIdentity()->nick_name, $resourceSettings['role'], $resourceSettings['resource']);
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $resourceSettings['role'], $resourceSettings['resource']);
 
                     ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_EDIT_ACL_RESOURCE_SETTINGS,
-                            $resourceSettings['connection'], UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            $resourceSettings['connection'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
                         ->setNamespace('success')

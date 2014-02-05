@@ -5,7 +5,7 @@ namespace Application\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 use Application\Service\Service as ApplicationService;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
 
 class Asset extends AbstractHelper
 {
@@ -39,14 +39,14 @@ class Asset extends AbstractHelper
      * Get resource's url
      *
      * @param string $fileName
-     * @param string $type (possible values are: js, css and images)
+     * @param string $type (possible values are: js, css and image)
      * @param string $module
      * @return string|false
      */
     public function __invoke($fileName, $type = 'js', $module = self::DEFAULT_MODULE)
     {
         // generate a cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_RESOURCE_PATH, array(
+        $cacheName = CacheUtility::getCacheName(self::CACHE_RESOURCE_PATH, array(
             $fileName,
             $type,
             $module

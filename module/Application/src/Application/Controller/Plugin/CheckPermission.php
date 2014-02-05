@@ -3,7 +3,7 @@
 namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 use Zend\Http\Response;
 
 /**
@@ -27,7 +27,7 @@ class CheckPermission extends AbstractPlugin
             : $resource;
 
         // check the permission
-        if (false === ($result = UsersService::checkPermission($resource,
+        if (false === ($result = UserService::checkPermission($resource,
                 $increaseActions)) && $showAccessDenied) {
 
             // redirect to access denied page

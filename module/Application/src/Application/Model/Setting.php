@@ -4,7 +4,7 @@ namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
 use Exception;
 
 class Setting extends Base
@@ -63,7 +63,7 @@ class Setting extends Base
     protected function getSettingsCacheName($language)
     {
         // generate cache name
-        return CacheUtilities::getCacheName(self::CACHE_SETTINGS_BY_LANGUAGE . $language);
+        return CacheUtility::getCacheName(self::CACHE_SETTINGS_BY_LANGUAGE . $language);
     }
 
     /**
@@ -80,7 +80,7 @@ class Setting extends Base
         // check data in cache
         if (null === ($settings = $this->staticCacheInstance->getItem($cacheName))) {
             $subQuery= $this->select();
-            $subQuery->from(array('c' => 'settings_values'))
+            $subQuery->from(array('c' => 'setting_value'))
                 ->columns(array(
                     'id'
                 ))
@@ -94,13 +94,13 @@ class Setting extends Base
                     ->and->equalTo('c.language', $language);
     
             $mainSelect = $this->select();
-            $mainSelect->from(array('a' => 'settings'))
+            $mainSelect->from(array('a' => 'setting'))
                 ->columns(array(
                     'name',
                     'type'
                 ))
                 ->join(
-                    array('b' => 'settings_values'),
+                    array('b' => 'setting_value'),
                     new Expression('b.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
                     array(
                         'value'

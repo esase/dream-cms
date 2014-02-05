@@ -25,7 +25,7 @@ class SettingAdministration extends Setting
             foreach ($settingsList as $setting) {
                 if (array_key_exists($setting['name'], $settingsValues)) {
                     // remove previously value
-                    $query = $this->delete('settings_values')
+                    $query = $this->delete('setting_value')
                         ->where(array(
                             'setting_id' => $setting['id']
                         ))
@@ -43,7 +43,7 @@ class SettingAdministration extends Setting
                         ? implode(self::SETTINGS_ARRAY_DEVIDER, $settingsValues[$setting['name']])
                         : (null != $settingsValues[$setting['name']] ? $settingsValues[$setting['name']] : '');
 
-                    $query = $this->insert('settings_values')
+                    $query = $this->insert('setting_value')
                         ->values(array_merge(array(
                            'setting_id' => $setting['id'],
                            'value' => $value
@@ -80,7 +80,7 @@ class SettingAdministration extends Setting
         // get module info
         if (null != ($moduleInfo = $this->getModuleInfo($module))) {
             $subQuery= $this->select();
-            $subQuery->from(array('c' => 'settings_values'))
+            $subQuery->from(array('c' => 'setting_value'))
                 ->columns(array(
                     'id'
                 ))
@@ -94,7 +94,7 @@ class SettingAdministration extends Setting
                     ->and->equalTo('c.language', $language);
 
             $mainSelect = $this->select();
-            $mainSelect->from(array('a' => 'settings'))
+            $mainSelect->from(array('a' => 'setting'))
                 ->columns(array(
                     'id',
                     'name',
@@ -108,7 +108,7 @@ class SettingAdministration extends Setting
                     'check_message'
                 ))
                 ->join(
-                    array('b' => 'settings_values'),
+                    array('b' => 'setting_value'),
                     new Expression('b.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
                     array(
                         'value'
@@ -116,7 +116,7 @@ class SettingAdministration extends Setting
                     'left'
                 )
                 ->join(
-                    array('d' => 'settings_categories'),
+                    array('d' => 'setting_category'),
                     new Expression('a.category = d.id'),
                     array(
                         'category_name' => new Expression('d.name')
@@ -167,7 +167,7 @@ class SettingAdministration extends Setting
 
             // get list of predefined values
             $select = $this->select();
-            $select->from('settings_predefined_values')
+            $select->from('setting_predefined_value')
                 ->columns(array(
                     'setting_id',
                     'value'

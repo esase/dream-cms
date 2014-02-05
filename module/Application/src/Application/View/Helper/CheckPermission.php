@@ -3,7 +3,7 @@
 namespace Application\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 
 class CheckPermission extends AbstractHelper
 {
@@ -16,6 +16,6 @@ class CheckPermission extends AbstractHelper
      */
     public function __invoke($resource, $increaseActions = false)
     {
-        return UsersService::checkPermission($resource, $increaseActions);
+        return UserService::checkPermission($resource, $increaseActions);
     }
 }

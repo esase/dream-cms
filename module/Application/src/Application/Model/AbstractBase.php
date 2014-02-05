@@ -9,7 +9,7 @@ use Zend\Math\Rand;
 use Application\Utility\Slug;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
 use Exception;
 
 abstract class AbstractBase extends Sql
@@ -88,12 +88,12 @@ abstract class AbstractBase extends Sql
     public function getModuleInfo($moduleName)
     {
         // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_MODULE_BY_NAME . $moduleName);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_MODULE_BY_NAME . $moduleName);
 
         // check data in cache
         if (null === ($module = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('modules')
+            $select->from('module')
                 ->columns(array(
                     'id',
                     'name',
@@ -129,7 +129,7 @@ abstract class AbstractBase extends Sql
         $modulesList = array();
 
         $select = $this->select();
-        $select->from('modules')
+        $select->from('module')
             ->columns(array(
                 'id',
                 'name'

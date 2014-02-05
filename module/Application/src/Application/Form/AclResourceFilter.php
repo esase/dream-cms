@@ -2,7 +2,6 @@
 
 namespace Application\Form;
 
-use Application\Model\AclAdministration;
 use Application\Form\CustomFormBuilder;
 use Application\Model\Acl as AclBaseModel;
 
@@ -98,7 +97,7 @@ class AclResourceFilter extends AbstractCustomForm
      * @param object $model
      * @return object fluent interface
      */
-    public function setModel(AclAdministration $model)
+    public function setModel(AclBaseModel $model)
     {
         $this->model = $model;
         return $this;

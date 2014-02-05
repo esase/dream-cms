@@ -1,5 +1,5 @@
 <?php echo $this->doctype(); ?>
-<html dir="<?php echo $this->localizations()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localizations()->getCurrentLanguage() ?>">
+<html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
     <head>
         <meta charset="utf-8">
         <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -12,13 +12,13 @@
         ?>
 
         <!-- Le styles -->
-        <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icons/favicon.ico', 'images')))
+        <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icon/favicon.ico', 'image')))
                 ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
                 ->prependStylesheet($this->asset('bootstrap.css', 'css'))
                 ->appendStylesheet($this->asset('jquery-ui.css', 'css'))
-                ->appendStylesheet($this->asset(($this->localizations()->isCurrentLanguageLtr() ? 'frontend.css' : 'frontend.rtl.css'), 'css')) ?>
+                ->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr() ? 'frontend.css' : 'frontend.rtl.css'), 'css')) ?>
 
-        <?php if (!$this->localizations()->isCurrentLanguageLtr()): ?>
+        <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
             <?php $this->headLink()->appendStylesheet($this->asset('bootstrap.rtl.css', 'css')) ?>
         <?php endif; ?>
 

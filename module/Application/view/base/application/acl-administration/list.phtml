@@ -7,13 +7,13 @@
 <?php echo $this->render('application/acl-administration/_header') ?>
 
 <!-- render tabs -->
-<?php echo $this->partial('partials/tabs', array(
+<?php echo $this->partial('partial/tab', array(
     'tabs' => $this->baseTabs,
     'active' => 'list' // selected action is "list"
 )) ?>
 
 <!-- render a breadcrumb -->
-<?php echo $this->partial('partials/breadcrumb', array(
+<?php echo $this->partial('partial/breadcrumb', array(
     'pages' => array(
         'list' => array(
             'name' => $this->subPageTitle,
@@ -25,7 +25,7 @@
 )) ?>
 
 <!-- render a data grid -->
-<?php echo $this->partial('partials/data_grid', array(
+<?php echo $this->partial('partial/data_grid', array(
     'controller' => 'acl-administration',
     'action' => 'list',
     'order_by' => $this->order_by,
@@ -77,14 +77,14 @@
                 'controller' => 'acl-administration',
                 'action' => 'edit-role',
                 'check_acl' => true,
-                'image' => $this->asset('icons/edit_action.png', 'images')
+                'image' => $this->asset('icon/edit_action.png', 'image')
             ),
             1 => array(
                 'name' => $this->translate('Browse resources'),
                 'controller' => 'acl-administration',
                 'action' => 'browse-resources',
                 'check_acl' => true,
-                'image' => $this->asset('icons/browse_action.png', 'images')
+                'image' => $this->asset('icon/browse_action.png', 'image')
             )
         )
     ),

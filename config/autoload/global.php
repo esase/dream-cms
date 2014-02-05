@@ -19,7 +19,7 @@ return array(
         'config' => array(
             'class' => 'Zend\Session\Config\SessionConfig',
             'options' => array(
-                'savePath' => APPLICATION_ROOT . '/data/sessions',
+                'savePath' => APPLICATION_ROOT . '/data/session',
                 'cookieSecure' => false,
                 'cookieHttpOnly' => true
             )
@@ -57,12 +57,12 @@ return array(
         )
     ),
     'paths' => array(
-        'layouts_cache_css' => 'layouts_cache/css',
-        'layouts_cache_js' => 'layouts_cache/js',
+        'layout_cache_css' => 'layout_cache/css',
+        'layout_cache_js' => 'layout_cache/js',
         'config_cache' => 'data/cache/config',
         'captcha' => 'captcha',
         'captcha_font' => 'font/captcha.ttf',
-        'resources' => 'resources',
-        'layouts' => 'layouts',
+        'resource' => 'resource',
+        'layout' => 'layout',
     )
 );

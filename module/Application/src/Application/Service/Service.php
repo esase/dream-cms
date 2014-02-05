@@ -266,7 +266,7 @@ class Service
     public static function getLayoutPath()
     {
         return APPLICATION_PUBLIC . '/' .
-                self::$serviceManager->get('Config')['paths']['layouts'] . '/';
+                self::$serviceManager->get('Config')['paths']['layout'] . '/';
     }
 
     /**
@@ -277,7 +277,7 @@ class Service
     public static function getResourcesDir()
     {
         return APPLICATION_PUBLIC . '/' .
-                self::$serviceManager->get('Config')['paths']['resources'] . '/';
+                self::$serviceManager->get('Config')['paths']['resource'] . '/';
     }
 
     /**
@@ -288,7 +288,7 @@ class Service
     public static function getResourcesUrl()
     {
         return self::getApplicationUrl() . '/' .
-                self::$serviceManager->get('Config')['paths']['resources'] . '/';
+                self::$serviceManager->get('Config')['paths']['resource'] . '/';
     }
 
     /**
@@ -298,7 +298,7 @@ class Service
      */
     public static function getLayoutDir()
     {
-        return self::$serviceManager->get('Config')['paths']['layouts'];
+        return self::$serviceManager->get('Config')['paths']['layout'];
     }
 
     /**
@@ -310,8 +310,8 @@ class Service
     public static function getLayoutCachePath($type = 'css')
     {
         return APPLICATION_PUBLIC . '/' . ($type == 'css'
-                ? self::$serviceManager->get('Config')['paths']['layouts_cache_css']
-                : self::$serviceManager->get('Config')['paths']['layouts_cache_js']) . '/';
+                ? self::$serviceManager->get('Config')['paths']['layout_cache_css']
+                : self::$serviceManager->get('Config')['paths']['layout_cache_js']) . '/';
     }
 
     /**
@@ -323,8 +323,8 @@ class Service
     public static function getLayoutCacheDir($type = 'css')
     {
         return ($type == 'css'
-                ? self::$serviceManager->get('Config')['paths']['layouts_cache_css']
-                : self::$serviceManager->get('Config')['paths']['layouts_cache_js']);
+                ? self::$serviceManager->get('Config')['paths']['layout_cache_css']
+                : self::$serviceManager->get('Config')['paths']['layout_cache_js']);
     }
 
     /**

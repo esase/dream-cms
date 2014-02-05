@@ -3,12 +3,12 @@
 namespace Application\View\Helper;
 
 use Application\Service\Service as ApplicationService;
-use Application\View\Helper\HeadResources as HeadResources;
+use Application\View\Helper\HeadResource as HeadResource;
 use StdClass;
 
 class HeadScript extends \Zend\View\Helper\HeadScript
 {
-    use HeadResources;
+    use HeadResource;
 
     /**
      * Cache file extension

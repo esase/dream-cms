@@ -2,7 +2,7 @@
 
 namespace Application\Form;
 
-use Application\Model\Acl as AclModel;
+use Application\Model\Acl as AclModelBase;
 use Application\Form\CustomFormBuilder;
 
 class AclRoleFilter extends AbstractCustomForm 
@@ -35,8 +35,8 @@ class AclRoleFilter extends AbstractCustomForm
             'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Type',
             'values' => array(
-               AclModel::ROLE_TYPE_SYSTEM => 'system',
-               AclModel::ROLE_TYPE_CUSTOM => 'custom'
+               AclModelBase::ROLE_TYPE_SYSTEM => 'system',
+               AclModelBase::ROLE_TYPE_CUSTOM => 'custom'
             )
         ),
         1 => array(

@@ -3,7 +3,7 @@
 namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
 use Exception;
 
 class Layout extends Base
@@ -42,12 +42,12 @@ class Layout extends Base
     public function getLayoutsByName($layoutName)
     {
         // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_LAYOUTS_BY_NAME . $layoutName);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_LAYOUTS_BY_NAME . $layoutName);
 
         // check data in cache
         if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('layouts')
+            $select->from('layout')
                 ->columns(array(
                     'name',
                 ))
@@ -79,12 +79,12 @@ class Layout extends Base
     public function getDefaultActiveLayouts()
     {
         // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_LAYOUTS_ACTIVE);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_LAYOUTS_ACTIVE);
 
         // check data in cache
         if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('layouts')
+            $select->from('layout')
                 ->columns(array(
                     'name'
                 ))

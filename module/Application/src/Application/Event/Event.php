@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\Event;
+
 use Zend\EventManager\EventManager as EventManager;
 
 class Event

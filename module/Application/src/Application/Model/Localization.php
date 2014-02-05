@@ -3,7 +3,7 @@
 namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
 use Exception;
 
 class Localization extends Base
@@ -21,12 +21,12 @@ class Localization extends Base
     public function getAllLocalizations()
     {
         // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_LOCALIZATIONS);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_LOCALIZATIONS);
 
         // check data in cache
         if (null === ($localizations = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('localizations')
+            $select->from('localization')
                 ->columns(array(
                     'language',
                     'locale',

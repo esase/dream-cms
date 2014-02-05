@@ -11,8 +11,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\EventManager\EventManagerInterface;
-use Users\Service\Service as UsersService;
-use Application\Form\Settings as SettingsForm;
+use User\Service\Service as UserService;
 use Application\Event\Event as ApplicationEvent;
 use Application\Utility\Pagination as PaginationUtility;
 
@@ -173,12 +172,12 @@ class AbstractBaseController extends AbstractActionController
      */
     protected function settingsForm($module, $controller, $action)
     {
-        $currentlanguage = UsersService::getCurrentLocalization()['language'];
+        $currentlanguage = UserService::getCurrentLocalization()['language'];
 
         // get settings form
         $settingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\Settings');
+            ->getInstance('Application\Form\Setting');
 
         // get settings list
         $settings = $this->getServiceLocator()
@@ -205,16 +204,16 @@ class AbstractBaseController extends AbstractActionController
                             saveSettings($settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
 
                         // fire the event
-                        $eventDesc = UsersService::isGuest()
+                        $eventDesc = UserService::isGuest()
                             ? 'Event - Settings were changed by guest'
                             : 'Event - Settings were changed by user';
 
-                        $eventDescParams = UsersService::isGuest()
+                        $eventDescParams = UserService::isGuest()
                             ? array($module)
-                            : array(UsersService::getCurrentUserIdentity()->nick_name, $module);
+                            : array(UserService::getCurrentUserIdentity()->nick_name, $module);
 
                         ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_CHANGE_SETTINGS,
-                                $module, UsersService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                                $module, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                         $this->flashMessenger()
                             ->setNamespace('success')

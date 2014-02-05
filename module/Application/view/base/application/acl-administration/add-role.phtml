@@ -7,13 +7,13 @@
 <?php echo $this->render('application/acl-administration/_header') ?>
 
 <!-- render tabs -->
-<?php echo $this->partial('partials/tabs', array(
+<?php echo $this->partial('partial/tab', array(
     'tabs' => $this->baseTabs,
     'active' => 'list' // selected action is "list"
 )) ?>
 
 <!-- render a breadcrumb -->
-<?php echo $this->partial('partials/breadcrumb', array(
+<?php echo $this->partial('partial/breadcrumb', array(
     'pages' => array(
         'list' => array(
             'name' => $this->translate('List of roles'),
@@ -31,7 +31,7 @@
 )) ?>
 
 <!-- render a form -->
-<?php echo $this->partial('partials/form', array(
+<?php echo $this->partial('partial/form', array(
     'form' => $this->aclRoleForm,
     'controller' => 'acl-administration',
     'action' => 'add-role'

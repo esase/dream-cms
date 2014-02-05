@@ -1,0 +1,14 @@
+<?php $this->declareVars('pageTitle') ?>
+<?php $this->pageTitle = $this->translate('Edit account') ?>
+
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
+
+<h1><?php echo $this->escapeHtml($this->pageTitle); ?></h1>
+
+<!-- render a form -->
+<?php echo $this->partial('partial/form', array(
+    'form' => $this->userForm,
+    'controller' => 'user',
+    'action' => 'edit',
+    'categoriesAlwaysOpened' => true
+)); ?>

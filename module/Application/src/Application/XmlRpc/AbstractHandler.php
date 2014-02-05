@@ -3,7 +3,7 @@
 namespace Application\XmlRpc;
 
 use Zend\ServiceManager\ServiceManager;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 
 abstract class AbstractHandler
 {
@@ -47,7 +47,7 @@ abstract class AbstractHandler
     public function __construct(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
-        $this->userIdentity = UsersService::getCurrentUserIdentity();
+        $this->userIdentity = UserService::getCurrentUserIdentity();
     }
 
     /**

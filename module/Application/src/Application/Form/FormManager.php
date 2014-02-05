@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\Form;
+
 use Zend\Mvc\I18n\Translator;
 use Zend\Form\Exception\InvalidArgumentException;
 

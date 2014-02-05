@@ -12,16 +12,16 @@
     1. Writable
         1.  data/cache/application
         2.  data/cache/config
-        3.  data/sessions
-        4.  config/modules/custom.php
-        5.  public/resources
-        6.  public/layouts_cache/css
-        7.  public/layouts_cache/js
-        8.  public/layouts/base
-        9.  public/layouts
+        3.  data/session
+        4.  config/module/custom.php
+        5.  public/resource
+        6.  public/layout_cache/css
+        7.  public/layout_cache/js
+        8.  public/layout/base
+        9.  public/layout
         10. public/captcha
-        11. public/resources/users
-        12. public/resources/users/thumbnails
+        11. public/resource/users
+        12. public/resource/users/thumbnails
 
 ## APACHE SETTINGS
 

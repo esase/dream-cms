@@ -269,7 +269,7 @@ class CustomFormBuilder extends Form
                                     $purifier = new \HTMLPurifier($config);
 
                                     // clear js
-                                    return \Users\Service\Service::checkPermission('application_use_js')
+                                    return \User\Service\Service::checkPermission('application_use_js')
                                         ? $value
                                         : $purifier->purify($value);
                                 }

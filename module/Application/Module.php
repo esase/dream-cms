@@ -5,11 +5,11 @@ namespace Application;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Http\Response;
 
-use Application\Model\Acl as AclModel;
-use Users\Model\Base as UsersBaseModel;
+use Application\Model\Acl as AclModelBase;
+use User\Model\Base as UserBaseModel;
 use Application\Service\Service as ApplicationService;
 use Application\View\Resolver\TemplatePathStack;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 use Zend\Http\Header\SetCookie;
 
 use StdClass;
@@ -168,7 +168,7 @@ class Module
         if (false !== ($result = stristr($controller, self::ADMINISTRATION_AREA))) {
             if ($e->getResponse()->getStatusCode() != Response::STATUS_CODE_404) {
                 // check the action's permission
-                if (!UsersService::checkPermission($controller . ' ' . $action, false)) {
+                if (!UserService::checkPermission($controller . ' ' . $action, false)) {
                     // redirect to the forbidden page
                     $response = $e->getResponse();
                     $router = $e->getRouter();
@@ -281,8 +281,8 @@ class Module
     protected function initGuestIdentity($authService)
     {
         $this->userIdentity = new stdClass();
-        $this->userIdentity->role = AclModel::DEFAULT_ROLE_GUEST;
-        $this->userIdentity->user_id = AclModel::DEFAULT_GUEST_ID;
+        $this->userIdentity->role = AclModelBase::DEFAULT_ROLE_GUEST;
+        $this->userIdentity->user_id = AclModelBase::DEFAULT_GUEST_ID;
 
         $request = $this->serviceManager->get('Request');
  
@@ -309,10 +309,10 @@ class Module
             $this->userIdentity = $authService->getIdentity();
 
             // get extended user info
-            if ($authService->getIdentity()->user_id != AclModel::DEFAULT_GUEST_ID) {
+            if ($authService->getIdentity()->user_id != AclModelBase::DEFAULT_GUEST_ID) {
                 $user = $this->serviceManager
                     ->get('Application\Model\ModelManager')
-                    ->getInstance('Users\Model\Base');
+                    ->getInstance('User\Model\Base');
 
                 if (null != ($userInfo = $user->getUserInfo($authService->getIdentity()->user_id))) {
                     // fill the user identity with data
@@ -491,10 +491,10 @@ class Module
     {
         if (!$this->userIdentity->language || $this->userIdentity->language != $language) {
             // save language
-            if ($this->userIdentity->role != AclModel::DEFAULT_ROLE_GUEST) {
+            if ($this->userIdentity->role != AclModelBase::DEFAULT_ROLE_GUEST) {
                 $model = $this->serviceManager
                     ->get('Application\Model\ModelManager')
-                    ->getInstance('Users\Model\Base')
+                    ->getInstance('User\Model\Base')
                     ->setUserLanguage($this->userIdentity->user_id, $language);
             }
 
@@ -630,8 +630,8 @@ class Module
                 },
                 'Application\AuthService' => function($serviceManager)
                 {
-                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'), 'users', 'nick_name',
-                            'password', 'SHA1(CONCAT(MD5(?), salt)) AND status = "' . UsersBaseModel::STATUS_APPROVED . '"');
+                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'), 'user', 'nick_name',
+                            'password', 'SHA1(CONCAT(MD5(?), salt)) AND status = "' . UserBaseModel::STATUS_APPROVED . '"');
 
                     $authService = new AuthenticationService();
                     $authService->setAdapter($authAdapter);
@@ -649,7 +649,7 @@ class Module
     {
         return array(
             'invokables' => array(
-                'urlParamsEncode' => 'Application\View\Helper\UrlParamsEncode',
+                'urlParamEncode' => 'Application\View\Helper\UrlParamEncode',
                 'date' => 'Application\View\Helper\Date',
                 'getSetting' => 'Application\View\Helper\Setting',
                 'headScript' => 'Application\View\Helper\HeadScript',
@@ -657,8 +657,8 @@ class Module
                 'isGuest' => 'Application\View\Helper\IsGuest',
                 'userIdentity' => 'Application\View\Helper\UserIdentity',
                 'checkPermission' => 'Application\View\Helper\CheckPermission',
-                'routesPermission' => 'Application\View\Helper\RoutesPermission',
-                'localizations' => 'Application\View\Helper\Localizations',
+                'routePermission' => 'Application\View\Helper\RoutePermission',
+                'localization' => 'Application\View\Helper\Localization',
             ),
             'factories' => array(
                 'asset' =>  function($serviceManager)
@@ -685,13 +685,13 @@ class Module
 
                     return new \Application\View\Helper\CurrentRoute($matches, $request->getQuery());
                 },
-                'flashMessages' => function($serviceManager)
+                'flashMessage' => function($serviceManager)
                 {
                     $flashmessenger = $serviceManager->getServiceLocator()
                         ->get('ControllerPluginManager')
                         ->get('flashmessenger');
  
-                    $messages = new \Application\View\Helper\FlashMessages();
+                    $messages = new \Application\View\Helper\FlashMessage();
                     $messages->setFlashMessenger($flashmessenger);
  
                     return $messages;

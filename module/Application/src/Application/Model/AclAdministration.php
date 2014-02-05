@@ -23,7 +23,7 @@ class AclAdministration extends Acl
     public function isRoleNameFree($roleName, $roleId = 0)
     {
         $select = $this->select();
-        $select->from('acl_roles')
+        $select->from('acl_role')
             ->columns(array(
                 'id'
             ))
@@ -56,7 +56,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $update = $this->update()
-                ->table('acl_roles')
+                ->table('acl_role')
                 ->set($roleInfo)
                 ->where(array(
                     'id' => $roleId
@@ -90,7 +90,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $insert = $this->insert()
-                ->into('acl_roles')
+                ->into('acl_role')
                 ->values(array_merge($roleInfo, array(
                     'type' => self::ROLE_TYPE_CUSTOM
                 )));
@@ -129,7 +129,7 @@ class AclAdministration extends Acl
 
             // delete old settings
             $delete = $this->delete()
-                ->from('acl_resources_connections_settings')
+                ->from('acl_resource_connection_setting')
                 ->where(array(
                     'connection_id' => $connectionId
                 ));
@@ -161,7 +161,7 @@ class AclAdministration extends Acl
                     : array('connection_id' => $connectionId);
     
                 $insert = $this->insert()
-                    ->into('acl_resources_connections_settings')
+                    ->into('acl_resource_connection_setting')
                     ->values(array_merge($settings, $extraValues));
     
                 $statement = $this->prepareStatementForSqlObject($insert);
@@ -171,7 +171,7 @@ class AclAdministration extends Acl
             // clean the action counter
             if ($cleanActionCounter && $userId) {
                 $delete = $this->delete()
-                    ->from('acl_resources_actions_track')
+                    ->from('acl_resource_action_track')
                     ->where(array(
                         'connection_id' => $connectionId,
                         'user_id' => $userId
@@ -205,7 +205,7 @@ class AclAdministration extends Acl
 
             // check the existing connection
             $select = $this->select();
-            $select->from('acl_resources_connections')
+            $select->from('acl_resource_connection')
                 ->columns(array(
                     'resource'
                 ))
@@ -220,7 +220,7 @@ class AclAdministration extends Acl
             // add a new connection
             if (!$result->current()) {
                 $insert = $this->insert()
-                    ->into('acl_resources_connections')
+                    ->into('acl_resource_connection')
                     ->values(array(
                         'role' => $roleId,
                         'resource' => $resourceId
@@ -253,7 +253,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $delete = $this->delete()
-                ->from('acl_resources_connections')
+                ->from('acl_resource_connection')
                 ->where(array(
                     'role' => $roleId,
                     'resource' => $resourceId
@@ -284,7 +284,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $delete = $this->delete()
-                ->from('acl_roles')
+                ->from('acl_role')
                 ->where(array(
                     'type' => self::ROLE_TYPE_CUSTOM,
                     'id' => $roleId
@@ -329,7 +329,7 @@ class AclAdministration extends Acl
             : 'id';
 
         $select = $this->select();
-        $select->from('acl_roles')
+        $select->from('acl_role')
             ->columns(array(
                 'id',
                 'name',
@@ -380,20 +380,20 @@ class AclAdministration extends Acl
             : 'id';
 
         $select = $this->select();
-        $select->from(array('a' => 'acl_resources'))
+        $select->from(array('a' => 'acl_resource'))
             ->columns(array(
                 'id',
                 'description'
             ))
             ->join(
-                array('b' => 'modules'),
+                array('b' => 'module'),
                 new Expression('a.module = b.id and b.active = ' . (int) self::MODULE_ACTIVE),
                 array(
                     'module' => 'name'
                 )
             )
             ->join(
-                array('c' => 'acl_resources_connections'),
+                array('c' => 'acl_resource_connection'),
                 new Expression('a.id = c.resource and c.role = ' . (int) $roleId),
                 array(
                     'connection' => 'id'
@@ -441,28 +441,28 @@ class AclAdministration extends Acl
             : 'd.user_id is null';
 
         $select = $this->select();
-        $select->from(array('a' => 'acl_resources_connections'))
+        $select->from(array('a' => 'acl_resource_connection'))
             ->columns(array(
                 'connection' => 'id',
                 'role',
                 'resource'
             ))
             ->join(
-                array('b' => 'acl_roles'),
+                array('b' => 'acl_role'),
                 'b.id = a.role',
                 array(
                     'role_name' => 'name'
                 )
             )
             ->join(
-                array('c' => 'acl_resources'),
+                array('c' => 'acl_resource'),
                 'c.id = a.resource',
                 array(
                     'resource_description' => 'description'
                 )
             )
             ->join(
-                array('d' => 'acl_resources_connections_settings'),
+                array('d' => 'acl_resource_connection_setting'),
                 new Expression('a.id = d.connection_id and ' . $extraCondition),
                 array(
                     'date_start',
