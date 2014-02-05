@@ -20,8 +20,8 @@
         8.  public/layout/base
         9.  public/layout
         10. public/captcha
-        11. public/resource/users
-        12. public/resource/users/thumbnails
+        11. public/resource/user
+        12. public/resource/user/thumbnail
 
 ## APACHE SETTINGS
 
