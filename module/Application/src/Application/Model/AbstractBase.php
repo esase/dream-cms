@@ -105,16 +105,6 @@ abstract class AbstractBase extends Sql
     }
 
     /**
-     * Generate a slug string
-     *
-     * @return sting
-     */
-    protected function generateSlugString()
-    {
-        
-    }
-
-    /**
      * Get module info
      *
      * @param string $moduleName
