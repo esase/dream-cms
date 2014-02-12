@@ -19,7 +19,19 @@ abstract class AbstractBase extends Sql
      * @var object
      */
     protected $staticCacheInstance;
-    
+
+    /**
+     * Slug salt
+     * @var string
+     */
+    protected $slugSalt = 'abcdefghijklmnopqrstuvwxyz';
+
+    /**
+     * Slug salt length
+     * @var integer
+     */
+    protected $slugSaltLength = 10;
+
     /**
      * Module by name
      */
@@ -54,29 +66,52 @@ abstract class AbstractBase extends Sql
      * @param string $spaceDevider
      * @return string
      */
-    protected function generateSlug($objectId, $title, $table, $idField, $slugLength = 100, $slugField = 'slug', $spaceDevider = '-')
+    public function generateSlug($objectId, $title, $table, $idField, $slugLength = 60, $slugField = 'slug', $spaceDevider = '-')
     {
         // generate a slug
-        $slug = Slug::slugify($title, $slugLength, $spaceDevider);
+        $newSlug  = $slug = Slug::slugify($title, $slugLength, $spaceDevider);
+        $slagSalt = null;
 
-        // check the slug existent
-        $select = $this->select();
-        $select->from($table)
-            ->columns(array(
-                $slugField
-            ))
-            ->where(array(
-                $slugField => $slug,
-                new NotInPredicate($idField, array($objectId))
-            ));
+        while (true) {
+            // check the slug existent
+            $select = $this->select();
+            $select->from($table)
+                ->columns(array(
+                    $slugField
+                ))
+                ->where(array(
+                    $slugField => $newSlug,
+                    new NotInPredicate($idField, array($objectId))
+                ));
+    
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
 
-        $statement = $this->prepareStatementForSqlObject($select);
-        $resultSet = new ResultSet;
-        $resultSet->initialize($statement->execute());
+            // generated slug not found
+            if (!$resultSet->current()) {
+                break;
+            }
+            else {
+                $newSlug = $objectId . $spaceDevider . $slug . $slagSalt;
+            }
 
-        return $resultSet->current()
-            ? $objectId . $spaceDevider . $slug
-            : $slug;
+            // add a salt to slug
+            $slagSalt = $spaceDevider .
+                    Rand::getString($this->slugSaltLength, $this->slugSalt, true); // add a solt
+        }
+
+        return $newSlug;
+    }
+
+    /**
+     * Generate a slug string
+     *
+     * @return sting
+     */
+    protected function generateSlugString()
+    {
+        
     }
 
     /**
