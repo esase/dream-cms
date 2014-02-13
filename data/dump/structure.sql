@@ -221,7 +221,8 @@ INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
 (7,  'Email notifications settings', 1),
 (8,  'Main settings', 2),
 (9,  'Email notifications', 2),
-(10, 'Avatar', 2);
+(10, 'Avatar', 2),
+(11, 'Errors logging', 1);
 
 CREATE TABLE IF NOT EXISTS `setting` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -304,7 +305,10 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (54, 'user_avatar_width', 'Avatar width', '', 'integer', 1, 1, 10, 2, 0, '', '', ''),
 (55, 'user_avatar_height', 'Avatar height', '', 'integer', 1, 2, 10, 2, 0, '', '', ''),
 (56, 'user_thumbnail_width', 'Thumbnail width', '', 'integer', 1, 3, 10, 2, 0, '', '', ''),
-(57, 'user_thumbnail_height', 'Thumbnail height', '', 'integer', 1, 4, 10, 2, 0, '', '', '');
+(57, 'user_thumbnail_height', 'Thumbnail height', '', 'integer', 1, 4, 10, 2, 0, '', '', ''),
+(58, 'application_errors_notification_email', 'Errors notification email', '', 'email', 0, 1, 11, 1, 0, '', '', ''),
+(59, 'application_error_notification_title', 'Error notification title', 'An error email notification', 'notification_title', 1, 2, 11, 1, 1, '', '', ''),
+(60, 'application_error_notification_message', 'Error notification message', '', 'notification_message', 1, 3, 11, 1, 1, '', '', '');
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -387,7 +391,11 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (63, 54,  '200', NULL),
 (64, 55,  '200', NULL),
 (65, 56,  '100', NULL),
-(66, 57,  '100', NULL);
+(66, 57,  '100', NULL),
+(67, 59, 'An error occurred', NULL),
+(68, 59, 'Произошла ошибка', 'ru'),
+(69, 60, '<p><b>Error description:</b></p>\r\n<p>{ErrorDescription}</p>', NULL),
+(70, 60, '<p><b>Описание ошибки:</b></p>\r\n<p>{ErrorDescription}</p>', 'ru');
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
     `setting_id` int(10) unsigned NOT NULL,

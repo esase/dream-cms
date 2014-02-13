@@ -57,6 +57,7 @@ return array(
         )
     ),
     'paths' => array(
+        'error_log' => APPLICATION_ROOT . '/data/log/log',
         'layout_cache_css' => 'layout_cache/css',
         'layout_cache_js' => 'layout_cache/js',
         'config_cache' => 'data/cache/config',

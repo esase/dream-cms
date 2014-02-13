@@ -15,5 +15,6 @@ class IndexController extends AbstractBaseController
 {
     public function indexAction()
     {
+        //throw new \Exception('Деление на ноль.');
     }
 }

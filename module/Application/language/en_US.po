@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-02-03 17:45+0600\n"
+"PO-Revision-Date: 2014-02-13 13:49+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,21 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Error notification message"
+msgstr "Error notification message"
+
+msgid "An error email notification"
+msgstr "An error email notification"
+
+msgid "Error notification title"
+msgstr "Error notification title"
+
+msgid "Errors notification email"
+msgstr "Errors notification email"
+
+msgid "Errors logging"
+msgstr "Errors logging"
 
 msgid "Clean the action counter"
 msgstr "Clean the action counter"
