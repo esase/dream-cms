@@ -13,6 +13,7 @@ use Application\Model\Acl as AclModelBase;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Exception;
 use Application\Utility\Image as ImageUtility;
+use Application\Utility\ErrorLogger;
 
 class Base extends AbstractBase
 {
@@ -150,6 +151,8 @@ class Base extends AbstractBase
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -216,6 +219,8 @@ class Base extends AbstractBase
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -351,6 +356,8 @@ class Base extends AbstractBase
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -419,6 +426,8 @@ class Base extends AbstractBase
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -526,6 +535,8 @@ class Base extends AbstractBase
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 

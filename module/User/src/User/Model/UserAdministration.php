@@ -10,6 +10,7 @@ use Zend\Db\Sql\Predicate\Like as LikePredicate;
 use Application\Model\Acl as AclModelBase;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Exception;
+use Application\Utility\ErrorLogger;
 
 class UserAdministration extends Base
 {
@@ -47,6 +48,8 @@ class UserAdministration extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 

@@ -5,6 +5,7 @@ namespace Application\Model;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Exception;
+use Application\Utility\ErrorLogger;
 
 class SettingAdministration extends Setting
 {
@@ -61,7 +62,8 @@ class SettingAdministration extends Setting
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 

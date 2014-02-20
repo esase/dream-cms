@@ -10,6 +10,7 @@ use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\ResultSet\ResultSet;
 use Exception;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
+use Application\Utility\ErrorLogger;
 
 class AclAdministration extends Acl
 {
@@ -69,6 +70,8 @@ class AclAdministration extends Acl
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -103,6 +106,8 @@ class AclAdministration extends Acl
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -185,6 +190,8 @@ class AclAdministration extends Acl
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -234,6 +241,8 @@ class AclAdministration extends Acl
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -266,6 +275,8 @@ class AclAdministration extends Acl
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -297,6 +308,8 @@ class AclAdministration extends Acl
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 

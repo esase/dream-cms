@@ -4,6 +4,7 @@ namespace User\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Exception;
+use Application\Utility\ErrorLogger;
 
 class User extends Base
 {
@@ -42,6 +43,8 @@ class User extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -81,6 +84,8 @@ class User extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 

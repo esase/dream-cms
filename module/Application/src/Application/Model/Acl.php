@@ -6,6 +6,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Exception;
+use Application\Utility\ErrorLogger;
 
 class Acl extends Base
 {
@@ -261,7 +262,8 @@ class Acl extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 

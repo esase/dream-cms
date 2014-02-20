@@ -3,6 +3,7 @@
 namespace User\Model;
 
 use Exception;
+use Application\Utility\ErrorLogger;
 
 class XmlRpc extends Base
 {
@@ -54,8 +55,10 @@ class XmlRpc extends Base
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 

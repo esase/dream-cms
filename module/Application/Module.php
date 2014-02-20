@@ -28,7 +28,6 @@ use Zend\Mvc\MvcEvent;
 
 use Zend\Log\Writer\FirePhp as FirePhp;
 use Zend\Log\Logger as Logger;
-use Zend\Log\Writer\Stream as LogWriterStream;
 
 use Zend\Cache\StorageFactory as CacheStorageFactory;
 use Zend\ModuleManager\ModuleManager;
@@ -36,7 +35,7 @@ use Zend\ModuleManager\ModuleManager;
 use Zend\Session\Container as SessionContainer;
 use Zend\Session\SessionManager;
 use Zend\Console\Request as ConsoleRequest;
-use Application\Utility\EmailNotification;
+use Application\Utility\ErrorLogger;
 
 class Module
 {
@@ -92,38 +91,6 @@ class Module
     CONST LOCALIZATION_COOKIE_EXPIRE = 6912000; // 80 days
 
     /**
-     * Log an error
-     *
-     * @param string $error
-     * @return void
-     */
-    public function logError($error)
-    {
-        try {
-            $writer = new LogWriterStream($this->serviceManager->get('Config')['paths']['error_log']);
-            $logger = new Logger();
-            $logger->addWriter($writer);
-            $logger->err($error);
-
-            // do we need send this error via email?
-            if (null != ($errorEmail = ApplicationService::getSetting('application_errors_notification_email'))) {
-                EmailNotification::sendNotification($errorEmail,
-                    ApplicationService::getSetting('application_error_notification_title', UserService::getDefaultLocalization()['language']),
-                    ApplicationService::getSetting('application_error_notification_message', UserService::getDefaultLocalization()['language']), array(
-                        'find' => array(
-                            'ErrorDescription'
-                        ),
-                        'replace' => array(
-                            $error
-                        )
-                    ));
-            }
-        }
-        catch (Exception $e) {
-        }
-    }
-
-    /**
      * Init
      *
      * @param object $moduleManager
@@ -148,7 +115,7 @@ class Module
         // log errors
         $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function($e){
             if (null != ($exception = $e->getParam('exception'))) {
-                $this->logError($exception);
+                ErrorLogger::log($exception);
             }
         });
 
@@ -190,7 +157,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -229,7 +196,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -275,7 +242,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -324,7 +291,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -351,7 +318,7 @@ class Module
             $authService->getStorage()->write($this->userIdentity);
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -393,7 +360,7 @@ class Module
             ApplicationService::setCurrentUserIdentity($this->userIdentity);
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -423,7 +390,7 @@ class Module
             $applicationInit->initTimeZone($date->format('P'));
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -442,7 +409,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -485,7 +452,7 @@ class Module
             ApplicationService::setLocalizations($this->localizations);
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -524,7 +491,7 @@ class Module
             ApplicationService::setCurrentLayouts($activeLayouts);
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
@@ -568,7 +535,7 @@ class Module
             $this->setUserLanguage($matches->getParam('languge'));
         }
         catch (Exception $e) {
-            $this->logError($e);
+            ErrorLogger::log($e);
         }
     }
 
