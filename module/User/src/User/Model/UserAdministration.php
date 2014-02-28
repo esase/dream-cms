@@ -76,7 +76,8 @@ class UserAdministration extends Base
             'id',
             'nickname',
             'email',
-            'registered'
+            'registered',
+            'status'
         );
 
         $orderType = !$orderType || $orderType == 'desc'

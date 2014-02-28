@@ -1,0 +1,27 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('List of files') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('file-manager/file-manager-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'files-manager-administration',
+            'action' => 'list',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a list of files -->
+<?php echo $this->render('file-manager/patrial/files_list') ?>

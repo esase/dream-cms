@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-02-27 13:11+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: Русский\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Modified date"
+msgstr "Дата изменения"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Directory"
+msgstr "Каталог"
+
+msgid "Directory not exists"
+msgstr "Каталог не существует"
+
+msgid "List of files"
+msgstr "Список файлов"
+
+msgid "Files manager"
+msgstr "Файловый менеджер"
+
+msgid "FileManager"
+msgstr "Файловый менеджер"
+
+msgid "ACL - Viewing files and dirs in admin area"
+msgstr "Просмотр файлов и директорий в админке"

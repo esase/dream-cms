@@ -18,7 +18,7 @@ class AclResourceFilter extends AbstractCustomForm
      * @var string
      */
     protected $method = 'get';
-    
+
     /**
      * List of not validated elements
      * @var array

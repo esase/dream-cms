@@ -124,7 +124,20 @@
                 "searchreplace visualblocks code fullscreen",
                 "insertdatetime media table contextmenu paste"
             ],
-            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+            file_browser_callback: function(field_name, url, type, win) { 
+                tinymce.activeEditor.windowManager.open({
+                    title: '<?php echo $this->escapeJs($this->translate('Users')) ?>',
+                    url: 'http://localhost/srosta/public/ru/files-manager-embedded/list?file_type=' + (type == 'image' || type == 'media' ? type : ''),
+                    width: 1000,
+                    height: 600
+                }, {
+                    oninsert: function(url) {
+                        win.document.getElementById(field_name).value = url;
+                    }
+                });
+            },
+            convert_urls : false
         });
     </script>
 <?php endif; ?>

@@ -1,0 +1,14 @@
+<!-- render a list of files -->
+<div style="margin-top:30px;margin-bottom:30px">
+    <?php echo $this->render('file-manager/patrial/files_list') ?>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+    $('#<?php echo $this->filesWrapper ?>').find('a.file').bind("click", function(e) {
+        e.preventDefault();
+
+        // insert selected url to tinyMce
+        top.tinymce.activeEditor.windowManager.getParams().oninsert($(this).attr('href'));
+        top.tinymce.activeEditor.windowManager.close();
+    });
+<?php $this->inlineScript()->captureEnd() ?>

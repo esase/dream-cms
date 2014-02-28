@@ -14,9 +14,10 @@ CREATE TABLE IF NOT EXISTS `module` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `module` (`id`, `name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Core module, make the first application initialization', ''),
-(2, 'User', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Allows to users logon and logoff ', ''),
-(3, 'XmlRpc', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', 'Allows to use web services via XmlRpc server', '');
+(1, 'Application', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(2, 'User', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(3, 'XmlRpc', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(4, 'FileManager', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', '');
 
 CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
     `namespace` varchar(50) NOT NULL,
@@ -113,7 +114,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (24, 'application_use_js', 'ACL - Using js in forms', 1),
 (25, 'users_administration_edit_role', 'ACL - Editing users roles in admin area', 2),
 (26, 'users_administration_browse_acl_resources', 'ACL - Browsing allowed users ACL resources in admin area', 2),
-(27, 'users_administration_acl_resource_settings', 'ACL - Editing allowed users ACL resources settings in admin area', 2);
+(27, 'users_administration_acl_resource_settings', 'ACL - Editing allowed users ACL resources settings in admin area', 2),
+(28, 'files_manager_administration_list', 'ACL - Viewing files and dirs in admin area', 4);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -472,4 +474,5 @@ INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order
 (3, 'Localizations', 'localizations-administration', 'index', 1, 3),
 (4, 'Layouts', 'layouts-administration', 'index', 1, 4),
 (5, 'Access Control List', 'acl-administration', 'list', 1, 5),
-(6, 'Users', 'users-administration', 'list', 2, 6);
+(6, 'Users', 'users-administration', 'list', 2, 6),
+(7, 'Files manager', 'files-manager-administration', 'list', 4, 7);

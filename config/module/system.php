@@ -3,5 +3,6 @@
 return array(
     'Application',
     'User',
-    'XmlRpc'
+    'XmlRpc',
+    'FileManager'
 );

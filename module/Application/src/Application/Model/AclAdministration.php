@@ -381,7 +381,8 @@ class AclAdministration extends Acl
     public function getResources($roleId, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
     {
         $orderFields = array(
-            'id'
+            'id',
+            'connection'
         );
 
         $orderType = !$orderType || $orderType == 'desc'

@@ -34,6 +34,11 @@
         ? $this->urlParamEncode($this->filter_form->getData(false))
         : array();
 
+    // init extra url queries
+    if (!empty($this->queries)) {
+        $this->filterParams = array_merge($this->filterParams, $this->queries);
+    }
+
     // init pagination
     $this->declareVars('paginationCount');
     $this->paginationCount = $this->paginator
@@ -128,11 +133,12 @@
                             'controller' => $this->controller,
                             'action' => $this->action,
                             'notifications' => false,
+                            'queries' => (!empty($this->queries) ? $this->queries : array()),
                             'params' => array(
                                 'per_page' => $this->per_page,
                                 'order_by' => $this->order_by,
                                 'order_type' => $this->order_type,
-                                'slug' => $this->slug
+                                'slug' => $this->slug                                
                             )
                         )); ?>
                     </div>
@@ -148,7 +154,7 @@
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <?php if ($this->multipleActionsCount) : ?>
+                    <?php if ($this->multipleActionsCount && $this->paginationCount) : ?>
                         <?php foreach ($this->multipleActions as $action) : ?>
                             <?php
                                 $this->multipleActionParams = array(
