@@ -98,7 +98,7 @@ abstract class AbstractBase extends Sql
 
             // add a salt to slug
             $slagSalt = $spaceDevider .
-                    Rand::getString($this->slugSaltLength, $this->slugSalt, true); // add a solt
+                    Rand::getString($this->slugSaltLength, $this->slugSalt, true); // add a salt
         }
 
         return $newSlug;

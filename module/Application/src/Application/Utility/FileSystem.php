@@ -6,6 +6,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Application\Service\Service as ApplicationService;
 use Exception;
+use Zend\Math\Rand;
 
 class FileSystem
 {
@@ -87,13 +88,20 @@ class FileSystem
      *      integer error
      *      integer size
      * @param string $path
+     * @param boolean $addSalt
+     * @param integer $saltLength
+     * @param string $saltChars
+     * @paam string $saltChars
      * @return string|boolean
      */
-    public static function uploadResourceFile($objectId, $file, $path)
+    public static function uploadResourceFile($objectId, $file, $path, $addSalt = true, $saltLength = 5, $saltChars = 'abcdefghijklmnopqrstuvwxyz')
     {
-        //TODO: add a salt to name
         $fileInfo = pathinfo($file['name']);
-        $fileName = $objectId . (!empty($fileInfo['extension']) ? '.' . $fileInfo['extension'] : null);
+        $salt = $addSalt
+            ? '_' . Rand::getString($saltLength, $saltChars, true)
+            : null;
+
+        $fileName = $objectId . $salt . (!empty($fileInfo['extension']) ? '.' . $fileInfo['extension'] : null);
         $basePath = ApplicationService::getResourcesDir() . $path;
 
         if (is_writable($basePath)) {
