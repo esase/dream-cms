@@ -1,0 +1,25 @@
+<!-- include needed js and css files -->
+<?php $this->headScript()->appendFile($this->asset('jquery.treeview.js')) ?>
+<?php $this->headLink()->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr()
+        ? 'jquery.treeview.css'
+        : 'jquery.treeview.rtl.css'), 'css')) ?>
+
+<?php $this->headLink()->appendStylesheet($this->asset('main.css', 'css', 'file_manager')) ?>
+
+<?php $this->declareVars('directoriesTreeId') ?>
+<?php $this->directoriesTreeId = 'directories-tree' ?>
+
+<!-- files manager wrapper -->
+<div id="files-manager-wrapper">
+    <div class="col-md-3" id="directories-tree-wrapper">
+        <?php echo $this->filesManagerDirectoriesTree($this->userDirectories, $this->directoriesTreeId, $this->path, $this->filters) ?>
+    </div>
+    <div class="col-md-9" id="action-wrapper">
+        <?php echo $this->action ?>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+    $("#<?php echo $this->directoriesTreeId ?>").treeview({});
+<?php $this->inlineScript()->captureEnd() ?>

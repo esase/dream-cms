@@ -114,22 +114,36 @@ class FileSystem
     }
 
     /**
-     * Delete files and folders
+     * Delete files and folders (recursively)
      *
      * @param string $path
      * @param array $undeletable
+     * @param boolean $useUndeletableFiles
+     * @param boolean $removeCurrentDirectory
      * @return boolean
      */
-    public static function deleteFiles($path, array $undeletable = array())
+    public static function deleteFiles($path, array $undeletable = array(), $useUndeletableFiles = true, $removeCurrentDirectory = false)
     {
-        if (!$undeletable) {
-            $undeletable = self::$systemFiles;
+        // check a path
+        if (!file_exists($path)) {
+            return false;
         }
 
+        // delete a file
+        if (is_file($path)) {
+            return unlink($path);
+        }
+
+        // check for the undeletable files
+        $undeletable = $useUndeletableFiles
+            ? (!$undeletable ? self::$systemFiles : $undeletable)
+            : array();
+
+        // open and read all child directories and files
         $iterator = new RecursiveDirectoryIterator($path);
         $files = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
-        // delete files and directories
+        // delete child files and directories
         foreach($files as $file) {
             if ($file->getFilename() === '.' || $file->getFilename() === '..' || in_array($file->
                     getFilename(), $undeletable) || ($file->isDir() && !self::isDirectoryEmpty($file->getRealPath()))) {
@@ -144,6 +158,9 @@ class FileSystem
             }
         }
 
-        return true;
+        // remove current directory
+        return $removeCurrentDirectory
+            ? rmdir($path)
+            : true;
     }
 }

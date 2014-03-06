@@ -1,0 +1,15 @@
+<?php $this->placeholder('form')->captureStart() ?>
+    <?php echo $this->partial('file-manager/patrial/directory_form', array(
+        'form' => $this->directoryForm,
+        'queries' => array(
+            'path' => $this->path
+        )
+    )); ?>
+<?php $this->placeholder('form')->captureEnd() ?>
+
+<?php echo $this->partial('file-manager/patrial/tree', array(
+    'userDirectories' => $this->userDirectories,
+    'action' => $this->placeholder('form'),
+    'path' => $this->path,
+    'filters' => array()
+)); ?>

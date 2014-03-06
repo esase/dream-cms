@@ -30,12 +30,8 @@ class CheckPermission extends AbstractPlugin
         if (false === ($result = UserService::checkPermission($resource,
                 $increaseActions)) && $showAccessDenied) {
 
-            // redirect to access denied page
-            $this->getController()->getResponse()->setStatusCode(Response::STATUS_CODE_302);
-            $this->getController()->plugin('Redirect')->toRoute('application', array(
-                'controller' => 'error',
-                'action' => 'forbidden'
-            ));
+            // redirect to access a forbidden page
+            $this->getController()->showErrorPage();
         }
 
         return $result;

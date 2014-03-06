@@ -10,6 +10,7 @@
 namespace FileManager\Controller;
 
 use Zend\View\Model\ViewModel;
+use FileManager\Model\Base as FileManagerBaseModel;
 
 class FileManagerAdministrationController extends FileManagerBaseController
 {
@@ -27,17 +28,32 @@ class FileManagerAdministrationController extends FileManagerBaseController
      */
     public function listAction()
     {
-        // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
-            return $result;
-        }
-
         return new ViewModel($this->getListFiles());
     }
 
-    //TODO:
-    //1. add upload filter by extgension
-    ///2. limit neststed directories
-    //3. Limit directory's name length
-    //4. Limit the file size!!!
+    /**
+     * Settings
+     */
+    public function settingsAction()
+    {
+        return new ViewModel(array(
+            'settingsForm' => parent::settingsForm('filemanager', 'files-manager-administration', 'settings')
+        ));
+    }
+
+    /**
+     * Delete selected files and directories
+     */
+    public function deleteAction()
+    {
+        return $this->deleteFiles();
+    }
+
+    /**
+     * Add a new directory
+     */
+    public function addDirectoryAction()
+    {
+        return new ViewModel($this->addDirectory());
+    }
 }

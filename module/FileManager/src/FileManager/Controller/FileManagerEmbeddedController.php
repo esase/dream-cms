@@ -10,9 +10,33 @@
 namespace FileManager\Controller;
 
 use Zend\View\Model\ViewModel;
+use Zend\EventManager\EventManagerInterface;
+use User\Service\Service as UserService;
 
 class FileManagerEmbeddedController extends FileManagerBaseController
 {
+    /**
+     * Set event manager
+     */
+    public function setEventManager(EventManagerInterface $events)
+    {
+        parent::setEventManager($events);
+        $controller = $this;
+
+        // execute before executing action logic
+        $events->attach('dispatch', function ($e) use ($controller) {
+            // check permission
+            if (!UserService::checkPermission($controller->
+                    params('controller') . ' ' . $controller->params('action'), false)) {
+
+                return $controller->showErrorPage();
+            }
+
+            // change layout
+            $controller->layout('layout/embed');
+        }, 100); 
+    }
+
     /**
      * Default action
      */
@@ -27,14 +51,22 @@ class FileManagerEmbeddedController extends FileManagerBaseController
      */
     public function listAction()
     {
-        // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
-            return $result;
-        }
-
-        // change current layout
-        $this->layout('layout/embed');
-
         return new ViewModel($this->getListFiles());
+    }
+
+    /**
+     * Delete selected files and directories
+     */
+    public function deleteAction()
+    {
+        return $this->deleteFiles();
+    }
+
+    /**
+     * Add a new directory
+     */
+    public function addDirectoryAction()
+    {
+        return new ViewModel($this->addDirectory());
     }
 }

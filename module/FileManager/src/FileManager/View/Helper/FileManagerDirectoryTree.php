@@ -43,6 +43,8 @@ class FileManagerDirectoryTree extends AbstractHelper
         $content = null;
 
         foreach ($userDirectories as $directoryName => $subDirectories) {
+            $directoryName = str_replace(PHP_EOL, null, $directoryName);
+
             // get directory's url
             $path = $parentDirectory ? $parentDirectory . '/' . $directoryName : $directoryName;
             $urlParams = $this->getView()->urlParamEncode(array(

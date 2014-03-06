@@ -1,112 +1,100 @@
-<?php $this->headScript()->appendFile($this->asset('jquery.treeview.js')) ?>
-<?php $this->headLink()->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr()
-        ? 'jquery.treeview.css'
-        : 'jquery.treeview.rtl.css'), 'css')) ?>
-
-<?php $this->declareVars('directoriesTreeId', 'filesWrapper') ?>
-<?php $this->directoriesTreeId = 'directories-tree' ?>
-<?php $this->filesWrapper = 'files-manager-wrapper' ?>
-
-<!-- files manager wrapper -->
-<div id="<?php echo $this->filesWrapper ?>">
-    <div class="col-md-3" style=" background-color: #F5F5F5;padding:10px;margin-bottom:10px;overflow: hidden">
-        <?php echo $this->filesManagerDirectoriesTree($this->userDirectories, $this->directoriesTreeId, $this->path, $this->filters) ?>
+<!-- render a list of files -->
+<?php if ($this->paginator === false) : ?>
+    <div class="alert alert-danger">
+        <?php echo $this->translate('Directory not exists') ?>
     </div>
-    <div class="col-md-9" style=" margin-bottom:10px">
-        <?php if ($this->paginator === false) : ?>
-            <div class="alert alert-danger">
-                <?php echo $this->translate('Directory not exists') ?>
-            </div>
-        <?php else: ?>
-            <!-- render a data grid -->
-            <?php echo $this->partial('partial/data_grid', array(
-                'controller' => $this->currentRoute()->getController(),
-                'action' => $this->currentRoute()->getAction(),
-                'queries' => array(
-                    'path' => $this->path
+<?php else: ?>
+    <!-- render a data grid -->
+    <?php echo $this->partial('partial/data_grid', array(
+        'controller' => $this->currentRoute()->getController(),
+        'action' => $this->currentRoute()->getAction(),
+        'queries' => array(
+            'path' => $this->path
+        ),
+        'order_by' => $this->order_by,
+        'order_type' => $this->order_type,
+        'per_page' => $this->per_page,
+        'default_order' => 'name',
+        'default_order_type' => 'desc',
+        'filter_form' => $this->filter_form,
+        'headers' => array(
+            0 => array(
+                'title' => $this->translate('Name'),
+                'order_name' => 'name'
+            ),
+            1 => array(
+                'title' => $this->translate('Type'),
+                'order_name' => 'type'
+            ),
+            2 => array(
+                'title' => $this->translate('Modified date'),
+                'order_name' => 'date'
+            ),
+            3 => array(
+                'title' => $this->translate('File size'),
+                'order_name' => 'size'
+            )
+        ),
+        'paginator' => $this->paginator,
+        'skipped_fields' => array(
+        ),
+        'helpers' => array(
+            'size' => 'fileSize',
+            'name' => 'fileUrl',
+            'type' => 'booleanValue',
+            'date' => 'date'
+        ),
+        'helpers_options' => array(
+            'name' => array(
+                'path' => $this->path,
+                'filters' => $this->filters
+            ),
+            'type' => array(
+                'true_string' => $this->translate('Directory'),
+                'false_string' => $this->translate('File')
+            )
+        ),
+        'actions' => array (
+            'regular_actions' => array(
+                0 => array(
+                    'name' => $this->translate('Add a directory'),
+                    'controller' => $this->currentRoute()->getController(),
+                    'action' => 'add-directory',
+                     'queries' => array(
+                        'path' => $this->path
+                     ),
+                    'check_acl' => true
                 ),
-                'order_by' => $this->order_by,
-                'order_type' => $this->order_type,
-                'per_page' => $this->per_page,
-                'default_order' => 'name',
-                'default_order_type' => 'desc',
-                'filter_form' => $this->filter_form,
-                'headers' => array(
-                    0 => array(
-                        'title' => $this->translate('Name'),
-                        'order_name' => 'name'
-                    ),
-                    1 => array(
-                        'title' => $this->translate('Type'),
-                        'order_name' => 'type'
-                    ),
-                    2 => array(
-                        'title' => $this->translate('Modified date'),
-                        'order_name' => 'date'
-                    ),
-                    3 => array(
-                        'title' => $this->translate('File size'),
-                        'order_name' => 'size'
-                    )
-                ),
-                'paginator' => $this->paginator,
-                'skipped_fields' => array(
-                ),
-                'helpers' => array(
-                    'size' => 'fileSize',
-                    'name' => 'fileUrl',
-                    'type' => 'booleanValue',
-                    'date' => 'date'
-                ),
-                'helpers_options' => array(
-                    'name' => array(
-                        'path' => $this->path,
-                        'filters' => $this->filters
-                    ),
-                    'type' => array(
-                        'true_string' => $this->translate('Directory'),
-                        'false_string' => $this->translate('File')
-                    )
-                ),
-                'actions' => array (
-                    'regular_actions' => array(
-                        0 => array(
-                            'name' => $this->translate('Add a directory'),
-                            'controller' => 'files-manager-administration',
-                            'action' => 'add-directory',
-                            'check_acl' => true
-                        ),
-                        1 => array(
-                            'name' => $this->translate('Upload a file'),
-                            'controller' => 'files-manager-administration',
-                            'action' => 'upload-file',
-                            'check_acl' => true
-                        )
-                    ),
-                    'multiple_actions' => array(
-                        0 => array(
-                            'name' => $this->translate('Delete selected'),
-                            'controller' => 'files-manager-administration',
-                            'action' => 'delete',
-                            'check_acl' => true
-                        ),
-                    )
-                ),
-                'actions_options' => array(
-                    'action_identity' => 'name',
-                    'form_name' => 'files',
-                    'multiple_actions' => array(
-                        'items_name' => 'items[]'
-                    )
-                ),
-                'actions_extra_check' => array(
+                1 => array(
+                    'name' => $this->translate('Upload a file'),
+                    'controller' => $this->currentRoute()->getController(),
+                    'action' => 'upload-file',
+                     'queries' => array(
+                        'path' => $this->path
+                     ),
+                    'check_acl' => true
                 )
-            )) ?>    
-        <?php endif; ?>
-    </div>
-    <div class="clearfix"></div>
-</div>
-
-<?php $this->inlineScript()->captureStart() ?>
-    $("#<?php echo $this->directoriesTreeId ?>").treeview({});
-<?php $this->inlineScript()->captureEnd() ?>
+            ),
+            'multiple_actions' => array(
+                0 => array(
+                    'name' => $this->translate('Delete selected'),
+                    'controller' => $this->currentRoute()->getController(),
+                    'action' => 'delete',
+                    'queries' => array(
+                        'path' => $this->path
+                     ),
+                    'check_acl' => true
+                ),
+            )
+        ),
+        'actions_options' => array(
+            'action_identity' => 'name',
+            'form_name' => 'files',
+            'multiple_actions' => array(
+                'items_name' => 'files[]'
+            )
+        ),
+        'actions_extra_check' => array(
+        )
+    )) ?>    
+<?php endif; ?>

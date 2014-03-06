@@ -167,7 +167,7 @@
                                 }
                             ?>
                             <li>
-                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('application', $this->multipleActionParams) ?>">
+                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('application', $this->multipleActionParams, array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
                                     <?php echo $action['name'] ?>
                                 </a>
                             </li>
@@ -180,7 +180,7 @@
                     <?php if ($this->regularActionsCount) : ?>
                         <?php foreach ($this->regularActions as $action) : ?>
                             <li>
-                                <a href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action'])) ?>">
+                                <a href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action']), array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
                                     <?php echo $action['name'] ?>
                                 </a>
                             </li>
@@ -363,7 +363,7 @@
             'items' : '<?php echo $this->escapeJs($this->multipleActionsItemsName) ?>',
             'selectorId' : '#<?php echo $this->escapeJs($this->multipleActionsSelectorId) ?>',
             'selectorErrorTitle' : '<?php echo $this->escapeJs($this->translate('Error')) ?>',
-            'selectorErrorContent' : '<?php echo $this->escapeJs($this->translate('You need to select some of checkboxes below')) ?>',
+            'selectorErrorContent' : '<?php echo $this->escapeJs($this->translate('You need select some of checkboxes below')) ?>',
             'selectorErrorTime' : <?php echo (int) $this->multipleActionsErrorDisplayTime ?>,
             'confirmButtonTitle' : '<?php echo $this->escapeJs($this->translate('Yes')) ?>',
             'cancelButtonTitle' : '<?php echo $this->escapeJs($this->translate('No')) ?>',

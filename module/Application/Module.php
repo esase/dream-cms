@@ -181,8 +181,8 @@ class Module
                         // redirect to the forbidden page
                         $response = $e->getResponse();
                         $router = $e->getRouter();
-                        $url = $router->assemble(array('controller' => 'error', 'action' => 'forbidden'),
-                                array('name' => 'application'));
+                        $url = $router->assemble(array('controller' =>
+                            'error', 'action' => 'forbidden'), array('name' => 'application'));
     
                         // populate and return the response
                         $response->setStatusCode(Response::STATUS_CODE_302);

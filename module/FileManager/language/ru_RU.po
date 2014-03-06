@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-02-27 13:11+0600\n"
+"PO-Revision-Date: 2014-03-05 14:41+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,72 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Impossible add a new directory. Check the received path permission"
+msgstr ""
+"Невозможно добавить новый каталог. Проверьте разрешение в полученном пути"
+
+msgid "Directory has been added"
+msgstr "Каталог был добавлен"
+
+msgid "You can use only latin and numeric symbols"
+msgstr "Вы можете использовать только латинские и числовые символы"
+
+msgid "Upload a file"
+msgstr "Загрузить файл"
+
+msgid "Add a directory"
+msgstr "Добавить каталог"
+
+msgid "Cannot delete some files or dirs. Check their permissions or existence"
+msgstr ""
+"Не удается удалить некоторые файлы или каталоги. Проверьте их разрешения или "
+"существование"
+
+msgid "Selected files and dirs have been deleted"
+msgstr "Выбранные файлы и каталоги были удалены"
+
+msgid "Window height"
+msgstr "Высота окна"
+
+msgid "Window width"
+msgstr "Ширина окна"
+
+msgid "Embedded mode"
+msgstr "Встроенный режим"
+
+msgid "Files"
+msgstr "Файлы"
+
+msgid "Directories"
+msgstr "Каталоги"
+
+msgid "Images"
+msgstr "Изображения"
+
+msgid "Media"
+msgstr "Мультимедийные файлы"
+
+msgid "Show only"
+msgstr "Показать только"
+
+msgid "Files type"
+msgstr "Типы файлов"
+
+msgid "It helps to filter only media files. Values separated by a comma"
+msgstr ""
+"Это помогает фильтровать только файлы медиа. Значения разделяются запятой"
+
+msgid "Media extensions"
+msgstr "Расширения медиа файлов"
+
+msgid "It helps to filter only images files. Values separated by a comma"
+msgstr ""
+"Это помогает фильтровать только файлы изображений. Значения разделяются "
+"запятой"
+
+msgid "Image extensions"
+msgstr "Расширения изображений"
 
 msgid "Modified date"
 msgstr "Дата изменения"
@@ -35,5 +101,50 @@ msgstr "Файловый менеджер"
 msgid "FileManager"
 msgstr "Файловый менеджер"
 
+msgid "Event - Adding directories"
+msgstr "Добавление каталогов"
+
+msgid "Event - Directory added by guest"
+msgstr "Гость добавил каталог - \"%s\""
+
+msgid "Event - Directory added by user"
+msgstr "\"%s\" добавил каталог - \"%s\""
+
+msgid "Event - Deleting directories"
+msgstr "Удаление каталогов"
+
+msgid "Event - Directory deleted by guest"
+msgstr "Гость удалил каталог со всеми файлами - \"%s\""
+
+msgid "Event - Directory deleteted by user"
+msgstr "\"%s\" удалил каталог со всеми файлами - \"%s\""
+
+msgid "Event - Deleting files"
+msgstr "Удаление файлов"
+
+msgid "Event - File deleted by guest"
+msgstr "Гость удалил файл - \"%s\""
+
+msgid "Event - File deleteted by user"
+msgstr "\"%s\" удалил файл - \"%s\""
+
 msgid "ACL - Viewing files and dirs in admin area"
-msgstr "Просмотр файлов и директорий в админке"
+msgstr "Просмотр файлов и каталогов в админке"
+
+msgid "ACL - Editing file manager settings in admin area"
+msgstr "Изменение настроек файл менеджера в админке"
+
+msgid "ACL - Viewing files and dirs in embedded mode"
+msgstr "Просмотр файлов и каталогов в встроенном режиме"
+
+msgid "ACL - Deleting files and dirs in admin area"
+msgstr "Удаление файлов и каталогов в админке"
+
+msgid "ACL - Deleting files and dirs in embedded mode"
+msgstr "Удаление файлов и каталогов во встроенном режиме"
+
+msgid "ACL - Adding directories in embedded mode"
+msgstr "Добавление каталогов во встроенном режиме"
+
+msgid "ACL - Adding directories in admin area"
+msgstr "Добавление каталогов в админке"

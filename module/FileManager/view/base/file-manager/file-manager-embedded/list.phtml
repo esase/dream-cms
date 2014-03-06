@@ -1,10 +1,24 @@
-<!-- render a list of files -->
-<div style="margin-top:30px;margin-bottom:30px">
-    <?php echo $this->render('file-manager/patrial/files_list') ?>
-</div>
+<?php $this->placeholder('filesList')->captureStart() ?>
+    <?php echo $this->partial('file-manager/patrial/files_list', array(
+        'paginator' => $this->paginator,
+        'path' => $this->path,
+        'order_by' => $this->order_by,
+        'order_type' => $this->order_type,
+        'per_page' => $this->per_page,
+        'filter_form' => $this->filter_form,
+        'filters' => $this->filters
+    )); ?>
+<?php $this->placeholder('filesList')->captureEnd() ?>
+
+<?php echo $this->partial('file-manager/patrial/tree', array(
+    'userDirectories' => $this->userDirectories,
+    'action' => $this->placeholder('filesList'),
+    'path' => $this->path,
+    'filters' => $this->filters
+)); ?>
 
 <?php $this->inlineScript()->captureStart() ?>
-    $('#<?php echo $this->filesWrapper ?>').find('a.file').bind("click", function(e) {
+    $('div#files-manager-wrapper div#action-wrapper').find('a.file').bind("click", function(e) {
         e.preventDefault();
 
         // insert selected url to tinyMce

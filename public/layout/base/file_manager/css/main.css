@@ -1,0 +1,10 @@
+div#files-manager-wrapper div#directories-tree-wrapper {
+    background-color: #F5F5F5;
+    padding:10px;
+    margin-bottom:10px;
+    overflow: hidden;
+}
+
+div#files-manager-wrapper div#action-wrapper {
+    margin-bottom:10px;
+}

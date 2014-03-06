@@ -115,7 +115,13 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (25, 'users_administration_edit_role', 'ACL - Editing users roles in admin area', 2),
 (26, 'users_administration_browse_acl_resources', 'ACL - Browsing allowed users ACL resources in admin area', 2),
 (27, 'users_administration_acl_resource_settings', 'ACL - Editing allowed users ACL resources settings in admin area', 2),
-(28, 'files_manager_administration_list', 'ACL - Viewing files and dirs in admin area', 4);
+(28, 'files_manager_administration_list', 'ACL - Viewing files and dirs in admin area', 4),
+(29, 'files_manager_administration_settings', 'ACL - Editing file manager settings in admin area', 4),
+(30, 'files_manager_embedded_list', 'ACL - Viewing files and dirs in embedded mode', 4),
+(31, 'files_manager_administration_delete', 'ACL - Deleting files and dirs in admin area', 4),
+(32, 'files_manager_embedded_delete', 'ACL - Deleting files and dirs in embedded mode', 4),
+(33, 'files_manager_embedded_add_directory', 'ACL - Adding directories in embedded mode', 4),
+(34, 'files_manager_administration_add_directory', 'ACL - Adding directories in admin area', 4);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -224,7 +230,9 @@ INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
 (8,  'Main settings', 2),
 (9,  'Email notifications', 2),
 (10, 'Avatar', 2),
-(11, 'Errors logging', 1);
+(11, 'Errors logging', 1),
+(12,  'Main settings', 4),
+(13,  'Embedded mode', 4);
 
 CREATE TABLE IF NOT EXISTS `setting` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -310,7 +318,11 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (57, 'user_thumbnail_height', 'Thumbnail height', '', 'integer', 1, 4, 10, 2, 0, '', '', ''),
 (58, 'application_errors_notification_email', 'Errors notification email', '', 'email', 0, 1, 11, 1, 0, '', '', ''),
 (59, 'application_error_notification_title', 'Error notification title', 'An error email notification', 'notification_title', 1, 2, 11, 1, 1, '', '', ''),
-(60, 'application_error_notification_message', 'Error notification message', '', 'notification_message', 1, 3, 11, 1, 1, '', '', '');
+(60, 'application_error_notification_message', 'Error notification message', '', 'notification_message', 1, 3, 11, 1, 1, '', '', ''),
+(61, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. Values separated by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
+(62, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. Values separated by a comma', 'textarea', 1, 2, 12, 4, 0, '', '', ''),
+(63, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(64, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -397,7 +409,11 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (67, 59, 'An error occurred', NULL),
 (68, 59, 'Произошла ошибка', 'ru'),
 (69, 60, '<p><b>Error description:</b></p>\r\n<p>{ErrorDescription}</p>', NULL),
-(70, 60, '<p><b>Описание ошибки:</b></p>\r\n<p>{ErrorDescription}</p>', 'ru');
+(70, 60, '<p><b>Описание ошибки:</b></p>\r\n<p>{ErrorDescription}</p>', 'ru'),
+(71, 61, 'bmp,gif,jpg,png,psd,pspimage,thm,tif,yuv,ai,drw,eps,ps,svg', NULL),
+(72, 62, 'aif,iff,m3u,m4a,mid,mp3,mpa,ra,wav,wma,3g2,3gp,asf,asx,avi,flv,mov,mp4,mpg,rm,swf,vob,wmv', NULL),
+(73, 63, '1000', NULL),
+(74, 64, '500', NULL);
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
     `setting_id` int(10) unsigned NOT NULL,
@@ -453,7 +469,10 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (20, 'send_email_notification', 1, 'Event - Sending email notifications'),
 (22, 'user_password_reset', 2, 'Event - Resetting users passwords'),
 (23, 'user_password_reset_request', 2, 'Event - Requesting reset users passwords'),
-(24, 'user_edit_role', 2, 'Event - Editing users roles');
+(24, 'user_edit_role', 2, 'Event - Editing users roles'),
+(25, 'delete_file', 4, 'Event - Deleting files'),
+(26, 'add_directory', 4, 'Event - Adding directories'),
+(27, 'delete_directory', 4, 'Event - Deleting directories');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

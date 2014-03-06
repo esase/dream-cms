@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-02-27 13:11+0600\n"
+"PO-Revision-Date: 2014-03-05 14:40+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,66 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Impossible add a new directory. Check the received path permission"
+msgstr "Impossible add a new directory. Check the received path permission"
+
+msgid "Directory has been added"
+msgstr "Directory has been added"
+
+msgid "You can use only latin and numeric symbols"
+msgstr "You can use only latin and numeric symbols"
+
+msgid "Upload a file"
+msgstr "Upload a file"
+
+msgid "Add a directory"
+msgstr "Add a directory"
+
+msgid "Cannot delete some files or dirs. Check their permissions or existence"
+msgstr "Cannot delete some files or dirs. Check their permissions or existence"
+
+msgid "Selected files and dirs have been deleted"
+msgstr "Selected files and dirs have been deleted"
+
+msgid "Window height"
+msgstr "Window height"
+
+msgid "Window width"
+msgstr "Window width"
+
+msgid "Embedded mode"
+msgstr "Embedded mode"
+
+msgid "Files"
+msgstr "Files"
+
+msgid "Directories"
+msgstr "Directories"
+
+msgid "Images"
+msgstr "Images"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Show only"
+msgstr "Show only"
+
+msgid "Files type"
+msgstr "Files type"
+
+msgid "It helps to filter only media files. Values separated by a comma"
+msgstr "It helps to filter only media files. Values separated by a comma"
+
+msgid "Media extensions"
+msgstr "Media extensions"
+
+msgid "It helps to filter only images files. Values separated by a comma"
+msgstr "It helps to filter only images files. Values separated by a comma"
+
+msgid "Image extensions"
+msgstr "Image extensions"
 
 msgid "Modified date"
 msgstr "Modified date"
@@ -33,7 +93,52 @@ msgid "Files manager"
 msgstr "Files manager"
 
 msgid "FileManager"
-msgstr "Files manager"
+msgstr "File manager"
+
+msgid "Event - Adding directories"
+msgstr "Adding directories"
+
+msgid "Event - Directory added by guest"
+msgstr "Guest added the directory - \"%s\""
+
+msgid "Event - Directory added by user"
+msgstr "\"%s\" added the directory - \"%s\""
+
+msgid "Event - Deleting directories"
+msgstr "Deleting directories"
+
+msgid "Event - Directory deleted by guest"
+msgstr "Guest deleted the directory with all files - \"%s\""
+
+msgid "Event - Directory deleteted by user"
+msgstr "\"%s\" deleted the directory with all files - \"%s\""
+
+msgid "Event - Deleting files"
+msgstr "Deleting files"
+
+msgid "Event - File deleted by guest"
+msgstr "Guest deleted the file - \"%s\""
+
+msgid "Event - File deleteted by user"
+msgstr "\"%s\" deleted the file - \"%s\""
 
 msgid "ACL - Viewing files and dirs in admin area"
 msgstr "Viewing files and dirs in admin area"
+
+msgid "ACL - Editing file manager settings in admin area"
+msgstr "Editing file manager settings in admin area"
+
+msgid "ACL - Viewing files and dirs in embedded mode"
+msgstr "Viewing files and dirs in embedded mode"
+
+msgid "ACL - Deleting files and dirs in admin area"
+msgstr "Deleting files and dirs in admin area"
+
+msgid "ACL - Deleting files and dirs in embedded mode"
+msgstr "Deleting files and dirs in embedded mode"
+
+msgid "ACL - Adding directories in embedded mode"
+msgstr "Adding directories in embedded mode"
+
+msgid "ACL - Adding directories in admin area"
+msgstr "Adding directories in admin area"

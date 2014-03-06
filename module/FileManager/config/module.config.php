@@ -1,11 +1,13 @@
 <?php
 
+use Zend\Mvc\Controller\ControllerManager;
+
 return array(
     'controllers' => array(
         'invokables' => array(
             'files-manager-embedded' => 'FileManager\Controller\FileManagerEmbeddedController',
             'files-manager-administration' => 'FileManager\Controller\FileManagerAdministrationController'
-        )
+        ),
     ),
     'router' => array(
         'routes' => array(

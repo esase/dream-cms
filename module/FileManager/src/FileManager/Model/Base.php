@@ -13,6 +13,7 @@ use CallbackFilterIterator;
 use Zend\Paginator\Paginator;
 use Application\Utility\Pagination as PaginationUtility;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
+use Application\Utility\ErrorLogger;
 
 class Base extends AbstractBase
 {
@@ -32,55 +33,17 @@ class Base extends AbstractBase
      * Directory name pattern
      * @var string
      */
-    protected static $directoryNamePattern = '0-9a-z\_\-';
+    protected static $directoryNamePattern = '0-9a-z';
 
-    //TODO: add these in settings!
     /**
-     * List of images extensions
-     * @var array
+     * Get directory name pattern
+     *
+     * @return string
      */
-    protected $imagesExtensions = array(
-        'bmp',
-        'gif',
-        'jpg',
-        'png',
-        'psd',
-        'pspimage',
-        'thm',
-        'tif',
-        'yuv',
-        'ai',
-        'drw',
-        'eps',
-        'ps',
-        'svg'
-    );
-
-    protected $mediaExtensions = array(
-        'aif',
-        'iff',
-        'm3u',
-        'm4a',
-        'mid',
-        'mp3',
-        'mpa',
-        'ra',
-        'wav',
-        'wma',
-        '3g2',
-        '3gp',
-        'asf',
-        'asx',
-        'avi',
-        'flv',
-        'mov',
-        'mp4',
-        'mpg',
-        'rm',
-        'swf',
-        'vob',
-        'wmv'
-    );
+    public static function getDirectoryNamePattern()
+    {
+        return self::$directoryNamePattern;
+    }
 
     /**
      * Get user's base files dir
@@ -161,6 +124,48 @@ class Base extends AbstractBase
     }
 
     /**
+     * Add user's directory
+     *
+     * @param string $name
+     * @param string $path
+     * @return boolean
+     */
+    public function addUserDirectory($name, $path)
+    {
+        if (false !== ($userDirectory = $this->getUserDirectory($path))) {
+            try {
+                FileSystemUtility::createDir($userDirectory . '/' . $name);
+            }
+            catch (Exception $e) {
+                ErrorLogger::log($e);
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Delete user's file or directory
+     *
+     * @param string $fileName
+     * @param string $path
+     * @return boolean
+     */ 
+    public function deleteUserFile($fileName, $path)
+    {
+        // process the directory path
+        if (null == ($path = self::processDirectoryPath($path))) {
+            return false;
+        }
+
+        return FileSystemUtility::deleteFiles(self::
+                getUserBaseFilesDir() . '/' . $path . '/' . $fileName, array(), false, true);
+    }
+
+    /**
      * Get files
      *
      * @param string $directory
@@ -204,14 +209,14 @@ class Base extends AbstractBase
                     // show only images
                     case 'image' :
                         if (!in_array(FileSystemUtility::getFileExtension($current->getFileName()),
-                                $this->imagesExtensions)) {
+                                explode(',', ApplicationService::getSetting('file_manager_image_extensions')))) {
 
                             return false;
                         }
                         break;
                     case 'media' :
                         if (!in_array(FileSystemUtility::getFileExtension($current->getFileName()),
-                                $this->mediaExtensions)) {
+                                explode(',', ApplicationService::getSetting('file_manager_media_extensions')))) {
 
                             return false;
                         }
@@ -269,7 +274,7 @@ class Base extends AbstractBase
     /**
      * Get the user's list of directories
      *
-     * @return array
+     * @return array|boolean
      */
     public function getUserDirectories()
     {
@@ -278,8 +283,14 @@ class Base extends AbstractBase
 
         // check the home directory existing
         if (!file_exists($homeDir)) {
-            // create a new home directory
-            FileSystemUtility::createDir($homeDir);
+            // create a new home directory            
+            try {
+                FileSystemUtility::createDir($homeDir);
+            }
+            catch (Exception $e) {
+                ErrorLogger::log($e);
+                return false;
+            }
         }
 
         $iterator = new RecursiveDirectoryIterator($baseDir, RecursiveDirectoryIterator::SKIP_DOTS);
@@ -293,9 +304,10 @@ class Base extends AbstractBase
                 continue;
             }
 
-            $path = array($file->getFilename() => array());
+            // PHP_EOL - fix for array_merge_recursive (values should be as strings)
+            $path = array($file->getFilename() . PHP_EOL  => array());
             for ($depth = $files->getDepth() - 1; $depth >= 0; $depth--) {
-                $path = array($files->getSubIterator($depth)->current()->getFilename() => $path);
+                $path = array($files->getSubIterator($depth)->current()->getFilename() . PHP_EOL => $path);
             }
 
             $directories = array_merge_recursive($directories, $path);
