@@ -273,7 +273,9 @@ h6,
 }
 
 .nav {
-  padding-right: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none;
 }
 
 .input-group .form-control:first-child,

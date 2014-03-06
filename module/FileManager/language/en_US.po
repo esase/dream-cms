@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-05 14:40+0600\n"
+"PO-Revision-Date: 2014-03-06 15:26+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,23 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "You've reached the maximum of nested level"
+msgstr "You've reached the maximum of nested level"
+
+msgid "New directory description"
+msgstr ""
+"Directory's name length should be less or equal %d. Max nested directories "
+"level is %d"
+
+msgid "Max directory name length"
+msgstr "Max directory name length"
+
+msgid "Max nested directories level"
+msgstr "Max nested directories level"
+
+msgid "Directory already exist"
+msgstr "Directory already exist"
 
 msgid "Impossible add a new directory. Check the received path permission"
 msgstr "Impossible add a new directory. Check the received path permission"

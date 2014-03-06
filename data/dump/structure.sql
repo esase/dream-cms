@@ -322,7 +322,9 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (61, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. Values separated by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
 (62, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. Values separated by a comma', 'textarea', 1, 2, 12, 4, 0, '', '', ''),
 (63, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(64, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0');
+(64, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(65, 'file_manager_max_nested_directories_level', 'Max nested directories level', '', 'integer', 1, 3, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(66, 'file_manager_directory_name_length', 'Max directory name length', '', 'integer', 1, 4, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -410,10 +412,12 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (68, 59, 'Произошла ошибка', 'ru'),
 (69, 60, '<p><b>Error description:</b></p>\r\n<p>{ErrorDescription}</p>', NULL),
 (70, 60, '<p><b>Описание ошибки:</b></p>\r\n<p>{ErrorDescription}</p>', 'ru'),
-(71, 61, 'bmp,gif,jpg,png,psd,pspimage,thm,tif,yuv,ai,drw,eps,ps,svg', NULL),
-(72, 62, 'aif,iff,m3u,m4a,mid,mp3,mpa,ra,wav,wma,3g2,3gp,asf,asx,avi,flv,mov,mp4,mpg,rm,swf,vob,wmv', NULL),
+(71, 61, 'bmp,gif,jpg,png', NULL),
+(72, 62, 'mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv', NULL),
 (73, 63, '1000', NULL),
-(74, 64, '500', NULL);
+(74, 64, '500', NULL),
+(75, 65, '3', NULL),
+(76, 66, '15', NULL);
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
     `setting_id` int(10) unsigned NOT NULL,

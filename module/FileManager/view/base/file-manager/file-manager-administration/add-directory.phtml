@@ -34,12 +34,18 @@
 )) ?>
 
 <?php $this->placeholder('form')->captureStart() ?>
-    <?php echo $this->partial('file-manager/patrial/directory_form', array(
-        'form' => $this->directoryForm,
-        'queries' => array(
-            'path' => $this->path
-        )
-    )); ?>
+    <?php if ($this->directoryForm) : ?>
+        <?php echo $this->partial('file-manager/patrial/directory_form', array(
+            'form' => $this->directoryForm,
+            'queries' => array(
+                'path' => $this->path
+            )
+        )); ?>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            <?php echo $this->translate('Directory not exists') ?>
+        </div>
+    <?php endif; ?>
 <?php $this->placeholder('form')->captureEnd() ?>
 
 <?php echo $this->partial('file-manager/patrial/tree', array(

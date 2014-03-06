@@ -16,7 +16,6 @@ use User\Service\Service as UserService;
 
 abstract class FileManagerBaseController extends AbstractBaseController
 {
-    //TODO: when nothing found the action box is empty
     /**
      * Model instance
      * @var object  
@@ -44,68 +43,77 @@ abstract class FileManagerBaseController extends AbstractBaseController
      */
     protected function addDirectory()
     {
+        $directoryForm = null;
+
+        // get a path
         $userPath = null != $this->getRequest()->getQuery('path', null)
             ? $this->getRequest()->getQuery('path')
             : FileManagerBaseModel::getHomeDirectoryName();
 
-        $directoryForm = $this->getServiceLocator()
-            ->get('Application\Form\FormManager')
-            ->getInstance('FileManager\Form\Directory');
-
-        $request  = $this->getRequest();
-
         // get current user directories structure
         $userDirectories = $this->getModel()->getUserDirectories();
 
-        // validate the form
-        if ($request->isPost()) {
-            // fill the form with received values
-            $directoryForm->getForm()->setData($request->getPost(), false);
+        // check the path
+        if (false !== ($this->getModel()->getUserDirectory($userPath))) {
+            // get a form
+            $directoryForm = $this->getServiceLocator()
+                ->get('Application\Form\FormManager')
+                ->getInstance('FileManager\Form\Directory')
+                ->setPath($userPath)
+                ->setModel($this->getModel());
 
-            // save data
-            if ($directoryForm->getForm()->isValid()) {
-                // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
-                    return $result;
+            $request  = $this->getRequest();
+
+            // validate the form
+            if ($request->isPost()) {
+                // fill the form with received values
+                $directoryForm->getForm()->setData($request->getPost(), false);
+    
+                // save data
+                if ($directoryForm->getForm()->isValid()) {
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->checkPermission())) {
+                        return $result;
+                    }
+    
+                    // add a new directory
+                    if (true === ($result = $this->getModel()->
+                            addUserDirectory($directoryForm->getForm()->getData()['name'], $userPath))) {
+    
+                        // get a full path
+                        $fullPath = $this->getModel()->
+                                getUserDirectory($userPath) . '/' . $directoryForm->getForm()->getData()['name'];
+    
+                        $eventDescParams = UserService::isGuest()
+                            ? array($fullPath)
+                            : array(UserService::getCurrentUserIdentity()->nick_name, $fullPath);
+    
+                        // event's description
+                        $eventDesc = UserService::isGuest()
+                            ? 'Event - Directory added by guest'
+                            : 'Event - Directory added by user';
+    
+                        FileManagerEvent::fireEvent(FileManagerEvent::FILE_MANAGER_ADD_DIRECTORY,
+                                $fullPath, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+    
+                        $this->flashMessenger()
+                            ->setNamespace('success')
+                            ->addMessage($this->getTranslator()->translate('Directory has been added'));
+                    }
+                    else {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Impossible add a new directory. Check the received path permission'));
+                    }
+    
+                    return $this->redirectTo($this->
+                            params('controller'), 'add-directory', array(), false, array('path' => $userPath));
                 }
-
-                // add a new directory
-                if (true === ($result = $this->getModel()->
-                        addUserDirectory($directoryForm->getForm()->getData()['name'], $userPath))) {
-
-                    // get a full path
-                    $fullPath = $this->getModel()->
-                            getUserDirectory($userPath) . '/' . $directoryForm->getForm()->getData()['name'];
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($fullPath)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $fullPath);
-
-                    // event's description
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Directory added by guest'
-                        : 'Event - Directory added by user';
-
-                    FileManagerEvent::fireEvent(FileManagerEvent::FILE_MANAGER_ADD_DIRECTORY,
-                            $fullPath, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
-
-                    $this->flashMessenger()
-                        ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Directory has been added'));
-                }
-                else {
-                    $this->flashMessenger()
-                        ->setNamespace('error')
-                        ->addMessage($this->getTranslator()->translate('Impossible add a new directory. Check the received path permission'));
-                }
-
-                return $this->redirectTo($this->
-                        params('controller'), 'add-directory', array(), false, array('path' => $userPath));
             }
         }
 
         return array(
-            'directoryForm' => $directoryForm->getForm(),
+            'directoryForm' => $directoryForm ? $directoryForm->getForm() : null,
             'path' => $userPath,
             'userDirectories' => $userDirectories
         );

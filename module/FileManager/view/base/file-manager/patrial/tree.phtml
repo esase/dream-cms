@@ -4,7 +4,9 @@
         ? 'jquery.treeview.css'
         : 'jquery.treeview.rtl.css'), 'css')) ?>
 
-<?php $this->headLink()->appendStylesheet($this->asset('main.css', 'css', 'file_manager')) ?>
+<?php $this->headLink()->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr()
+        ? 'main.css'
+        : 'main.rtl.css'), 'css', 'file_manager')) ?>
 
 <?php $this->declareVars('directoriesTreeId') ?>
 <?php $this->directoriesTreeId = 'directories-tree' ?>

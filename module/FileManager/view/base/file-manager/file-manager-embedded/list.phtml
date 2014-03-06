@@ -1,3 +1,15 @@
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->translate('List of files'),
+            'controller' => $this->currentRoute()->getController(),
+            'action' => 'list',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
 <?php $this->placeholder('filesList')->captureStart() ?>
     <?php echo $this->partial('file-manager/patrial/files_list', array(
         'paginator' => $this->paginator,
