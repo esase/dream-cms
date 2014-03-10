@@ -22,7 +22,7 @@
             <?php if ($i == $this->breadcrumbCount - 1 || (isset($this->breadcrumb[$i]['permission']) && false == $this->breadcrumb[$i]['permission'])): ?>
                 <?php echo $this->escapeHtml($this->breadcrumb[$i]['name']) ?>
             <?php else: ?>
-                <a href="<?php echo $this->url(null, $this->baseUrl) ?>">
+                <a href="<?php echo $this->url(null, $this->baseUrl, array('query' => !empty($this->breadcrumb[$i]['queries']) && is_array($this->breadcrumb[$i]['queries']) ? $this->breadcrumb[$i]['queries'] : null)) ?>">
                     <?php echo $this->escapeHtml($this->breadcrumb[$i]['name']) ?>
                 </a>
             <?php endif; ?>

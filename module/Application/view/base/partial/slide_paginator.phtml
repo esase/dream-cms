@@ -6,12 +6,7 @@
     }
 
     $this->queries = !empty($this->queries) && is_array($this->queries)
-        ?
-            (
-                !isset($this->queries_encode) || $this->queries_encode === true
-                    ? $this->urlParamEncode($this->queries)
-                    : $this->queries
-            )
+        ? $this->queries
         : array();
 ?>
 

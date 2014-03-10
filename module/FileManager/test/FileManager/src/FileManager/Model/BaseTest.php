@@ -15,7 +15,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('home', BaseFileManagerModel::processDirectoryPath('home/'));
         $this->assertEquals('home', BaseFileManagerModel::processDirectoryPath('../home/'));
-        $this->assertEquals('_home90-', BaseFileManagerModel::processDirectoryPath('@@!!...\\\////_home90-MMMM(((**&&&'));
+        $this->assertEquals('_home90_', BaseFileManagerModel::processDirectoryPath('@@!!...\\\////_home90-MMMM(((**&&&_'));
         $this->assertEquals('home/test', BaseFileManagerModel::processDirectoryPath('../home/....&&&/test'));
         $this->assertEquals('', BaseFileManagerModel::processDirectoryPath('....////\\\\\\'));
         $this->assertEquals('', BaseFileManagerModel::processDirectoryPath('//////////////////////////////'));

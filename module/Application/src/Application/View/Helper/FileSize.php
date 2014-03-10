@@ -3,6 +3,7 @@
 namespace Application\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
+use Application\Utility\FileSystem as FileSystemUtility;
 
 class FileSize extends AbstractHelper
 {
@@ -14,15 +15,6 @@ class FileSize extends AbstractHelper
      */
     public function __invoke($bytes)
     {
-        if ((int) $bytes) {
-            $unit = intval(log($bytes, 1024));
-            $units = array('B', 'KB', 'MB', 'GB');
-
-            if (array_key_exists($unit, $units) === true) {
-                return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
-            }
-        }
-
-        return $bytes ? $bytes : null;
+        return FileSystemUtility::convertBytes($bytes);
     }
 }

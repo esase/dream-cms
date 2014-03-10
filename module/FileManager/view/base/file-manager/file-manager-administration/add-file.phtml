@@ -1,9 +1,26 @@
+<?php $this->declareVars('subPageTitle', 'mainPageTitle') ?>
+
+<?php $this->subPageTitle  = $this->translate('Add a file') ?>
+<?php $this->mainPageTitle = $this->translate('List of files') ?>
+
+<?php $this->headTitle($this->subPageTitle)  ?>
+<?php $this->headTitle($this->mainPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('file-manager/file-manager-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
 <!-- render a breadcrumb -->
 <?php echo $this->partial('partial/breadcrumb', array(
     'pages' => array(
         'list' => array(
-            'name' => $this->translate('List of files'),
-            'controller' => $this->currentRoute()->getController(),
+            'name' => $this->mainPageTitle,
+            'controller' => 'files-manager-administration',
             'action' => 'list',
             'check_acl' => true,
             'queries' => array(
@@ -11,18 +28,18 @@
             )
         ),
         'add_directory' => array(
-            'name' => $this->translate('Add a directory'),
-            'controller' => $this->currentRoute()->getController(),
-            'action' => 'add-directory',
+            'name' => $this->subPageTitle,
+            'controller' => 'files-manager-administration',
+            'action' => 'add-file',
             'check_acl' => true
         )
     )
 )) ?>
 
 <?php $this->placeholder('form')->captureStart() ?>
-    <?php if ($this->directoryForm) : ?>
-        <?php echo $this->partial('file-manager/patrial/directory_form', array(
-            'form' => $this->directoryForm,
+    <?php if ($this->fileForm) : ?>
+        <?php echo $this->partial('file-manager/patrial/file_form', array(
+            'form' => $this->fileForm,
             'queries' => array(
                 'path' => $this->path
             )

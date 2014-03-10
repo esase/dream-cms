@@ -41,10 +41,6 @@ class Directory extends AbstractCustomForm
             'description' => 'New directory description',
             'description_params' => array(),
         ),
-        'csrf' => array(
-            'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
-        ),
         'submit' => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
@@ -73,7 +69,7 @@ class Directory extends AbstractCustomForm
                     'name' => 'regex',
                     'options' => array(
                         'pattern' => '/^[' . BaseModel::getDirectoryNamePattern() . ']+$/',
-                        'message' => 'You can use only latin and numeric symbols'
+                        'message' => 'You can use only latin, numeric and underscore symbols'
                     )
                 ),
                 array(

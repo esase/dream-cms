@@ -11,18 +11,18 @@
             )
         ),
         'add_directory' => array(
-            'name' => $this->translate('Add a directory'),
+            'name' => $this->translate('Add a file'),
             'controller' => $this->currentRoute()->getController(),
-            'action' => 'add-directory',
+            'action' => 'add-file',
             'check_acl' => true
         )
     )
 )) ?>
 
 <?php $this->placeholder('form')->captureStart() ?>
-    <?php if ($this->directoryForm) : ?>
-        <?php echo $this->partial('file-manager/patrial/directory_form', array(
-            'form' => $this->directoryForm,
+    <?php if ($this->fileForm) : ?>
+        <?php echo $this->partial('file-manager/patrial/file_form', array(
+            'form' => $this->fileForm,
             'queries' => array(
                 'path' => $this->path
             )

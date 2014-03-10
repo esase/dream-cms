@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-06 15:26+0600\n"
+"PO-Revision-Date: 2014-03-10 19:43+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,30 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "New file description"
+msgstr "Allowed file extensions: %s. <br />Max file size is: %s"
+
+msgid "You should enter size in bytes"
+msgstr "You should enter size in bytes"
+
+msgid "Allowed file size"
+msgstr "Allowed file size"
+
+msgid "You should separate values by a comma"
+msgstr "You should separate values by a comma"
+
+msgid "Allowed file extensions"
+msgstr "Allowed file extensions"
+
+msgid "Selected files and dirs will be deleted. Are you sure?"
+msgstr "Selected files and dirs will be deleted. Are you sure?"
+
+msgid "File has been added"
+msgstr "File has been added"
+
+msgid "Impossible add a new file. Check the received path permission"
+msgstr "Impossible add a new file. Check the received path permission"
 
 msgid "You've reached the maximum of nested level"
 msgstr "You've reached the maximum of nested level"
@@ -37,11 +61,11 @@ msgstr "Impossible add a new directory. Check the received path permission"
 msgid "Directory has been added"
 msgstr "Directory has been added"
 
-msgid "You can use only latin and numeric symbols"
-msgstr "You can use only latin and numeric symbols"
+msgid "You can use only latin, numeric and underscore symbols"
+msgstr "You can use only latin, numeric and underscore symbols"
 
-msgid "Upload a file"
-msgstr "Upload a file"
+msgid "Add a file"
+msgstr "Add a file"
 
 msgid "Add a directory"
 msgstr "Add a directory"
@@ -79,14 +103,18 @@ msgstr "Show only"
 msgid "Files type"
 msgstr "Files type"
 
-msgid "It helps to filter only media files. Values separated by a comma"
-msgstr "It helps to filter only media files. Values separated by a comma"
+msgid ""
+"It helps to filter only media files. You should separate values by a comma"
+msgstr ""
+"It helps to filter only media files. You should separate values by a comma"
 
 msgid "Media extensions"
 msgstr "Media extensions"
 
-msgid "It helps to filter only images files. Values separated by a comma"
-msgstr "It helps to filter only images files. Values separated by a comma"
+msgid ""
+"It helps to filter only images files. You should separate values by a comma"
+msgstr ""
+"It helps to filter only images files. You should separate values by a comma"
 
 msgid "Image extensions"
 msgstr "Image extensions"
@@ -111,6 +139,15 @@ msgstr "Files manager"
 
 msgid "FileManager"
 msgstr "File manager"
+
+msgid "Event - Adding files"
+msgstr "Adding files"
+
+msgid "Event - File added by guest"
+msgstr "Guest added the file - \"%s\""
+
+msgid "Event - File added by user"
+msgstr "\"%s\" added the file - \"%s\""
 
 msgid "Event - Adding directories"
 msgstr "Adding directories"
@@ -159,3 +196,9 @@ msgstr "Adding directories in embedded mode"
 
 msgid "ACL - Adding directories in admin area"
 msgstr "Adding directories in admin area"
+
+msgid "ACL - Adding files in embedded mode"
+msgstr "Adding files in embedded mode"
+
+msgid "ACL - Adding files in admin area"
+msgstr "Adding files in admin area"

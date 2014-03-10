@@ -20,4 +20,9 @@ class Event extends ApplicationEvent
      * Directory add  event
      */
     const FILE_MANAGER_ADD_DIRECTORY = 'add_directory';
+
+    /**
+     * File add  event
+     */
+    const FILE_MANAGER_ADD_FILE = 'add_file';
 }

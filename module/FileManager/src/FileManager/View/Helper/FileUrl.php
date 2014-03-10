@@ -39,9 +39,7 @@ class FileUrl extends AbstractHelper
 
         // generate a directory navigation link
         if (is_dir($absolutePath . '/'. $options['path'] . '/' . $fileName)) {
-            $urlParams = $this->getView()->urlParamEncode(array(
-                'path' => $currentPath
-            ) + $options['filters']);
+            $urlParams = array('path' => $currentPath) + $options['filters'];
 
             // get the directory url
             $directoryUrl = $this->getView()->url('application', array(

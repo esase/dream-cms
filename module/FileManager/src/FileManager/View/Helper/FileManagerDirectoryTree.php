@@ -47,9 +47,7 @@ class FileManagerDirectoryTree extends AbstractHelper
 
             // get directory's url
             $path = $parentDirectory ? $parentDirectory . '/' . $directoryName : $directoryName;
-            $urlParams = $this->getView()->urlParamEncode(array(
-                'path' => $path,
-            ) + $filters);
+            $urlParams = array('path' => $path) + $filters;
 
             $url = $this->getView()->url('application', array(
                 'controller' => $this->getView()->currentRoute()->getController(),

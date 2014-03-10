@@ -84,10 +84,6 @@ class AclResourceSetting extends AbstractCustomForm
             'label' => 'Clean the action counter',
             'required' => false,
         ),
-        'csrf' => array(
-            'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
-        ),
         'submit' => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,

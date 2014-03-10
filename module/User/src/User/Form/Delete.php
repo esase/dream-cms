@@ -26,12 +26,12 @@ class Delete extends AbstractCustomForm
             'required' => true,
             'category' => 'Deleting',
         ),
-        3 => array(
+        1 => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Delete',
         ),
-        4 => array(
+        2 => array(
             'name' => 'csrf',
             'type' => CustomFormBuilder::FIELD_CSRF
         ), 

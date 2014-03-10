@@ -69,4 +69,12 @@ class FileManagerEmbeddedController extends FileManagerBaseController
     {
         return new ViewModel($this->addDirectory());
     }
+
+    /**
+     * Add a new file
+     */
+    public function addFileAction()
+    {
+        return new ViewModel($this->addFile());
+    }
 }

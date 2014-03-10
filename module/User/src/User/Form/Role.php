@@ -32,10 +32,6 @@ class Role extends AbstractCustomForm
             'required' => true,
             'category' => 'List of roles'
         ),
-        'csrf' => array(
-            'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
-        ),
         'submit' => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,

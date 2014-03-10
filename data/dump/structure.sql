@@ -121,7 +121,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (31, 'files_manager_administration_delete', 'ACL - Deleting files and dirs in admin area', 4),
 (32, 'files_manager_embedded_delete', 'ACL - Deleting files and dirs in embedded mode', 4),
 (33, 'files_manager_embedded_add_directory', 'ACL - Adding directories in embedded mode', 4),
-(34, 'files_manager_administration_add_directory', 'ACL - Adding directories in admin area', 4);
+(34, 'files_manager_administration_add_directory', 'ACL - Adding directories in admin area', 4),
+(35, 'files_manager_embedded_add_file', 'ACL - Adding files in embedded mode', 4),
+(36, 'files_manager_administration_add_file', 'ACL - Adding files in admin area', 4);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -319,12 +321,14 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (58, 'application_errors_notification_email', 'Errors notification email', '', 'email', 0, 1, 11, 1, 0, '', '', ''),
 (59, 'application_error_notification_title', 'Error notification title', 'An error email notification', 'notification_title', 1, 2, 11, 1, 1, '', '', ''),
 (60, 'application_error_notification_message', 'Error notification message', '', 'notification_message', 1, 3, 11, 1, 1, '', '', ''),
-(61, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. Values separated by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
-(62, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. Values separated by a comma', 'textarea', 1, 2, 12, 4, 0, '', '', ''),
+(61, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. You should separate values by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
+(62, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. You should separate values by a comma', 'textarea', 1, 2, 12, 4, 0, '', '', ''),
 (63, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
 (64, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
 (65, 'file_manager_max_nested_directories_level', 'Max nested directories level', '', 'integer', 1, 3, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(66, 'file_manager_directory_name_length', 'Max directory name length', '', 'integer', 1, 4, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0');
+(66, 'file_manager_directory_name_length', 'Max directory name length', '', 'integer', 1, 4, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(67, 'file_manager_allowed_extensions', 'Allowed file extensions', 'You should separate values by a comma', 'textarea', 1, 5, 12, 4, 0, '', '', ''),
+(68, 'file_manager_allowed_size', 'Allowed file size', 'You should enter size in bytes', 'integer', 1, 6, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -417,7 +421,9 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (73, 63, '1000', NULL),
 (74, 64, '500', NULL),
 (75, 65, '3', NULL),
-(76, 66, '15', NULL);
+(76, 66, '15', NULL),
+(77, 67, 'bmp,gif,jpg,png,mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv,zip,rar,txt,doc,docx,pdf', NULL),
+(78, 68, '2097152', NULL);
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
     `setting_id` int(10) unsigned NOT NULL,
@@ -476,7 +482,8 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (24, 'user_edit_role', 2, 'Event - Editing users roles'),
 (25, 'delete_file', 4, 'Event - Deleting files'),
 (26, 'add_directory', 4, 'Event - Adding directories'),
-(27, 'delete_directory', 4, 'Event - Deleting directories');
+(27, 'delete_directory', 4, 'Event - Deleting directories'),
+(28, 'add_file', 4, 'Event - Adding files');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

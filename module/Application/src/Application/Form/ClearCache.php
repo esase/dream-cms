@@ -31,10 +31,6 @@ class ClearCache extends AbstractCustomForm
             'category' => 'Cache types',
         ),
         1 => array(
-            'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
-        ),
-        2 => array(
             'name' => 'clear',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Clear',

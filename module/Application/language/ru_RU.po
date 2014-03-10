@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-04 18:07+0600\n"
+"PO-Revision-Date: 2014-03-10 18:36+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,19 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "File is not readable or does not exist"
+msgstr "Файл не читается или не существует"
+
+msgid "Maximum allowed size for file is '%max%' but '%size%' detected"
+msgstr ""
+"Максимально допустимый размер для файла '%max%', но обнаружено '%size%'"
+
+msgid "File has an incorrect extension"
+msgstr "Файл имеет неверное расширение"
+
+msgid "File was not found"
+msgstr "Файл не найден"
 
 msgid "File size"
 msgstr "Размер файла"

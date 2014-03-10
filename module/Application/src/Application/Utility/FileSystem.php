@@ -7,6 +7,7 @@ use RecursiveIteratorIterator;
 use Application\Service\Service as ApplicationService;
 use Exception;
 use Zend\Math\Rand;
+use SplFileInfo;
 
 class FileSystem
 {
@@ -22,6 +23,26 @@ class FileSystem
     protected static $systemFiles = array(
         '.htaccess'
     );
+
+    /**
+     * Convert bytes
+     *
+     * @param integer $bytes
+     * @return string
+     */
+    public static function convertBytes($bytes)
+    {
+        if ((int) $bytes) {
+            $unit = intval(log($bytes, 1024));
+            $units = array('B', 'KB', 'MB', 'GB');
+
+            if (array_key_exists($unit, $units) === true) {
+                return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
+            }
+        }
+
+        return $bytes ? $bytes : null;
+    }
 
     /**
      * Create a directory
@@ -70,17 +91,46 @@ class FileSystem
      * Get the file's extension
      *
      * @param string $fileName
+     * @param boolean $toLower
      * @return string
      */
-    public static function getFileExtension($fileName)
+    public static function getFileExtension($fileName, $toLower = true)
     {
-        return strtolower(end(explode('.', $fileName)));
+        $extension = self::getFileInfo($fileName)->getExtension();
+
+        return $toLower
+            ? strtolower($extension)
+            : $extension;
+    }
+
+    /**
+     * Get file info
+     *
+     * @param string $fileName
+     * @return object
+     */
+    protected static function getFileInfo($fileName)
+    {
+       return new SplFileInfo($fileName);
+    }
+
+    /**
+     * Get the file's  name
+     * 
+     * @param string $fileName
+     * @param string $removeExtension
+     * @return string
+     */
+    public static function getFileName($fileName, $removeExtension = true)
+    {
+       return self::getFileInfo($fileName)->
+            getBasename(($removeExtension ? '.' . self::getFileExtension($fileName, false) : null));
     }
 
     /**
      * Upload a resource file
      *
-     * @param integer $objectId
+     * @param integer|string $objectId
      * @param array $file
      *      string name
      *      string type

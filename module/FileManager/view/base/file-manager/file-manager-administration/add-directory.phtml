@@ -22,7 +22,10 @@
             'name' => $this->mainPageTitle,
             'controller' => 'files-manager-administration',
             'action' => 'list',
-            'check_acl' => true
+            'check_acl' => true,
+            'queries' => array(
+                'path' => $this->path
+            )
         ),
         'add_directory' => array(
             'name' => $this->subPageTitle,

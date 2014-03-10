@@ -37,6 +37,102 @@ abstract class FileManagerBaseController extends AbstractBaseController
     }
 
     /**
+     * Get user path
+     *
+     * @return string
+     */
+    protected function getUserPath()
+    {
+        return null != $this->getRequest()->getQuery('path', null)
+            ? $this->getRequest()->getQuery('path')
+            : FileManagerBaseModel::getHomeDirectoryName();
+    }
+
+    /**
+     * Add a new file
+     *
+     * @retun array
+     */
+    protected function addFile()
+    {
+        $fileForm = null;
+
+        // get a path
+        $userPath = $this->getUserPath();
+
+        // get current user directories structure
+        $userDirectories = $this->getModel()->getUserDirectories();
+
+        // check the path
+        if (false !== ($this->getModel()->getUserDirectory($userPath))) {
+            // get a form
+            $fileForm = $this->getServiceLocator()
+                ->get('Application\Form\FormManager')
+                ->getInstance('FileManager\Form\File');
+
+            $request  = $this->getRequest();
+
+            // validate the form
+            if ($request->isPost()) {
+                // make certain to merge the files info!
+                $post = array_merge_recursive(
+                    $request->getPost()->toArray(),
+                    $request->getFiles()->toArray()
+                );
+
+                // fill the form with received values
+                $fileForm->getForm()->setData($post, false);
+
+                // save data
+                if ($fileForm->getForm()->isValid()) {
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->checkPermission())) {
+                        return $result;
+                    }
+
+                    // add a new file
+                    if (false === ($fileName =
+                            $this->getModel()->addUserFile($this->params()->fromFiles('file'), $userPath))) {
+
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Impossible add a new file. Check the received path permission'));
+                    }
+                    else {
+                        // event's description
+                        $eventDesc = UserService::isGuest()
+                            ? 'Event - File added by guest'
+                            : 'Event - File added by user';
+
+                        // get a full path
+                        $fullPath = $this->getModel()->getUserDirectory($userPath) . $fileName;
+
+                        $eventDescParams = UserService::isGuest()
+                            ? array($fullPath)
+                            : array(UserService::getCurrentUserIdentity()->nick_name, $fullPath);
+
+                        FileManagerEvent::fireEvent(FileManagerEvent::FILE_MANAGER_ADD_FILE,
+                                $fullPath, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+
+                        $this->flashMessenger()
+                            ->setNamespace('success')
+                            ->addMessage($this->getTranslator()->translate('File has been added'));
+                    }
+
+                    return $this->redirectTo($this->
+                            params('controller'), 'add-file', array(), false, array('path' => $userPath));
+                }
+            }
+        }
+
+        return array(
+            'fileForm' => $fileForm ? $fileForm->getForm() : null,
+            'path' => $userPath,
+            'userDirectories' => $userDirectories
+        );
+    }
+
+    /**
      * Add a new directory
      *
      * @retun array
@@ -46,9 +142,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
         $directoryForm = null;
 
         // get a path
-        $userPath = null != $this->getRequest()->getQuery('path', null)
-            ? $this->getRequest()->getQuery('path')
-            : FileManagerBaseModel::getHomeDirectoryName();
+        $userPath = $this->getUserPath();
 
         // get current user directories structure
         $userDirectories = $this->getModel()->getUserDirectories();
@@ -82,7 +176,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
     
                         // get a full path
                         $fullPath = $this->getModel()->
-                                getUserDirectory($userPath) . '/' . $directoryForm->getForm()->getData()['name'];
+                                getUserDirectory($userPath) . $directoryForm->getForm()->getData()['name'];
     
                         $eventDescParams = UserService::isGuest()
                             ? array($fullPath)
@@ -131,9 +225,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
         if ($request->isPost()) {
             if (null !== ($fileNames = $request->getPost('files', null))) {
                 // process requested path
-                $userPath = null != $this->getRequest()->getQuery('path', null)
-                    ? $this->getRequest()->getQuery('path')
-                    : FileManagerBaseModel::getHomeDirectoryName();
+                $userPath = $this->getUserPath();
 
                 // event's description
                 $eventFileDesc = UserService::isGuest()
@@ -152,7 +244,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
                     }
 
                     // get a full path
-                    $fullPath = $this->getModel()->getUserDirectory($userPath) . '/' . $file;
+                    $fullPath = $this->getModel()->getUserDirectory($userPath) . $file;
                     $isDirectory = is_dir($fullPath);
 
                     // delete the file or directory with nested files and dirs
@@ -226,9 +318,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
         $userDirectories = $this->getModel()->getUserDirectories();
 
         // get list of files and directories in specified directory
-        $userPath = null != $this->getRequest()->getQuery('path', null)
-            ? $this->getRequest()->getQuery('path')
-            : FileManagerBaseModel::getHomeDirectoryName();
+        $userPath = $this->getUserPath();
 
         $paginator = false;
         if (false !== ($currentDirectory = $this->getModel()->getUserDirectory($userPath))) {

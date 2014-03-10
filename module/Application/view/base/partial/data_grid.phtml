@@ -31,7 +31,7 @@
     // init filter params
     $this->declareVars('filterParams');
     $this->filterParams = !empty($this->filter_form) && $this->filter_form->isValid()
-        ? $this->urlParamEncode($this->filter_form->getData(false))
+        ? $this->filter_form->getData(false)
         : array();
 
     // init extra url queries
@@ -344,8 +344,7 @@
         echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide_paginator', array(
             'route' => 'application',
             'params' => array_merge($this->baseUrlParams, array('per_page' => $this->per_page)),
-            'queries' => $this->filterParams,
-            'queries_encode' => false
+            'queries' => $this->filterParams
         ))
     ?>
 <?php else: ?>

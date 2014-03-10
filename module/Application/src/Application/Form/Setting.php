@@ -21,10 +21,6 @@ class Setting extends AbstractCustomForm
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Save',
-        ),
-        1 => array(
-            'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
-        ), 
+        )
     );
 }

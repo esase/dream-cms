@@ -33,7 +33,7 @@ class Base extends AbstractBase
      * Directory name pattern
      * @var string
      */
-    protected static $directoryNamePattern = '0-9a-z';
+    protected static $directoryNamePattern = '0-9a-z_';
 
     /**
      * Get directory name pattern
@@ -46,14 +46,23 @@ class Base extends AbstractBase
     }
 
     /**
+     * Get user's files dir
+     *
+     * @return string
+     */
+    public static function getUserFilesDir()
+    {
+        return self::$filesDir . ApplicationService::getCurrentUserIdentity()->user_id;
+    }
+
+    /**
      * Get user's base files dir
      *
      * @return string
      */
     public static function getUserBaseFilesDir()
     {
-        return ApplicationService::getResourcesDir() .
-                self::$filesDir . ApplicationService::getCurrentUserIdentity()->user_id;
+        return ApplicationService::getResourcesDir() . self::getUserFilesDir();
     }
 
     /**
@@ -63,8 +72,7 @@ class Base extends AbstractBase
      */
     public static function getUserBaseFilesUrl()
     {
-        return ApplicationService::getResourcesUrl() .
-                self::$filesDir . ApplicationService::getCurrentUserIdentity()->user_id;
+        return ApplicationService::getResourcesUrl() . self::getUserFilesDir();
     }
 
     /**
@@ -105,9 +113,10 @@ class Base extends AbstractBase
      * Get the user's directory
      *
      * @param string $path
+     * @param boolean $basePath
      * @return boolean|string
      */
-    public function getUserDirectory($path)
+    public function getUserDirectory($path, $basePath = true)
     {
         // process the directory path
         if (null == ($path = self::processDirectoryPath($path))) {
@@ -117,7 +126,36 @@ class Base extends AbstractBase
         $userDir = self::getUserBaseFilesDir() . '/' . $path;
 
         if (file_exists($userDir)) {
-            return $userDir;
+            return $basePath
+                ? $userDir . '/'
+                : self::getUserFilesDir() . '/' . $path . '/';
+        }
+
+        return false;
+    }
+
+    /**
+     * Add user's file
+     *
+     * @param array $fileInfo
+     *      string name
+     *      string type
+     *      string tmp_name
+     *      integer error
+     *      integer size
+     * @param sting $path
+     * @return boolean|string
+     */
+    public function addUserFile(array $fileInfo, $path)
+    {
+        if (false !== ($userDirectory = $this->getUserDirectory($path, false))) {
+            if (false !== ($fileName = FileSystemUtility::
+                    uploadResourceFile(FileSystemUtility::getFileName($fileInfo['name']), $fileInfo, $userDirectory, false))) {
+    
+                return $fileName;
+            }
+    
+            return false;
         }
 
         return false;
@@ -134,7 +172,7 @@ class Base extends AbstractBase
     {
         if (false !== ($userDirectory = $this->getUserDirectory($path))) {
             try {
-                FileSystemUtility::createDir($userDirectory . '/' . $name);
+                FileSystemUtility::createDir($userDirectory . $name);
             }
             catch (Exception $e) {
                 ErrorLogger::log($e);

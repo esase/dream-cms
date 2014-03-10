@@ -151,7 +151,7 @@ DataGrid.prototype._initDataGrid = function()
                 // show confirm message
                 $link.popover({
                     trigger: "manual",
-                    placement: "top",
+                    placement: "bottom",
                     html: true,
                     title : $(this).attr('confirm'),
                     content: $confirmButtons

@@ -41,6 +41,7 @@
         2. intl
         3. zlib
         4. gd
+        5. SplFileInfo
 
     2. PHP must be enabled with these options:
         1. fopen wrappers On

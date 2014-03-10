@@ -37,10 +37,6 @@ class AclRole extends AbstractCustomForm
             'required' => true,
             'category' => 'General info',
         ),
-        'csrf' => array(
-            'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
-        ),
         'submit' => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
