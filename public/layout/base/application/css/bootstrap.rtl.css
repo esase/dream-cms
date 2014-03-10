@@ -1,7 +1,7 @@
 /*******************************************************************************
 *        File: bootstrap-rtl.css
 *      Author: Morteza Ansarinia <ansarinia@me.com>
-*  Created on: December 27,2013
+*  Created on: February 27,2014
 *     Project: bootstrap-rtl
 *   Copyright: See the file "LICENSE" for the full license governing this code.
 *******************************************************************************/
@@ -15,6 +15,19 @@ blockquote.pull-left p,
 blockquote.pull-left small,
 blockquote.pull-left .small {
   text-align: left;
+}
+
+@media (min-width: 768px) {
+  .dl-horizontal dt {
+    float: right;
+    width: 160px;
+    clear: right;
+    text-align: left;
+  }
+  .dl-horizontal dd {
+    margin-right: 180px;
+    margin-left: 0;
+  }
 }
 
 body {
@@ -262,6 +275,7 @@ h6,
 
 .nav-pills > li + li {
   margin-right: 2px;
+  margin-left: 0;
 }
 
 .nav-stacked > li {
@@ -273,9 +287,7 @@ h6,
 }
 
 .nav {
-  padding: 0 !important;
-  margin: 0 !important;
-  list-style: none;
+  padding-right: 0;
 }
 
 .input-group .form-control:first-child,
@@ -378,6 +390,71 @@ th {
   float: right;
 }
 
+.btn-group .btn + .btn,
+.btn-group .btn + .btn-group,
+.btn-group .btn-group + .btn,
+.btn-group .btn-group + .btn-group {
+  margin-right: -1px;
+}
+
+.btn-toolbar {
+  margin-right: -5px;
+}
+
+.btn-toolbar .btn-group,
+.btn-toolbar .input-group {
+  float: right;
+}
+
+.btn-toolbar > .btn,
+.btn-toolbar > .btn-group,
+.btn-toolbar > .input-group {
+  margin-right: 5px;
+}
+
+.btn-group > .btn:first-child {
+  margin-right: 0;
+}
+
+.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.btn-group > .btn:last-child:not(:first-child),
+.btn-group > .dropdown-toggle:not(:first-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+}
+
+.btn-group > .btn-group {
+  float: right;
+}
+
+.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn {
+  /*border-radius: 0;*/
+
+}
+
+.btn-group > .btn-group:first-child > .btn:last-child,
+.btn-group > .btn-group:first-child > .dropdown-toggle {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.btn-group > .btn-group:last-child > .btn:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+}
+
 .container {
   padding-right: 15px;
   padding-left: 15px;
@@ -462,6 +539,7 @@ th {
   min-height: 1px;
   padding-right: 15px;
   padding-left: 15px;
+  margin-left: 0;
 }
 
 .col-xs-1,
@@ -678,6 +756,19 @@ th {
   .col-sm-offset-11 {
     margin-right: 91.66666666666666%;
   }
+  .col-sm-offset-1,
+  .col-sm-offset-2,
+  .col-sm-offset-3,
+  .col-sm-offset-4,
+  .col-sm-offset-5,
+  .col-sm-offset-6,
+  .col-sm-offset-7,
+  .col-sm-offset-8,
+  .col-sm-offset-9,
+  .col-sm-offset-10,
+  .col-sm-offset-11 {
+    margin-left: 0;
+  }
 }
 
 @media (min-width: 992px) {
@@ -831,6 +922,19 @@ th {
   }
   .col-md-offset-11 {
     margin-right: 91.66666666666666%;
+  }
+  .col-md-offset-1,
+  .col-md-offset-2,
+  .col-md-offset-3,
+  .col-md-offset-4,
+  .col-md-offset-5,
+  .col-md-offset-6,
+  .col-md-offset-7,
+  .col-md-offset-8,
+  .col-md-offset-9,
+  .col-md-offset-10,
+  .col-md-offset-11 {
+    margin-left: 0;
   }
 }
 
@@ -986,6 +1090,19 @@ th {
   .col-lg-offset-11 {
     margin-right: 91.66666666666666%;
   }
+  .col-lg-offset-1,
+  .col-lg-offset-2,
+  .col-lg-offset-3,
+  .col-lg-offset-4,
+  .col-lg-offset-5,
+  .col-lg-offset-6,
+  .col-lg-offset-7,
+  .col-lg-offset-8,
+  .col-lg-offset-9,
+  .col-lg-offset-10,
+  .col-lg-offset-11 {
+    margin-left: 0;
+  }
 }
 
 .list-group-item > .badge {
@@ -995,4 +1112,52 @@ th {
 .list-group-item > .badge + .badge {
   margin-right: 0;
   margin-left: 5px;
+}
+
+.pagination {
+  padding-right: 0;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  float: right;
+  margin-right: -1px;
+  margin-left: 0;
+}
+
+.pagination > li:first-child > a,
+.pagination > li:first-child > span {
+  margin-left: 0;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+  margin-right: -1px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+}
+
+.pager {
+  padding-right: 0;
+}
+
+.pager .next > a,
+.pager .next > span {
+  float: left;
+}
+
+.pager .previous > a,
+.pager .previous > span {
+  float: right;
+}
+
+.carousel-inner > .item {
+  -webkit-transition: 0.6s ease-in-out left;
+          transition: 0.6s ease-in-out left;
 }
