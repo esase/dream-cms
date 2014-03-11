@@ -247,14 +247,14 @@ class Base extends AbstractBase
                     // show only images
                     case 'image' :
                         if (!in_array(FileSystemUtility::getFileExtension($current->getFileName()),
-                                explode(',', ApplicationService::getSetting('file_manager_image_extensions')))) {
+                                explode(',', strtolower(ApplicationService::getSetting('file_manager_image_extensions'))))) {
 
                             return false;
                         }
                         break;
                     case 'media' :
                         if (!in_array(FileSystemUtility::getFileExtension($current->getFileName()),
-                                explode(',', ApplicationService::getSetting('file_manager_media_extensions')))) {
+                                explode(',', strtolower(ApplicationService::getSetting('file_manager_media_extensions'))))) {
 
                             return false;
                         }

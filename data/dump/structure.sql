@@ -234,7 +234,10 @@ INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
 (10, 'Avatar', 2),
 (11, 'Errors logging', 1),
 (12,  'Main settings', 4),
-(13,  'Embedded mode', 4);
+(13,  'Directories', 4),
+(14,  'Filters', 4),
+(15,  'Embedded mode', 4),
+(16,  'View images', 4);
 
 CREATE TABLE IF NOT EXISTS `setting` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -321,14 +324,17 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (58, 'application_errors_notification_email', 'Errors notification email', '', 'email', 0, 1, 11, 1, 0, '', '', ''),
 (59, 'application_error_notification_title', 'Error notification title', 'An error email notification', 'notification_title', 1, 2, 11, 1, 1, '', '', ''),
 (60, 'application_error_notification_message', 'Error notification message', '', 'notification_message', 1, 3, 11, 1, 1, '', '', ''),
-(61, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. You should separate values by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
-(62, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. You should separate values by a comma', 'textarea', 1, 2, 12, 4, 0, '', '', ''),
-(63, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(64, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(65, 'file_manager_max_nested_directories_level', 'Max nested directories level', '', 'integer', 1, 3, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(66, 'file_manager_directory_name_length', 'Max directory name length', '', 'integer', 1, 4, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(67, 'file_manager_allowed_extensions', 'Allowed file extensions', 'You should separate values by a comma', 'textarea', 1, 5, 12, 4, 0, '', '', ''),
-(68, 'file_manager_allowed_size', 'Allowed file size', 'You should enter size in bytes', 'integer', 1, 6, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0');
+(61, 'file_manager_allowed_extensions', 'Allowed file extensions', 'You should separate values by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
+(62, 'file_manager_allowed_size', 'Allowed file size', 'You should enter size in bytes', 'integer', 1, 2, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(63, 'file_manager_max_nested_directories_level', 'Max nested directories level', '', 'integer', 1, 1, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(64, 'file_manager_directory_name_length', 'Max directory name length', '', 'integer', 1, 2, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(65, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. You should separate values by a comma', 'textarea', 1, 1, 14, 4, 0, '', '', ''),
+(66, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. You should separate values by a comma', 'textarea', 1, 2, 14, 4, 0, '', '', ''),
+(67, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 15, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(68, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 15, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(69, 'file_manager_window_image_width', 'Window width', '', 'integer', 1, 1, 16, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(70, 'file_manager_window_image_height', 'Window height', '', 'integer', 1, 2, 16, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0');
+
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -416,14 +422,16 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (68, 59, 'Произошла ошибка', 'ru'),
 (69, 60, '<p><b>Error description:</b></p>\r\n<p>{ErrorDescription}</p>', NULL),
 (70, 60, '<p><b>Описание ошибки:</b></p>\r\n<p>{ErrorDescription}</p>', 'ru'),
-(71, 61, 'bmp,gif,jpg,png', NULL),
-(72, 62, 'mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv', NULL),
-(73, 63, '1000', NULL),
-(74, 64, '500', NULL),
-(75, 65, '3', NULL),
-(76, 66, '15', NULL),
-(77, 67, 'bmp,gif,jpg,png,mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv,zip,rar,txt,doc,docx,pdf', NULL),
-(78, 68, '2097152', NULL);
+(71, 61, 'bmp,gif,jpg,png,mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv,zip,rar,txt,doc,docx,pdf', NULL),
+(72, 62, '2097152', NULL),
+(73, 63, '3', NULL),
+(74, 64, '15', NULL),
+(75, 65, 'bmp,gif,jpg,png', NULL),
+(76, 66, 'mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv', NULL),
+(77, 67, '1000', NULL),
+(78, 68, '500', NULL),
+(79, 69, '500', NULL),
+(80, 70, '300', NULL);
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
     `setting_id` int(10) unsigned NOT NULL,

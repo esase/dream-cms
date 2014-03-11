@@ -1,0 +1,45 @@
+Params:
+
+ab -n 100 -c 10 -t 5 http://localhost/srosta/public/
+
+-n 100: means 100 queries
+-c 10: means paralell queries
+-t 5: time limit in seconds
+
+
+cache off:
+
+Finished 49 requests
+Requests per second:    9.42 [#/sec] (mean)
+Time per request:       1062.056 [ms] (mean)
+Time per request:       106.206 [ms] (mean, across all concurrent requests)
+
+Percentage of the requests served within a certain time (ms)
+  50%    960
+  66%   1062
+  75%   1128
+  80%   1143
+  90%   1299
+  95%   1421
+  98%   1464
+  99%   1464
+ 100%   1464 (longest request)
+
+
+cache on:
+
+Finished 76 requests
+Requests per second:    14.79 [#/sec] (mean)
+Time per request:       676.322 [ms] (mean)
+Time per request:       67.632 [ms] (mean, across all concurrent requests)
+
+Percentage of the requests served within a certain time (ms)
+  50%    649
+  66%    692
+  75%    720
+  80%    724
+  90%    751
+  95%    781
+  98%    812
+  99%    934
+ 100%    934 (longest request)

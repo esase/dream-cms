@@ -42,7 +42,8 @@ class Module
         return array(
             'invokables' => array(
                 'filesManagerDirectoriesTree' => 'FileManager\View\Helper\FileManagerDirectoryTree',
-                'fileUrl' => 'FileManager\View\Helper\FileUrl'
+                'fileUrl' => 'FileManager\View\Helper\FileUrl',
+                'baseFileUrl' => 'FileManager\View\Helper\BaseFileUrl'
             ),
         );
     }

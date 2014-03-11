@@ -86,6 +86,15 @@
                     'check_acl' => true,
                     'confirm' => $this->translate('Selected files and dirs will be deleted. Are you sure?')
                 ),
+            ),
+            'single_actions' => array(
+                0 => array(
+                    'name' => $this->translate('View image'),
+                    'js' => 'showImage(\'{value}\')',
+                    'check_acl' => false,
+                    'action' => 'view-image',
+                    'image' => $this->asset('icon/eye_action.png', 'image', 'file_manager')
+                ),
             )
         ),
         'actions_options' => array(
@@ -96,6 +105,48 @@
             )
         ),
         'actions_extra_check' => array(
+            'single_actions' => array(
+                'view-image' => array(
+                    0 => array(
+                        'param' => 'name',
+                        'condition' =>  '$basePath = "' . $this->current_directory . '"; $fileName = "{value}";
+                                return !is_dir($basePath . $fileName) && in_array(Application\Utility\FileSystem::getFileExtension($fileName), explode(",", "' . strtolower($this->getSetting('file_manager_image_extensions')) . '"));'
+                    )
+                )
+            )
         )
     )) ?>    
 <?php endif; ?>
+
+<!-- preview images -->
+<div class="modal fade" id="preview-images" tabindex="-1" role="dialog" aria-labelledby="preview-images-label" aria-hidden="false">
+  <div class="modal-dialog" style="width:<?php echo (int) $this->getSetting('file_manager_window_image_width') ?>px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="preview-images-label"><?php echo $this->translate('View image')?></h4>
+      </div>
+      <div class="modal-body" style="height: <?php echo (int) $this->getSetting('file_manager_window_image_height') ?>px"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $this->translate('Close')?></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+    /**
+     * Show an image
+     *
+     * @param string fileName
+     * @return void
+     */
+    function showImage(fileName)
+    {
+        var baseUrl = "<?php echo $this->escapeJs($this->baseFileUrl($this->path)) ?>";
+        var $modalWindow = $("#preview-images");
+
+        $modalWindow.find(".modal-body").css("background-image", "url(" + baseUrl + fileName + ")");
+        $modalWindow.modal("show");
+    }
+<?php $this->inlineScript()->captureEnd() ?>

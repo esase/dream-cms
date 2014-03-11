@@ -328,6 +328,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
         }
 
         return array(
+            'current_directory' => $currentDirectory,
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
             'path' => $userPath,

@@ -9,3 +9,9 @@ div#files-manager-wrapper div#action-wrapper {
     margin-bottom:10px;
     padding: 0;
 }
+
+/* preview images */
+div#preview-images div.modal-body {
+    background-position: center center;
+    background-repeat:no-repeat;
+}

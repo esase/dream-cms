@@ -47,7 +47,7 @@ class File extends AbstractCustomForm
         if (!$this->form) {
             // add descriptions params
             $this->formElements['file']['description_params'] = array(
-                ApplicationService::getSetting('file_manager_allowed_extensions'),
+                strtolower(ApplicationService::getSetting('file_manager_allowed_extensions')),
                 FileSystemUtility::convertBytes((int) ApplicationService::getSetting('file_manager_allowed_size'))                
             );
 
@@ -56,7 +56,7 @@ class File extends AbstractCustomForm
                 array(
                     'name' => 'fileextension',
                     'options' => array(
-                        'extension' => explode(',', ApplicationService::getSetting('file_manager_allowed_extensions'))
+                        'extension' => explode(',', strtolower(ApplicationService::getSetting('file_manager_allowed_extensions')))
                     )
                 ),
                 array(

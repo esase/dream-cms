@@ -1,0 +1,19 @@
+1.  
+update `information_services_activity_audience` set member_id = member_id + 100000000
+2. 
+set @rowPosition = 825237;
+update `information_services_activity_audience` set `member_id` = @rowPosition:= @rowPosition + 1 order by `member_id` asc;
+
+
+3.// update connection 
+set @rowPosition = 0;
+update `information_services_activity_audience_connection` set `connection_id` = @rowPosition:= @rowPosition + 1 order by `connection_id` asc;
+
+
+
+set @rowPosition = 16575770;
+update `information_services_activity_audience_resources` set `resource_id` = @rowPosition:= @rowPosition + 1 order by `resource_id` asc;
+
+
+
+update `information_services_activity_audience_resources` set resource_id = resource_id + 1000000000

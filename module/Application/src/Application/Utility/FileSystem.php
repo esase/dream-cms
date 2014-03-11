@@ -123,8 +123,11 @@ class FileSystem
      */
     public static function getFileName($fileName, $removeExtension = true)
     {
-       return self::getFileInfo($fileName)->
-            getBasename(($removeExtension ? '.' . self::getFileExtension($fileName, false) : null));
+        $file = self::getFileInfo($fileName);
+
+        return $removeExtension
+            ? rtrim($file->getFileName(), '.' . self::getFileExtension($fileName, false))
+            : $file->getFileName();
     }
 
     /**
