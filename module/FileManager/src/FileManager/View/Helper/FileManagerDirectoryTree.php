@@ -10,14 +10,14 @@ class FileManagerDirectoryTree extends AbstractHelper
     /**
      * Generate a tree
      *
-     * @param array $userDirectories
+     * @param array|boolean $userDirectories
      * @param string $treeId
      * @param string $currentPath
      * @param array $filters
      * @param string $treeClass
      * @return string
      */
-    public function __invoke(array $userDirectories = array(), $treeId, $currentPath, array $filters = array(), $treeClass = 'filetree')
+    public function __invoke($userDirectories = array(), $treeId, $currentPath, array $filters = array(), $treeClass = 'filetree')
     {
         $currentPath = $currentPath
             ? FileManagerBaseModel::processDirectoryPath($currentPath)
