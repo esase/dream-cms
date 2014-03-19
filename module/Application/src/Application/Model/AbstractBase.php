@@ -5,8 +5,7 @@ namespace Application\Model;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
 use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
-use Zend\Math\Rand;
-use Application\Utility\Slug;
+use Application\Utility\Slug as SlugUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Application\Utility\Cache as CacheUtility;
@@ -19,12 +18,6 @@ abstract class AbstractBase extends Sql
      * @var object
      */
     protected $staticCacheInstance;
-
-    /**
-     * Slug salt
-     * @var string
-     */
-    protected $slugSalt = 'abcdefghijklmnopqrstuvwxyz';
 
     /**
      * Slug salt length
@@ -69,7 +62,7 @@ abstract class AbstractBase extends Sql
     public function generateSlug($objectId, $title, $table, $idField, $slugLength = 60, $slugField = 'slug', $spaceDevider = '-')
     {
         // generate a slug
-        $newSlug  = $slug = Slug::slugify($title, $slugLength, $spaceDevider);
+        $newSlug  = $slug = SlugUtility::slugify($title, $slugLength, $spaceDevider);
         $slagSalt = null;
 
         while (true) {
@@ -96,9 +89,8 @@ abstract class AbstractBase extends Sql
                 $newSlug = $objectId . $spaceDevider . $slug . $slagSalt;
             }
 
-            // add a salt to slug
-            $slagSalt = $spaceDevider .
-                    Rand::getString($this->slugSaltLength, $this->slugSalt, true); // add a salt
+            // add an extra slug
+            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugSaltLength); // add a salt
         }
 
         return $newSlug;
@@ -184,7 +176,7 @@ abstract class AbstractBase extends Sql
      */
     public function generateRandString($length = 10, $charlist = null)
     {
-        return Rand::getString($length, $charlist, true);
+        return SlugUtility::generateRandomSlug($length, $charlist);
     }
 
     /**

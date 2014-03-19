@@ -67,7 +67,11 @@ class FileManagerEmbeddedController extends FileManagerBaseController
      */
     public function addDirectoryAction()
     {
-        return new ViewModel($this->addDirectory());
+        $result = $this->addDirectory();
+
+        return is_array($result)
+            ? new ViewModel($result)
+            : $result;
     }
 
     /**
@@ -75,6 +79,22 @@ class FileManagerEmbeddedController extends FileManagerBaseController
      */
     public function addFileAction()
     {
-        return new ViewModel($this->addFile());
+        $result = $this->addFile();
+
+        return is_array($result)
+            ? new ViewModel($result)
+            : $result;
+    }
+
+    /**
+     * Edit a file or a directory
+     */
+    public function editAction()
+    {
+        $result = $this->editFile();
+
+        return is_array($result)
+            ? new ViewModel($result)
+            : $result;
     }
 }

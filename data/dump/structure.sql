@@ -123,7 +123,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (33, 'files_manager_embedded_add_directory', 'ACL - Adding directories in embedded mode', 4),
 (34, 'files_manager_administration_add_directory', 'ACL - Adding directories in admin area', 4),
 (35, 'files_manager_embedded_add_file', 'ACL - Adding files in embedded mode', 4),
-(36, 'files_manager_administration_add_file', 'ACL - Adding files in admin area', 4);
+(36, 'files_manager_administration_add_file', 'ACL - Adding files in admin area', 4),
+(37, 'files_manager_embedded_edit', 'ACL - Editing files and dirs in embedded mode', 4),
+(38, 'files_manager_administration_edit', 'ACL - Editing files and dirs in admin area', 4);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -234,7 +236,6 @@ INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
 (10, 'Avatar', 2),
 (11, 'Errors logging', 1),
 (12,  'Main settings', 4),
-(13,  'Directories', 4),
 (14,  'Filters', 4),
 (15,  'Embedded mode', 4),
 (16,  'View images', 4);
@@ -326,8 +327,7 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (60, 'application_error_notification_message', 'Error notification message', '', 'notification_message', 1, 3, 11, 1, 1, '', '', ''),
 (61, 'file_manager_allowed_extensions', 'Allowed file extensions', 'You should separate values by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
 (62, 'file_manager_allowed_size', 'Allowed file size', 'You should enter size in bytes', 'integer', 1, 2, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(63, 'file_manager_max_nested_directories_level', 'Max nested directories level', '', 'integer', 1, 1, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
-(64, 'file_manager_directory_name_length', 'Max directory name length', '', 'integer', 1, 2, 13, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
+(64, 'file_manager_file_name_length', 'The maximum length of the file name and directory', '', 'integer', 1, 2, 12, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
 (65, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. You should separate values by a comma', 'textarea', 1, 1, 14, 4, 0, '', '', ''),
 (66, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. You should separate values by a comma', 'textarea', 1, 2, 14, 4, 0, '', '', ''),
 (67, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 15, 4, 0, '', 'return intval(''{value}'') > 0;', 'Value should be greater than 0'),
@@ -424,8 +424,7 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (70, 60, '<p><b>Описание ошибки:</b></p>\r\n<p>{ErrorDescription}</p>', 'ru'),
 (71, 61, 'bmp,gif,jpg,png,mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv,zip,rar,txt,doc,docx,pdf', NULL),
 (72, 62, '2097152', NULL),
-(73, 63, '3', NULL),
-(74, 64, '15', NULL),
+(74, 64, '20', NULL),
 (75, 65, 'bmp,gif,jpg,png', NULL),
 (76, 66, 'mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv', NULL),
 (77, 67, '1000', NULL),
@@ -491,7 +490,9 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (25, 'delete_file', 4, 'Event - Deleting files'),
 (26, 'add_directory', 4, 'Event - Adding directories'),
 (27, 'delete_directory', 4, 'Event - Deleting directories'),
-(28, 'add_file', 4, 'Event - Adding files');
+(28, 'add_file', 4, 'Event - Adding files'),
+(29, 'edit_file', 4, 'Event - Editing files'),
+(30, 'edit_directory', 4, 'Event - Editing directories');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

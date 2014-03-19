@@ -29,7 +29,7 @@
     }
 
     // init filter params
-    $this->declareVars('filterParams');
+    $this->declareVars('filterParams', 'urlQueries');
     $this->filterParams = !empty($this->filter_form) && $this->filter_form->isValid()
         ? $this->filter_form->getData(false)
         : array();
@@ -328,11 +328,27 @@
                                 }
                             ?>
                             <?php if (empty($action['js'])) : ?>
+                                <?php $this->urlQueries = !empty($action['queries']) && is_array($action['queries']) ? $action['queries'] : array() ?>
+                                <?php
+                                    if (!empty($action['slug_params']['use_query']) && $action['slug_params']['use_query'] === true) {
+                                        $this->urlQueries = array_merge($this->urlQueries, array(
+                                            'slug' => !empty($action['param'])
+                                                ? $data[$action['param']]
+                                                : $data[$this->actions_options['action_identity']]
+                                        ));
+                                    }
+                                ?>
+
                                 <a class="single-actions" href="<?php echo $this->url('application', array(
                                         'controller' => $action['controller'],
                                         'action' => $action['action'],
-                                        'slug' => (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']])),
-                                        array('query' => !empty($action['queries']) && is_array($action['queries']) ? $action['queries'] : null)) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+                                        'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
+                                            ? !empty($action['param'])
+                                                ? $data[$action['param']]
+                                                : $data[$this->actions_options['action_identity']]
+                                            : null
+                                    ),
+                                    array('query' => $this->urlQueries)) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
 
                                     <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                                 </a>

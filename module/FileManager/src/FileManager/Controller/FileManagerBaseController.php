@@ -148,7 +148,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
         $userDirectories = $this->getModel()->getUserDirectories();
 
         // check the path
-        if (false !== ($this->getModel()->getUserDirectory($userPath))) {
+        if (false !== ($currentDirectory = $this->getModel()->getUserDirectory($userPath))) {
             // get a form
             $directoryForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
@@ -209,6 +209,115 @@ abstract class FileManagerBaseController extends AbstractBaseController
         return array(
             'directoryForm' => $directoryForm ? $directoryForm->getForm() : null,
             'path' => $userPath,
+            'userDirectories' => $userDirectories
+        );
+    }
+
+    /**
+     * Edit a file or a directory
+     *
+     * @retun array
+     */
+    protected function editFile()
+    {
+        $editForm = null;
+        $isDirectory = false;
+
+        // get a path
+        $userPath = $this->getUserPath();
+        $filePath = $this->getRequest()->getQuery('file_path', null);
+        $fileName = null != $this->getRequest()->getQuery('slug', null)
+            ? FileManagerBaseModel::slugifyFileName($this->getRequest()->getQuery('slug'), false, true)
+            : null;
+
+        // get current user directories structure
+        $userDirectories = $this->getModel()->getUserDirectories();
+
+        // get absolute paths
+        $userDirectory = $this->getModel()->getUserDirectory($userPath);
+        $currentDirectory = $this->getModel()->getUserDirectory($filePath);
+
+        // check the paths
+        if (false !== $userDirectory && false !== $currentDirectory && $fileName) {
+            // check the file name
+            $fullFilePath = $currentDirectory . $fileName;
+            $isDirectory = is_dir($fullFilePath);
+
+            if ($fileName != '.' && $fileName != '..' && file_exists($fullFilePath)) {
+                // get a form
+                $editForm = $this->getServiceLocator()
+                    ->get('Application\Form\FormManager')
+                    ->getInstance('FileManager\Form\Edit')
+                    ->setFileName($fileName)
+                    ->setFullFilePath($currentDirectory)
+                    ->setFullUserPath($userDirectory)
+                    ->isDirectory($isDirectory)
+                    ->setUserPath($userPath);
+
+                $request  = $this->getRequest();
+
+                // validate the form
+                if ($request->isPost()) {
+                    // fill the form with received values
+                    $editForm->getForm()->setData($request->getPost(), false);
+
+                    // save data
+                    if ($editForm->getForm()->isValid()) {
+                        // edit the file
+                        if (false === ($newFileName = $this->getModel()->editFile($editForm->
+                                getForm()->getData()['name'], $fullFilePath, $userDirectory, $isDirectory))) {
+
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->
+                                        translate((!$isDirectory ? 'Impossible edit selected file' : 'Impossible edit selected directory')));
+                        }
+                        else {
+                            // event's description
+                            $eventFileDesc = UserService::isGuest()
+                                ? 'Event - File edited by guest'
+                                : 'Event - File edited by user';
+
+                            $eventDirDesc  = UserService::isGuest()
+                                ? 'Event - Directory edited by guest'
+                                : 'Event - Directory edited by user';
+
+                            // fire the system event
+                            $eventDescParams = UserService::isGuest()
+                                ? array($fullFilePath, $userDirectory . $newFileName)
+                                : array(UserService::getCurrentUserIdentity()->nick_name, $fullFilePath, $userDirectory . $newFileName);
+
+                            if ($isDirectory) {
+                                $eventDesc = $eventDirDesc;
+                                $eventName = FileManagerEvent::FILE_MANAGER_EDIT_DIRECTORY;
+                            }
+                            else {
+                                $eventDesc = $eventFileDesc;
+                                $eventName = FileManagerEvent::FILE_MANAGER_EDIT_FILE;
+                            }
+
+                            FileManagerEvent::fireEvent($eventName, $fullFilePath,
+                                    UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+
+                            $this->flashMessenger()
+                                ->setNamespace('success')
+                                ->addMessage($this->getTranslator()->
+                                        translate((!$isDirectory ? 'The file has been edited' : 'The directory has been edited')));
+                        }
+
+                        return $this->redirectTo($this->params('controller'), 'edit', array(), false,
+                                array('path' => $userPath, 'file_path' => $userPath, 'slug' => ($newFileName ? $newFileName : $fileName)));
+                    }
+                }
+            }
+        }
+
+        return array(
+            'isDirectory' => $isDirectory,
+            'editForm' => $editForm ? $editForm->getForm() : null,
+            'path' => $userPath,
+            'filePath' => $filePath,
+            'fileName' => $fileName,
             'userDirectories' => $userDirectories
         );
     }

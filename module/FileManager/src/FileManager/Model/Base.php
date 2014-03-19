@@ -14,6 +14,7 @@ use Zend\Paginator\Paginator;
 use Application\Utility\Pagination as PaginationUtility;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
 use Application\Utility\ErrorLogger;
+use Application\Utility\Slug as SlugUtility;
 
 class Base extends AbstractBase
 {
@@ -36,6 +37,12 @@ class Base extends AbstractBase
     protected static $directoryNamePattern = '0-9a-z_';
 
     /**
+     * File name pattern
+     * @var string
+     */
+    protected static $fileNamePattern = '0-9a-z\.\_\-\(\)';
+
+    /**
      * Get directory name pattern
      *
      * @return string
@@ -46,23 +53,36 @@ class Base extends AbstractBase
     }
 
     /**
-     * Get user's files dir
+     * Get file name pattern
      *
      * @return string
      */
-    public static function getUserFilesDir()
+    public static function getFileNamePattern()
     {
-        return self::$filesDir . ApplicationService::getCurrentUserIdentity()->user_id;
+        return self::$fileNamePattern;
+    }
+
+    /**
+     * Get user's files dir
+     *
+     * @param integer $userId
+     * @return string
+     */
+    public static function getUserFilesDir($userId = null)
+    {
+        return self::$filesDir .
+                (!$userId ? ApplicationService::getCurrentUserIdentity()->user_id : $userId);
     }
 
     /**
      * Get user's base files dir
      *
+     * @param integer $userId
      * @return string
      */
-    public static function getUserBaseFilesDir()
+    public static function getUserBaseFilesDir($userId = null)
     {
-        return ApplicationService::getResourcesDir() . self::getUserFilesDir();
+        return ApplicationService::getResourcesDir() . self::getUserFilesDir($userId);
     }
 
     /**
@@ -110,6 +130,18 @@ class Base extends AbstractBase
     }
 
     /**
+     * Delete the user's home directory
+     *
+     * @param integer $userId
+     * @return boolean
+     */
+    public function deleteUserHomeDirectory($userId)
+    {
+        return FileSystemUtility::
+                deleteFiles(self::getUserBaseFilesDir($userId), array(), false, true);
+    }
+
+    /**
      * Get the user's directory
      *
      * @param string $path
@@ -148,10 +180,11 @@ class Base extends AbstractBase
      */
     public function addUserFile(array $fileInfo, $path)
     {
+        print_r($fileInfo);
         if (false !== ($userDirectory = $this->getUserDirectory($path, false))) {
-            if (false !== ($fileName = FileSystemUtility::
-                    uploadResourceFile(FileSystemUtility::getFileName($fileInfo['name']), $fileInfo, $userDirectory, false))) {
-    
+            if (false !== ($fileName = FileSystemUtility::uploadResourceFile(self::slugifyFileName($fileInfo['name']),
+                    $fileInfo, $userDirectory, false))) {
+
                 return $fileName;
             }
     
@@ -159,6 +192,33 @@ class Base extends AbstractBase
         }
 
         return false;
+    }
+
+    /**
+     * Slugify a file name
+     *
+     * @param string $fileName
+     * @param boolean $addSalt
+     * @param boolean $processFullName
+     * @return string
+     */
+    public static function slugifyFileName($fileName, $addSalt = true, $processFullName = false)
+    {
+        $fileExtension = FileSystemUtility::getFileExtension($fileName);
+        $fileName = FileSystemUtility::getFileName($fileName);
+
+        $maxFileNameLength = !$processFullName && $fileExtension
+            ? (int) ApplicationService::getSetting('file_manager_file_name_length') - (strlen($fileExtension) + 1)
+            : (int) ApplicationService::getSetting('file_manager_file_name_length');
+
+        $slug = SlugUtility::slugify(($processFullName && $fileExtension
+                ? $fileName . '.' . $fileExtension : $fileName), $maxFileNameLength, $spaceDevider = '_', 0, self::$fileNamePattern);
+
+        if (!$slug && $addSalt) {
+            $slug = SlugUtility::generateRandomSlug($maxFileNameLength);
+        }
+
+        return $slug;
     }
 
     /**
@@ -183,6 +243,34 @@ class Base extends AbstractBase
         }
 
         return false;
+    }
+
+    /**
+     * Edit a file
+     *
+     * @param string $fileName
+     * @param string $oldFullPath
+     * @param string $newFullPath
+     * @param boolean $isDirectory
+     * @return boolean
+     */
+    public function editFile($fileName, $oldFullPath, $newFullPath, $isDirectory)
+    {
+        if (!$isDirectory) {
+            $fileName .= '.' . FileSystemUtility::getFileExtension($oldFullPath);
+        }
+
+        try {
+            if (true !== ($result = rename($oldFullPath, $newFullPath . $fileName))) {
+                return false;
+            }
+        }
+        catch (Exception $e) {
+            ErrorLogger::log($e);
+            return false;
+        }
+
+        return $fileName;
     }
 
     /**

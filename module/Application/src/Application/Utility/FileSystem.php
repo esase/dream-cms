@@ -6,8 +6,8 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Application\Service\Service as ApplicationService;
 use Exception;
-use Zend\Math\Rand;
 use SplFileInfo;
+use Application\Utility\Slug as SlugUtility;
 
 class FileSystem
 {
@@ -123,11 +123,13 @@ class FileSystem
      */
     public static function getFileName($fileName, $removeExtension = true)
     {
-        $file = self::getFileInfo($fileName);
+        $file = self::getFileInfo($fileName)->getFileName();
 
-        return $removeExtension
-            ? rtrim($file->getFileName(), '.' . self::getFileExtension($fileName, false))
-            : $file->getFileName();
+        if ($removeExtension && null != ($extension = self::getFileExtension($file))) {
+            $file = preg_replace('/.' . preg_quote($extension) . '$/i', '', $file);
+        }
+
+        return $file;
     }
 
     /**
@@ -143,18 +145,18 @@ class FileSystem
      * @param string $path
      * @param boolean $addSalt
      * @param integer $saltLength
-     * @param string $saltChars
-     * @paam string $saltChars
      * @return string|boolean
      */
-    public static function uploadResourceFile($objectId, $file, $path, $addSalt = true, $saltLength = 5, $saltChars = 'abcdefghijklmnopqrstuvwxyz')
+    public static function uploadResourceFile($objectId, $file, $path, $addSalt = true, $saltLength = 5)
     {
         $fileInfo = pathinfo($file['name']);
         $salt = $addSalt
-            ? '_' . Rand::getString($saltLength, $saltChars, true)
+            ? '_' . SlugUtility::generateRandomSlug($saltLength)
             : null;
 
-        $fileName = $objectId . $salt . (!empty($fileInfo['extension']) ? '.' . $fileInfo['extension'] : null);
+        $fileName = $objectId . $salt .
+                (!empty($fileInfo['extension']) ? '.' . strtolower($fileInfo['extension']) : null);
+
         $basePath = ApplicationService::getResourcesDir() . $path;
 
         if (is_writable($basePath)) {

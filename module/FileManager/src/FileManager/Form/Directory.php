@@ -57,10 +57,16 @@ class Directory extends AbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
+            // add extra filters
+            $this->formElements['name']['filters'] = array(
+                array(
+                    'name' => 'stringtolower'
+                )
+            );
+
             // add descriptions params
             $this->formElements['name']['description_params'] = array(
-                ApplicationService::getSetting('file_manager_directory_name_length'),
-                ApplicationService::getSetting('file_manager_max_nested_directories_level')
+                ApplicationService::getSetting('file_manager_file_name_length')
             );
 
             // add extra validators
@@ -82,22 +88,8 @@ class Directory extends AbstractCustomForm
                 array(
                     'name' => 'stringlength',
                     'options' => array(
-                        'max' => (int) ApplicationService::getSetting('file_manager_directory_name_length')
+                        'max' => (int) ApplicationService::getSetting('file_manager_file_name_length')
                     )
-                ),
-                array(
-                    'name' => 'callback',
-                    'options' => array(
-                        'callback' => array($this, 'validateNestedLevel'),
-                        'message' => 'You\'ve reached the maximum of nested level'
-                    )
-                ),
-            );
-
-            // add extra filters
-            $this->formElements['name']['filters'] = array(
-                array(
-                    'name' => 'stringtolower'
                 )
             );
 
@@ -143,22 +135,13 @@ class Directory extends AbstractCustomForm
     {
         // get a full path
         if (false !== ($fullPath = $this->model->getUserDirectory($this->path))) {
-            return !file_exists($fullPath . '/' . $value);
+            if (file_exists($fullPath . '/' . $value)) {
+                return !is_dir($fullPath . '/' . $value);
+            }
+
+            return true;
         }
 
         return false;
-    }
-
-    /**
-     * Validate a nested level
-     *
-     * @param $value
-     * @param array $context
-     * @return boolean
-     */
-    public function validateNestedLevel($value, array $context = array())
-    {
-        return count(explode('/', $this->path))
-                <= (int) ApplicationService::getSetting('file_manager_max_nested_directories_level');
     }
 }

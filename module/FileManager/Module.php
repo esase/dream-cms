@@ -2,8 +2,32 @@
 
 namespace FileManager;
 
+use Zend\Mvc\MvcEvent;
+use User\Event\Event as UserEvent;
+use Application\Utility\ErrorLogger;
+
 class Module
 {
+    /**
+     * Bootstrap
+     */
+    public function onBootstrap(MvcEvent $mvcEvent)
+    {
+        $eventManager = UserEvent::getEventManager();
+        $eventManager->attach(UserEvent::USER_DELETE, function ($e) use ($mvcEvent) {
+            // delete user's directories and files
+            $model = $mvcEvent->getApplication()->getServiceManager()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('FileManager\Model\Base');
+
+            if (false === ($result = $model->
+                    deleteUserHomeDirectory($e->getParam('object_id')))) {
+
+                ErrorLogger::log('Cannot delete files and directories for user id: ' . $e->getParam('object_id'));
+            }
+        });
+    }
+
     /**
      * Return autoloader config array
      *

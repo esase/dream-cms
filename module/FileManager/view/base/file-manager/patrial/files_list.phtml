@@ -95,6 +95,20 @@
                     'action' => 'view-image',
                     'image' => $this->asset('icon/eye_action.png', 'image', 'file_manager')
                 ),
+                1 => array(
+                   'name' => $this->translate('Edit'),
+                   'controller' => $this->currentRoute()->getController(),
+                   'action' => 'edit',
+                   'check_acl' => true,
+                   'image' => $this->asset('icon/edit_action.png', 'image'),
+                   'slug_params' => array(
+                        'use_query' => true
+                   ),
+                   'queries' => array(
+                      'path' => $this->path,
+                      'file_path' => $this->path
+                    ),
+                ),
             )
         ),
         'actions_options' => array(

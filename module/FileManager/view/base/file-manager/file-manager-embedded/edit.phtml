@@ -1,0 +1,47 @@
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->translate('List of files'),
+            'controller' => $this->currentRoute()->getController(),
+            'action' => 'list',
+            'check_acl' => true,
+            'queries' => array(
+                'path' => $this->path
+            )
+        ),
+        'add_directory' => array(
+            'name' => $this->translate((!$this->isDirectory ? 'Edit the file' : 'Edit the directory')),
+            'controller' => $this->currentRoute()->getController(),
+            'action' => 'edit',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<?php $this->placeholder('form')->captureStart() ?>
+    <?php if ($this->editForm) : ?>
+        <?php echo $this->partial('file-manager/patrial/file_form', array(
+            'form' => $this->editForm,
+            'queries' => array(
+                'path' => $this->path,
+                'file_path' => $this->filePath,
+                'slug' => $this->fileName
+            )
+        )); ?>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            <?php echo $this->translate('Directory or file not exists') ?>
+        </div>
+    <?php endif; ?>
+<?php $this->placeholder('form')->captureEnd() ?>
+
+<?php echo $this->partial('file-manager/patrial/tree', array(
+    'userDirectories' => $this->userDirectories,
+    'action' => $this->placeholder('form'),
+    'path' => $this->path,
+    'filters' => array(
+        'file_path' => $this->filePath,
+        'slug' => $this->fileName
+    )
+)); ?>

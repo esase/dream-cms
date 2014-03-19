@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-11 13:32+0600\n"
+"PO-Revision-Date: 2014-03-19 13:53+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,43 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Directories"
+msgstr "Каталоги"
+
+msgid "Impossible edit selected file"
+msgstr "Невозможно отредактировать выбранный файл"
+
+msgid "Impossible edit selected directory"
+msgstr "Невозможно отредактировать выбранный каталог"
+
+msgid "The file has been edited"
+msgstr "Файл был отредактирован"
+
+msgid "The directory has been edited"
+msgstr "Каталог был отредактирован"
+
+msgid "Directory or file not exists"
+msgstr "Каталог или файл не существует"
+
+msgid "You can not move a directory to itself or its subdirectories"
+msgstr "Вы не можете переместить каталог в себя или его подкаталоги"
+
+msgid "Edit the file"
+msgstr "Редактировать файл"
+
+msgid "Edit the directory"
+msgstr "Редактировать каталог"
+
+msgid "File already exists in selected directory"
+msgstr "Файл уже существует в выбранной директории"
+
+msgid ""
+"You can only use the following characters: Latin, numeric, underscore, dot, "
+"dash, bracket"
+msgstr ""
+"Вы можете использовать только эти символы : латинские, числовые, символ "
+"подчеркивания, точка, тире, скобка"
 
 msgid "View images"
 msgstr "Просмотр изображений"
@@ -47,19 +84,14 @@ msgstr "Файл был добавлен"
 msgid "Impossible add a new file. Check the received path permission"
 msgstr "Невозможно добавить новый файл. Проверьте разрешение в полученном пути"
 
-msgid "You've reached the maximum of nested level"
-msgstr "Вы достигли максимума вложенного уровня"
+msgid "File edit name description"
+msgstr "Длина имени файла должна быть меньше или равна %d."
 
 msgid "New directory description"
-msgstr ""
-"Длина имени каталога должна быть меньше или равна %d. Максимальный уровень "
-"вложенных каталогов %d"
+msgstr "Длина имени каталога должна быть меньше или равна %d"
 
-msgid "Max directory name length"
-msgstr "Максимальная длина имени каталога"
-
-msgid "Max nested directories level"
-msgstr "Максимальный уровень вложенных каталогов"
+msgid "The maximum length of the file name and directory"
+msgstr "Максимальная длина имени файла и каталога"
 
 msgid "Directory already exist"
 msgstr "Каталог уже существует"
@@ -100,9 +132,6 @@ msgstr "Встроенный режим"
 
 msgid "Files"
 msgstr "Файлы"
-
-msgid "Directories"
-msgstr "Каталоги"
 
 msgid "Images"
 msgstr "Изображения"
@@ -153,6 +182,25 @@ msgstr "Файловый менеджер"
 
 msgid "FileManager"
 msgstr "Файловый менеджер"
+
+msgid "Event - Editing directories"
+msgstr "Редактирование каталогов"
+
+msgid "Event - Directory edited by guest"
+msgstr "Гость отредактировал каталог, старый путь - \"%s\" новый путь - \"%s\""
+
+msgid "Event - Directory edited by user"
+msgstr ""
+"\"%s\" отредактировал каталог, старый путь - \"%s\" новый путь - \"%s\""
+
+msgid "Event - Editing files"
+msgstr "Редактирование файлов"
+
+msgid "Event - File edited by guest"
+msgstr "Гость отредактировал файл, старый путь - \"%s\" новый путь - \"%s\""
+
+msgid "Event - File edited by user"
+msgstr "\"%s\" отредактировал файл, старый путь - \"%s\" новый путь - \"%s\""
 
 msgid "Event - Adding files"
 msgstr "Добавление файлов"
@@ -216,3 +264,9 @@ msgstr "Добавление файлов во встроенном режиме
 
 msgid "ACL - Adding files in admin area"
 msgstr "Добавление файлов в админке"
+
+msgid "ACL - Editing files and dirs in embedded mode"
+msgstr "Редактирование файлов и директорий во встроенном режиме"
+
+msgid "ACL - Editing files and dirs in admin area"
+msgstr "Редактирование файлов и директорий в админке"

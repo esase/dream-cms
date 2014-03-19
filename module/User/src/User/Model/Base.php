@@ -409,7 +409,7 @@ class Base extends AbstractBase
             $update = $this->update()
                 ->table('user')
                 ->set(array(
-                    'api_key' => $insertId . $this->generateRandString(),
+                    'api_key' => $insertId . '_' . $this->generateRandString(),
                     'slug' => $this->generateSlug($insertId, $formData['nick_name'], 'user', 'user_id', self::USER_SLUG_LENGTH)
                 ))
                 ->where(array(
