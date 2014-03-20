@@ -27,7 +27,7 @@ class EmailNotification
      * @return boolean
      */
     public static function sendNotification($email, $subject, $message,
-            array $replacements = array(), $replaceLeftBacket = '{', $replaceRightBacket = '}')
+            array $replacements = array(), $replaceLeftBacket = '__', $replaceRightBacket = '__')
     {
         // fire the event
         $result = ApplicationEvent::fireEvent(ApplicationEvent::SEND_EMAIL_NOTIFICATION,

@@ -160,7 +160,7 @@ class SettingAdministration extends Setting
                         'options' => array(
                             'message' => $setting->check_message,
                             'callback' => function($value) use ($setting) {
-                                return eval(str_replace('{value}', $value, $setting->check));
+                                return eval(str_replace('__value__', $value, $setting->check));
                             }
                         )
                     );

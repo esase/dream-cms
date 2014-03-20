@@ -99,20 +99,20 @@
         'multiple_actions' => array(
             'system_items' => array(
                 'param' => 'type',
-                'condition' =>  'return "{value}" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+                'condition' =>  'return "__value__" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
             )
         ),
         'single_actions' => array(
             'edit-role' => array(
                 0 => array(
                     'param' => 'type',
-                    'condition' =>  'return "{value}" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
                 )
             ),
             'browse-resources' => array(
                 0 => array(
                     'param' => 'id',
-                    'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
                 )
             )
         )

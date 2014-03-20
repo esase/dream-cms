@@ -90,7 +90,7 @@
             'single_actions' => array(
                 0 => array(
                     'name' => $this->translate('View image'),
-                    'js' => 'showImage(\'{value}\')',
+                    'js' => 'showImage(\'__value__\')',
                     'check_acl' => false,
                     'action' => 'view-image',
                     'image' => $this->asset('icon/eye_action.png', 'image', 'file_manager')
@@ -123,7 +123,7 @@
                 'view-image' => array(
                     0 => array(
                         'param' => 'name',
-                        'condition' =>  '$basePath = "' . $this->current_directory . '"; $fileName = "{value}";
+                        'condition' =>  '$basePath = "' . $this->current_directory . '"; $fileName = "__value__";
                                 return !is_dir($basePath . $fileName) && in_array(Application\Utility\FileSystem::getFileExtension($fileName), explode(",", "' . strtolower($this->getSetting('file_manager_image_extensions')) . '"));'
                     )
                 )

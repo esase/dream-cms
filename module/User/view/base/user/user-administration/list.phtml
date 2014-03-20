@@ -138,20 +138,20 @@
         'multiple_actions' => array(
             'system_user' => array(
                 'param' => 'id',
-                'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
+                'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
             )
         ),
         'single_actions' => array(
             'browse-acl-resources' => array(
                 0 => array(
                     'param' => 'role_id',
-                    'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
                 )
             ),
             'edit-role' => array(
                 0 => array(
                     'param' => 'id',
-                    'condition' =>  'return "{value}" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
                 )
             )
         )
