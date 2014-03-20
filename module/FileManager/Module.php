@@ -4,7 +4,9 @@ namespace FileManager;
 
 use Zend\Mvc\MvcEvent;
 use User\Event\Event as UserEvent;
+use FileManager\Event\Event as FileManagerEvent;
 use Application\Utility\ErrorLogger;
+use Application\Model\Acl as AclModel;
 
 class Module
 {
@@ -13,17 +15,23 @@ class Module
      */
     public function onBootstrap(MvcEvent $mvcEvent)
     {
-        $eventManager = UserEvent::getEventManager();
+        // delete the user's files and dirs
+        $eventManager = FileManagerEvent::getEventManager();
         $eventManager->attach(UserEvent::USER_DELETE, function ($e) use ($mvcEvent) {
-            // delete user's directories and files
+
             $model = $mvcEvent->getApplication()->getServiceManager()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('FileManager\Model\Base');
 
-            if (false === ($result = $model->
-                    deleteUserHomeDirectory($e->getParam('object_id')))) {
+            if (false === ($fullPath
+                    = $model->deleteUserHomeDirectory($e->getParam('object_id')))) {
 
                 ErrorLogger::log('Cannot delete files and directories for user id: ' . $e->getParam('object_id'));
+            }
+            else if (null != $fullPath) {
+                // fire the event
+                FileManagerEvent::fireEvent(FileManagerEvent::FILE_MANAGER_DELETE_DIRECTORY,
+                        $fullPath, AclModel::DEFAULT_SYSTEM_ID, 'Event - Directory deleted by the system', array($fullPath));
             }
         });
     }

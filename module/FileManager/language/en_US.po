@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-19 13:52+0600\n"
+"PO-Revision-Date: 2014-03-20 15:54+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -177,6 +177,9 @@ msgstr "Files manager"
 
 msgid "FileManager"
 msgstr "File manager"
+
+msgid "Event - Directory deleted by the system"
+msgstr "Files and dirs here - \"%s\" were deleted by the system"
 
 msgid "Event - Editing directories"
 msgstr "Editing directories"

@@ -133,12 +133,21 @@ class Base extends AbstractBase
      * Delete the user's home directory
      *
      * @param integer $userId
-     * @return boolean
+     * @return boolean|string
      */
     public function deleteUserHomeDirectory($userId)
     {
-        return FileSystemUtility::
-                deleteFiles(self::getUserBaseFilesDir($userId), array(), false, true);
+        $result = true;
+        $directoryPath = self::getUserBaseFilesDir($userId);
+
+        if (file_exists($directoryPath)) {
+            $result =  FileSystemUtility::deleteFiles($directoryPath, array(), false, true);
+        }
+        else {
+            $directoryPath = null;
+        }
+
+        return $result ? $directoryPath : $result;
     }
 
     /**
