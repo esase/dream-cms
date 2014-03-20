@@ -66,7 +66,7 @@ class UserController extends AbstractBaseController
         $user = UserService::getCurrentUserIdentity();
 
         // fire the event
-        UserEvent::fireEvent(UserEvent::USER_LOGOUT, $user->user_id,
+        UserEvent::fireEvent(UserEvent::LOGOUT, $user->user_id,
             $user->user_id, 'Event - User successfully logged out', array($user->nick_name));
 
         // clear logged user's identity
@@ -93,7 +93,7 @@ class UserController extends AbstractBaseController
         $this->getAuthService()->getStorage()->write($user);
 
         // fire event
-        UserEvent::fireEvent(UserEvent::USER_LOGIN,
+        UserEvent::fireEvent(UserEvent::LOGIN,
                 $userId, $userId, 'Event - User successfully logged in', array($userNickname));
 
         if ($rememberMe) {
@@ -155,7 +155,7 @@ class UserController extends AbstractBaseController
                 }
 
                 // fire the event
-                UserEvent::fireEvent(UserEvent::USER_APPROVE,
+                UserEvent::fireEvent(UserEvent::APPROVE,
                         $userInfo['user_id'], $userInfo['user_id'], 'Event - User confirmed email', array($userInfo['nick_name']));
 
                 // login and redirect the user
@@ -215,7 +215,7 @@ class UserController extends AbstractBaseController
                         ));
 
                     // fire the event
-                    UserEvent::fireEvent(UserEvent::USER_PASSWORD_RESET,
+                    UserEvent::fireEvent(UserEvent::RESET_PASSWORD,
                             $userInfo['user_id'], $userInfo['user_id'], 'Event - User reseted password', array($userInfo['nick_name'], $userInfo['user_id']));
 
                     $this->flashMessenger()
@@ -310,7 +310,7 @@ class UserController extends AbstractBaseController
                     }
 
                     // fire the event
-                    UserEvent::fireEvent(UserEvent::USER_LOGIN_FAILED, 0,
+                    UserEvent::fireEvent(UserEvent::LOGIN_FAILED, 0,
                             AclModel::DEFAULT_ROLE_GUEST, 'Event - User login failed', array($request->getPost('nickname')));
 
                     return $this->redirectTo('user', 'login');
@@ -349,7 +349,7 @@ class UserController extends AbstractBaseController
             // delete the user's account
             if ($deleteForm->getForm()->isValid()) {
                 // fire the event
-                UserEvent::fireEvent(UserEvent::USER_DELETE, UserService::getCurrentUserIdentity()->user_id,
+                UserEvent::fireEvent(UserEvent::DELETE, UserService::getCurrentUserIdentity()->user_id,
                         UserService::getCurrentUserIdentity()->user_id,
                         'Event - User deleted', array(UserService::getCurrentUserIdentity()->nick_name,
                         UserService::getCurrentUserIdentity()->user_id));
@@ -422,7 +422,7 @@ class UserController extends AbstractBaseController
                         $userForm->getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
 
                     // fire the event
-                    UserEvent::fireEvent(UserEvent::USER_EDIT, UserService::getCurrentUserIdentity()->user_id,
+                    UserEvent::fireEvent(UserEvent::EDIT, UserService::getCurrentUserIdentity()->user_id,
                             UserService::getCurrentUserIdentity()->user_id,
                             'Event - User edited', array(UserService::getCurrentUserIdentity()->nick_name,
                             UserService::getCurrentUserIdentity()->user_id));
@@ -508,7 +508,7 @@ class UserController extends AbstractBaseController
                         ));
 
                     // fire the event
-                    UserEvent::fireEvent(UserEvent::USER_PASSWORD_RESET_REQUEST,
+                    UserEvent::fireEvent(UserEvent::RESET_PASSWORD_REQUEST,
                             $userInfo['user_id'], $userInfo['user_id'], 'Event - User requested password reset', array($userInfo['nick_name'], $userInfo['user_id']));
 
                     $this->flashMessenger()
@@ -576,7 +576,7 @@ class UserController extends AbstractBaseController
                     $userInfo = $this->getModel()->getUserInfo($result);
 
                     // fire the event
-                    UserEvent::fireEvent(UserEvent::USER_ADD,
+                    UserEvent::fireEvent(UserEvent::ADD,
                             $result, $result, 'Event - User registered', array($userInfo['nick_name'], $userInfo['user_id']));
 
                     // send an email notification about register the new user

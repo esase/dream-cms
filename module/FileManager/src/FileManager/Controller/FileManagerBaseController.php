@@ -111,7 +111,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
                             ? array($fullPath)
                             : array(UserService::getCurrentUserIdentity()->nick_name, $fullPath);
 
-                        FileManagerEvent::fireEvent(FileManagerEvent::FILE_MANAGER_ADD_FILE,
+                        FileManagerEvent::fireEvent(FileManagerEvent::ADD_FILE,
                                 $fullPath, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                         $this->flashMessenger()
@@ -187,7 +187,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
                             ? 'Event - Directory added by guest'
                             : 'Event - Directory added by user';
     
-                        FileManagerEvent::fireEvent(FileManagerEvent::FILE_MANAGER_ADD_DIRECTORY,
+                        FileManagerEvent::fireEvent(FileManagerEvent::ADD_DIRECTORY,
                                 $fullPath, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
     
                         $this->flashMessenger()
@@ -289,11 +289,11 @@ abstract class FileManagerBaseController extends AbstractBaseController
 
                             if ($isDirectory) {
                                 $eventDesc = $eventDirDesc;
-                                $eventName = FileManagerEvent::FILE_MANAGER_EDIT_DIRECTORY;
+                                $eventName = FileManagerEvent::EDIT_DIRECTORY;
                             }
                             else {
                                 $eventDesc = $eventFileDesc;
-                                $eventName = FileManagerEvent::FILE_MANAGER_EDIT_FILE;
+                                $eventName = FileManagerEvent::EDIT_FILE;
                             }
 
                             FileManagerEvent::fireEvent($eventName, $fullFilePath,
@@ -373,11 +373,11 @@ abstract class FileManagerBaseController extends AbstractBaseController
 
                     if ($isDirectory) {
                         $eventDesc = $eventDirDesc;
-                        $eventName = FileManagerEvent::FILE_MANAGER_DELETE_DIRECTORY;
+                        $eventName = FileManagerEvent::DELETE_DIRECTORY;
                     }
                     else {
                         $eventDesc = $eventFileDesc;
-                        $eventName = FileManagerEvent::FILE_MANAGER_DELETE_FILE;
+                        $eventName = FileManagerEvent::DELETE_FILE;
                     }
 
                     FileManagerEvent::fireEvent($eventName, $fullPath,

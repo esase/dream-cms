@@ -126,7 +126,7 @@ class UserAdministrationController extends AbstractBaseController
                         ? array($resourceSettings['role'], $resourceSettings['resource'], $user['user_id'])
                         : array(UserService::getCurrentUserIdentity()->nick_name, $resourceSettings['role'], $resourceSettings['resource'], $user['user_id']);
 
-                    UserEvent::fireEvent(UserEvent::APPLICATION_EDIT_ACL_RESOURCE_SETTINGS,
+                    UserEvent::fireEvent(UserEvent::EDIT_ACL_RESOURCE_SETTINGS,
                             $resourceSettings['connection'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
@@ -251,7 +251,7 @@ class UserAdministrationController extends AbstractBaseController
                         ? array($user['user_id'])
                         : array(UserService::getCurrentUserIdentity()->nick_name, $user['user_id']);
 
-                    UserEvent::fireEvent(UserEvent::USER_EDIT_ROLE,
+                    UserEvent::fireEvent(UserEvent::EDIT_ROLE,
                             $user['user_id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
@@ -335,7 +335,7 @@ class UserAdministrationController extends AbstractBaseController
                         ? array($user['user_id'])
                         : array(UserService::getCurrentUserIdentity()->nick_name, $user['user_id']);
 
-                    UserEvent::fireEvent(UserEvent::USER_EDIT,
+                    UserEvent::fireEvent(UserEvent::EDIT,
                             $user['user_id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
@@ -406,7 +406,7 @@ class UserAdministrationController extends AbstractBaseController
                         ? array($result)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $result);
 
-                    UserEvent::fireEvent(UserEvent::USER_ADD,
+                    UserEvent::fireEvent(UserEvent::ADD,
                             $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
@@ -470,7 +470,7 @@ class UserAdministrationController extends AbstractBaseController
                         ? array($userId)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $userId);
 
-                    UserEvent::fireEvent(UserEvent::USER_DELETE,
+                    UserEvent::fireEvent(UserEvent::DELETE,
                             $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     // delete the user
@@ -556,7 +556,7 @@ class UserAdministrationController extends AbstractBaseController
                         ? array($userId)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $userId);
 
-                    UserEvent::fireEvent(UserEvent::USER_APPROVE,
+                    UserEvent::fireEvent(UserEvent::APPROVE,
                             $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     // send an email notification
@@ -631,7 +631,7 @@ class UserAdministrationController extends AbstractBaseController
                         ? array($userId)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $userId);
 
-                    UserEvent::fireEvent(UserEvent::USER_DISAPPROVE,
+                    UserEvent::fireEvent(UserEvent::DISAPPROVE,
                             $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     // send an email notification

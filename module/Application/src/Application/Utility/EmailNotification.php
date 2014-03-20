@@ -30,7 +30,7 @@ class EmailNotification
             array $replacements = array(), $replaceLeftBacket = '{', $replaceRightBacket = '}')
     {
         // fire the event
-        $result = ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_SEND_EMAIL_NOTIFICATION,
+        $result = ApplicationEvent::fireEvent(ApplicationEvent::SEND_EMAIL_NOTIFICATION,
                 $email, AclModelBase::DEFAULT_SYSTEM_ID, 'Event - Email notification will be send', array($email, $subject));
 
         if ($result->stopped()) {

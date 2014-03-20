@@ -30,8 +30,8 @@ class Handler extends AbstractHandler
             ? array()
             : array($this->userIdentity->nick_name);
 
-        ApplicationEvent::fireEvent(ApplicationEvent::
-                APPLICATION_GET_LOCALIZATIONS, 0, $this->userIdentity->user_id, $eventDesc, $eventDescParams);
+        ApplicationEvent::fireEvent(ApplicationEvent::GET_LOCALIZATIONS,
+                0, $this->userIdentity->user_id, $eventDesc, $eventDescParams);
 
         return ApplicationService::getLocalizations();
     }

@@ -87,7 +87,7 @@ class AclAdministrationController extends AbstractBaseController
                         ? array($resourceId)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $resourceId);
 
-                    ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_ALLOW_ACL_RESOURCE,
+                    ApplicationEvent::fireEvent(ApplicationEvent::ALLOW_ACL_RESOURCE,
                             $resourceId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                 }
 
@@ -148,7 +148,7 @@ class AclAdministrationController extends AbstractBaseController
                         ? array($resourceId)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $resourceId);
 
-                    ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_DISALLOW_ACL_RESOURCE,
+                    ApplicationEvent::fireEvent(ApplicationEvent::DISALLOW_ACL_RESOURCE,
                             $resourceId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                 }
 
@@ -202,7 +202,7 @@ class AclAdministrationController extends AbstractBaseController
                         ? array($roleId)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $roleId);
 
-                    ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_DELETE_ACL_ROLE,
+                    ApplicationEvent::fireEvent(ApplicationEvent::DELETE_ACL_ROLE,
                             $roleId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                 }
 
@@ -266,7 +266,7 @@ class AclAdministrationController extends AbstractBaseController
                         ? array($role['id'])
                         : array(UserService::getCurrentUserIdentity()->nick_name, $role['id']);
 
-                    ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_EDIT_ACL_ROLE,
+                    ApplicationEvent::fireEvent(ApplicationEvent::EDIT_ACL_ROLE,
                             $role['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
@@ -329,7 +329,7 @@ class AclAdministrationController extends AbstractBaseController
                         ? array($result)
                         : array(UserService::getCurrentUserIdentity()->nick_name, $result);
 
-                    ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_ADD_ACL_ROLE,
+                    ApplicationEvent::fireEvent(ApplicationEvent::ADD_ACL_ROLE,
                             $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()
@@ -488,7 +488,7 @@ class AclAdministrationController extends AbstractBaseController
                         ? array($resourceSettings['role'], $resourceSettings['resource'])
                         : array(UserService::getCurrentUserIdentity()->nick_name, $resourceSettings['role'], $resourceSettings['resource']);
 
-                    ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_EDIT_ACL_RESOURCE_SETTINGS,
+                    ApplicationEvent::fireEvent(ApplicationEvent::EDIT_ACL_RESOURCE_SETTINGS,
                             $resourceSettings['connection'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
 
                     $this->flashMessenger()

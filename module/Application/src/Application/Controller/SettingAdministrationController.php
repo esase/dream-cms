@@ -30,7 +30,7 @@ class SettingAdministrationController extends AbstractBaseController
 
         // clear js and css cache
         $eventManager = ApplicationEvent::getEventManager();
-        $eventManager->attach(ApplicationEvent::APPLICATION_CHANGE_SETTINGS, function ($e)
+        $eventManager->attach(ApplicationEvent::CHANGE_SETTINGS, function ($e)
                 use ($jsCache, $jsCacheGzip, $cssCache, $cssCacheGzip) {
 
             // get post values
@@ -119,7 +119,7 @@ class SettingAdministrationController extends AbstractBaseController
                             ? array($cache)
                             : array(UserService::getCurrentUserIdentity()->nick_name, $cache);
 
-                        ApplicationEvent::fireEvent(ApplicationEvent::APPLICATION_CLEAR_CACHE,
+                        ApplicationEvent::fireEvent(ApplicationEvent::CLEAR_CACHE,
                                 $cache, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                     }
 

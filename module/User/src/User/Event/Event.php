@@ -7,67 +7,67 @@ use Application\Event\Event as ApplicationEvent;
 class Event extends ApplicationEvent
 {
     /**
-     * User login event
+     * Login event
      */
-    const USER_LOGIN = 'user_login';
+    const LOGIN = 'login_user';
 
     /**
-     * User login failed event
+     * Login failed event
      */
-    const USER_LOGIN_FAILED = 'user_login_failed';
+    const LOGIN_FAILED = 'login_user_failed';
 
     /**
-     * User logout event
+     * Logout event
      */
-    const USER_LOGOUT = 'user_logout';
+    const LOGOUT = 'logout_user';
 
     /**
-     * User get info by xmlrpc event
+     * Get info by xmlrpc event
      */
-    const USER_GET_INFO_XMLRPC = 'get_user_info_via_xmlrpc';
+    const GET_INFO_XMLRPC = 'get_user_info_via_xmlrpc';
 
     /**
-     * User set timezone by xmlrpc event
+     * Set timezone by xmlrpc event
      */
-    const USER_SET_TIMEZONE_XMLRPC = 'set_user_timezone_via_xmlrpc';
+    const SET_TIMEZONE_XMLRPC = 'set_user_timezone_via_xmlrpc';
 
     /**
-     * User disapprove event
+     * Disapprove event
      */
-    const USER_DISAPPROVE = 'user_disapprove';
+    const DISAPPROVE = 'disapprove_user';
 
     /**
-     * User approve event
+     * Approve event
      */
-    const USER_APPROVE = 'user_approve';
+    const APPROVE = 'approve_user';
 
     /**
-     * User delete event
+     * Delete event
      */
-    const USER_DELETE = 'user_delete';
+    const DELETE = 'delete_user';
 
     /**
-     * User add event
+     * Add event
      */
-    const USER_ADD = 'user_add';
+    const ADD = 'add_user';
 
     /**
-     * User edit event
+     * Edit event
      */
-    const USER_EDIT = 'user_edit';
+    const EDIT = 'edit_user';
 
     /**
-     * User password reset event
+     * Reset password event
      */
-    const USER_PASSWORD_RESET = 'user_password_reset';
+    const RESET_PASSWORD = 'reset_user_password';
 
     /**
-     * User password reset request event
+     * Reset password request event
      */
-    const USER_PASSWORD_RESET_REQUEST = 'user_password_reset_request';
+    const RESET_PASSWORD_REQUEST = 'reset_user_password_request';
 
     /**
-     * User edit role event
+     * Edit role event
      */
-    const USER_EDIT_ROLE = 'user_edit_role';
+    const EDIT_ROLE = 'edit_user_role';
 }

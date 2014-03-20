@@ -64,7 +64,7 @@ class Handler extends AbstractHandler
                 setUserTimeZone($this->userIdentity->user_id, $timeZone))) {
 
             // fire event
-            UserEvent::fireEvent(UserEvent::USER_SET_TIMEZONE_XMLRPC, $this->userIdentity->user_id,
+            UserEvent::fireEvent(UserEvent::SET_TIMEZONE_XMLRPC, $this->userIdentity->user_id,
                     $this->userIdentity->user_id, 'Event - Timezone set by user via XmlRpc', array($this->userIdentity->nick_name));
 
             return self::SUCCESSFULLY_RESPONSE;
@@ -97,7 +97,7 @@ class Handler extends AbstractHandler
                 ? array($userInfo->nick_name)
                 : array($this->userIdentity->nick_name, $userInfo->nick_name);
 
-            UserEvent::fireEvent(UserEvent::USER_GET_INFO_XMLRPC,
+            UserEvent::fireEvent(UserEvent::GET_INFO_XMLRPC,
                     $userInfo->user_id, $this->userIdentity->user_id, $eventDesc, $eventDescParams);
 
             return $userInfo;

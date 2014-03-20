@@ -13,54 +13,54 @@ class Event
     protected static $eventManager;
 
     /**
-     * Application get localizations by xmlrpc event
+     * Get localizations by xmlrpc event
      */
-    const APPLICATION_GET_LOCALIZATIONS = 'get_localizations_via_xmlrpc';
+    const GET_LOCALIZATIONS = 'get_localizations_via_xmlrpc';
 
     /**
-     * Application change settings event
+     * Change settings event
      */
-    const APPLICATION_CHANGE_SETTINGS = 'change_settings';
+    const CHANGE_SETTINGS = 'change_settings';
 
     /**
-     * Application ACL role delete event
+     * Delete ACL role event
      */
-    const APPLICATION_DELETE_ACL_ROLE = 'delete_acl_role';
+    const DELETE_ACL_ROLE = 'delete_acl_role';
 
     /**
-     * Application ACL role add event
+     * Add ACL role event
      */
-    const APPLICATION_ADD_ACL_ROLE = 'add_acl_role';
+    const ADD_ACL_ROLE = 'add_acl_role';
 
     /**
-     * Application ACL role edit event
+     * ACL role edit event
      */
-    const APPLICATION_EDIT_ACL_ROLE = 'edit_acl_role';
+    const EDIT_ACL_ROLE = 'edit_acl_role';
  
     /**
-     * Application ACL resource allow event
+     * Allow ACL resource event
      */
-    const APPLICATION_ALLOW_ACL_RESOURCE = 'allow_acl_resource';
+    const ALLOW_ACL_RESOURCE = 'allow_acl_resource';
  
     /**
-     * Application ACL resource disallow event
+     * Disallow ACL resource event
      */
-    const APPLICATION_DISALLOW_ACL_RESOURCE = 'disallow_acl_resource';
+    const DISALLOW_ACL_RESOURCE = 'disallow_acl_resource';
 
     /**
-     * Application ACL resource edit settings event
+     * Edit ACL resource settings event
      */
-    const APPLICATION_EDIT_ACL_RESOURCE_SETTINGS = 'edit_acl_resource_settings';
+    const EDIT_ACL_RESOURCE_SETTINGS = 'edit_acl_resource_settings';
 
     /**
-     * Application clear cache event
+     * Clear cache event
      */
-    const APPLICATION_CLEAR_CACHE = 'clear_cache';
+    const CLEAR_CACHE = 'clear_cache';
 
     /**
-     * Application send email notification
+     * Send email notification
      */
-    const APPLICATION_SEND_EMAIL_NOTIFICATION = 'send_email_notification';
+    const SEND_EMAIL_NOTIFICATION = 'send_email_notification';
 
     /**
      * Fire event

@@ -7,32 +7,32 @@ use Application\Event\Event as ApplicationEvent;
 class Event extends ApplicationEvent
 {
     /**
-     * File delete event
+     * Delete file event
      */
-    const FILE_MANAGER_DELETE_FILE = 'delete_file';
+    const DELETE_FILE = 'delete_file';
 
     /**
-     * Directory delete event
+     * Delete directory event
      */
-    const FILE_MANAGER_DELETE_DIRECTORY = 'delete_directory';
+    const DELETE_DIRECTORY = 'delete_directory';
 
     /**
-     * Directory add  event
+     * Add  directory event
      */
-    const FILE_MANAGER_ADD_DIRECTORY = 'add_directory';
+    const ADD_DIRECTORY = 'add_directory';
 
     /**
-     * File add  event
+     * Add file event
      */
-    const FILE_MANAGER_ADD_FILE = 'add_file';
+    const ADD_FILE = 'add_file';
 
     /**
-     * File edit  event
+     * Edit file event
      */
-    const FILE_MANAGER_EDIT_FILE = 'edit_file';
+    const EDIT_FILE = 'edit_file';
 
     /**
-     * Directory edit  event
+     * Edit directory event
      */
-    const FILE_MANAGER_EDIT_DIRECTORY = 'edit_directory';
+    const EDIT_DIRECTORY = 'edit_directory';
 }

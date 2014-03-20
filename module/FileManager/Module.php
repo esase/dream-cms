@@ -17,7 +17,7 @@ class Module
     {
         // delete the user's files and dirs
         $eventManager = FileManagerEvent::getEventManager();
-        $eventManager->attach(UserEvent::USER_DELETE, function ($e) use ($mvcEvent) {
+        $eventManager->attach(UserEvent::DELETE, function ($e) use ($mvcEvent) {
 
             $model = $mvcEvent->getApplication()->getServiceManager()
                 ->get('Application\Model\ModelManager')
@@ -30,7 +30,7 @@ class Module
             }
             else if (null != $fullPath) {
                 // fire the event
-                FileManagerEvent::fireEvent(FileManagerEvent::FILE_MANAGER_DELETE_DIRECTORY,
+                FileManagerEvent::fireEvent(FileManagerEvent::DELETE_DIRECTORY,
                         $fullPath, AclModel::DEFAULT_SYSTEM_ID, 'Event - Directory deleted by the system', array($fullPath));
             }
         });
