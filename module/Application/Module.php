@@ -86,11 +86,6 @@ class Module
     CONST LOCALIZATION_COOKIE = 'language';
 
     /**
-     * Localization cookie expire
-     */ 
-    CONST LOCALIZATION_COOKIE_EXPIRE = 6912000; // 80 days
-
-    /**
      * Init
      *
      * @param object $moduleManager
@@ -561,7 +556,7 @@ class Module
             $header->setName(self::LOCALIZATION_COOKIE)
                 ->setValue($language)
                 ->setPath('/')
-                ->setExpires(time() + self::LOCALIZATION_COOKIE_EXPIRE);
+                ->setExpires(time() + (int) ApplicationService::getSetting('application_localization_cookie_time'));
 
             $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
             $this->userIdentity->language = $language;

@@ -97,7 +97,8 @@ class UserController extends AbstractBaseController
                 $userId, $userId, 'Event - User successfully logged in', array($userNickname));
 
         if ($rememberMe) {
-            $this->serviceLocator->get('Zend\Session\SessionManager')->rememberMe(UserModel::REMEMBER_ME_TIME);
+            $this->serviceLocator->
+                    get('Zend\Session\SessionManager')->rememberMe((int) $this->getSetting('user_session_time'));
         }
 
         // redirect to home page

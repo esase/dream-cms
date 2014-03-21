@@ -48,11 +48,6 @@ class Base extends AbstractBase
     const STATUS_DISAPPROVED = 'disapproved';
 
     /**
-     * Remember me time
-     */
-    const REMEMBER_ME_TIME = 7776000; // 90 days
-
-    /**
      * User info field id
      */
     const USER_INFO_BY_ID = 'user_id';

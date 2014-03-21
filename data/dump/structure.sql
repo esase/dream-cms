@@ -238,7 +238,8 @@ INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
 (12,  'Main settings', 4),
 (14,  'Filters', 4),
 (15,  'Embedded mode', 4),
-(16,  'View images', 4);
+(16,  'View images', 4),
+(17,  'Localization', 1);
 
 CREATE TABLE IF NOT EXISTS `setting` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -333,8 +334,9 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (67, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 15, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (68, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 15, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (69, 'file_manager_window_image_width', 'Window width', '', 'integer', 1, 1, 16, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(70, 'file_manager_window_image_height', 'Window height', '', 'integer', 1, 2, 16, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
-
+(70, 'file_manager_window_image_height', 'Window height', '', 'integer', 1, 2, 16, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 5, 8, 2, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -430,7 +432,9 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (77, 67, '1000', NULL),
 (78, 68, '500', NULL),
 (79, 69, '500', NULL),
-(80, 70, '300', NULL);
+(80, 70, '300', NULL),
+(81, 71, '7776000', NULL),
+(82, 72, '6912000', NULL);
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
     `setting_id` int(10) unsigned NOT NULL,
