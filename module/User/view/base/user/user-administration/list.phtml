@@ -1,4 +1,8 @@
-<?php use Application\Model\Acl as AclModel ?>
+<?php
+    use Application\Model\Acl as AclModel;
+    use User\Model\Base as UserBaseModel;
+?>
+
 <?php $this->declareVars('subPageTitle') ?>
 <?php $this->subPageTitle = $this->translate('List of users') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
@@ -138,7 +142,7 @@
         'multiple_actions' => array(
             'system_user' => array(
                 'param' => 'id',
-                'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
+                'condition' =>  'return "__value__" == "' . UserBaseModel::DEFAULT_USER_ID . '" ? false : true;'
             )
         ),
         'single_actions' => array(
@@ -151,7 +155,7 @@
             'edit-role' => array(
                 0 => array(
                     'param' => 'id',
-                    'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_USER_ID . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . UserBaseModel::DEFAULT_USER_ID . '" ? false : true;'
                 )
             )
         )

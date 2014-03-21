@@ -35,7 +35,7 @@ class UserAdministration extends Base
                     'user_id' => $userId
                 ))
                 ->where(array(
-                    new NotInPredicate('user_id', array(AclModelBase::DEFAULT_USER_ID))
+                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
                 ));
 
             $statement = $this->prepareStatementForSqlObject($update);

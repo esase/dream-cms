@@ -7,6 +7,7 @@ use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Exception;
 use Application\Utility\ErrorLogger;
+use User\Model\Base as UserBaseModel;
 
 class Acl extends Base
 {
@@ -19,21 +20,6 @@ class Acl extends Base
      * Default role guest id
      */
     const DEFAULT_ROLE_GUEST  = 2;
-
-    /**
-     * Default user's id
-     */
-    const DEFAULT_USER_ID  = 1;
-
-    /**
-     * Default guest's id
-     */
-    const DEFAULT_GUEST_ID  = -1;
-
-    /**
-     * Default system's id
-     */
-    const DEFAULT_SYSTEM_ID  = 0;
 
     /**
      * Default role member
@@ -168,7 +154,7 @@ class Acl extends Base
                    'connection_id' => $resource['id']
                 ));
 
-            $userId != self::DEFAULT_GUEST_ID
+            $userId != UserBaseModel::DEFAULT_GUEST_ID
                 ? $select->where(array('user_id' => $userId))
                 : $select->where->IsNull('user_id');
 
@@ -183,7 +169,7 @@ class Acl extends Base
                     'actions_last_reset' => new Expression('unix_timestamp()')
                 );
 
-                if ($userId != self::DEFAULT_GUEST_ID) {
+                if ($userId != UserBaseModel::DEFAULT_GUEST_ID) {
                     $values = array_merge($values, array(
                         'user_id' => $userId,
                     ));
@@ -209,7 +195,7 @@ class Acl extends Base
                             'connection_id' => $resource['id']
                         ));
 
-                    $userId != self::DEFAULT_GUEST_ID
+                    $userId != UserBaseModel::DEFAULT_GUEST_ID
                         ? $update->where(array('user_id' => $userId))
                         : $update->where->IsNull('user_id');
 
@@ -229,11 +215,11 @@ class Acl extends Base
                             ->where(array(
                                 'connection_id' => $resource['id']
                             ));
-        
-                        $userId != self::DEFAULT_GUEST_ID
+
+                        $userId != UserBaseModel::DEFAULT_GUEST_ID
                             ? $update->where(array('user_id' => $userId))
                             : $update->where->IsNull('user_id');
-    
+
                         $statement = $this->prepareStatementForSqlObject($update);
                         $statement->execute();
                     }
@@ -248,8 +234,8 @@ class Acl extends Base
                         ->where(array(
                             'connection_id' => $resource['id']
                         ));
-    
-                    $userId != self::DEFAULT_GUEST_ID
+
+                    $userId != UserBaseModel::DEFAULT_GUEST_ID
                         ? $update->where(array('user_id' => $userId))
                         : $update->where->IsNull('user_id');
 
@@ -295,7 +281,7 @@ class Acl extends Base
                 ->or->equalTo('d.connection_id', new Expression('a.id'))
                 ->and->equalTo('d.user_id', $userId);
 
-        $extraTrackCondition = $userId == self::DEFAULT_GUEST_ID
+        $extraTrackCondition = $userId == UserBaseModel::DEFAULT_GUEST_ID
             ? 'i.user_id is null'
             : 'i.user_id = ' . (int) $userId;
 

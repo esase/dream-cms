@@ -306,7 +306,7 @@ class Module
         try {
             $this->userIdentity = new stdClass();
             $this->userIdentity->role = AclModelBase::DEFAULT_ROLE_GUEST;
-            $this->userIdentity->user_id = AclModelBase::DEFAULT_GUEST_ID;
+            $this->userIdentity->user_id = UserBaseModel::DEFAULT_GUEST_ID;
     
             $request = $this->serviceManager->get('Request');
      
@@ -338,7 +338,7 @@ class Module
                 $this->userIdentity = $authService->getIdentity();
     
                 // get extended user info
-                if ($authService->getIdentity()->user_id != AclModelBase::DEFAULT_GUEST_ID) {
+                if ($authService->getIdentity()->user_id != UserBaseModel::DEFAULT_GUEST_ID) {
                     $user = $this->serviceManager
                         ->get('Application\Model\ModelManager')
                         ->getInstance('User\Model\Base');

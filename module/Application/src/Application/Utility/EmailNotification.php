@@ -9,7 +9,7 @@ use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Application\Event\Event as ApplicationEvent;
-use Application\Model\Acl as AclModelBase;
+use User\Model\Base as UserBaseModel;
 
 class EmailNotification
 {
@@ -22,16 +22,16 @@ class EmailNotification
      * @param array $replacements
      *      array find
      *      array replace
-     * @param string $replaceLeftBacket
-     * @param string $replaceRightBacket
+     * @param string $replaceLeftDevider
+     * @param string $replaceRightDevider
      * @return boolean
      */
     public static function sendNotification($email, $subject, $message,
-            array $replacements = array(), $replaceLeftBacket = '__', $replaceRightBacket = '__')
+            array $replacements = array(), $replaceLeftDevider = '__', $replaceRightDevider = '__')
     {
         // fire the event
         $result = ApplicationEvent::fireEvent(ApplicationEvent::SEND_EMAIL_NOTIFICATION,
-                $email, AclModelBase::DEFAULT_SYSTEM_ID, 'Event - Email notification will be send', array($email, $subject));
+                $email, UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Email notification will be send', array($email, $subject));
 
         if ($result->stopped()) {
             return false;
@@ -40,8 +40,8 @@ class EmailNotification
         // replace special markers
         if (isset($replacements['find'], $replacements['replace'])) {
             // process replacements
-            $replacements['find'] = array_map(function($value) use($replaceLeftBacket, $replaceRightBacket) {
-                return $replaceLeftBacket . $value . $replaceRightBacket;
+            $replacements['find'] = array_map(function($value) use($replaceLeftDevider, $replaceRightDevider) {
+                return $replaceLeftDevider . $value . $replaceRightDevider;
             }, $replacements['find']);
      
             $message = str_replace($replacements['find'], $replacements['replace'], $message);

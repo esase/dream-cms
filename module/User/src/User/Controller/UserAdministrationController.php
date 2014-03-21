@@ -211,7 +211,7 @@ class UserAdministrationController extends AbstractBaseController
     {
         // get the user info
         if (null == ($user = $this->getModel()->getUserInfo($this->
-                getSlug())) || $user['user_id'] == AclBaseModel::DEFAULT_USER_ID) {
+                getSlug())) || $user['user_id'] == UserAdministrationModel::DEFAULT_USER_ID) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }
@@ -454,7 +454,7 @@ class UserAdministrationController extends AbstractBaseController
                 // delete selected users
                 foreach ($usersIds as $userId) {
                     // default user should not be deleted
-                    if ($userId == AclBaseModel::DEFAULT_USER_ID ||
+                    if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||
                                 null == ($userInfo = $this->getModel()->getUserInfo($userId))) { 
 
                         continue;
@@ -531,7 +531,7 @@ class UserAdministrationController extends AbstractBaseController
                 // approve selected users
                 foreach ($usersIds as $userId) {
                     // default user should not be touched
-                    if ($userId == AclBaseModel::DEFAULT_USER_ID ||
+                    if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||
                                 null == ($userInfo = $this->getModel()->getUserInfo($userId))) { 
 
                         continue;
@@ -606,7 +606,7 @@ class UserAdministrationController extends AbstractBaseController
 
                 // disapprove selected users
                 foreach ($usersIds as $userId) {
-                    if ($userId == AclBaseModel::DEFAULT_USER_ID ||
+                    if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||
                                 null == ($userInfo = $this->getModel()->getUserInfo($userId))) { // default user should not be touched
 
                         continue;

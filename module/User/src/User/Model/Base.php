@@ -18,6 +18,21 @@ use Application\Utility\ErrorLogger;
 class Base extends AbstractBase
 {
     /**
+     * Default system's id
+     */
+    const DEFAULT_SYSTEM_ID  = 0;
+
+    /**
+     * Default guest's id
+     */
+    const DEFAULT_GUEST_ID  = -1;
+
+    /**
+     * Default user's id
+     */
+    const DEFAULT_USER_ID  = 1;
+
+    /**
      * Cache user info
      */
     const CACHE_USER_INFO = 'User_Info_';
@@ -138,7 +153,7 @@ class Base extends AbstractBase
                     'user_id' => $userId
                 ))
                 ->where(array(
-                    new NotInPredicate('user_id', array(AclModelBase::DEFAULT_USER_ID))
+                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
                 ));
 
             $statement = $this->prepareStatementForSqlObject($update);
@@ -336,7 +351,7 @@ class Base extends AbstractBase
                     'user_id' => $userInfo['user_id']
                 ))
                 ->where(array(
-                    new NotInPredicate('user_id', array(AclModelBase::DEFAULT_USER_ID))
+                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
                 ));
 
             $statement = $this->prepareStatementForSqlObject($delete);

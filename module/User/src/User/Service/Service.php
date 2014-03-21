@@ -4,6 +4,7 @@ namespace User\Service;
 
 use Application\Service\Service as ApplicationService;
 use Application\Model\Acl as AclModelBase;
+use User\Model\Base as UserBaseModel;
 
 use Zend\Permissions\Acl\Acl as Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
@@ -48,7 +49,7 @@ class Service extends ApplicationService
      */
     public static function isGuest()
     {
-        return self::getCurrentUserIdentity()->user_id == AclModelBase::DEFAULT_GUEST_ID;
+        return self::getCurrentUserIdentity()->user_id == UserBaseModel::DEFAULT_GUEST_ID;
     }
 
     /**

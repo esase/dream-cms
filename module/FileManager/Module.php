@@ -6,7 +6,7 @@ use Zend\Mvc\MvcEvent;
 use User\Event\Event as UserEvent;
 use FileManager\Event\Event as FileManagerEvent;
 use Application\Utility\ErrorLogger;
-use Application\Model\Acl as AclModel;
+use User\Model\Base as UserBaseModel;
 
 class Module
 {
@@ -31,7 +31,7 @@ class Module
             else if (null != $fullPath) {
                 // fire the event
                 FileManagerEvent::fireEvent(FileManagerEvent::DELETE_DIRECTORY,
-                        $fullPath, AclModel::DEFAULT_SYSTEM_ID, 'Event - Directory deleted by the system', array($fullPath));
+                        $fullPath, UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Directory deleted by the system', array($fullPath));
             }
         });
     }
