@@ -11,10 +11,11 @@ class Setting extends AbstractHelper
      * Get setting
      *
      * @param string $setting
+     * @param string $language
      * @return string|boolean
      */
-    public function __invoke($setting)
+    public function __invoke($setting, $language = null)
     {
-        return ApplicationService::getSetting($setting);
+        return ApplicationService::getSetting($setting, $language);
     }
 }

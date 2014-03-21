@@ -1,8 +1,31 @@
 <?php use Application\Model\Acl as AclModel ?>
-<?php echo $this->render('application/acl-administration/_header') ?>
-<?php echo $this->partial('partials/tabs', array('tabs' => $this->baseTabs)) ?>
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('List of roles') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
 
-<?php echo $this->partial('partials/data_grid', array(
+<!-- render a header -->
+<?php echo $this->render('application/acl-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'acl-administration',
+            'action' => 'list',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data_grid', array(
     'controller' => 'acl-administration',
     'action' => 'list',
     'order_by' => $this->order_by,
@@ -17,12 +40,10 @@
             'order_name' => 'id'
         ),
         1 => array(
-            'title' => $this->translate('Name'),
-            'order_name' => 'name'
+            'title' => $this->translate('Name')
         ),
         2 => array(
-            'title' => $this->translate('Type'),
-            'order_name' => 'type'
+            'title' => $this->translate('Type')
         )
     ),
     'paginator' => $this->paginator,
@@ -34,20 +55,36 @@
     ),
     'actions' => array(
         'regular_actions' => array(
-            'new_role' => array(
-                'name' => $this->translate('Add a new role'),
+            0 => array(
+                'name' => $this->translate('Add a role'),
                 'controller' => 'acl-administration',
                 'action' => 'add-role',
                 'check_acl' => true
             )
         ),
         'multiple_actions' => array(
-            'delete' => array(
+            0 => array(
                 'name' => $this->translate('Delete selected'),
                 'controller' => 'acl-administration',
                 'action' => 'delete-roles',
                 'check_acl' => true,
                 'confirm' => $this->translate('Selected roles will be deleted. Are you sure?')
+            )
+        ),
+        'single_actions' => array(
+            0 => array(
+                'name' => $this->translate('Edit the role'),
+                'controller' => 'acl-administration',
+                'action' => 'edit-role',
+                'check_acl' => true,
+                'image' => $this->asset('icon/edit_action.png', 'image')
+            ),
+            1 => array(
+                'name' => $this->translate('Browse resources'),
+                'controller' => 'acl-administration',
+                'action' => 'browse-resources',
+                'check_acl' => true,
+                'image' => $this->asset('icon/browse_action.png', 'image')
             )
         )
     ),
@@ -62,7 +99,21 @@
         'multiple_actions' => array(
             'system_items' => array(
                 'param' => 'type',
-                'condition' =>  'return "{value}" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+                'condition' =>  'return "__value__" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+            )
+        ),
+        'single_actions' => array(
+            'edit-role' => array(
+                0 => array(
+                    'param' => 'type',
+                    'condition' =>  'return "__value__" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+                )
+            ),
+            'browse-resources' => array(
+                0 => array(
+                    'param' => 'id',
+                    'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
+                )
             )
         )
     )

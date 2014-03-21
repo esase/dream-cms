@@ -2,18 +2,71 @@
 
 namespace Application\Utility;
 
+use Application\Service\Service as ApplicationService;
+use Application\Utility\FileSystem;
+
 class Cache
 {
     /**
+     * Clear static cache
+     *
+     * @return boolean
+     */
+    public static function clearStaticCache()
+    {
+        return ApplicationService::getServiceManager()->get('Cache\Static')->flush();
+    }
+
+    /**
+     * Clear dynamic cache
+     *
+     * @return boolean
+     */
+    public static function clearDynamicCache()
+    {
+        return ApplicationService::getServiceManager()->get('Cache\Dynamic')->flush();
+    }
+
+    /**
+     * Clear config cache
+     *
+     * @return boolean
+     */
+    public static function clearConfigCache()
+    {
+        return FileSystem::deleteFiles(ApplicationService::getConfigCachePath());
+    }
+
+    /**
+     * Clear js cache
+     *
+     * @return boolean
+     */
+    public static function clearJsCache()
+    {
+        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath('js'));
+    }
+
+    /**
+     * Clear css cache
+     *
+     * @return boolean
+     */
+    public static function clearCssCache()
+    {
+        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath());
+    }
+
+    /**
      * Get cache name
      * 
-     * @param string $methodName
+     * @param string $name
      * @param array $argsList
      * @return string
      */
-    public static function getCacheName($methodName, array $argsList = array())
+    public static function getCacheName($name, array $argsList = array())
     {
-        return md5($methodName . self::processArgs($argsList));
+        return md5($name . self::processArgs($argsList));
     }
 
     /**

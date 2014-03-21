@@ -1,0 +1,83 @@
+/* alert */
+div.alert {
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+/* form */
+div.filter-form {
+    padding: 20px;
+    min-width: 275px;
+}
+
+div.filter-form form {
+    margin: 0;
+}
+
+legend {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+label {
+    margin-top: 5px;
+    display: block;
+}
+
+/* form error messges */
+form ul {
+    margin: 0;
+    padding: 0;
+}
+
+form ul li {
+    color: #FF0000;
+    list-style: none outside none;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+form .btn-submit {
+    margin-top:10px;    
+}
+
+form div.preview-file-wrapper,
+form div.preview-image-wrapper {
+    margin-top:20px;
+    margin-bottom:10px;
+}
+
+form div.preview-file-wrapper input[type="checkbox"],
+form div.preview-image-wrapper input[type="checkbox"] {
+    float:left;
+    margin: 3px 5px 0 0;
+}
+
+/* captcha */
+img#captcha-image {
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* table grid */
+table.table {
+    margin-top:20px;
+}
+
+table.table th.selector-items {
+    width: 20px;
+}
+
+table.table td.action {
+    text-align: right;
+    width: 24px;
+}
+
+table.table th {
+    border-bottom: 0 !important;
+}
+
+/* breadcrumb */
+ol.breadcrumb {
+    margin-top: 20px;
+}

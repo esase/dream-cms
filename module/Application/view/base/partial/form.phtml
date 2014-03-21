@@ -1,0 +1,158 @@
+<?php
+    use Application\Form\CustomFormBuilder;
+?>
+
+<!-- include notifications -->
+<?php if (!isset($this->notifications) || $this->notifications === true): ?>
+    <?php echo $this->partial('partial/notification') ?>
+<?php endif; ?>
+
+<?php
+    $this->declareVars('formOptions');
+
+    // fill a form options
+    $this->formOptions = array(
+        'controller' => $this->controller,
+        'action' => (!empty($this->action) ? $this->action : 'index')
+    );
+
+    // add extra form options
+    if (!empty($this->params) && is_array($this->params)) {
+        $this->formOptions = array_merge($this->formOptions, $this->params);
+    }
+
+    // init vars
+    $this->declareVars('category', 'formCategories',
+            'openCategories', 'language', 'initDateJs', 'initHtmlAreaJs', 'filePreview');
+
+    $this->language = $this->localization()->getCurrentLanguage();
+    $this->formCategories = new ArrayObject();
+    $this->openCategories = new ArrayObject();
+    $this->initDateJs = false;
+    $this->initHtmlAreaJs = false;
+?>
+
+<?php
+    // group the form elements by categories
+    $this->form->setAttribute('action', $this->url('application', $this->formOptions, array('query' => !empty($this->queries) && is_array($this->queries) ? $this->queries : null)));
+    $this->form->prepare();
+
+    // process the form elements
+    foreach ($this->form as $element) {
+        // get an elements category
+        $this->category = null != $element->getOption('category')
+            ? $element->getOption('category')
+            : false;
+
+        // render the element
+        $renderedElement = $this->formRow($element);
+
+        // get the element's description
+        if (null != ($elementDescription = $element->getOption('description'))) {
+            $renderedElement .= '<p class="help-block">' . $elementDescription . '</p>';
+        }
+
+        // get element type
+        if (null !== ($elementType = $form->getElementType($element->getName()))) {
+            switch ($elementType) {
+                case CustomFormBuilder::FIELD_IMAGE :
+                case CustomFormBuilder::FIELD_FILE  :
+                    // generate an image preview area
+                    if (!empty($element->getOption('extra_options')['preview'])
+                                && !empty($element->getOption('extra_options')['file_url'])) {
+
+                        $this->filePreview = $elementType == CustomFormBuilder::FIELD_IMAGE
+                            ? 'partial/_form_image_preview'
+                            : 'partial/_form_file_preview';
+
+                        $renderedElement .= $this->partial($this->filePreview, array(
+                            'name' => $element->getName(),
+                            'file_url' => $element->getOption('extra_options')['file_url'],
+                            'delete_option' => !empty($element->getOption('extra_options')['delete_option'])
+                                ? true
+                                : false
+                        ));
+                    }
+                    break;
+                case CustomFormBuilder::FIELD_DATE :
+                case CustomFormBuilder::FIELD_DATE_UNIXTIME :
+                    $this->initDateJs = true;
+                    break;
+                case CustomFormBuilder::FIELD_HTML_AREA :
+                case CustomFormBuilder::FIELD_NOTIFICATION_MESSAGE :
+                    $this->initHtmlAreaJs = true;
+                    break;
+            }            
+        }
+
+        // put the rendered element into categories array
+        isset($this->formCategories[$this->category])
+            ? $this->formCategories[$this->category] .= $renderedElement
+            : $this->formCategories[$this->category]  = $renderedElement;
+
+        // the element has a validation error and element's category should be opened
+        if ($element->getMessages() &&
+                    !in_array($this->category, (array) $this->openCategories)) {
+
+            $this->openCategories[] = $this->category;
+        }
+    }
+?>
+
+<!-- render the form -->
+<?php
+    echo $this->form()->openTag($this->form);
+    echo $this->partial('partial/accordion', array(
+        'name' => 'settings-accordion',
+        'items' => $this->formCategories,
+        'openCategories' => $this->openCategories,
+        'categoriesAlwaysOpened' => $this->categoriesAlwaysOpened
+    ));
+    echo $this->form()->closeTag();
+?>
+
+<?php if ($this->initHtmlAreaJs): ?>
+    <!-- init tinymce -->
+    <script type="text/javascript" src="<?php echo $this->asset('tinymce/jquery.tinymce.min.js') ?>"></script>
+    <script type="text/javascript">
+        $('.htmlarea').tinymce({
+            directionality : '<?php echo $this->localization()->getCurrentLanguageDirection() ?>',
+            script_url : '<?php echo $this->asset('tinymce/tinymce.min.js') ?>',
+            language : "<?php echo $this->language ?>",
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+            convert_urls : false,
+            <?php if ($this->checkPermission('files_manager_embedded_list')): ?>
+                file_browser_callback: function(field_name, url, type, win) { 
+                    tinymce.activeEditor.windowManager.open({
+                        title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
+                        url: '<?php echo $this->url('application', array('controller' => 'files-manager-embedded', 'action' => 'list')) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
+                        width: <?php echo $this->getSetting('file_manager_window_width') ?>,
+                        height: <?php echo $this->getSetting('file_manager_window_height') ?>
+                    }, {
+                        oninsert: function(url) {
+                            win.document.getElementById(field_name).value = url;
+                        }
+                    });
+                }
+            <?php endif; ?>
+        });
+    </script>
+<?php endif; ?>
+
+<?php if ($this->initDateJs): ?>
+    <!-- init datepicker -->
+    <script type="text/javascript" src="<?php echo $this->asset('jquery_i18n/jquery.ui.datepicker-' . $this->language . '.js') ?>"></script>
+    <script type="text/javascript">
+        $(".date").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            regional: '<?php echo $this->language ?>',
+            yearRange: '<?php echo $this->getSetting('application_calendar_min_year') ?>:<?php echo $this->getSetting('application_calendar_max_year') ?>'
+        });
+    </script>
+<?php endif; ?>

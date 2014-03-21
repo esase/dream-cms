@@ -1,0 +1,166 @@
+<!-- render a list of files -->
+<?php if ($this->paginator === false) : ?>
+    <div class="alert alert-danger">
+        <?php echo $this->translate('Directory not exists') ?>
+    </div>
+<?php else: ?>
+    <!-- render a data grid -->
+    <?php echo $this->partial('partial/data_grid', array(
+        'controller' => $this->currentRoute()->getController(),
+        'action' => $this->currentRoute()->getAction(),
+        'queries' => array(
+            'path' => $this->path
+        ),
+        'order_by' => $this->order_by,
+        'order_type' => $this->order_type,
+        'per_page' => $this->per_page,
+        'default_order' => 'name',
+        'default_order_type' => 'desc',
+        'filter_form' => $this->filter_form,
+        'headers' => array(
+            0 => array(
+                'title' => $this->translate('Name'),
+                'order_name' => 'name'
+            ),
+            1 => array(
+                'title' => $this->translate('Type'),
+                'order_name' => 'type'
+            ),
+            2 => array(
+                'title' => $this->translate('Modified date'),
+                'order_name' => 'date'
+            ),
+            3 => array(
+                'title' => $this->translate('File size'),
+                'order_name' => 'size'
+            )
+        ),
+        'paginator' => $this->paginator,
+        'skipped_fields' => array(
+        ),
+        'helpers' => array(
+            'size' => 'fileSize',
+            'name' => 'fileUrl',
+            'type' => 'booleanValue',
+            'date' => 'date'
+        ),
+        'helpers_options' => array(
+            'name' => array(
+                'path' => $this->path,
+                'filters' => $this->filters
+            ),
+            'type' => array(
+                'true_string' => $this->translate('Directory'),
+                'false_string' => $this->translate('File')
+            )
+        ),
+        'actions' => array (
+            'regular_actions' => array(
+                0 => array(
+                    'name' => $this->translate('Add a directory'),
+                    'controller' => $this->currentRoute()->getController(),
+                    'action' => 'add-directory',
+                     'queries' => array(
+                        'path' => $this->path
+                     ),
+                    'check_acl' => true
+                ),
+                1 => array(
+                    'name' => $this->translate('Add a file'),
+                    'controller' => $this->currentRoute()->getController(),
+                    'action' => 'add-file',
+                     'queries' => array(
+                        'path' => $this->path
+                     ),
+                    'check_acl' => true
+                )
+            ),
+            'multiple_actions' => array(
+                0 => array(
+                    'name' => $this->translate('Delete selected'),
+                    'controller' => $this->currentRoute()->getController(),
+                    'action' => 'delete',
+                    'queries' => array(
+                        'path' => $this->path
+                     ),
+                    'check_acl' => true,
+                    'confirm' => $this->translate('Selected files and dirs will be deleted. Are you sure?')
+                ),
+            ),
+            'single_actions' => array(
+                0 => array(
+                    'name' => $this->translate('View image'),
+                    'js' => 'showImage(\'__value__\')',
+                    'check_acl' => false,
+                    'action' => 'view-image',
+                    'image' => $this->asset('icon/eye_action.png', 'image', 'file_manager')
+                ),
+                1 => array(
+                   'name' => $this->translate('Edit'),
+                   'controller' => $this->currentRoute()->getController(),
+                   'action' => 'edit',
+                   'check_acl' => true,
+                   'image' => $this->asset('icon/edit_action.png', 'image'),
+                   'slug_params' => array(
+                        'use_query' => true
+                   ),
+                   'queries' => array(
+                      'path' => $this->path,
+                      'file_path' => $this->path
+                    ),
+                ),
+            )
+        ),
+        'actions_options' => array(
+            'action_identity' => 'name',
+            'form_name' => 'files',
+            'multiple_actions' => array(
+                'items_name' => 'files[]'
+            )
+        ),
+        'actions_extra_check' => array(
+            'single_actions' => array(
+                'view-image' => array(
+                    0 => array(
+                        'param' => 'name',
+                        'condition' =>  '$basePath = "' . $this->current_directory . '"; $fileName = "__value__";
+                                return !is_dir($basePath . $fileName) && in_array(Application\Utility\FileSystem::getFileExtension($fileName), explode(",", "' . strtolower($this->getSetting('file_manager_image_extensions')) . '"));'
+                    )
+                )
+            )
+        )
+    )) ?>    
+<?php endif; ?>
+
+<!-- preview images -->
+<div class="modal fade" id="preview-images" tabindex="-1" role="dialog" aria-labelledby="preview-images-label" aria-hidden="false">
+  <div class="modal-dialog" style="width:<?php echo (int) $this->getSetting('file_manager_window_image_width') ?>px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="preview-images-label"><?php echo $this->translate('View image')?></h4>
+      </div>
+      <div class="modal-body" style="height: <?php echo (int) $this->getSetting('file_manager_window_image_height') ?>px"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $this->translate('Close')?></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+    /**
+     * Show an image
+     *
+     * @param string fileName
+     * @return void
+     */
+    function showImage(fileName)
+    {
+        var baseUrl = "<?php echo $this->escapeJs($this->baseFileUrl($this->path)) ?>";
+        var $modalWindow = $("#preview-images");
+
+        $modalWindow.find(".modal-body").css("background-image", "url(" + baseUrl + fileName + ")");
+        $modalWindow.modal("show");
+    }
+<?php $this->inlineScript()->captureEnd() ?>

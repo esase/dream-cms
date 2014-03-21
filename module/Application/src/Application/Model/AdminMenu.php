@@ -3,7 +3,8 @@
 namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
+use Exception;
 
 class AdminMenu extends Base
 {
@@ -20,7 +21,7 @@ class AdminMenu extends Base
     public function getMenu()
     {
         // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_ADMIN_MENU);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_ADMIN_MENU);
 
         // check data in cache
         if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {

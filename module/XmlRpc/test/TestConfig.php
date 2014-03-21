@@ -3,7 +3,7 @@
 return array(
     'modules' => array(
         'Application',
-        'Users',
+        'User',
         'XmlRpc'
     ),
     'module_listener_options' => array(

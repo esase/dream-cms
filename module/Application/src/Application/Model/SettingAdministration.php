@@ -5,6 +5,7 @@ namespace Application\Model;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Exception;
+use Application\Utility\ErrorLogger;
 
 class SettingAdministration extends Setting
 {
@@ -25,7 +26,7 @@ class SettingAdministration extends Setting
             foreach ($settingsList as $setting) {
                 if (array_key_exists($setting['name'], $settingsValues)) {
                     // remove previously value
-                    $query = $this->delete('settings_values')
+                    $query = $this->delete('setting_value')
                         ->where(array(
                             'setting_id' => $setting['id']
                         ))
@@ -39,12 +40,14 @@ class SettingAdministration extends Setting
                         ? array('language' => $currentlanguage)
                         : array();
 
-                    $query = $this->insert('settings_values')
+                    $value = is_array($settingsValues[$setting['name']])
+                        ? implode(self::SETTINGS_ARRAY_DEVIDER, $settingsValues[$setting['name']])
+                        : (null != $settingsValues[$setting['name']] ? $settingsValues[$setting['name']] : '');
+
+                    $query = $this->insert('setting_value')
                         ->values(array_merge(array(
                            'setting_id' => $setting['id'],
-                           'value' => is_array($settingsValues[$setting['name']])
-                                ? implode(self::SETTINGS_ARRAY_DEVIDER, $settingsValues[$setting['name']])
-                                : (null != $settingsValues[$setting['name']] ? $settingsValues[$setting['name']] : '')
+                           'value' => $value
                         ), $extraValues));
 
                     $statement = $this->prepareStatementForSqlObject($query);
@@ -54,11 +57,13 @@ class SettingAdministration extends Setting
 
             // clear cache
             $this->removeSettingsCache($currentlanguage);
+            self::$settings = null;
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            
+            ErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -77,7 +82,7 @@ class SettingAdministration extends Setting
         // get module info
         if (null != ($moduleInfo = $this->getModuleInfo($module))) {
             $subQuery= $this->select();
-            $subQuery->from(array('c' => 'settings_values'))
+            $subQuery->from(array('c' => 'setting_value'))
                 ->columns(array(
                     'id'
                 ))
@@ -91,11 +96,12 @@ class SettingAdministration extends Setting
                     ->and->equalTo('c.language', $language);
 
             $mainSelect = $this->select();
-            $mainSelect->from(array('a' => 'settings'))
+            $mainSelect->from(array('a' => 'setting'))
                 ->columns(array(
                     'id',
                     'name',
                     'label',
+                    'description',
                     'type',
                     'required',
                     'language_sensitive',
@@ -104,7 +110,7 @@ class SettingAdministration extends Setting
                     'check_message'
                 ))
                 ->join(
-                    array('b' => 'settings_values'),
+                    array('b' => 'setting_value'),
                     new Expression('b.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
                     array(
                         'value'
@@ -112,7 +118,7 @@ class SettingAdministration extends Setting
                     'left'
                 )
                 ->join(
-                    array('d' => 'settings_categories'),
+                    array('d' => 'setting_category'),
                     new Expression('a.category = d.id'),
                     array(
                         'category_name' => new Expression('d.name')
@@ -131,16 +137,15 @@ class SettingAdministration extends Setting
             // processing settings list
             $settings = array();
             foreach ($resultSet as $setting) {
-                $settingValue = explode(self::SETTINGS_ARRAY_DEVIDER, $setting->value);
-                $settingValue = count($settingValue) == 1 // check is array or not
-                    ? current($settingValue)
-                    : $settingValue;
+                // convert an array
+                $settingValue = $this->convertString($setting->type, $setting->value);
 
                 $settings[$setting->id] = array(
                     'id' => $setting->id,
                     'category' => $setting->category_name,
                     'name' => $setting->name,
                     'label' => $setting->label,
+                    'description' => $setting->description,
                     'type' => $setting->type,
                     'required' => $setting->required,
                     'language_sensitive'  => $setting->language_sensitive,
@@ -155,7 +160,7 @@ class SettingAdministration extends Setting
                         'options' => array(
                             'message' => $setting->check_message,
                             'callback' => function($value) use ($setting) {
-                                return eval(str_replace('{value}', $value, $setting->check));
+                                return eval(str_replace('__value__', $value, $setting->check));
                             }
                         )
                     );
@@ -164,7 +169,7 @@ class SettingAdministration extends Setting
 
             // get list of predefined values
             $select = $this->select();
-            $select->from('settings_predefined_values')
+            $select->from('setting_predefined_value')
                 ->columns(array(
                     'setting_id',
                     'value'

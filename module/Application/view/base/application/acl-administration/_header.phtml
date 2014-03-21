@@ -5,7 +5,7 @@
 
 <div class="page-header">
   <h1>
-    <img src="<?php  echo $this->asset('icons/acl.png', 'images') ?>" alt="<?php echo $this->escapeHtmlAttr($this->pageTitle) ?>" />    
+    <img src="<?php  echo $this->asset('icon/acl.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->pageTitle) ?>" />    
     <?php echo $this->escapeHtml($this->pageTitle) ?>
   </h1>
 </div>
@@ -15,7 +15,7 @@
 <?php
     $this->baseTabs = array(
         'list' => array(
-          'name' => $this->translate('List of ACL roles'),
+          'name' => $this->translate('List of roles'),
           'controller' => 'acl-administration',
           'action' => 'list',
           'check_acl' => true

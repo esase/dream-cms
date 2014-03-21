@@ -4,7 +4,7 @@ namespace XmlRpc\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
-use Application\Utility\Cache as CacheUtilities;
+use Application\Utility\Cache as CacheUtility;
 
 class XmlRpc extends Base
 {
@@ -16,12 +16,12 @@ class XmlRpc extends Base
     public function getClasses()
     {
         // generate cache name
-        $cacheName = CacheUtilities::getCacheName(self::CACHE_XMLRPC_CLASSES);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_XMLRPC_CLASSES);
 
         // check data in cache
         if (null === ($classes = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('xmlrpc_classes')
+            $select->from('xmlrpc_class')
                 ->columns(array(
                     'namespace',
                     'path',

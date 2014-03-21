@@ -1,0 +1,59 @@
+<?php $this->declareVars('subPageTitle', 'mainPageTitle') ?>
+
+<?php $this->subPageTitle  = $this->translate('Add a directory') ?>
+<?php $this->mainPageTitle = $this->translate('List of files') ?>
+
+<?php $this->headTitle($this->subPageTitle)  ?>
+<?php $this->headTitle($this->mainPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('file-manager/file-manager-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->mainPageTitle,
+            'controller' => 'files-manager-administration',
+            'action' => 'list',
+            'check_acl' => true,
+            'queries' => array(
+                'path' => $this->path
+            )
+        ),
+        'add_directory' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'files-manager-administration',
+            'action' => 'add-directory',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<?php $this->placeholder('form')->captureStart() ?>
+    <?php if ($this->directoryForm) : ?>
+        <?php echo $this->partial('file-manager/patrial/directory_form', array(
+            'form' => $this->directoryForm,
+            'queries' => array(
+                'path' => $this->path
+            )
+        )); ?>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            <?php echo $this->translate('Directory not exists') ?>
+        </div>
+    <?php endif; ?>
+<?php $this->placeholder('form')->captureEnd() ?>
+
+<?php echo $this->partial('file-manager/patrial/tree', array(
+    'userDirectories' => $this->userDirectories,
+    'action' => $this->placeholder('form'),
+    'path' => $this->path,
+    'filters' => array()
+)); ?>

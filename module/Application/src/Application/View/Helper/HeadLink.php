@@ -3,12 +3,12 @@
 namespace Application\View\Helper;
 
 use Application\Service\Service as ApplicationService;
-use Application\View\Helper\HeadResources as HeadResources;
+use Application\View\Helper\HeadResource as HeadResource;
 use StdClass;
 
 class HeadLink extends \Zend\View\Helper\HeadLink
 {
-    use HeadResources;
+    use HeadResource;
 
     /**
      * Css file type
@@ -150,10 +150,6 @@ class HeadLink extends \Zend\View\Helper\HeadLink
                     }
 
                     $cacheFilePath = $layoutCachePath . $cacheFile;
-
-                    // minify css
-                    $minify = new \Minify\CSSmin();
-                    $content = $minify->run($content);
 
                     // write cache
                     $this->genCacheFile($cacheFilePath, $content);

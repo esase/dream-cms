@@ -1,0 +1,31 @@
+<?php $this->declareVars('baseTabs', 'subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Settings') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('user/user-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'settings' // selected action is "settings"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'users-administration',
+            'action' => 'settings',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('partial/form', array(
+    'form' => $this->settingsForm,
+    'controller' => 'users-administration',
+    'action' => 'settings'
+)); ?>

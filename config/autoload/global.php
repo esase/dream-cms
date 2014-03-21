@@ -19,8 +19,7 @@ return array(
         'config' => array(
             'class' => 'Zend\Session\Config\SessionConfig',
             'options' => array(
-                'savePath' => APPLICATION_ROOT . '/data/sessions',
-                'cookieLifetime' => 0,
+                'savePath' => APPLICATION_ROOT . '/data/session',
                 'cookieSecure' => false,
                 'cookieHttpOnly' => true
             )
@@ -33,26 +32,18 @@ return array(
         'save_handler' => null
     ),
     'static_cache' => array(
-        'type' => 'filesystem',
-        'options' => array(
-            'writable' => true,
-            'readable' => true,
-            'cache_dir' => APPLICATION_ROOT . '/data/cache',
-            'dir_level' => 1,
-            'ttl' => 0 // cache never will be expired
-        )
+        'writable' => true,
+        'readable' => true,
+        'cache_dir' => APPLICATION_ROOT . '/data/cache/application',
+        'dir_level' => 1,
+        'ttl' => 0 // cache never will be expired
+    ),
+    'view_manager' => array(
+        'layout' => 'layout/frontend'
     ),
     'dynamic_cache' => array(
-        'type' => 'memcached',
-        'options' => array(
-            'writable' => true,
-            'readable' => true,
-            'ttl' => 600, // 10 minutes,
-            'servers' => array(
-                'localhost',
-                11211
-            )
-        )
+        'writable' => true,
+        'readable' => true
     ),
     'db' => array(
         'driver' => 'Pdo',
@@ -62,79 +53,17 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-            'Cache\Static' => function ($serviceManager)
-            {
-                $config = $serviceManager->get('Config');
-                $cache =\Zend\Cache\StorageFactory::factory(array(
-                    'adapter' => array(
-                        'name' => $config['static_cache']['type']
-                    ),
-                    'plugins' => array(
-                        // Don't throw exceptions on cache errors
-                        'exception_handler' => array(
-                            'throw_exceptions' => false
-                        ),
-                        'Serializer'
-                    )
-                ));
-
-                $cache->setOptions($config['static_cache']['options']);
-                return $cache;
-            },
-            'Cache\Dynamic' => function ($serviceManager)
-            {
-                $config = $serviceManager->get('Config');
-                $cache = \Zend\Cache\StorageFactory::factory(array(
-                    'adapter' => array(
-                        'name' => $config['dynamic_cache']['type']
-                    ),
-                    'plugins' => array(
-                        // Don't throw exceptions on cache errors
-                        'exception_handler' => array(
-                            'throw_exceptions' => false
-                        ),
-                        'Serializer'
-                    )
-                ));
-
-                $cache->setOptions($config['dynamic_cache']['options']);
-                return $cache;
-            },
-            'Zend\Session\SessionManager' => function ($serviceManager)
-            {
-                $config = $serviceManager->get('config');
-
-                // get session config
-                $sessionConfig = new
-                $config['session']['config']['class']();
-                $sessionConfig->setOptions($config['session']['config']['options']);
-
-                // get session storage
-                $sessionStorage = new $config['session']['storage']();
-
-                $sessionSaveHandler = null;
-                if (!empty($config['session']['save_handler'])) {
-                    // class should be fetched from service manager since it
-                    // will require constructor arguments
-                    $sessionSaveHandler = $serviceManager->get($config['session']['save_handler']);
-                }
-
-                // get session manager
-                $sessionManager = new \Zend\Session\SessionManager($sessionConfig,
-                $sessionStorage, $sessionSaveHandler);
-                
-                if (!empty($config['session']['validators'])) {
-                    $chain = $sessionManager->getValidatorChain();
-
-                    foreach ($config['session']['validators'] as $validator) {
-                        $chain->attach('session.validate', array(new $validator(), 'isValid'));
-                    }
-                }
-
-                \Zend\Session\Container::setDefaultManager($sessionManager);
-                return $sessionManager;
-            }
+            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory'
         )
+    ),
+    'paths' => array(
+        'error_log' => APPLICATION_ROOT . '/data/log/log',
+        'layout_cache_css' => 'layout_cache/css',
+        'layout_cache_js' => 'layout_cache/js',
+        'config_cache' => 'data/cache/config',
+        'captcha' => 'captcha',
+        'captcha_font' => 'font/captcha.ttf',
+        'resource' => 'resource',
+        'layout' => 'layout',
     )
 );

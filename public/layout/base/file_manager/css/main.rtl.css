@@ -1,0 +1,7 @@
+@import url("common.css");
+
+@media (min-width: 992px) {
+  div#files-manager-wrapper div#action-wrapper {
+    padding-right: 10px;
+  }
+}

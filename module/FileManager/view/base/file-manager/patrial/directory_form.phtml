@@ -1,0 +1,7 @@
+<!-- render a form -->
+<?php echo $this->partial('partial/form', array(
+    'form' => $this->form,
+    'controller' => $this->currentRoute()->getController(),
+    'action' => $this->currentRoute()->getAction(),
+    'queries' => $this->queries
+)); ?>

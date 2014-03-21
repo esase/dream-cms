@@ -3,6 +3,7 @@
 namespace Application\Model;
 
 use Zend\Db\Adapter\Adapter;
+use Exception;
 
 class ModelManager
 {

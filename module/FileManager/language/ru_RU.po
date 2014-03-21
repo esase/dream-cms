@@ -1,0 +1,275 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-03-20 15:54+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: Русский\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Directories"
+msgstr "Каталоги"
+
+msgid "Impossible edit selected file"
+msgstr "Невозможно отредактировать выбранный файл"
+
+msgid "Impossible edit selected directory"
+msgstr "Невозможно отредактировать выбранный каталог"
+
+msgid "The file has been edited"
+msgstr "Файл был отредактирован"
+
+msgid "The directory has been edited"
+msgstr "Каталог был отредактирован"
+
+msgid "Directory or file not exists"
+msgstr "Каталог или файл не существует"
+
+msgid "You can not move a directory to itself or its subdirectories"
+msgstr "Вы не можете переместить каталог в себя или его подкаталоги"
+
+msgid "Edit the file"
+msgstr "Редактировать файл"
+
+msgid "Edit the directory"
+msgstr "Редактировать каталог"
+
+msgid "File already exists in selected directory"
+msgstr "Файл уже существует в выбранной директории"
+
+msgid ""
+"You can only use the following characters: Latin, numeric, underscore, dot, "
+"dash, bracket"
+msgstr ""
+"Вы можете использовать только эти символы : латинские, числовые, символ "
+"подчеркивания, точка, тире, скобка"
+
+msgid "View images"
+msgstr "Просмотр изображений"
+
+msgid "Filters"
+msgstr "Фильтры"
+
+msgid "View image"
+msgstr "Просмотр изображения"
+
+msgid "New file description"
+msgstr "Допустимые расширения файлов: %s. <br />Максимальный размер файла: %s"
+
+msgid "You should enter size in bytes"
+msgstr "Вы должны ввести размер в байтах"
+
+msgid "Allowed file size"
+msgstr "Допустимый размер файла"
+
+msgid "You should separate values by a comma"
+msgstr "Значения разделяются запятой"
+
+msgid "Allowed file extensions"
+msgstr "Допустимые расширения файлов"
+
+msgid "Selected files and dirs will be deleted. Are you sure?"
+msgstr "Выбранные файлы и каталоги будут удалены. Вы уверены?"
+
+msgid "File has been added"
+msgstr "Файл был добавлен"
+
+msgid "Impossible add a new file. Check the received path permission"
+msgstr "Невозможно добавить новый файл. Проверьте разрешение в полученном пути"
+
+msgid "File edit name description"
+msgstr "Длина имени файла должна быть меньше или равна %d."
+
+msgid "New directory description"
+msgstr "Длина имени каталога должна быть меньше или равна %d"
+
+msgid "The maximum length of the file name and directory"
+msgstr "Максимальная длина имени файла и каталога"
+
+msgid "Directory already exist"
+msgstr "Каталог уже существует"
+
+msgid "Impossible add a new directory. Check the received path permission"
+msgstr ""
+"Невозможно добавить новый каталог. Проверьте разрешение в полученном пути"
+
+msgid "Directory has been added"
+msgstr "Каталог был добавлен"
+
+msgid "You can use only latin, numeric and underscore symbols"
+msgstr ""
+"Вы можете использовать только латинские, числовые и символы подчеркивания"
+
+msgid "Add a file"
+msgstr "Добавить файл"
+
+msgid "Add a directory"
+msgstr "Добавить каталог"
+
+msgid "Cannot delete some files or dirs. Check their permissions or existence"
+msgstr ""
+"Не удается удалить некоторые файлы или каталоги. Проверьте их разрешения или "
+"существование"
+
+msgid "Selected files and dirs have been deleted"
+msgstr "Выбранные файлы и каталоги были удалены"
+
+msgid "Window height"
+msgstr "Высота окна"
+
+msgid "Window width"
+msgstr "Ширина окна"
+
+msgid "Embedded mode"
+msgstr "Встроенный режим"
+
+msgid "Files"
+msgstr "Файлы"
+
+msgid "Images"
+msgstr "Изображения"
+
+msgid "Media"
+msgstr "Мультимедийные файлы"
+
+msgid "Show only"
+msgstr "Показать только"
+
+msgid "Files type"
+msgstr "Типы файлов"
+
+msgid ""
+"It helps to filter only media files. You should separate values by a comma"
+msgstr ""
+"Это помогает фильтровать только файлы медиа. Значения разделяются запятой"
+
+msgid "Media extensions"
+msgstr "Расширения медиа файлов"
+
+msgid ""
+"It helps to filter only images files. You should separate values by a comma"
+msgstr ""
+"Это помогает фильтровать только файлы изображений. Значения разделяются "
+"запятой"
+
+msgid "Image extensions"
+msgstr "Расширения изображений"
+
+msgid "Modified date"
+msgstr "Дата изменения"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Directory"
+msgstr "Каталог"
+
+msgid "Directory not exists"
+msgstr "Каталог не существует"
+
+msgid "List of files"
+msgstr "Список файлов"
+
+msgid "Files manager"
+msgstr "Файловый менеджер"
+
+msgid "FileManager"
+msgstr "Файловый менеджер"
+
+msgid "Event - Directory deleted by the system"
+msgstr "Файлы и каталоги здесь - \"%s\" были удалены с помощью системы"
+
+msgid "Event - Editing directories"
+msgstr "Редактирование каталогов"
+
+msgid "Event - Directory edited by guest"
+msgstr "Гость отредактировал каталог, старый путь - \"%s\" новый путь - \"%s\""
+
+msgid "Event - Directory edited by user"
+msgstr ""
+"\"%s\" отредактировал каталог, старый путь - \"%s\" новый путь - \"%s\""
+
+msgid "Event - Editing files"
+msgstr "Редактирование файлов"
+
+msgid "Event - File edited by guest"
+msgstr "Гость отредактировал файл, старый путь - \"%s\" новый путь - \"%s\""
+
+msgid "Event - File edited by user"
+msgstr "\"%s\" отредактировал файл, старый путь - \"%s\" новый путь - \"%s\""
+
+msgid "Event - Adding files"
+msgstr "Добавление файлов"
+
+msgid "Event - File added by guest"
+msgstr "Гость добавил файл - \"%s\""
+
+msgid "Event - File added by user"
+msgstr "\"%s\" добавил файл - \"%s\""
+
+msgid "Event - Adding directories"
+msgstr "Добавление каталогов"
+
+msgid "Event - Directory added by guest"
+msgstr "Гость добавил каталог - \"%s\""
+
+msgid "Event - Directory added by user"
+msgstr "\"%s\" добавил каталог - \"%s\""
+
+msgid "Event - Deleting directories"
+msgstr "Удаление каталогов"
+
+msgid "Event - Directory deleted by guest"
+msgstr "Гость удалил каталог со всеми файлами - \"%s\""
+
+msgid "Event - Directory deleteted by user"
+msgstr "\"%s\" удалил каталог со всеми файлами - \"%s\""
+
+msgid "Event - Deleting files"
+msgstr "Удаление файлов"
+
+msgid "Event - File deleted by guest"
+msgstr "Гость удалил файл - \"%s\""
+
+msgid "Event - File deleteted by user"
+msgstr "\"%s\" удалил файл - \"%s\""
+
+msgid "ACL - Viewing files and dirs in admin area"
+msgstr "Просмотр файлов и каталогов в админке"
+
+msgid "ACL - Editing file manager settings in admin area"
+msgstr "Изменение настроек файл менеджера в админке"
+
+msgid "ACL - Viewing files and dirs in embedded mode"
+msgstr "Просмотр файлов и каталогов в встроенном режиме"
+
+msgid "ACL - Deleting files and dirs in admin area"
+msgstr "Удаление файлов и каталогов в админке"
+
+msgid "ACL - Deleting files and dirs in embedded mode"
+msgstr "Удаление файлов и каталогов во встроенном режиме"
+
+msgid "ACL - Adding directories in embedded mode"
+msgstr "Добавление каталогов во встроенном режиме"
+
+msgid "ACL - Adding directories in admin area"
+msgstr "Добавление каталогов в админке"
+
+msgid "ACL - Adding files in embedded mode"
+msgstr "Добавление файлов во встроенном режиме"
+
+msgid "ACL - Adding files in admin area"
+msgstr "Добавление файлов в админке"
+
+msgid "ACL - Editing files and dirs in embedded mode"
+msgstr "Редактирование файлов и директорий во встроенном режиме"
+
+msgid "ACL - Editing files and dirs in admin area"
+msgstr "Редактирование файлов и директорий в админке"

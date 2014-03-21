@@ -3,7 +3,7 @@
 namespace Application\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 
 class UserIdentity extends AbstractHelper
 {
@@ -14,6 +14,6 @@ class UserIdentity extends AbstractHelper
      */
     public function __invoke()
     {
-        return UsersService::getCurrentUserIdentity();
+        return UserService::getCurrentUserIdentity();
     }
 }

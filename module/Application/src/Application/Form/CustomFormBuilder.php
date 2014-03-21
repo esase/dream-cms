@@ -16,18 +16,6 @@ use IntlDateFormatter;
 class CustomFormBuilder extends Form 
 {
     /**
-     * Init date script
-     * @var boolean
-     */
-    protected $initDateScript = false;
-
-    /**
-     * Init html area script
-     * @var boolean
-     */
-    protected $initHtmlAreaScript = false;
-
-    /**
      * Form custom elements
      * @var array
      */
@@ -56,6 +44,12 @@ class CustomFormBuilder extends Form
      * @var array
      */
     protected $ignoredElements = array();
+
+    /**
+     * List of not validate fields
+     * @var array
+     */
+    protected $notValidatedElements = array();
 
     /**
      * Default filters
@@ -142,6 +136,16 @@ class CustomFormBuilder extends Form
     const FIELD_CSRF = 'csrf';
 
     /**
+     * Image type
+     */
+    const FIELD_IMAGE = 'image';
+
+    /**
+     * File type
+     */
+    const FIELD_FILE = 'file';
+
+    /**
      * Csrf timeout
      */
     const CSRF_TIMEOUT = 1200;
@@ -167,6 +171,16 @@ class CustomFormBuilder extends Form
     const FIELD_HTML_AREA = 'htmlarea';
 
     /**
+     * Notification message
+     */
+    const FIELD_NOTIFICATION_MESSAGE = 'notification_message';
+
+    /**
+     * Notification title
+     */
+    const FIELD_NOTIFICATION_TITLE = 'notification_title';
+
+    /**
      * Class constructor
      *
      * @param string $formName
@@ -174,6 +188,8 @@ class CustomFormBuilder extends Form
      *      string name required
      *      string type required
      *      string label optional
+     *      string description optional
+     *      array description_params optional
      *      string category label
      *      boolean|integer required optional
      *      string value optional
@@ -182,11 +198,13 @@ class CustomFormBuilder extends Form
      *      array attributes optional
      *      array filters optional
      *      array validators optional
+     *      array extra_options optional
      * @param object $translator
      * @param string $method
      * @param array $ignoredElements
      */
-    public function __construct($formName, array $formElements, Translator $translator, array $ignoredElements = array(), $method = 'post') 
+    public function __construct($formName, array $formElements,
+        Translator $translator, array $ignoredElements = array(), array $notValidatedElements = array(), $method = 'post') 
     {
         parent::__construct($formName);
 
@@ -195,6 +213,9 @@ class CustomFormBuilder extends Form
 
         // ignored elements
         $this->ignoredElements = array_merge(array('csrf', 'submit'), $ignoredElements);
+
+        // not validated elements
+        $this->notValidatedElements = $notValidatedElements;
 
         $this->translator = $translator;
         $this->inputFilter = new InputFilter();
@@ -208,6 +229,8 @@ class CustomFormBuilder extends Form
             $elementValue    = isset($element['value']) ? $element['value'] : null;
             $elementValues   = isset($element['values']) ? $element['values'] : array();
             $elementAttrs    = isset($element['attributes']) && is_array($element['attributes']) ? $element['attributes'] : array();
+
+            $elementAttrs = array_merge(array('class' => 'form-control'), $elementAttrs);
 
             if (!empty($element['values_provider'])) {
                $valuesProvider =  eval($element['values_provider']);
@@ -230,6 +253,7 @@ class CustomFormBuilder extends Form
             $extraOptions = array();
 
             switch ($elementType) {
+                case self::FIELD_NOTIFICATION_MESSAGE :
                 case self::FIELD_HTML_AREA :
                     // add custom filters
                     $element['filters'] = array_merge((isset($element['filters']) ? $element['filters'] : array()), array(
@@ -238,50 +262,49 @@ class CustomFormBuilder extends Form
                             'name' => 'callback',
                             'options' => array(
                                 'callback' => function($value) {
-                                    return \Users\Service\Service::isAdmin() // don't purify the content when user is the admin
+                                    $config = \HTMLPurifier_Config::createDefault();
+                                    $config->set('Cache.DefinitionImpl', null);
+                                    $config->set('HTML.SafeObject', true);
+                                    $config->set('Output.FlashCompat', true);
+                                    $purifier = new \HTMLPurifier($config);
+
+                                    // clear js
+                                    return \User\Service\Service::checkPermission('application_use_js')
                                         ? $value
-                                        : \HTMLPurifierStandalone::purify($value, array(
-                                                'Cache.DefinitionImpl' => null,
-                                                'HTML.SafeObject' => true,
-                                                'Output.FlashCompat' => true
-                                        ));
+                                        : $purifier->purify($value);
                                 }
                             )
                         )
                     ));
 
-                    $this->initHtmlAreaScript = true;
-                    $elementAttrs = array_merge(array('class' => 'htmlarea', 'required' => false), $elementAttrs);
+                    $elementAttrs = array_merge($elementAttrs, array('class' => 'htmlarea', 'required' => false));
                     $elementType  = 'Textarea';
                     break;
                 case self::FIELD_DATE :
                 case self::FIELD_DATE_UNIXTIME :
                     $elementValidators[] = array(
-                        'name' => 'datetime',
+                        'name' => 'dateTime',
                         'options' => array(
                             'dateType' => IntlDateFormatter::MEDIUM //input format
                         )
                     );
 
-                    $this->initDateScript = true;
-                    $elementAttrs = array_merge(array('class' => 'date'), $elementAttrs);
+                    $elementAttrs = array_merge($elementAttrs, array('class' => 'date form-control'));
                     $elementValue = LocaleUtility::convertToLocalizedValue($elementValue, $elementType);
                     $elementType  = 'Text';
                     break;
                 case self::FIELD_SELECT :
                 case self::FIELD_RADIO  :    
                     $elementValidators[] = array(
-                        'name' => 'inarray',
+                        'name' => 'inArray',
                         'options' => array(
                             'haystack' => array_keys($elementValues)
                         )
                     );
 
-                    // add empty value
+                    // add an empty value
                     if ($elementType == self::FIELD_SELECT) {
-                        $elementValues = array_merge(array(
-                            '' => ''
-                        ), $elementValues);
+                        $elementValues = array('' => '') + $elementValues;
                     }
 
                     $elementType  = $elementType == self::FIELD_SELECT
@@ -337,7 +360,7 @@ class CustomFormBuilder extends Form
                     );
 
                     $elementValidators[] = array(
-                        'name' => 'inarray',
+                        'name' => 'inArray',
                         'options' => array(
                             'haystack' => array(1)
                         )
@@ -359,6 +382,32 @@ class CustomFormBuilder extends Form
                     break;
                 case self::FIELD_HIDDEN :
                     $elementType  = 'Hidden';
+                    break;
+                case self::FIELD_FILE :
+                    $elementAttrs = array_merge($elementAttrs, array('class' => ''));
+                    $elementType  = 'File';
+                    $useFilters   = false;
+                    break;
+                case self::FIELD_IMAGE :
+                    $validMimeTypes = array(
+                        'image/gif',
+                        'image/jpeg',
+                        'image/png'
+                    );
+
+                    $elementValidators[] = array(
+                        'name' => 'fileMimeType',
+                        'options' => array(
+                            'message' => sprintf($this->translator->
+                                    translate('Alowed mime types are: %s'), implode(',', $validMimeTypes)),
+
+                            'mimeType' => $validMimeTypes
+                        )
+                    );
+
+                    $elementAttrs = array_merge($elementAttrs, array('class' => ''));
+                    $elementType  = 'File';
+                    $useFilters   = false;
                     break;
                 case self::FIELD_INTEGER :
                     $elementValidators[] = array(
@@ -405,9 +454,12 @@ class CustomFormBuilder extends Form
                     $this->addSubmit($elementName, (!empty($element['label']) ? $element['label'] : null));
                     continue(2);
                 case self::FIELD_CAPTCHA :
-                    $this->addCaptcha($elementName, (!empty($element['label']) ? $element['label'] : null));
+                    $this->addCaptcha($elementName, (!empty($element['label'])
+                            ? $element['label'] : null), (!empty($element['category']) ? $element['category'] : null));
+
                     continue(2);
                 case self::FIELD_TEXT :
+                case self::FIELD_NOTIFICATION_TITLE :
                 default :
                     $elementType = 'Text';
             }
@@ -422,12 +474,18 @@ class CustomFormBuilder extends Form
                 ), $elementAttrs),
                 'options' => array_merge($extraOptions, array(
                     'category' =>  !empty($element['category']) ? $element['category'] : null,
+                    'extra_options' =>  !empty($element['extra_options']) ? $element['extra_options'] : null,
                     'value_options' => $elementValues,
                     'label' => !empty($element['label'])
                         ? ($elementRequired
                                 ? '*' . $this->translator->translate($element['label'])
-                                : $this->translator->translate($element['label']))
+                                : $element['label'])
                         : null,
+                    'description' => !empty($element['description'])
+                        ? !empty($element['description_params'])
+                            ? vsprintf($this->translator->translate($element['description']), $element['description_params'])
+                            : $this->translator->translate($element['description'])
+                        : null
                 ))
             ));
 
@@ -496,6 +554,13 @@ class CustomFormBuilder extends Form
      */
     public function setData($data, $convertValues = true)
     {
+        // unset not validated fields
+        foreach($this->notValidatedElements as $name) {
+            if (isset($data[$name])) {
+                unset($data[$name]);
+            }
+        }
+
         // convert localized values
         if ($convertValues) {
             foreach ($data as $fieldName => $fieldValue) {
@@ -534,9 +599,10 @@ class CustomFormBuilder extends Form
      *
      * @param string $name
      * @param string $label
+     * @param string $category
      * @return void
      */
-    protected function addCaptcha($name, $label = null)
+    protected function addCaptcha($name, $label = null, $category = null)
     {
         // pass captcha image options
         $captchaImage = new CaptchaImage(array(
@@ -554,11 +620,14 @@ class CustomFormBuilder extends Form
             'type' => self::FIELD_CAPTCHA,
             'name' => $name,
             'options' => array(
-                'label' => $this->translator->translate(($label ? $label : 'Please verify you are human')),
-                'captcha' => $captchaImage
+                'label' => '*' . $this->translator->translate(($label ? $label : 'Please verify you are human')),
+                'captcha' => $captchaImage,
+                'category' =>  $category ? $category : null,
             ),
             'attributes' => array(
-                'id' => 'captcha'
+                'id' => 'captcha',
+                'class' => 'form-control',
+                'required' => 'required'
             )
         ));
     }
@@ -577,8 +646,8 @@ class CustomFormBuilder extends Form
             'name' => $name,
             'attributes' => array(
                 'id' => $name,
-                'value' => $this->translator->translate(($label ? $label : 'Submit')),
-                'class' => 'btn'
+                'value' => ($label ? $label : 'Submit'),
+                'class' => 'btn btn-default btn-submit'
             ),
             'options' => array(
                 'label' => ' ',
@@ -587,22 +656,15 @@ class CustomFormBuilder extends Form
     }
 
     /**
-     * Init date script
+     * Get an element type
      *
-     * @return boolean
+     * @param string $elementName
+     * @return string
      */
-    public function initDateScript()
+    public function getElementType($elementName)
     {
-        return $this->initDateScript;
-    }
-
-    /**
-     * Init htmlarea script
-     *
-     * @return boolean
-     */
-    public function initHtmlAreaScript()
-    {
-        return $this->initHtmlAreaScript;
+        return isset($this->customElements[$elementName])
+            ? $this->customElements[$elementName]
+            : null;
     }
 }

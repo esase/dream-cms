@@ -1,0 +1,64 @@
+<?php $this->declareVars('subPageTitle', 'mainPageTitle') ?>
+
+<?php $this->subPageTitle  = $this->translate((!$this->isDirectory ? 'Edit the file' : 'Edit the directory')) ?>
+<?php $this->mainPageTitle = $this->translate('List of files') ?>
+
+<?php $this->headTitle($this->subPageTitle)  ?>
+<?php $this->headTitle($this->mainPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('file-manager/file-manager-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->mainPageTitle,
+            'controller' => 'files-manager-administration',
+            'action' => 'list',
+            'check_acl' => true,
+            'queries' => array(
+                'path' => $this->path
+            )
+        ),
+        'add_directory' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'files-manager-administration',
+            'action' => 'edit',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<?php $this->placeholder('form')->captureStart() ?>
+    <?php if ($this->editForm) : ?>
+        <?php echo $this->partial('file-manager/patrial/file_form', array(
+            'form' => $this->editForm,
+            'queries' => array(
+                'path' => $this->path,
+                'file_path' => $this->filePath,
+                'slug' => $this->fileName
+            )
+        )); ?>
+    <?php else: ?>
+        <div class="alert alert-danger">
+            <?php echo $this->translate('Directory or file not exists') ?>
+        </div>
+    <?php endif; ?>
+<?php $this->placeholder('form')->captureEnd() ?>
+
+<?php echo $this->partial('file-manager/patrial/tree', array(
+    'userDirectories' => $this->userDirectories,
+    'action' => $this->placeholder('form'),
+    'path' => $this->path,
+    'filters' => array(
+        'file_path' => $this->filePath,
+        'slug' => $this->fileName
+    )
+)); ?>

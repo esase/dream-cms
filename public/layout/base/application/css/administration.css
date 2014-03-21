@@ -1,0 +1,12 @@
+@import url("common.css");
+
+div.navbar {
+    margin:0;
+    z-index: 50;
+}
+
+div.page-header {
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+

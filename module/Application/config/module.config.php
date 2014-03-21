@@ -70,7 +70,9 @@ return array(
     'controller_plugins' => array(
         'invokables' => array(
             'checkPermission' => 'Application\Controller\Plugin\CheckPermission',
+            'showErrorPage' => 'Application\Controller\Plugin\ShowErrorPage',
             'isGuest' => 'Application\Controller\Plugin\IsGuest',
+            'getSetting' => 'Application\Controller\Plugin\Setting'
         )
     ),
     'view_manager' => array(

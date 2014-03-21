@@ -55,7 +55,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // clear test settings
         if ($this->settingsNames) {
             $query = $this->settingModel->delete()
-                ->from('settings')
+                ->from('setting')
                 ->where(array('name' => $this->settingsNames));
 
             $statement = $this->settingModel->prepareStatementForSqlObject($query);
@@ -80,7 +80,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         );
 
         $query = $this->settingModel->insert()
-            ->into('settings')
+            ->into('setting')
             ->values($settingData);
 
         $statement = $this->settingModel->prepareStatementForSqlObject($query);
@@ -92,7 +92,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             foreach ($settingValues as $settingValue) {
                 // insert setting value
                 $query = $this->settingModel->insert()
-                    ->into('settings_values')
+                    ->into('setting_value')
                     ->values(array_merge($settingValue, array('setting_id' => $settingId)));
 
                 $statement = $this->settingModel->prepareStatementForSqlObject($query);

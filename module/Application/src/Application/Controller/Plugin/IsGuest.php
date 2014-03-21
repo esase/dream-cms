@@ -3,7 +3,7 @@
 namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Users\Service\Service as UsersService;
+use User\Service\Service as UserService;
 
 /**
  * Controller plugin for checking the user permission.
@@ -17,6 +17,6 @@ class IsGuest extends AbstractPlugin
      */
     public function __invoke()
     {
-        return UsersService::isGuest();
+        return UserService::isGuest();
     }
 }

@@ -1,0 +1,53 @@
+<?php $this->declareVars('subPageTitle', 'parentPageTitle') ?>
+<?php $this->parentPageTitle = $this->translate($this->resourceSettings['role_name']) ?>
+<?php $this->subPageTitle = $this->translate($this->resourceSettings['resource_description']) ?>
+
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->parentPageTitle) ?>
+<?php $this->headTitle($this->translate('List of roles')) ?>
+
+<!-- render a header -->
+<?php echo $this->render('application/acl-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->translate('List of roles'),
+            'controller' => 'acl-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ),
+        'browse_resources' => array(
+            'name' => $this->parentPageTitle,
+            'controller' => 'acl-administration',
+            'action' => 'browse-resources',
+            'check_acl' => true,
+            'params' => array(
+                'slug' => $this->resourceSettings['role']
+            )
+        ),
+        'resource_settings' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'acl-administration',
+            'action' => 'resource-settings',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('partial/form', array(
+    'form' => $this->aclResourceSettingsForm,
+    'controller' => 'acl-administration',
+    'action' => 'resource-settings',
+    'params' => array(
+        'slug' => $this->resourceSettings['connection']
+    )
+)); ?>

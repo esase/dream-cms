@@ -1,0 +1,41 @@
+<?php echo $this->doctype(); ?>
+<html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?php echo $this->headMeta()
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            ->appendName('viewport', 'width=device-width, initial-scale=1')
+            ->appendName('generator', $this->getSetting('application_generator') . ' ' . $this->getSetting('application_generator_version'))
+            ->appendName('description', $this->getSetting('application_meta_description'))
+            ->appendName('keywords', $this->getSetting('application_meta_keywords'));
+        ?>
+
+        <!-- Le styles -->
+        <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icon/favicon.ico', 'image')))
+            ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
+            ->prependStylesheet($this->asset('bootstrap.css', 'css'))
+            ->appendStylesheet($this->asset('jquery-ui.css', 'css'))
+            ->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr() ? 'frontend.css' : 'frontend.rtl.css'), 'css')) ?>
+
+        <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
+            <?php $this->headLink()->appendStylesheet($this->asset('bootstrap.rtl.css', 'css')) ?>
+        <?php endif; ?>
+
+        <?php echo $this->headLink() ?>
+
+        <!-- Scripts -->
+        <?php echo $this->headScript()
+            ->prependFile($this->asset('jquery-1.11.0.js'))
+            ->appendFile($this->asset('jquery.cookie.js'))
+            ->appendFile($this->asset('bootstrap.js'))
+            ->appendFile($this->asset('jquery-ui.js'))
+            ->prependFile($this->asset('respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
+            ->prependFile($this->asset('html5shiv.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
+        ?>
+    </head>
+    <body>
+
+        <!-- container -->
+        <div class="container" id="container">

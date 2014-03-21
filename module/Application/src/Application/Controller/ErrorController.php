@@ -9,11 +9,10 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Http\Response;
 
-class ErrorController extends AbstractActionController
+class ErrorController extends AbstractBaseController
 {
     /**
      * Forbidden page
