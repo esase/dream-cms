@@ -15,48 +15,6 @@ use Application\Utility\ErrorLogger;
 class UserAdministration extends Base
 {
     /**
-     * Edit the user's role
-     *
-     * @param integer $userId
-     * @param integer $roleId
-     * @return boolean|string
-     */
-    public function editUserRole($userId, $roleId)
-    {
-        try {
-            $this->adapter->getDriver()->getConnection()->beginTransaction();
-
-            $update = $this->update()
-                ->table('user')
-                ->set(array(
-                    'role' => $roleId
-                ))
-                ->where(array(
-                    'user_id' => $userId
-                ))
-                ->where(array(
-                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
-                ));
-
-            $statement = $this->prepareStatementForSqlObject($update);
-            $statement->execute();
-
-            // clear a cache
-            $this->removeUserCache($userId);
-
-            $this->adapter->getDriver()->getConnection()->commit();
-        }
-        catch (Exception $e) {
-            $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
-
-            return $e->getMessage();
-        }
-
-        return true;
-    }
-
-    /**
      * Get users
      *
      * @param integer $page

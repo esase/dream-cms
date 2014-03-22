@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-03-21 13:46+0600\n"
+"PO-Revision-Date: 2014-03-22 12:41+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -402,6 +402,11 @@ msgstr "\"%s\" с идентификатором - \"%d\" запросил сб�
 
 msgid "Event - Editing users roles"
 msgstr "Редактирование пользовательских ролей"
+
+msgid "Event - User's role edited by the system"
+msgstr ""
+"Роль пользователя была отредактирована с помощью системы. ID пользователя - "
+"\"%d\""
 
 msgid "Event - User's role edited by guest"
 msgstr ""
