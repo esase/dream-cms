@@ -1,0 +1,48 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-03-22 16:39+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Currency code"
+msgstr "Currency code"
+
+msgid "Currency name"
+msgstr "Currency name"
+
+msgid "Currencies"
+msgstr "Currencies"
+
+msgid "List of transactions"
+msgstr "List of transactions"
+
+msgid "Euro"
+msgstr "Euro"
+
+msgid "Dollars USA"
+msgstr "Dollars USA"
+
+msgid "Rubles"
+msgstr "Rubles"
+
+msgid "Payment"
+msgstr "Payment"
+
+msgid "Payments"
+msgstr "Payments"
+
+msgid "ACL - Viewing payment transactions in admin area"
+msgstr "Viewing payment transactions in admin area"
+
+msgid "ACL - Viewing payment currencies in admin area"
+msgstr "Viewing payment currencies in admin area"

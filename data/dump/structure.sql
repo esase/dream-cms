@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS `module` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `module` (`id`, `name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(2, 'User', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(3, 'XmlRpc', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(4, 'FileManager', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', '');
+(1, 'Application', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(2, 'User', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(3, 'XmlRpc', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(4, 'FileManager', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', '');
 
 CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
     `namespace` varchar(50) NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `layout` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `layout` (`name`, `type`, `active`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 1, 'Base layout', 'Default base layout', '0.9', 'eSASe', 'alexermashev@gmail.com');
+('base', 'system', 1, 'Base layout', 'Default base layout', '1.0.0', 'eSASe', 'alexermashev@gmail.com');
 
 CREATE TABLE IF NOT EXISTS `acl_role` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -355,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `setting_value` (
 
 INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (1,  1,  'Dream CMS', NULL),
-(2,  2,  '0.9.0', NULL),
+(2,  2,  '1.0.0', NULL),
 (3,  3,  'Dream CMS demo site', NULL),
 (4,  4,  'stuff@mysite.com', NULL),
 (5,  5,  'Dream CMS', NULL),
@@ -512,10 +512,7 @@ CREATE TABLE IF NOT EXISTS `admin_menu` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`) VALUES
-(1, 'Modules', 'module-administration', 'index', 1, 1),
-(2, 'Site settings', 'settings-administration', 'index', 1, 2),
-(3, 'Localizations', 'localizations-administration', 'index', 1, 3),
-(4, 'Layouts', 'layouts-administration', 'index', 1, 4),
-(5, 'Access Control List', 'acl-administration', 'list', 1, 5),
-(6, 'Users', 'users-administration', 'list', 2, 6),
-(7, 'Files manager', 'files-manager-administration', 'list', 4, 7);
+(1, 'Site settings', 'settings-administration', 'index', 1, 2),
+(2, 'Access Control List', 'acl-administration', 'list', 1, 5),
+(3, 'Users', 'users-administration', 'list', 2, 6),
+(4, 'Files manager', 'files-manager-administration', 'list', 4, 7);

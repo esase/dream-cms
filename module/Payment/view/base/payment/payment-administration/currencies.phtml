@@ -1,0 +1,65 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Currencies') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('payment/payment-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'currencies' // selected action is "currencies"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'currencies',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data_grid', array(
+    'controller' => 'payments-administration',
+    'action' => 'currencies',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Currency code'),
+            'order_name' => 'code'
+        ),
+        2 => array(
+            'title' => $this->translate('Currency name')
+        )
+    ),
+    'paginator' => $this->paginator,
+    'helpers' => array(
+        'name' => 'translate'
+    ),
+    'helpers_options' => array(
+    ),
+    'actions' => array(
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'currencies',
+        'multiple_actions' => array(
+            'items_name' => 'currencies[]'
+        )
+    ),
+    'actions_extra_check' => array(
+    )
+)) ?>
