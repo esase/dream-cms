@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     `email` varchar(255) NOT NULL DEFAULT '',
     `password` varchar(40) NOT NULL DEFAULT '',
     `salt` varchar(10) NOT NULL DEFAULT '',
-    `role` int(10) unsigned NOT NULL,
+    `role` int(10) unsigned DEFAULT NULL,
     `language` varchar(2) DEFAULT NULL,
     `time_zone` varchar(100) NOT NULL,
     `layout` varchar(50) DEFAULT NULL,
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     KEY `status` (`status`),
     FOREIGN KEY (role) REFERENCES acl_role(id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
+        ON DELETE SET NULL,
     FOREIGN KEY (language) REFERENCES localization(language)
         ON UPDATE CASCADE
         ON DELETE SET NULL,

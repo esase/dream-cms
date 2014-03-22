@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"users\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-21 13:46+0600\n"
+"PO-Revision-Date: 2014-03-22 12:41+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -396,6 +396,9 @@ msgstr "\"%s\" with id - \"%d\" requested the password reset"
 
 msgid "Event - Editing users roles"
 msgstr "Editing users roles"
+
+msgid "Event - User's role edited by the system"
+msgstr "The user's role was edited by the system. The user's id is - \"%d\""
 
 msgid "Event - User's role edited by guest"
 msgstr "Guest edited the user's role. The user's id is - \"%d\""

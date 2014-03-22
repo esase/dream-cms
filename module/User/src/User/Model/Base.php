@@ -8,6 +8,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Application\Utility\Cache as CacheUtility;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
+use Zend\Db\Sql\Predicate\isNull as IsNullPredicate;
 use Application\Service\Service as ApplicationService;
 use Application\Model\Acl as AclModelBase;
 use Application\Utility\FileSystem as FileSystemUtility;
@@ -483,6 +484,71 @@ class Base extends AbstractBase
         $resultSet->initialize($statement->execute());
 
         return $resultSet->current() ? false : true;
+    }
+
+    /**
+     * Get users with empty role
+     *
+     * @return array
+     */
+    public function getUsersWithEmptyRole()
+    {
+        $select = $this->select();
+        $select->from('user')
+            ->columns(array(
+                'user_id'
+            ))
+            ->where(array(
+                new IsNullPredicate('role')
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
+    }
+
+    /**
+     * Edit the user's role
+     *
+     * @param integer $userId
+     * @param integer $roleId
+     * @return boolean|string
+     */
+    public function editUserRole($userId, $roleId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('user')
+                ->set(array(
+                    'role' => $roleId
+                ))
+                ->where(array(
+                    'user_id' => $userId
+                ))
+                ->where(array(
+                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // clear a cache
+            $this->removeUserCache($userId);
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
     }
 
     /**
