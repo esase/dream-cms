@@ -26,8 +26,8 @@ return array(
                     'route'    => '/[:languge[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:slug]]]]',
                     'constraints' => array(
                         'languge' => '[a-z]{2}',
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'controller' => '[a-zA-Z][a-zA-Z0-9-]*',
+                        'action' => '[a-zA-Z][a-zA-Z0-9-]*',
                         'page' => '[0-9]+',
                         'per_page' => '[0-9]+',
                         'order_by' => '[a-zA-Z][a-zA-Z0-9-]*',

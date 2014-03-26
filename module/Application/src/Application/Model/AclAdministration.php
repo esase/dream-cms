@@ -77,7 +77,7 @@ class AclAdministration extends Acl
 
         return true;
     }
-    
+
     /**
      * Add a new role
      *

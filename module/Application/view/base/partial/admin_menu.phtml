@@ -1,0 +1,33 @@
+<?php if (count($this->adminMenu())): ?>
+    <?php $this->declareVars('currentCategory', 'drawMenuDevider') ?>
+    <!-- select part -->
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-bookmark"></span>
+            <?php echo $this->title ?><b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <?php foreach ($this->adminMenu() as $menuItem) : ?>
+
+                <?php if ($this->currentCategory != $menuItem['category']): ?>
+                    <?php $this->currentCategory = $menuItem['category'] ?>
+                    <?php if ($this->drawMenuDevider): ?>
+                        <li role="presentation" class="divider"></li>
+                    <?php endif; ?>
+
+                    <li role="presentation" class="dropdown-header">
+                        <?php echo $this->translate($menuItem['category']) ?>
+                    </li>
+                <?php endif; ?>
+
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="<?php echo  $this->url(null, array('controller' => $menuItem['controller'], 'action' => $menuItem['action'])) ?>">
+                        <?php echo $this->translate($menuItem['name']) ?>
+                    </a>
+                </li>
+
+                <?php $this->drawMenuDevider = true ?>
+            <?php endforeach; ?>
+        </ul>
+    </li>
+<?php endif; ?>

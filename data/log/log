@@ -1,0 +1,32 @@
+2014-03-25T13:43:42+00:00 ERR (3): exception 'Zend\Form\Exception\InvalidArgumentException' with message 'Type and name are required' in /var/www/srosta/module/Application/src/Application/Form/CustomFormBuilder.php:245
+Stack trace:
+#0 /var/www/srosta/module/Payment/src/Payment/Form/ExchnageRate.php(55): Application\Form\CustomFormBuilder->__construct('exchnage-rate', Array, Object(Zend\Mvc\I18n\Translator), Array, Array, 'post')
+#1 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(131): Payment\Form\ExchnageRate->getForm()
+#2 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->exchangeRateAction()
+#3 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
+#4 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#5 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#6 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractController.php(117): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#7 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/DispatchListener.php(114): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
+#8 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
+#9 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#10 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#11 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#12 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
+#13 {main}
+2014-03-25T13:50:49+00:00 ERR (3): exception 'Zend\Form\Exception\InvalidArgumentException' with message 'Type and name are required' in /var/www/srosta/module/Application/src/Application/Form/CustomFormBuilder.php:245
+Stack trace:
+#0 /var/www/srosta/module/Payment/src/Payment/Form/ExchnageRate.php(54): Application\Form\CustomFormBuilder->__construct('exchnage-rate', Array, Object(Zend\Mvc\I18n\Translator), Array, Array, 'post')
+#1 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(144): Payment\Form\ExchnageRate->getForm()
+#2 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->exchangeRateAction()
+#3 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
+#4 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#5 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#6 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractController.php(117): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#7 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/DispatchListener.php(114): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
+#8 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
+#9 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#10 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#11 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#12 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
+#13 {main}

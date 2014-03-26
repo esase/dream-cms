@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-22 16:39+0600\n"
+"PO-Revision-Date: 2014-03-26 12:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,46 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Exchange rates have been edited"
+msgstr "Курсы валют были отредактированы"
+
+msgid "Exchange rates"
+msgstr "Обменные курсы"
+
+msgid "Selected currencies have been deleted"
+msgstr "Выбранные валюты были удалены"
+
+msgid ""
+"Selected currencies will be deleted with all interrelated transactions. Are "
+"you sure?"
+msgstr ""
+"Выбранные валюты будут удалены со всеми взаимосвязанными транзакциями. Вы "
+"уверены?"
+
+msgid "Currency has been edited"
+msgstr "Валюта была отредактирована"
+
+msgid "Edit the currency"
+msgstr "Редактировать валюту"
+
+msgid "Currency has been added"
+msgstr "Валюта была добавлена"
+
+msgid "Currency code already used"
+msgstr "Код валюты уже используется"
+
+msgid ""
+"Length of the currency code must be 3 characters and contain only Latin "
+"letters"
+msgstr ""
+"Длина кода валюты должна быть 3 символа и состоять только из латинских букв"
+
+msgid "Primary site currency"
+msgstr "Основная валюта сайта"
+
+msgid "Add a currency"
+msgstr "Добавить валюту"
 
 msgid "Currency code"
 msgstr "Код валюты"
@@ -41,8 +81,56 @@ msgstr "Платеж"
 msgid "Payments"
 msgstr "Платежи"
 
+msgid "Event - Editing exchange rates"
+msgstr "Редактирование курсов валют"
+
+msgid "Event - Payment exchange rates edited by guest"
+msgstr "Гость отредактировал курс валют для валюты с идентификатором - \"%d\""
+
+msgid "Event - Payment exchange rates edited by user"
+msgstr "\"%s\" отредактировал курс валют для валюты с идентификатором - \"%d\""
+
+msgid "Event - Deleting payment currencies"
+msgstr "Удаление платежных валют"
+
+msgid "Event - Payment currency deleted by guest"
+msgstr "Гость удалил платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Payment currency deleted by user"
+msgstr "\"%s\" удалил платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Editing payment currencies"
+msgstr "Редактирование платежных валют"
+
+msgid "Event - Payment currency edited by guest"
+msgstr "Гость отредактировал платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Payment currency edited by user"
+msgstr "\"%s\" отредактировал платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Adding payment currencies"
+msgstr "Добавление платежных валют"
+
+msgid "Event - Payment currency added by guest"
+msgstr "Гость добавил платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Payment currency added by user"
+msgstr "\"%s\" добавил платежную валюту с идентификатором - \"%d\""
+
 msgid "ACL - Viewing payment transactions in admin area"
 msgstr "Просмотр платежных операций в админке"
 
 msgid "ACL - Viewing payment currencies in admin area"
 msgstr "Просмотр платежных валют в админке"
+
+msgid "ACL - Adding payment currencies in admin area"
+msgstr "Добавление платежных валют в админке"
+
+msgid "ACL - Editing payment currencies in admin area"
+msgstr "Редактирование платежных валют в админке"
+
+msgid "ACL - Deleting payment currencies in admin area"
+msgstr "Удаление платежных валют в админке"
+
+msgid "ACL - Editing exchange rates in admin area"
+msgstr "Редактирование курсов валют в админке"

@@ -498,6 +498,22 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (29, 'edit_file', 4, 'Event - Editing files'),
 (30, 'edit_directory', 4, 'Event - Editing directories');
 
+CREATE TABLE IF NOT EXISTS `admin_menu_category` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `admin_menu_category` (`id`, `name`, `module`) VALUES
+(1, 'Site settings', 1),
+(2, 'Access Control List', 1),
+(3, 'Users', 2),
+(4, 'Files manager', 4);
+
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(150) NOT NULL,
@@ -505,14 +521,21 @@ CREATE TABLE IF NOT EXISTS `admin_menu` (
     `action` varchar(255) NOT NULL,
     `module` int(10) unsigned NOT NULL,
     `order` int(10) unsigned NOT NULL,
+    `category` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (category) REFERENCES admin_menu_category(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`) VALUES
-(1, 'Site settings', 'settings-administration', 'index', 1, 2),
-(2, 'Access Control List', 'acl-administration', 'list', 1, 5),
-(3, 'Users', 'users-administration', 'list', 2, 6),
-(4, 'Files manager', 'files-manager-administration', 'list', 4, 7);
+INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`) VALUES
+(1, 'List of settings', 'settings-administration', 'index', 1, 1, 1),
+(2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1),
+(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2),
+(4, 'List of users', 'users-administration', 'list', 2, 4, 3),
+(5, 'Settings', 'users-administration', 'settings', 2, 5, 3),
+(6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4),
+(7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4);

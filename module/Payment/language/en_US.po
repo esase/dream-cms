@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-22 16:39+0600\n"
+"PO-Revision-Date: 2014-03-26 12:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,47 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Exchange rates have been edited"
+msgstr "Exchange rates have been edited"
+
+msgid "Exchange rates"
+msgstr "Exchange rates"
+
+msgid "Selected currencies have been deleted"
+msgstr "Selected currencies have been deleted"
+
+msgid ""
+"Selected currencies will be deleted with all interrelated transactions. Are "
+"you sure?"
+msgstr ""
+"Selected currencies will be deleted with all interrelated transactions. Are "
+"you sure?"
+
+msgid "Currency has been edited"
+msgstr "Currency has been edited"
+
+msgid "Edit the currency"
+msgstr "Edit the currency"
+
+msgid "Currency has been added"
+msgstr "Currency has been added"
+
+msgid "Currency code already used"
+msgstr "Currency code already used"
+
+msgid ""
+"Length of the currency code must be 3 characters and contain only Latin "
+"letters"
+msgstr ""
+"Length of the currency code must be 3 characters and contain only Latin "
+"letters"
+
+msgid "Primary site currency"
+msgstr "Primary site currency"
+
+msgid "Add a currency"
+msgstr "Add a currency"
 
 msgid "Currency code"
 msgstr "Currency code"
@@ -41,8 +82,56 @@ msgstr "Payment"
 msgid "Payments"
 msgstr "Payments"
 
+msgid "Event - Editing exchange rates"
+msgstr "Editing exchange rates"
+
+msgid "Event - Payment exchange rates edited by guest"
+msgstr "Guest edited the exchange rates for currency with id - \"%d\""
+
+msgid "Event - Payment exchange rates edited by user"
+msgstr "\"%s\" edited the exchange rates for currency with id - \"%d\""
+
+msgid "Event - Deleting payment currencies"
+msgstr "Deleting payment currencies"
+
+msgid "Event - Payment currency deleted by guest"
+msgstr "Guest deleted the payment currency with id - \"%d\""
+
+msgid "Event - Payment currency deleted by user"
+msgstr "\"%s\" deleted the payment currency with id - \"%d\""
+
+msgid "Event - Editing payment currencies"
+msgstr "Editing payment currencies"
+
+msgid "Event - Payment currency edited by guest"
+msgstr "Guest edited the payment currency with id - \"%d\""
+
+msgid "Event - Payment currency edited by user"
+msgstr "\"%s\" edited the payment currency with id - \"%d\""
+
+msgid "Event - Adding payment currencies"
+msgstr "Adding payment currencies"
+
+msgid "Event - Payment currency added by guest"
+msgstr "Guest added the payment currency with id - \"%d\""
+
+msgid "Event - Payment currency added by user"
+msgstr "\"%s\" added the payment currency with id - \"%d\""
+
 msgid "ACL - Viewing payment transactions in admin area"
 msgstr "Viewing payment transactions in admin area"
 
 msgid "ACL - Viewing payment currencies in admin area"
 msgstr "Viewing payment currencies in admin area"
+
+msgid "ACL - Adding payment currencies in admin area"
+msgstr "Adding payment currencies in admin area"
+
+msgid "ACL - Editing payment currencies in admin area"
+msgstr "Editing payment currencies in admin area"
+
+msgid "ACL - Deleting payment currencies in admin area"
+msgstr "Deleting payment currencies in admin area"
+
+msgid "ACL - Editing exchange rates in admin area"
+msgstr "Editing exchange rates in admin area"

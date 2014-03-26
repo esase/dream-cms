@@ -3,6 +3,135 @@
 namespace Payment\Model;
 
 use Application\Model\AbstractBase;
+use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
+use Zend\Db\Sql\Predicate\In as InPredicate;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Expression;
 
 class Base extends AbstractBase
-{}
+{
+    /**
+     * Transaction paid
+     */
+    CONST TRANSACTION_PAID = 1;
+
+    /**
+     * Transaction not paid
+     */
+    CONST TRANSACTION_NOT_PAID = 0;
+
+    /**
+     * Primary currency
+     */
+    CONST PRIMARY_CURRENCY = 1;
+
+    /**
+     * Not primary currency
+     */
+    CONST NOT_PRIMARY_CURRENCY = 0;
+
+    /**
+     * Get exchange rates
+     *
+     * @return array
+     */
+    public function getExchangeRates()
+    {
+        $select = $this->select();
+        $select->from(array('a' => 'payment_currency'))
+            ->columns(array(
+                'id',
+                'code',
+                'name',
+                'primary_currency'
+            ))
+            ->join(
+                array('b' => 'payment_exchange_rate'),
+                new Expression('a.id = b.currency'),
+                array(
+                    'rate'
+                ),
+                'left'
+            )
+            ->where(array(
+                new NotInPredicate('primary_currency', array(self::PRIMARY_CURRENCY))
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $processedRates = array();
+        foreach ($result as $rate) {
+            $processedRates[$rate['code']] = array(
+                'id' => $rate['id'],
+                'code' => $rate['code'],
+                'name' => $rate['name'],
+                'rate' => $rate['rate']
+            );    
+        }
+
+        return $processedRates;
+    }
+
+    /**
+     * Get the currency info
+     *
+     * @param integer $id
+     * @param boolean $primary
+     * @return array
+     */
+    public function getCurrencyInfo($id, $primary = false)
+    {
+        $select = $this->select();
+        $select->from('payment_currency')
+            ->columns(array(
+                'id',
+                'code',
+                'name',
+                'primary_currency'
+            ))
+            ->where(array(
+                'id' => $id
+            ));
+
+        if ($primary) {
+            $select->where(array(
+                new InPredicate('primary_currency ', array(self::PRIMARY_CURRENCY))
+            ));
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
+
+    /**
+     * Is the currency code free
+     *
+     * @param string $code
+     * @param integer $currencyCodeId
+     * @return boolean
+     */
+    public function isCurrencyCodeFree($code, $currencyCodeId = 0)
+    {
+        $select = $this->select();
+        $select->from('payment_currency')
+            ->columns(array(
+                'id'
+            ))
+            ->where(array('code' => $code));
+
+        if ($currencyCodeId) {
+            $select->where(array(
+                new NotInPredicate('id', array($currencyCodeId))
+            ));
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->current() ? false : true;
+    }
+}

@@ -1,3 +1,5 @@
+<?php use Payment\Model\Base as PaymentBaseModel ?>
+
 <?php $this->declareVars('subPageTitle') ?>
 <?php $this->subPageTitle = $this->translate('Currencies') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
@@ -43,15 +45,53 @@
         ),
         2 => array(
             'title' => $this->translate('Currency name')
+        ),
+        3 => array(
+            'title' => $this->translate('Primary site currency'),
+            'order_name' => 'primary'
         )
     ),
     'paginator' => $this->paginator,
     'helpers' => array(
-        'name' => 'translate'
+        'name' => 'translate',
+        'primary' => 'booleanValue'
     ),
     'helpers_options' => array(
     ),
     'actions' => array(
+        'regular_actions' => array(
+            0 => array(
+                'name' => $this->translate('Add a currency'),
+                'controller' => 'payments-administration',
+                'action' => 'add-currency',
+                'check_acl' => true
+            )
+        ),
+        'multiple_actions' => array(
+            0 => array(
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'payments-administration',
+                'action' => 'delete-currencies',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected currencies will be deleted with all interrelated transactions. Are you sure?')
+            )
+        ),
+        'single_actions' => array (
+            0 => array(
+                'name' => $this->translate('Exchange rates'),
+                'controller' => 'payments-administration',
+                'action' => 'edit-exchange-rates',
+                'check_acl' => true,
+                'image' => $this->asset('icon/exchange_rate_action.png', 'image', 'payment')
+            ),
+            1 => array(
+                'name' => $this->translate('Edit the currency'),
+                'controller' => 'payments-administration',
+                'action' => 'edit-currency',
+                'check_acl' => true,
+                'image' => $this->asset('icon/edit_action.png', 'image')
+            ),
+        )
     ),
     'actions_options' => array(
         'action_identity' => 'id',
@@ -61,5 +101,20 @@
         )
     ),
     'actions_extra_check' => array(
+        'multiple_actions' => array(
+            'primary_currency' => array(
+                'param' => 'primary',
+                'condition' =>  'return (int) "__value__" == "' . PaymentBaseModel::PRIMARY_CURRENCY . '" ? false : true;'
+            )
+        ),
+        'single_actions' => array(
+            'edit-exchange-rates' => array(
+                0 => array(
+                    'param' => 'primary',
+                    'condition' =>  'return (int) "__value__" == "' .
+                            PaymentBaseModel::PRIMARY_CURRENCY . '" && (int) "' . $this->paginator->getTotalItemCount() . '" > 1;'
+                )
+            ),
+        )
     )
 )) ?>

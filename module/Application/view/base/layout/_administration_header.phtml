@@ -53,24 +53,9 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">
-                        <?php if (count($this->adminMenu())): ?>
-                            <!-- select part -->
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="glyphicon glyphicon-bookmark"></span>
-                                    <?php echo $this->translate('Select Part') ?><b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <?php foreach ($this->adminMenu() as $menuItem) : ?>
-                                        <li <?php if ($this->currentRoute()->getController() == $menuItem['controller']): ?>class="disabled"<?php endif; ?>>
-                                            <a href="<?php echo  $this->url(null, array('controller' => $menuItem['controller'], 'action' => $menuItem['action'])) ?>">
-                                                <?php echo $this->translate($menuItem['name']) ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                        <?php endif; ?>
+                        <?php echo $this->partial('partial/admin_menu', array(
+                            'title' => $this->translate('Select Part')
+                        )) ?>
                         <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                             <!-- select language -->
                             <li class="dropdown">
