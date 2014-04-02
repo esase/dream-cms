@@ -1,0 +1,108 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Discount coupons') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('payment/payment-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'coupons' // selected action is "coupons"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'coupons',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data_grid', array(
+    'controller' => 'payments-administration',
+    'action' => 'coupons',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Code'),
+            'order_name' => 'slug'
+        ),
+        2 => array(
+            'title' => $this->translate('Discount'),
+            'order_name' => 'discount'
+        ),
+        3 => array(
+            'title' => $this->translate('Activated'),
+            'order_name' => 'activated'
+        ),
+        4 => array(
+            'title' => $this->translate('Activation date'),
+            'order_name' => 'start'
+        ),
+        5 => array(
+            'title' => $this->translate('Deactivation date'),
+            'order_name' => 'end'
+        )
+    ),
+    'paginator' => $this->paginator,
+    'helpers' => array(
+        'discount' => 'floatValue',
+        'activated' => 'booleanValue',
+        'start' => 'date',
+        'end' => 'date'
+    ),
+    'helpers_options' => array(
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+            0 => array(
+                'name' => $this->translate('Add a coupon'),
+                'controller' => 'payments-administration',
+                'action' => 'add-coupon',
+                'check_acl' => true
+            )
+        ),
+        'multiple_actions' => array(
+            0 => array(
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'payments-administration',
+                'action' => 'delete-coupons',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected coupons will be deleted. Are you sure?')
+            )
+        ),
+        'single_actions' => array (
+            1 => array(
+                'name' => $this->translate('Edit the coupon'),
+                'controller' => 'payments-administration',
+                'action' => 'edit-coupon',
+                'check_acl' => true,
+                'image' => $this->asset('icon/edit_action.png', 'image')
+            ),
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'coupons',
+        'multiple_actions' => array(
+            'items_name' => 'coupons[]'
+        )
+    ),
+    'actions_extra_check' => array(
+    )
+)) ?>

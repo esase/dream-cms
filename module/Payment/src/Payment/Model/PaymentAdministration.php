@@ -169,6 +169,121 @@ class PaymentAdministration extends Base
     }
 
     /**
+     * Get the coupon info
+     *
+     * @param integer $id
+     * @return array
+     */
+    public function getCouponInfo($id)
+    {
+        $select = $this->select();
+        $select->from('payment_discount_cupon')
+            ->columns(array(
+                'id',
+                'slug',
+                'discount',
+                'activated',
+                'date_start',
+                'date_end'
+            ))
+            ->where(array(
+                'id' => $id
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
+
+    /**
+     * Edit the coupon
+     *
+     * @param integer $id
+     * @param array $couponInfo
+     *      integer discount
+     *      integer date_start
+     *      integer date_end
+     * @return boolean|string
+     */
+    public function editCoupon($id, array $couponInfo)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('payment_discount_cupon')
+                ->set($couponInfo)
+                ->where(array(
+                    'id' => $id
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
+     * Add a new coupon
+     *
+     * @param array $couponInfo
+     *      integer discount
+     *      integer date_start
+     *      integer date_end
+     * @return integer|string
+     */
+    public function addCoupon(array $couponInfo)
+    {
+        $insertId = 0;
+
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $insert = $this->insert()
+                ->into('payment_discount_cupon')
+                ->values($couponInfo);
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $insertId = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            // generate a random slug
+            $update = $this->update()
+                ->table('payment_discount_cupon')
+                ->set(array(
+                    'slug' => strtoupper($this->generateSlug($insertId, $this->
+                            generateRandString(self::COUPON_MIN_SLUG_LENGTH, self::COUPON_SLUG_CHARS), 'payment_discount_cupon', 'id'))
+                ))
+                ->where(array(
+                    'id' => $insertId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $insertId;
+    }
+
+    /**
      * Add a new currency
      *
      * @param array $currencyInfo
@@ -209,6 +324,38 @@ class PaymentAdministration extends Base
         }
 
         return $insertId;
+    }
+
+    /**
+     * Delete a coupon
+     *
+     * @param integer $couponId
+     * @return boolean|string
+     */
+    public function deleteCoupon($couponId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('payment_discount_cupon')
+                ->where(array(
+                    'id' => $couponId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $result->count() ? true : false;
     }
 
     /**
@@ -299,6 +446,95 @@ class PaymentAdministration extends Base
                 'primary' => 'primary_currency'
             ))
             ->order($orderBy . ' ' . $orderType);
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+
+        return $paginator;
+    }
+
+    /**
+     * Get coupons
+     *
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @param array $filters
+     *      string slug
+     *      integer discount
+     *      integer activated
+     *      integer start
+     *      integer end
+     * @return object
+     */
+    public function getCoupons($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    {
+        $orderFields = array(
+            'id',
+            'slug',
+            'discount',
+            'activated',
+            'start',
+            'end'
+        );
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'id';
+
+        $select = $this->select();
+        $select->from('payment_discount_cupon')
+            ->columns(array(
+                'id',
+                'slug',
+                'discount',
+                'activated',
+                'start' => 'date_start',
+                'end' => 'date_end'
+            ))
+            ->order($orderBy . ' ' . $orderType);
+
+        // filter by a slug
+        if (!empty($filters['slug'])) {
+            $select->where(array(
+                'slug' => $filters['slug']
+            ));
+        }
+
+        // filter by a discount
+        if (!empty($filters['discount'])) {
+            $select->where(array(
+                'discount' => $filters['discount']
+            ));
+        }
+
+        // filter by a status
+        if (isset($filters['activated']) && $filters['activated'] != null) {
+            $select->where(array(
+                'activated' => ((int) $filters['activated'] == self::COUPON_ACTIVATED ? $filters['activated'] : self::COUPON_NOT_ACTIVATED)
+            ));
+        }
+
+        // filter by an activation date
+        if (!empty($filters['start'])) {
+            $select->where(array(
+                'date_start' => $filters['start']
+            ));
+        }
+
+        // filter by a deactivation date
+        if (!empty($filters['end'])) {
+            $select->where(array(
+                'date_end' => $filters['end']
+            ));
+        }
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);

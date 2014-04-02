@@ -25,4 +25,19 @@ class Event extends ApplicationEvent
      * Edit exchange rates event
      */
     const EDIT_EXCHANGE_RATES = 'edit_exchange_rates';
+
+    /**
+     * Delete discount coupon event
+     */
+    const DELETE_DISCOUNT_COUPON = 'delete_discount_coupon';
+
+    /**
+     * Add discount coupon event
+     */
+    const ADD_DISCOUNT_COUPON = 'add_discount_coupon';
+
+    /**
+     * Edit discount coupon event
+     */
+    const EDIT_DISCOUNT_COUPON = 'edit_discount_coupon';
 }

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-21 14:15+0600\n"
+"PO-Revision-Date: 2014-03-28 15:36+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,15 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "The deactivation date must be more than activation date"
+msgstr "The deactivation date must be more than activation date"
+
+msgid "Activation date"
+msgstr "Activation date"
+
+msgid "Deactivation date"
+msgstr "Deactivation date"
 
 msgid "Localization"
 msgstr "Localization"
@@ -698,20 +707,11 @@ msgstr "A 403 error occurred"
 msgid "Your request is forbidden"
 msgstr "Your request is forbidden"
 
-msgid "ACL - Viewing site's modules in admin area"
-msgstr "Viewing site's modules in admin area"
-
 msgid "ACL - Getting site's localizations via XmlRpc"
 msgstr "Getting site's localizations via XmlRpc"
 
 msgid "ACL - Editing site's settings in admin area"
 msgstr "Editing site's settings in admin area"
-
-msgid "ACL - Viewing site's localizations in admin area"
-msgstr "Viewing site's localizations in admin area"
-
-msgid "ACL - Viewing site's layouts in admin area"
-msgstr "Viewing site's layouts in admin area"
 
 msgid "ACL - Viewing ACL roles in admin area"
 msgstr "Viewing ACL roles in admin area"

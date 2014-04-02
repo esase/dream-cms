@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-26 12:58+0600\n"
+"PO-Revision-Date: 2014-04-02 11:19+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,42 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Coupon has been edited"
+msgstr "Купон был отредактирован"
+
+msgid "Edit the coupon"
+msgstr "Редактировать купон"
+
+msgid "Percentage ratio"
+msgstr "Процентное соотношение"
+
+msgid "The discount must be more than 0 and less or equal 100"
+msgstr "Скидка должна быть больше 0 и меньше или равна 100"
+
+msgid "Coupon has been added"
+msgstr "Купон был добавлен"
+
+msgid "Selected coupons have been deleted"
+msgstr "Выбранные купоны были удалены"
+
+msgid "Selected coupons will be deleted. Are you sure?"
+msgstr "Выбранные купоны будут удалены. Вы уверены?"
+
+msgid "Add a coupon"
+msgstr "Добавить купон"
+
+msgid "Activated"
+msgstr "Активированный"
+
+msgid "Discount"
+msgstr "Скидка"
+
+msgid "Code"
+msgstr "Код"
+
+msgid "Discount coupons"
+msgstr "Скидочные купоны"
 
 msgid "Exchange rates have been edited"
 msgstr "Курсы валют были отредактированы"
@@ -81,6 +117,33 @@ msgstr "Платеж"
 msgid "Payments"
 msgstr "Платежи"
 
+msgid "Event - Editing discount coupons"
+msgstr "Редактирование скидочных купонов"
+
+msgid "Event - Discount coupon edited by guest"
+msgstr "Гость отредактировал скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Discount coupon edited by user"
+msgstr "\"%s\" отредактировал скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Adding discount coupons"
+msgstr "Добавление скидочных купонов"
+
+msgid "Event - Discount coupon added by guest"
+msgstr "Гость добавил скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Discount coupon added by user"
+msgstr "\"%s\" добавил скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Deleting discount coupons"
+msgstr "Удаление скидочных купонов"
+
+msgid "Event - Discount coupon deleted by guest"
+msgstr "Гость удалил скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Discount coupon deleted by user"
+msgstr "\"%s\" удалил скидочный купон с идентификатором - \"%d\""
+
 msgid "Event - Editing exchange rates"
 msgstr "Редактирование курсов валют"
 
@@ -134,3 +197,15 @@ msgstr "Удаление платежных валют в админке"
 
 msgid "ACL - Editing exchange rates in admin area"
 msgstr "Редактирование курсов валют в админке"
+
+msgid "ACL - Viewing discount coupons in admin area"
+msgstr "Просмотр скидочных купонов в админке"
+
+msgid "ACL - Deleting discount coupons in admin area"
+msgstr "Удаление скидочных купонов в админке"
+
+msgid "ACL - Adding discount coupons in admin area"
+msgstr "Добавление скидочных купонов в админке"
+
+msgid "ACL - Editing discount coupons in admin area"
+msgstr "Редактирование скидочных купонов в админке"

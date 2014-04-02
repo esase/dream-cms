@@ -702,6 +702,7 @@ class Module
     {
         return array(
             'invokables' => array(
+                'floatValue' => 'Application\View\Helper\FloatValue',
                 'date' => 'Application\View\Helper\Date',
                 'getSetting' => 'Application\View\Helper\Setting',
                 'headScript' => 'Application\View\Helper\HeadScript',

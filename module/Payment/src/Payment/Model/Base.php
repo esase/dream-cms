@@ -31,6 +31,26 @@ class Base extends AbstractBase
     CONST NOT_PRIMARY_CURRENCY = 0;
 
     /**
+     * Coupon activated
+     */
+    CONST COUPON_ACTIVATED = 1;
+
+    /**
+     * Coupon not activated
+     */
+    CONST COUPON_NOT_ACTIVATED = 0;
+
+    /**
+     * Coupon min slug length
+     */
+    const COUPON_MIN_SLUG_LENGTH = 15;
+
+    /**
+     * Coupon slug chars
+     */
+    const COUPON_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+    /**
      * Get exchange rates
      *
      * @return array

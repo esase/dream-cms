@@ -24,6 +24,10 @@ class Date extends AbstractHelper
             ? 'date'
             : 'date_unixtime';
 
+        if ($type == 'date_unixtime' && !(int) $date) {
+            return;
+        }
+
         $format = isset($options['format'])
             ? $options['format']
             : ApplicationService::getSetting('application_default_date_format');

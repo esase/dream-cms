@@ -5,9 +5,15 @@ namespace Application\Utility;
 use Application\Service\Service as ApplicationService;
 use Zend\I18n\Filter\NumberFormat;
 use IntlDateFormatter;
+use NumberFormatter;
 
 class Locale
 {
+    /**
+     * Max fraction digits
+     */
+    const MAX_FRACTION_DIGITS = 100;
+
     /**
      * Current locale
      * @var string
@@ -56,6 +62,9 @@ class Locale
         switch ($type) {
             case 'float' :
                 $filter = new NumberFormat(self::getLocale());
+                $filter->getFormatter()
+                        ->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, self::MAX_FRACTION_DIGITS);
+
                 return $filter->filter((float) $value);
             case 'date' :
             case 'date_unixtime' :

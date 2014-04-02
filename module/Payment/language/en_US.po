@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-03-26 12:58+0600\n"
+"PO-Revision-Date: 2014-04-02 11:19+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,42 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Coupon has been edited"
+msgstr "Coupon has been edited"
+
+msgid "Edit the coupon"
+msgstr "Edit the coupon"
+
+msgid "Percentage ratio"
+msgstr "Percentage ratio"
+
+msgid "The discount must be more than 0 and less or equal 100"
+msgstr "The discount must be more than 0 and less or equal 100"
+
+msgid "Coupon has been added"
+msgstr "Coupon has been added"
+
+msgid "Selected coupons have been deleted"
+msgstr "Selected coupons have been deleted"
+
+msgid "Selected coupons will be deleted. Are you sure?"
+msgstr "Selected coupons will be deleted. Are you sure?"
+
+msgid "Add a coupon"
+msgstr "Add a coupon"
+
+msgid "Activated"
+msgstr "Activated"
+
+msgid "Discount"
+msgstr "Discount"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Discount coupons"
+msgstr "Discount coupons"
 
 msgid "Exchange rates have been edited"
 msgstr "Exchange rates have been edited"
@@ -82,6 +118,33 @@ msgstr "Payment"
 msgid "Payments"
 msgstr "Payments"
 
+msgid "Event - Editing discount coupons"
+msgstr "Editing discount coupons"
+
+msgid "Event - Discount coupon edited by guest"
+msgstr "Guest edited the discount coupon with id - \"%d\""
+
+msgid "Event - Discount coupon edited by user"
+msgstr "\"%s\" edited the discount coupon with id - \"%d\""
+
+msgid "Event - Adding discount coupons"
+msgstr "Adding discount coupons"
+
+msgid "Event - Discount coupon added by guest"
+msgstr "Guest added the discount coupon with id - \"%d\""
+
+msgid "Event - Discount coupon added by user"
+msgstr "\"%s\" added the discount coupon with id - \"%d\""
+
+msgid "Event - Deleting discount coupons"
+msgstr "Deleting discount coupons"
+
+msgid "Event - Discount coupon deleted by guest"
+msgstr "Guest deleted the discount coupon with id - \"%d\""
+
+msgid "Event - Discount coupon deleted by user"
+msgstr "\"%s\" deleted the discount coupon with id - \"%d\""
+
 msgid "Event - Editing exchange rates"
 msgstr "Editing exchange rates"
 
@@ -135,3 +198,15 @@ msgstr "Deleting payment currencies in admin area"
 
 msgid "ACL - Editing exchange rates in admin area"
 msgstr "Editing exchange rates in admin area"
+
+msgid "ACL - Viewing discount coupons in admin area"
+msgstr "Viewing discount coupons in admin area"
+
+msgid "ACL - Deleting discount coupons in admin area"
+msgstr "Deleting discount coupons in admin area"
+
+msgid "ACL - Adding discount coupons in admin area"
+msgstr "Adding discount coupons in admin area"
+
+msgid "ACL - Editing discount coupons in admin area"
+msgstr "Editing discount coupons in admin area"

@@ -12,7 +12,8 @@ SET @menuCategoryId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `admin_menu` (`name`, `controller`, `action`, `module`, `order`, `category`) VALUES
 ('List of transactions', 'payments-administration', 'list', @moduleId, @maxOrder, @menuCategoryId),
-('Currencies', 'payments-administration', 'currencies', @moduleId, @maxOrder + 1, @menuCategoryId);
+('Currencies', 'payments-administration', 'currencies', @moduleId, @maxOrder + 1, @menuCategoryId),
+('Discount coupons', 'payments-administration', 'coupons', @moduleId, @maxOrder + 2, @menuCategoryId);
 
 INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('payments_administration_list', 'ACL - Viewing payment transactions in admin area', @moduleId),
@@ -20,19 +21,27 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('payments_administration_add_currency', 'ACL - Adding payment currencies in admin area', @moduleId),
 ('payments_administration_edit_currency', 'ACL - Editing payment currencies in admin area', @moduleId),
 ('payments_administration_delete_currencies', 'ACL - Deleting payment currencies in admin area', @moduleId),
-('payments_administration_edit_exchange_rates', 'ACL - Editing exchange rates in admin area', @moduleId);
+('payments_administration_edit_exchange_rates', 'ACL - Editing exchange rates in admin area', @moduleId),
+('payments_administration_coupons', 'ACL - Viewing discount coupons in admin area', @moduleId),
+('payments_administration_delete_coupons', 'ACL - Deleting discount coupons in admin area', @moduleId),
+('payments_administration_add_coupon', 'ACL - Adding discount coupons in admin area', @moduleId),
+('payments_administration_edit_coupon', 'ACL - Editing discount coupons in admin area', @moduleId);
 
 INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('add_payment_currency', @moduleId, 'Event - Adding payment currencies'),
 ('edit_payment_currency', @moduleId, 'Event - Editing payment currencies'),
 ('delete_payment_currency', @moduleId, 'Event - Deleting payment currencies'),
-('edit_exchange_rates', @moduleId, 'Event - Editing exchange rates');
+('edit_exchange_rates', @moduleId, 'Event - Editing exchange rates'),
+('delete_discount_coupon', @moduleId, 'Event - Deleting discount coupons'),
+('add_discount_coupon', @moduleId, 'Event - Adding discount coupons'),
+('edit_discount_coupon', @moduleId, 'Event - Editing discount coupons');
 
 CREATE TABLE IF NOT EXISTS `payment_module` (
     `module` int(10) unsigned NOT NULL,
     `update_event` varchar(50) NOT NULL,
     `delete_event` varchar(50) NOT NULL,
     `countable` tinyint(1) NOT NULL,
+    `must_login` tinyint(1) unsigned NOT NULL,
     PRIMARY KEY (`module`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE
@@ -77,16 +86,25 @@ INSERT INTO `payment_type` (`id`, `name`, `description`) VALUES
 
 CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `slug` varchar(20) NOT NULL DEFAULT '',
-    `discount` int(10) unsigned DEFAULT NULL,
+    `slug` varchar(50) NOT NULL DEFAULT '',
+    `discount` float unsigned DEFAULT NULL,
     `activated` tinyint(1) NOT NULL,
+    `date_start` int(10) unsigned NOT NULL,
+    `date_end` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `slug` (`slug`)
+    UNIQUE KEY `slug` (`slug`),
+    KEY `discount` (`discount`),
+    KEY `activated` (`activated`),
+    KEY `date_start` (`date_start`),
+    KEY `date_end` (`date_end`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `payment_transaction` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `user_id` int(10) unsigned NOT NULL,
+    `user_id` int(10) unsigned DEFAULT NULL,
+    `user_name` varchar(50) NOT NULL DEFAULT '',
+    `user_phone` varchar(255) NOT NULL DEFAULT '',
+    `user_email` varchar(255) NOT NULL DEFAULT '',
     `date` date NOT NULL,
     `paid` tinyint(1) NOT NULL,
     `currency` int(10) unsigned NOT NULL,
