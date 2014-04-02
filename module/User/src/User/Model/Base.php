@@ -224,7 +224,7 @@ class Base extends AbstractBase
             $this->uploadAvatar($userInfo['user_id'], $avatar, $userInfo['avatar'], $deleteAvatar);
 
             // clear a cache
-            $this->removeUserCache($userInfoId);
+            $this->removeUserCache($userInfo['user_id']);
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -646,6 +646,7 @@ class Base extends AbstractBase
                     'slug',
                     'status',
                     'email',
+                    'phone',
                     'role',
                     'language',
                     'time_zone',

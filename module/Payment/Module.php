@@ -2,8 +2,28 @@
 
 namespace Payment;
 
+use Zend\Mvc\MvcEvent;
+use User\Event\Event as UserEvent;
+use Payment\Event\Event as PaymentEvent;
+
 class Module
 {
+    /**
+     * Bootstrap
+     */
+    public function onBootstrap(MvcEvent $mvcEvent)
+    {
+        // update a user transactions info
+        $eventManager = PaymentEvent::getEventManager();
+        $eventManager->attach(UserEvent::EDIT, function ($e) use ($mvcEvent) {
+            $model = $mvcEvent->getApplication()->getServiceManager()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Payment\Model\Base');
+
+            $model->updateUserTransactionsInfo($e->getParam('object_id'));
+        });
+    }
+
     /**
      * Return autoloader config array
      *

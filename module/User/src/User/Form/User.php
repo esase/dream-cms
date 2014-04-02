@@ -67,6 +67,13 @@ class User extends AbstractCustomForm
             'required' => true,
             'category' => 'General info'
         ),
+        'phone' => array(
+            'name' => 'phone',
+            'type' => CustomFormBuilder::FIELD_TEXT,
+            'label' => 'Phone',
+            'required' => true,
+            'category' => 'General info'
+        ),
         'password' => array(
             'name' => 'password',
             'type' => CustomFormBuilder::FIELD_PASSWORD,

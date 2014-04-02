@@ -144,6 +144,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     `slug` varchar(100) NOT NULL DEFAULT '',
     `status` enum('approved','disapproved') NOT NULL,
     `email` varchar(255) NOT NULL DEFAULT '',
+    `phone` varchar(255) NOT NULL DEFAULT '',
     `password` varchar(40) NOT NULL DEFAULT '',
     `salt` varchar(10) NOT NULL DEFAULT '',
     `role` int(10) unsigned DEFAULT NULL,

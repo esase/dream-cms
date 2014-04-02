@@ -7,6 +7,8 @@ use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Sql\Predicate\In as InPredicate;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression;
+use Application\Utility\ErrorLogger;
+use  User\Service\Service as UserService;
 
 class Base extends AbstractBase
 {
@@ -49,6 +51,46 @@ class Base extends AbstractBase
      * Coupon slug chars
      */
     const COUPON_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+    /**
+     * Update a user transactions info
+     *
+     * @param integer $userId
+     * @return boolean|string
+     */
+    public function updateUserTransactionsInfo($userId)
+    {
+        try {
+            // get the updated user's info
+            $userInfo = UserService::getUserInfo($userId);
+
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('payment_transaction')
+                ->set(array(
+                    'user_name'  => $userInfo->nick_name,
+                    'user_email' => $userInfo->email,
+                    'user_phone' => $userInfo->phone
+                ))
+                ->where(array(
+                    'user_id' => $userId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
 
     /**
      * Get exchange rates
