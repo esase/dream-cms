@@ -1,67 +1,9 @@
-2014-03-28T06:31:22+00:00 ERR (3): exception 'PDOException' with message 'SQLSTATE[42S22]: Column not found: 1054 Unknown column 'dddssw2222ddd' in 'where clause'' in /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Db/Adapter/Driver/Pdo/Statement.php:240
+2014-04-03T12:31:50+00:00 ERR (3): exception 'Zend\ServiceManager\Exception\ServiceNotFoundException' with message 'Zend\ServiceManager\ServiceManager::get was unable to fetch or create an instance for Zend\Http\Header\SetCookie' in /var/www/srosta/vendor/zendframework/zendframework/library/Zend/ServiceManager/ServiceManager.php:529
 Stack trace:
-#0 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Db/Adapter/Driver/Pdo/Statement.php(240): PDOStatement->execute()
-#1 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Paginator/Adapter/DbSelect.php(115): Zend\Db\Adapter\Driver\Pdo\Statement->execute()
-#2 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Paginator/Paginator.php(881): Zend\Paginator\Adapter\DbSelect->count()
-#3 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Paginator/Paginator.php(560): Zend\Paginator\Paginator->_calculatePageCount()
-#4 /var/www/srosta/module/Payment/src/Payment/Model/PaymentAdministration.php(364): Zend\Paginator\Paginator->setItemCountPerPage('10')
-#5 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(363): Payment\Model\PaymentAdministration->getCoupons(1, '10', 'end', 'asc', Array)
-#6 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->couponsAction()
-#7 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
-#8 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#9 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#10 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractController.php(117): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#11 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/DispatchListener.php(114): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
-#12 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
-#13 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#14 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#15 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#16 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
-#17 {main}
-
-Next exception 'Zend\Db\Adapter\Exception\InvalidQueryException' with message 'Statement could not be executed (42S22 - 1054 - Unknown column 'dddssw2222ddd' in 'where clause')' in /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Db/Adapter/Driver/Pdo/Statement.php:245
-Stack trace:
-#0 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Paginator/Adapter/DbSelect.php(115): Zend\Db\Adapter\Driver\Pdo\Statement->execute()
-#1 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Paginator/Paginator.php(881): Zend\Paginator\Adapter\DbSelect->count()
-#2 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Paginator/Paginator.php(560): Zend\Paginator\Paginator->_calculatePageCount()
-#3 /var/www/srosta/module/Payment/src/Payment/Model/PaymentAdministration.php(364): Zend\Paginator\Paginator->setItemCountPerPage('10')
-#4 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(363): Payment\Model\PaymentAdministration->getCoupons(1, '10', 'end', 'asc', Array)
-#5 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->couponsAction()
-#6 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
-#7 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#8 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#9 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractController.php(117): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#10 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/DispatchListener.php(114): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
-#11 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
-#12 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#13 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#14 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#15 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
-#16 {main}
-2014-03-28T09:59:08+00:00 ERR (3): exception 'Zend\Math\Exception\DomainException' with message 'Length should be >= 1' in /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Math/Rand.php:192
-Stack trace:
-#0 /var/www/srosta/module/Application/src/Application/Utility/Slug.php(42): Zend\Math\Rand::getString('abcdefghijklmno...', NULL, true)
-#1 /var/www/srosta/module/Application/src/Application/Model/AbstractBase.php(179): Application\Utility\Slug::generateRandomSlug('abcdefghijklmno...', NULL)
-#2 /var/www/srosta/module/Payment/src/Payment/Model/PaymentAdministration.php(200): Application\Model\AbstractBase->generateRandString('abcdefghijklmno...')
-#3 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(339): Payment\Model\PaymentAdministration->addCoupon(Array)
-#4 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->addCouponAction()
-#5 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
-#6 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#7 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#8 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractController.php(117): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#9 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/DispatchListener.php(114): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
-#10 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
-#11 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#12 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#13 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#14 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
-#15 {main}
-2014-04-02T05:06:32+00:00 ERR (3): exception 'PDOException' with message 'SQLSTATE[42S22]: Column not found: 1054 Unknown column 'payment_discount_cupon.ate_end' in 'field list'' in /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Db/Adapter/Driver/Pdo/Statement.php:240
-Stack trace:
-#0 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Db/Adapter/Driver/Pdo/Statement.php(240): PDOStatement->execute()
-#1 /var/www/srosta/module/Payment/src/Payment/Model/PaymentAdministration.php(194): Zend\Db\Adapter\Driver\Pdo\Statement->execute()
-#2 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(321): Payment\Model\PaymentAdministration->getCouponInfo('1')
-#3 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->editCouponAction()
+#0 /var/www/srosta/module/Payment/src/Payment/Model/Base.php(97): Zend\ServiceManager\ServiceManager->get('Zend\Http\Heade...')
+#1 /var/www/srosta/module/Payment/src/Payment/Model/Base.php(73): Payment\Model\Base->_getBasketId()
+#2 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(54): Payment\Model\Base->getBasketId()
+#3 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->listAction()
 #4 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
 #5 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
 #6 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
@@ -73,20 +15,20 @@ Stack trace:
 #12 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
 #13 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
 #14 {main}
-
-Next exception 'Zend\Db\Adapter\Exception\InvalidQueryException' with message 'Statement could not be executed (42S22 - 1054 - Unknown column 'payment_discount_cupon.ate_end' in 'field list')' in /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Db/Adapter/Driver/Pdo/Statement.php:245
+2014-04-03T12:32:01+00:00 ERR (3): exception 'Zend\ServiceManager\Exception\ServiceNotFoundException' with message 'Zend\ServiceManager\ServiceManager::get was unable to fetch or create an instance for SetCookie' in /var/www/srosta/vendor/zendframework/zendframework/library/Zend/ServiceManager/ServiceManager.php:529
 Stack trace:
-#0 /var/www/srosta/module/Payment/src/Payment/Model/PaymentAdministration.php(194): Zend\Db\Adapter\Driver\Pdo\Statement->execute()
-#1 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(321): Payment\Model\PaymentAdministration->getCouponInfo('1')
-#2 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->editCouponAction()
-#3 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
-#4 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#5 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#6 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractController.php(117): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#7 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/DispatchListener.php(114): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
-#8 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
-#9 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
-#10 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#11 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
-#12 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
-#13 {main}
+#0 /var/www/srosta/module/Payment/src/Payment/Model/Base.php(97): Zend\ServiceManager\ServiceManager->get('SetCookie')
+#1 /var/www/srosta/module/Payment/src/Payment/Model/Base.php(73): Payment\Model\Base->_getBasketId()
+#2 /var/www/srosta/module/Payment/src/Payment/Controller/PaymentAdministrationController.php(54): Payment\Model\Base->getBasketId()
+#3 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractActionController.php(83): Payment\Controller\PaymentAdministrationController->listAction()
+#4 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
+#5 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#6 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#7 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Controller/AbstractController.php(117): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#8 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/DispatchListener.php(114): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
+#9 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
+#10 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(468): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#11 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/EventManager/EventManager.php(207): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#12 /var/www/srosta/vendor/zendframework/zendframework/library/Zend/Mvc/Application.php(316): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#13 /var/www/srosta/public/index.php(17): Zend\Mvc\Application->run()
+#14 {main}

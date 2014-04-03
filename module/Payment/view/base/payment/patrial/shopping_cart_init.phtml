@@ -1,0 +1,6 @@
+<?php $this->headScript()->appendFile($this->asset('payment.js', 'js', 'payment')) ?>
+
+<?php $this->inlineScript()->captureStart() ?>
+    var payment = new Payment();
+    payment.setServerUrl('<?php echo $this->url(null, array('controller' => 'payment')) ?>');
+<?php $this->inlineScript()->captureEnd() ?>

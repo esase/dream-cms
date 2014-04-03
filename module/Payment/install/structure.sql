@@ -36,6 +36,14 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('add_discount_coupon', @moduleId, 'Event - Adding discount coupons'),
 ('edit_discount_coupon', @moduleId, 'Event - Editing discount coupons');
 
+SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'head' ORDER BY `order` DESC LIMIT 1), 1);
+INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
+('head', 'payment/patrial/shopping_cart_init', @moduleId, @maxOrder);
+
+SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'body' ORDER BY `order` DESC LIMIT 1), 1);
+INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
+('body', 'payment/patrial/shopping_cart', @moduleId, @maxOrder);
+
 CREATE TABLE IF NOT EXISTS `payment_module` (
     `module` int(10) unsigned NOT NULL,
     `update_event` varchar(50) NOT NULL,
@@ -135,11 +143,27 @@ CREATE TABLE IF NOT EXISTS `payment_transaction_item` (
     `amount` float unsigned DEFAULT NULL,
     `discount` float unsigned DEFAULT NULL,
     `count` int(10) unsigned DEFAULT NULL,
+    `deleted` tinyint(1) NOT NULL,
     PRIMARY KEY (`object_id`, `module`, `transaction_id`),
     FOREIGN KEY (transaction_id) REFERENCES payment_transaction(id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    FOREIGN KEY (module) REFERENCES payment_module(module)
-        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/* TEST DATA */
+INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
+('Membership', 'custom', 1, '0.9.0', 'eSASe', 'alexermashev@gmail.com', '', '');
+
+SET @moduleId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `payment_module` (`countable`, `must_login`, `module`) VALUES
+(0, 1, @moduleId);
+
+INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
+('Shop', 'custom', 1, '0.9.0', 'eSASe', 'alexermashev@gmail.com', '', '');
+
+SET @moduleId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `payment_module` (`countable`, `must_login`, `module`) VALUES
+(1, 0, @moduleId);

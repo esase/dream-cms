@@ -3,7 +3,8 @@
 return array(
     'controllers' => array(
         'invokables' => array(
-            'payments-administration' => 'Payment\Controller\PaymentAdministrationController'
+            'payments-administration' => 'Payment\Controller\PaymentAdministrationController',
+            'payment' => 'Payment\Controller\PaymentController'
         )
     ),
     'router' => array(
@@ -22,6 +23,7 @@ return array(
     ),
     'view_helpers' => array(
         'invokables' => array(
+            'processCost' => 'Payment\View\Helper\ProcessCost',
         )
     )
 );

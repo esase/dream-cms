@@ -675,7 +675,7 @@ class Module
                 'Application\Model\ModelManager' => function($serviceManager)
                 {
                     return new Model\ModelManager($serviceManager->
-                            get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Cache\Static'));
+                            get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Cache\Static'), $serviceManager);
                 },
                 'Application\Form\FormManager' => function($serviceManager)
                 {
@@ -730,6 +730,14 @@ class Module
                         ->getInstance('Application\Model\AdminMenu');
 
                     return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
+                },
+                'injection' =>  function($serviceManager)
+                {
+                    $injection = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\Injection');
+
+                    return new \Application\View\Helper\Injection($injection->getInjections());
                 },
                 'currentRoute' =>  function($serviceManager)
                 {

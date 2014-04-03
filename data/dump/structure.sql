@@ -537,3 +537,15 @@ INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order
 (5, 'Settings', 'users-administration', 'settings', 2, 5, 3),
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4),
 (7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4);
+
+CREATE TABLE IF NOT EXISTS `injection` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `position` enum('head', 'body','footer') NOT NULL,
+    `patrial` varchar(255) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    `order` int(10) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

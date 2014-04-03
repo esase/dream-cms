@@ -14,10 +14,11 @@
 
         <!-- Le styles -->
         <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icon/favicon.ico', 'image')))
+            ->prependStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr() ? 'administration.css' : 'administration.rtl.css'), 'css')) 
+            ->prependStylesheet($this->asset('jquery-ui.css', 'css'))
             ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
             ->prependStylesheet($this->asset('bootstrap.css', 'css'))
-            ->appendStylesheet($this->asset('jquery-ui.css', 'css'))
-            ->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr() ? 'administration.css' : 'administration.rtl.css'), 'css')) ?>
+        ?>
 
         <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
             <?php $this->headLink()->appendStylesheet($this->asset('bootstrap.rtl.css', 'css')) ?>
@@ -27,10 +28,10 @@
 
         <!-- Scripts -->
         <?php echo $this->headScript()
+            ->prependFile($this->asset('jquery.cookie.js'))
+            ->prependFile($this->asset('bootstrap.js'))
+            ->prependFile($this->asset('jquery-ui.js'))            
             ->prependFile($this->asset('jquery-1.11.0.js'))
-            ->appendFile($this->asset('jquery.cookie.js'))
-            ->appendFile($this->asset('bootstrap.js'))
-            ->appendFile($this->asset('jquery-ui.js'))
             ->prependFile($this->asset('respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
             ->prependFile($this->asset('html5shiv.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
         ?>

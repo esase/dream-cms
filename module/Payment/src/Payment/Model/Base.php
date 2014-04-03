@@ -8,7 +8,8 @@ use Zend\Db\Sql\Predicate\In as InPredicate;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression;
 use Application\Utility\ErrorLogger;
-use  User\Service\Service as UserService;
+use User\Service\Service as UserService;
+use Zend\Http\Header\SetCookie;
 
 class Base extends AbstractBase
 {
@@ -51,6 +52,98 @@ class Base extends AbstractBase
      * Coupon slug chars
      */
     const COUPON_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+    /**
+     * Basket cookie
+     */ 
+    CONST BASKET_COOKIE = 'basket';
+
+    //TODO: move this into settings
+    /**
+     * Basket cookie life time
+     */ 
+    const BASKET_COOKIE_LIFE_TIME = 18000000;
+
+    /**
+     * Basket id length
+     */
+    const BASKET_ID_LENGTH = 50;
+
+    /**
+     * Get basket id
+     *
+     * @return string
+     */
+    public function getBasketId()
+    {
+        return current(explode( '|', $this->_getBasketId()));
+    }
+
+    /**
+     * Get basket uid
+     *
+     * @return string
+     */
+    private function _getBasketId()
+    {
+        $request  = $this->serviceManager->get('Request');
+        $basketId = !empty($request->getCookie()->{self::BASKET_COOKIE})
+            ? $request->getCookie()->{self::BASKET_COOKIE}
+            : null;
+
+        // generate a new basket id
+        if (!$basketId) {
+            // generate a new hash
+            $basketId =  md5(time() . '_' . $this->generateRandString(self::BASKET_ID_LENGTH));
+            $this->_saveBasketCookie($basketId);
+        }
+
+        return $basketId;
+    }
+
+    /**
+     * Save a basket cookie
+     *
+     * @param string $value
+     * @return void
+     */
+    private function _saveBasketCookie($value)
+    {
+        $header = new SetCookie();
+        $header->setName(self::BASKET_COOKIE)
+            ->setValue($value)
+            ->setPath('/')
+            ->setExpires(time() + self::BASKET_COOKIE_LIFE_TIME);
+
+        $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
+    }
+
+    /**
+     * Save basket currency
+     *
+     * @param string $currency
+     * @return void
+     */
+    public function setBasketCurrency($currency)
+    {
+        $basketId = $this->getBasketId();
+        $value = $basketId . '|' . $currency;
+
+        $this->_saveBasketCookie($value);
+    }
+
+    /**
+     * Get basket currency
+     *
+     * @return sting
+     */
+    public function getBasketCurrency()
+    {
+        $currencyId = explode( '|', $this->_getBasketId());
+        return count($currencyId) == 2
+            ? end($currencyId)
+            : null;
+    }
 
     /**
      * Update a user transactions info
