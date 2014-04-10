@@ -19,6 +19,7 @@ class ErrorController extends AbstractBaseController
      */
     public function forbiddenAction()
     {
+        $this->layout('layout/error');
         $this->getResponse()->setStatusCode(Response::STATUS_CODE_403);
     }
 }

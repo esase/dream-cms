@@ -715,15 +715,15 @@ class Module
                 'fileSize' => 'Application\View\Helper\FileSize',
             ),
             'factories' => array(
-                'asset' =>  function($serviceManager)
+                'asset' =>  function()
                 {
-                    return new \Application\View\Helper\Asset($serviceManager->getServiceLocator()->get('Cache\Dynamic'));
+                    return new \Application\View\Helper\Asset($this->serviceManager->get('Cache\Dynamic'));
                 },
-                'booleanValue' =>  function($serviceManager)
+                'booleanValue' =>  function()
                 {
-                    return new \Application\View\Helper\BooleanValue($serviceManager->getServiceLocator()->get('Translator'));
+                    return new \Application\View\Helper\BooleanValue($this->serviceManager->get('Translator'));
                 },
-                'adminMenu' =>  function($serviceManager)
+                'adminMenu' =>  function()
                 {
                     $adminMenu = $this->serviceManager
                         ->get('Application\Model\ModelManager')
@@ -731,7 +731,7 @@ class Module
 
                     return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
                 },
-                'injection' =>  function($serviceManager)
+                'injection' =>  function()
                 {
                     $injection = $this->serviceManager
                         ->get('Application\Model\ModelManager')
@@ -739,7 +739,7 @@ class Module
 
                     return new \Application\View\Helper\Injection($injection->getInjections());
                 },
-                'currentRoute' =>  function($serviceManager)
+                'currentRoute' =>  function()
                 {
                     $router = $this->serviceManager->get('router');
                     $request = $this->serviceManager->get('request');
@@ -747,9 +747,9 @@ class Module
 
                     return new \Application\View\Helper\CurrentRoute($matches, $request->getQuery());
                 },
-                'flashMessage' => function($serviceManager)
+                'flashMessage' => function()
                 {
-                    $flashmessenger = $serviceManager->getServiceLocator()
+                    $flashmessenger = $this->serviceManager
                         ->get('ControllerPluginManager')
                         ->get('flashmessenger');
  

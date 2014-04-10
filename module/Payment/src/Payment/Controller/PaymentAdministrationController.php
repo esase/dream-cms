@@ -38,6 +38,16 @@ class PaymentAdministrationController extends AbstractBaseController
     }
 
     /**
+     * Settings
+     */
+    public function settingsAction()
+    {
+        return new ViewModel(array(
+            'settingsForm' => parent::settingsForm('payment', 'payments-administration', 'settings')
+        ));
+    }
+
+    /**
      * Default action
      */
     public function indexAction()

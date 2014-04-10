@@ -10,6 +10,11 @@ use Zend\Db\Sql\Expression;
 use Application\Utility\ErrorLogger;
 use User\Service\Service as UserService;
 use Zend\Http\Header\SetCookie;
+use Application\Service\Service as ApplicationService;
+use Exception;
+use Application\Utility\Cache as CacheUtility;
+use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
+use Zend\Form\Exception\InvalidArgumentException;
 
 class Base extends AbstractBase
 {
@@ -54,92 +59,339 @@ class Base extends AbstractBase
     const COUPON_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
     /**
-     * Basket cookie
+     * Shopping cart cookie
      */ 
-    CONST BASKET_COOKIE = 'basket';
-
-    //TODO: move this into settings
-    /**
-     * Basket cookie life time
-     */ 
-    const BASKET_COOKIE_LIFE_TIME = 18000000;
+    CONST SHOPPING_CART_COOKIE = 'shopping_cart';
 
     /**
      * Basket id length
      */
-    const BASKET_ID_LENGTH = 50;
+    const SHOPPING_CART_ID_LENGTH = 50;
 
     /**
-     * Get basket id
-     *
-     * @return string
+     * Item count limit reached flag
+     */ 
+    CONST ITEM_COUNT_LIMIT_REACHED = 1;
+
+    /**
+     * Item count limit not reached flag
+     */ 
+    CONST ITEM_COUNT_LIMIT_NOT_REACHED = 0;
+
+    /**
+     * Item is not available flag
+     */ 
+    CONST ITEM_NOT_AVAILABLE = 0;
+
+    /**
+     * Item is available flag
+     */ 
+    CONST ITEM_AVAILABLE = 1;
+
+    /**
+     * Item deleted flag
+     */ 
+    CONST ITEM_DELETED = 1;
+
+    /**
+     * Item not deleted flag
+     */ 
+    CONST ITEM_NOT_DELETED = 0;
+
+    /**
+     * Payment modules cache
      */
-    public function getBasketId()
+    const CACHE_PAYMENT_MODULES = 'Payment_Modules';
+
+    /**
+     * Payment exchange rates cache
+     */
+    const CACHE_EXCHANGE_RATES = 'Payment_Exchange_Rates';
+
+    /**
+     * Get all active shopping cart items
+     *
+     * @return array
+     */
+    public function getAllShoppingCartItems()
     {
-        return current(explode( '|', $this->_getBasketId()));
+        $select = $this->select();
+        $select->from('payment_shopping_cart')
+            ->columns(array(
+                'cost',
+                'discount',
+                'count'
+            ))
+            ->where(array(
+                'available' => self::ITEM_AVAILABLE,
+                'count_limit' => self::ITEM_COUNT_LIMIT_NOT_REACHED,
+                'deleted' => self::ITEM_NOT_DELETED,
+                'shopping_cart_id' => $this->getShoppingCartId()
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result;
     }
 
     /**
-     * Get basket uid
+     * Mark items as deleted
      *
-     * @return string
+     * @param integer $objectId
+     * @param array $moduleInfo
+     *      integer module
+     *      string update_event
+     *      string delete_event
+     *      string view_controller
+     *      string view_action
+     *      integer countable
+     *      integer must_login
+     *      string handler
+     * @return boolean|string
      */
-    private function _getBasketId()
+    public function updateItemsInfo($objectId, $moduleInfo)
     {
-        $request  = $this->serviceManager->get('Request');
-        $basketId = !empty($request->getCookie()->{self::BASKET_COOKIE})
-            ? $request->getCookie()->{self::BASKET_COOKIE}
-            : null;
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-        // generate a new basket id
-        if (!$basketId) {
-            // generate a new hash
-            $basketId =  md5(time() . '_' . $this->generateRandString(self::BASKET_ID_LENGTH));
-            $this->_saveBasketCookie($basketId);
+            // create a payment handler class instance
+            $object = new $moduleInfo['handler']($this->serviceManager);
+            if (!$object instanceof PaymentInterfaceHandler) {
+                throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Handler\InterfaceHandler',
+                        $moduleInfo['handler']));
+            }
+
+            // object is not active
+            if (null == ($objectInfo = $object->getItemInfo($objectId))) {
+                $update = $this->update()
+                    ->table('payment_shopping_cart')
+                    ->set(array(
+                        'available'  => self::ITEM_NOT_AVAILABLE
+                    ))
+                    ->where(array(
+                        'object_id' => $objectId,
+                        'module' => $moduleInfo['module']
+                    ));
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+
+                $update = $this->update()
+                    ->table('payment_transaction_item')
+                    ->set(array(
+                        'available'  => self::ITEM_NOT_AVAILABLE
+                    ))
+                    ->where(array(
+                        'object_id' => $objectId,
+                        'module' => $moduleInfo['module']
+                    ));
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+            else {
+                $data = array(
+                    'title' =>  $objectInfo['title'],
+                    'slug'  =>  $objectInfo['slug'],
+                    'count_limit' => $objectInfo['count'] <= 0 && $moduleInfo['countable']
+                            ? self::ITEM_COUNT_LIMIT_REACHED : self::ITEM_COUNT_LIMIT_NOT_REACHED,
+                    'available' => self::ITEM_AVAILABLE
+                );
+
+                $update = $this->update()
+                    ->table('payment_shopping_cart')
+                    ->set($data)
+                    ->where(array(
+                        'object_id' => $objectId,
+                        'module' => $moduleInfo['module']
+                    ));
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+
+                $update = $this->update()
+                    ->table('payment_transaction_item')
+                    ->set($data)
+                    ->where(array(
+                        'object_id' => $objectId,
+                        'module' => $moduleInfo['module']
+                    ));
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
         }
 
-        return $basketId;
+        return true;
     }
 
     /**
-     * Save a basket cookie
+     * Mark items as deleted
+     *
+     * @param integer $objectId
+     * @param integer $moduleId
+     * @return boolean|string
+     */
+    public function markItemsDeleted($objectId, $moduleId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('payment_shopping_cart')
+                ->set(array(
+                    'deleted'  => self::ITEM_DELETED
+                ))
+                ->where(array(
+                    'object_id' => $objectId,
+                    'module' => $moduleId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $update = $this->update()
+                ->table('payment_transaction_item')
+                ->set(array(
+                    'deleted'  => self::ITEM_DELETED
+                ))
+                ->where(array(
+                    'object_id' => $objectId,
+                    'module' => $moduleId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
+     * Get payment modules
+     *
+     * @return array
+     */
+    public function getPaymentModules()
+    {
+        // generate cache name
+        $cacheName = CacheUtility::getCacheName(self::CACHE_PAYMENT_MODULES);
+
+        // check data in cache
+        if (null === ($modules = $this->staticCacheInstance->getItem($cacheName))) {
+            $select = $this->select();
+            $select->from('payment_module')
+                ->columns(array(
+                    'module',
+                    'update_event',
+                    'delete_event',
+                    'view_controller',
+                    'view_action',
+                    'countable',
+                    'must_login',
+                    'handler'
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+            $modules = $resultSet->toArray();
+
+            // save data in cache
+            $this->staticCacheInstance->setItem($cacheName, $modules);
+        }
+
+        return $modules;
+    }
+
+    /**
+     * Get shopping cart id
+     *
+     * @return string
+     */
+    public function getShoppingCartId()
+    {
+        return current(explode( '|', $this->_getShoppingCartId()));
+    }
+
+    /**
+     * Get shopping cart uid
+     *
+     * @return string
+     */
+    private function _getShoppingCartId()
+    {
+        $request  = $this->serviceManager->get('Request');
+        $shoppingCartId = !empty($request->getCookie()->{self::SHOPPING_CART_COOKIE})
+            ? $request->getCookie()->{self::SHOPPING_CART_COOKIE}
+            : null;
+
+        // generate a new shopping cart id
+        if (!$shoppingCartId) {
+            // generate a new hash
+            $shoppingCartId =  md5(time() . '_' . $this->generateRandString(self::SHOPPING_CART_ID_LENGTH));
+            $this->_saveShoppingCartCookie($shoppingCartId);
+        }
+
+        return $shoppingCartId;
+    }
+
+    /**
+     * Save a shopping cart cookie
      *
      * @param string $value
      * @return void
      */
-    private function _saveBasketCookie($value)
+    private function _saveShoppingCartCookie($value)
     {
         $header = new SetCookie();
-        $header->setName(self::BASKET_COOKIE)
+        $header->setName(self::SHOPPING_CART_COOKIE)
             ->setValue($value)
             ->setPath('/')
-            ->setExpires(time() + self::BASKET_COOKIE_LIFE_TIME);
+            ->setExpires(time() + (int) ApplicationService::getSetting('payment_shopping_cart_session_time'));
 
         $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
     }
 
     /**
-     * Save basket currency
+     * Save shopping cart currency
      *
      * @param string $currency
      * @return void
      */
-    public function setBasketCurrency($currency)
+    public function setShoppingCartCurrency($currency)
     {
-        $basketId = $this->getBasketId();
-        $value = $basketId . '|' . $currency;
+        $shoppingCartId = $this->getShoppingCartId();
+        $value = $shoppingCartId . '|' . $currency;
 
-        $this->_saveBasketCookie($value);
+        $this->_saveShoppingCartCookie($value);
     }
 
     /**
-     * Get basket currency
+     * Get shopping cart currency
      *
      * @return sting
      */
-    public function getBasketCurrency()
+    public function getShoppingCartCurrency()
     {
-        $currencyId = explode( '|', $this->_getBasketId());
+        $currencyId = explode( '|', $this->_getShoppingCartId());
         return count($currencyId) == 2
             ? end($currencyId)
             : null;
@@ -192,40 +444,48 @@ class Base extends AbstractBase
      */
     public function getExchangeRates()
     {
-        $select = $this->select();
-        $select->from(array('a' => 'payment_currency'))
-            ->columns(array(
-                'id',
-                'code',
-                'name',
-                'primary_currency'
-            ))
-            ->join(
-                array('b' => 'payment_exchange_rate'),
-                new Expression('a.id = b.currency'),
-                array(
-                    'rate'
-                ),
-                'left'
-            )
-            ->where(array(
-                new NotInPredicate('primary_currency', array(self::PRIMARY_CURRENCY))
-            ));
+        // generate cache name
+        $cacheName = CacheUtility::getCacheName(self::CACHE_EXCHANGE_RATES);
 
-        $statement = $this->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        // check data in cache
+        if (null === ($rates = $this->staticCacheInstance->getItem($cacheName))) {
+            $select = $this->select();
+            $select->from(array('a' => 'payment_currency'))
+                ->columns(array(
+                    'id',
+                    'code',
+                    'name',
+                    'primary_currency'
+                ))
+                ->join(
+                    array('b' => 'payment_exchange_rate'),
+                    new Expression('a.id = b.currency'),
+                    array(
+                        'rate'
+                    ),
+                    'left'
+                )
+                ->where(array(
+                    new NotInPredicate('primary_currency', array(self::PRIMARY_CURRENCY))
+                ));
+    
+            $statement = $this->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+    
+            foreach ($result as $rate) {
+                $rates[$rate['code']] = array(
+                    'id' => $rate['id'],
+                    'code' => $rate['code'],
+                    'name' => $rate['name'],
+                    'rate' => $rate['rate']
+                );    
+            }
 
-        $processedRates = array();
-        foreach ($result as $rate) {
-            $processedRates[$rate['code']] = array(
-                'id' => $rate['id'],
-                'code' => $rate['code'],
-                'name' => $rate['name'],
-                'rate' => $rate['rate']
-            );    
+            // save data in cache
+            $this->staticCacheInstance->setItem($cacheName, $rates);
         }
 
-        return $processedRates;
+        return $rates;        
     }
 
     /**

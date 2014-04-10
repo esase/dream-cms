@@ -7,10 +7,10 @@ Payment = function()
     var serverUrl;
 
     /**
-     * Popup modal id
+     * Popup shopping's cart window id
      * @var string
      */
-    var popupModalId = '#popup-payment';
+    var popupShoppingCartId = '#popup-shopping-cart-window';
 
     /**
      * Current object
@@ -19,21 +19,62 @@ Payment = function()
     var self = this;
 
     /**
-     * Add to basket
+     * Show popup's shopping cart
+     *
+     * @param object|string data
+     * @return void
+     */
+    var showPopupShoppingCart = function(data)
+    {
+        // send form data
+        $.post(serverUrl + '/add-to-shopping-cart', data, function(data) {
+            $(document.body).append(data);
+            $(popupShoppingCartId).on('hidden.bs.modal', function (e) {
+               $(this).remove();
+            }).modal('show');
+        });
+    }
+
+    /**
+     * Add to shopping cart
      *
      * @param integer objectId
      * @param string module
+     * @param integer count
      * @return void
      */
-    this.addToBasket = function(objectId, module)
+    this.addToShoppingCart = function(objectId, module, count)
     {
-        // remove previously loaded popup
-        $(popupModalId).remove();
-
-        $.post(this.serverUrl + '/' + 'add-to-basket', {'objectId': objectId, 'module': module}, function(data) {
-            $(document.body).append(data);
-            $(popupModalId).modal('show');
+        showPopupShoppingCart({
+            'object_id': objectId,
+            'module': module,
+            'count' : (typeof count != 'undefined' ? count : 0)
         });
+    }
+
+    /**
+     * Send a shopping cart's form
+     *
+     * @return void
+     */
+    this.sendShoppingCartForm = function()
+    {
+        var $popup = $(popupShoppingCartId);
+
+        // remove previously loaded popup
+        $popup.on('hidden.bs.modal', function (e) {
+            showPopupShoppingCart($popup.find('form:first').serialize());
+        }).modal('hide');
+    }
+
+    /**
+     * Update shopping cart
+     *
+     * @return void
+     */
+    this.updateShoppingCart = function()
+    {
+        alert('update shopping cart');
     }
 
     /**
@@ -44,7 +85,7 @@ Payment = function()
      */
     this.setServerUrl = function(url)
     {
-        this.serverUrl = url;
+        serverUrl = url;
         return this;
     }
 }

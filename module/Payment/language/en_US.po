@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-02 11:19+0600\n"
+"PO-Revision-Date: 2014-04-10 19:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,60 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Currency"
+msgstr "Currency"
+
+msgid "Shopping cart info"
+msgstr "%d item(s) - %s"
+
+msgid "Shopping cart"
+msgstr "Shopping cart"
+
+msgid "Time of clearing shopping cart and not paid transactions in seconds"
+msgstr "Time of clearing shopping cart and not paid transactions in seconds"
+
+msgid "Item not available"
+msgstr "Item not available"
+
+msgid "Item count must be less or equal %d"
+msgstr "Item count must be less or equal %d"
+
+msgid "Max items count description"
+msgstr "Maximum allowed items count is %d"
+
+msgid "Item already added into your shopping cart"
+msgstr "Item already added into your shopping cart"
+
+msgid "Item has been added to your shopping cart"
+msgstr "Item has been added to your shopping cart"
+
+msgid "Choose the tariff"
+msgstr "Choose the tariff"
+
+msgid "Received module not found"
+msgstr "Received module \"%s\" not found"
+
+msgid "Item discount info"
+msgstr "You have a  discount %s"
+
+msgid "Use discount"
+msgstr "Use discount"
+
+msgid "Item count must be more than 0"
+msgstr "Item count must be more than 0"
+
+msgid "Item count"
+msgstr "Item count"
+
+msgid "Sorry but the item not found or not activated"
+msgstr "Sorry but the item not found or not activated"
+
+msgid "Add the item to the shopping cart"
+msgstr "Add the item to the shopping cart"
+
+msgid "The shopping cart's id lifetime in seconds"
+msgstr "The shopping cart's id lifetime in seconds"
 
 msgid "Coupon has been edited"
 msgstr "Coupon has been edited"
@@ -118,6 +172,15 @@ msgstr "Payment"
 msgid "Payments"
 msgstr "Payments"
 
+msgid "Event - Adding items to the shopping cart"
+msgstr "Adding items to the shopping cart"
+
+msgid "Event - Item added to shopping cart by guest"
+msgstr "Guest added an item to the shopping cart with id - \"%d\""
+
+msgid "Event - Item added to shopping cart by user"
+msgstr "\"%s\" added an item to the shopping cart with id - \"%d\""
+
 msgid "Event - Editing discount coupons"
 msgstr "Editing discount coupons"
 
@@ -210,3 +273,6 @@ msgstr "Adding discount coupons in admin area"
 
 msgid "ACL - Editing discount coupons in admin area"
 msgstr "Editing discount coupons in admin area"
+
+msgid "ACL - Editing payments settings in admin area"
+msgstr "Editing payments settings in admin area"

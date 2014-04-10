@@ -40,4 +40,9 @@ class Event extends ApplicationEvent
      * Edit discount coupon event
      */
     const EDIT_DISCOUNT_COUPON = 'edit_discount_coupon';
+
+    /**
+     * Add item to shopping cart event
+     */
+    const ADD_ITEM_TO_SHOPPING_CART = 'add_item_to_shopping_cart';
 }

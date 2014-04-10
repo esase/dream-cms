@@ -10,6 +10,8 @@ use Application\Utility\ErrorLogger;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Sql\Expression;
 use Zend\Db\ResultSet\ResultSet;
+use Exception;
+use Application\Utility\Cache as CacheUtility;
 
 class PaymentAdministration extends Base
 {
@@ -31,25 +33,6 @@ class PaymentAdministration extends Base
             ));
 
         $statement = $this->prepareStatementForSqlObject($update);
-        $result = $statement->execute();
-
-        return $result->count() ? true : false;
-    }
-
-    /**
-     * Delete not paid transactions
-     *
-     * @return integer
-     */
-    protected function deleteNotPaidTransactions()
-    {
-        $delete = $this->delete()
-            ->from('payment_transaction')
-            ->where(array(
-                'paid' => self::TRANSACTION_NOT_PAID
-            ));
-
-        $statement = $this->prepareStatementForSqlObject($delete);
         $result = $statement->execute();
 
         return $result->count() ? true : false;
@@ -107,6 +90,7 @@ class PaymentAdministration extends Base
                 $statement->execute();
             }
 
+            $this->staticCacheInstance->removeItem(CacheUtility::getCacheName(self::CACHE_EXCHANGE_RATES));
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -152,7 +136,6 @@ class PaymentAdministration extends Base
                         $oldCurrencyInfo['primary_currency'] == self::NOT_PRIMARY_CURRENCY) {
 
                 $this->skippActivatedPrimaryCurrency($oldCurrencyInfo['id']);
-                $this->deleteNotPaidTransactions();
                 $this->clearExchangeRates();
             }
 
@@ -310,7 +293,6 @@ class PaymentAdministration extends Base
             // skip the previously activated primary currency
             if ((int) $currencyInfo['primary_currency'] == self::PRIMARY_CURRENCY) {
                 $this->skippActivatedPrimaryCurrency($insertId);
-                $this->deleteNotPaidTransactions();
                 $this->clearExchangeRates();
             }
 

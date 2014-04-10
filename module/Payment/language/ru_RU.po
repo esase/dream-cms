@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-02 11:19+0600\n"
+"PO-Revision-Date: 2014-04-10 19:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,60 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Currency"
+msgstr "Валюта"
+
+msgid "Shopping cart info"
+msgstr "%d шт. - %s"
+
+msgid "Shopping cart"
+msgstr "Корзина"
+
+msgid "Time of clearing shopping cart and not paid transactions in seconds"
+msgstr "Время очистки корзины и не оплаченных транзакций в секундах"
+
+msgid "Item not available"
+msgstr "Товар не доступен"
+
+msgid "Item count must be less or equal %d"
+msgstr "Количество товара должно быть меньше или равно %d"
+
+msgid "Max items count description"
+msgstr "Максимально допустимое количество элементов %d"
+
+msgid "Item already added into your shopping cart"
+msgstr "Товар уже добавлен в корзину"
+
+msgid "Item has been added to your shopping cart"
+msgstr "Товар добавлен в корзину покупок"
+
+msgid "Choose the tariff"
+msgstr "Выберите тариф"
+
+msgid "Received module not found"
+msgstr "Полученный модуль \"%s\" не найден"
+
+msgid "Item discount info"
+msgstr "У вас есть скидка %s"
+
+msgid "Use discount"
+msgstr "Использовать скидку"
+
+msgid "Item count must be more than 0"
+msgstr "Количество товара должно быть больше 0"
+
+msgid "Item count"
+msgstr "Количество товара"
+
+msgid "Sorry but the item not found or not activated"
+msgstr "Жаль, но этот товар не найден или не активирован"
+
+msgid "Add the item to the shopping cart"
+msgstr "Добавить товар в корзину"
+
+msgid "The shopping cart's ID lifetime in seconds"
+msgstr "Время жизни идентификатора корзины в секундах"
 
 msgid "Coupon has been edited"
 msgstr "Купон был отредактирован"
@@ -117,6 +171,15 @@ msgstr "Платеж"
 msgid "Payments"
 msgstr "Платежи"
 
+msgid "Event - Adding items to the shopping cart"
+msgstr "Добавление товаров в корзину"
+
+msgid "Event - Item added to shopping cart by guest"
+msgstr "Гость добавил товар в корзину с идентификатором - \"%d\""
+
+msgid "Event - Item added to shopping cart by user"
+msgstr "\"%s\" добавил товар в корзину с идентификатором - \"%d\""
+
 msgid "Event - Editing discount coupons"
 msgstr "Редактирование скидочных купонов"
 
@@ -209,3 +272,6 @@ msgstr "Добавление скидочных купонов в админке
 
 msgid "ACL - Editing discount coupons in admin area"
 msgstr "Редактирование скидочных купонов в админке"
+
+msgid "ACL - Editing payments settings in admin area"
+msgstr "Изменение платежных настроек в админке"
