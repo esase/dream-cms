@@ -42,7 +42,22 @@ class Event extends ApplicationEvent
     const EDIT_DISCOUNT_COUPON = 'edit_discount_coupon';
 
     /**
+     * Activate discount coupon event
+     */
+    const ACTIVATE_DISCOUNT_COUPON = 'activate_discount_coupon';
+
+    /**
+     * Deactivate discount coupon event
+     */
+    const DEACTIVATE_DISCOUNT_COUPON = 'deactivate_discount_coupon';
+
+    /**
      * Add item to shopping cart event
      */
     const ADD_ITEM_TO_SHOPPING_CART = 'add_item_to_shopping_cart';
+
+    /**
+     * Delete item from shopping cart event
+     */
+    const DELETE_ITEM_FROM_SHOPPING_CART = 'delete_item_from_shopping_cart';
 }

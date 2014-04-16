@@ -3,6 +3,7 @@
 namespace Payment\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
+use Payment\Service\Service as PaymentService;
 
 class ProcessCost extends AbstractHelper
 {
@@ -14,6 +15,14 @@ class ProcessCost extends AbstractHelper
      */
     public function __invoke($cost)
     {
-        return $this->getView()->currencyFormat($cost, "USD");
+        $exchangeRates = PaymentService::getExchangeRates();
+        $activeShoppingCurrency = PaymentService::getShoppingCartCurrency();
+
+        // convert cost
+        if (isset($exchangeRates[$activeShoppingCurrency])) {
+            $cost = $cost * $exchangeRates[$activeShoppingCurrency]['rate'];
+        }
+
+        return $this->getView()->currencyFormat(PaymentService::roundingCost($cost), $activeShoppingCurrency);
     }
 }

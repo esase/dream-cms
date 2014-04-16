@@ -49,6 +49,7 @@ class PaymentAdministration extends Base
 
         $statement = $this->prepareStatementForSqlObject($delete);
         $result = $statement->execute();
+        $this->removeExchangeRatesCache();
 
         return $result->count() ? true : false;
     }
@@ -90,7 +91,6 @@ class PaymentAdministration extends Base
                 $statement->execute();
             }
 
-            $this->staticCacheInstance->removeItem(CacheUtility::getCacheName(self::CACHE_EXCHANGE_RATES));
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -149,34 +149,6 @@ class PaymentAdministration extends Base
         }
 
         return true;
-    }
-
-    /**
-     * Get the coupon info
-     *
-     * @param integer $id
-     * @return array
-     */
-    public function getCouponInfo($id)
-    {
-        $select = $this->select();
-        $select->from('payment_discount_cupon')
-            ->columns(array(
-                'id',
-                'slug',
-                'discount',
-                'activated',
-                'date_start',
-                'date_end'
-            ))
-            ->where(array(
-                'id' => $id
-            ));
-
-        $statement = $this->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        return $result->current();
     }
 
     /**
@@ -447,7 +419,7 @@ class PaymentAdministration extends Base
      * @param array $filters
      *      string slug
      *      integer discount
-     *      integer activated
+     *      integer used
      *      integer start
      *      integer end
      * @return object
@@ -458,7 +430,7 @@ class PaymentAdministration extends Base
             'id',
             'slug',
             'discount',
-            'activated',
+            'used',
             'start',
             'end'
         );
@@ -477,7 +449,7 @@ class PaymentAdministration extends Base
                 'id',
                 'slug',
                 'discount',
-                'activated',
+                'used',
                 'start' => 'date_start',
                 'end' => 'date_end'
             ))
@@ -498,9 +470,9 @@ class PaymentAdministration extends Base
         }
 
         // filter by a status
-        if (isset($filters['activated']) && $filters['activated'] != null) {
+        if (isset($filters['used']) && $filters['used'] != null) {
             $select->where(array(
-                'activated' => ((int) $filters['activated'] == self::COUPON_ACTIVATED ? $filters['activated'] : self::COUPON_NOT_ACTIVATED)
+                'used' => ((int) $filters['used'] == self::COUPON_USED ? $filters['used'] : self::COUPON_NOT_USED)
             ));
         }
 

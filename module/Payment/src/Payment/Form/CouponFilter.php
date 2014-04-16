@@ -47,13 +47,13 @@ class CouponFilter extends AbstractCustomForm
             'type' => CustomFormBuilder::FIELD_INTEGER,
             'label' => 'Discount'
         ),
-        'activated' => array(
-            'name' => 'activated',
+        'used' => array(
+            'name' => 'used',
             'type' => CustomFormBuilder::FIELD_SELECT,
-            'label' => 'Activated',
+            'label' => 'Used',
             'values' => array(
-                PaymentModelBase::COUPON_ACTIVATED  => 'Yes',
-                PaymentModelBase::COUPON_NOT_ACTIVATED => 'No'
+                PaymentModelBase::COUPON_USED  => 'Yes',
+                PaymentModelBase::COUPON_NOT_USED => 'No'
             )
         ),
         'start' => array(

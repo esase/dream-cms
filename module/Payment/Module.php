@@ -86,6 +86,9 @@ class Module
     {
         return array(
             'invokables' => array(
+                'currency' => 'Payment\View\Helper\Currency',
+                'paymentItemStatus' => 'Payment\View\Helper\PaymentItemStatus',
+                'paymentItemLink' => 'Payment\View\Helper\PaymentItemlink',
             ),
             'factories' => array(
                 'shoppingCart' => function()
@@ -96,14 +99,6 @@ class Module
 
                     return new \Payment\View\Helper\ShoppingCart($payment->getAllShoppingCartItems());
                 },
-                'exchangeRates' => function()
-                {
-                    $payment = $this->serviceManager
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Payment\Model\Base');
-
-                    return new \Payment\View\Helper\ExchangeRates($payment->getExchangeRates());
-                }
             )
         );
     }

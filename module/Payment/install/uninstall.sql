@@ -10,4 +10,4 @@ DROP TABLE IF EXISTS `payment_type`;
 DROP TABLE IF EXISTS `payment_discount_cupon`;
 
 /* TEST DATA */
-DELETE FROM `module` WHERE `name` = 'Membership' OR `name` = 'Shop';
+DELETE FROM `module` WHERE `name` = 'Membership';

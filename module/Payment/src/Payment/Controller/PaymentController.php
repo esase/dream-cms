@@ -11,10 +11,10 @@ namespace Payment\Controller;
 
 use Zend\View\Model\ViewModel;
 use Application\Controller\AbstractBaseController;
-use Zend\Form\Exception\InvalidArgumentException;
 use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
 use Payment\Event\Event as PaymentEvent;
 use User\Service\Service as UserService;
+use Payment\Service\Service as PaymentService;
 
 class PaymentController extends AbstractBaseController
 {
@@ -81,6 +81,148 @@ class PaymentController extends AbstractBaseController
     }
 
     /**
+     * Deactivate current discount coupon
+     */
+    public function deactivateDiscountCouponAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null != ($couponCode = PaymentService::getCurrentDiscount())) {
+                PaymentService::setCurrentDiscount(array());
+
+                // fire the event
+                $eventDesc = UserService::isGuest()
+                    ? 'Event - Discount coupon deactivated by guest'
+                    : 'Event - Discount coupon deactivated by user';
+
+                $eventDescParams = UserService::isGuest()
+                    ? array($couponCode['slug'])
+                    : array(UserService::getCurrentUserIdentity()->nick_name, $couponCode['slug']);
+
+                PaymentEvent::fireEvent(PaymentEvent::DEACTIVATE_DISCOUNT_COUPON,
+                        $couponCode['slug'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+
+                $this->flashMessenger()
+                    ->setNamespace('success')
+                    ->addMessage($this->getTranslator()->translate('The coupon code has been deactivated'));
+            }
+        }
+
+        return  $this->getResponse();
+    }
+
+    /**
+     * Delete selected items from shopping cart
+     */
+    public function deleteShoppingCartItemsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($itemsIds = $request->getPost('items', null))) {
+                // event's description
+                $eventDesc = UserService::isGuest()
+                    ? 'Event - Item deleted from shopping cart by guest'
+                    : 'Event - Item deleted from shopping cart by user';
+
+                // delete selected items
+                foreach ($itemsIds as $itemId) {
+                    // get an item info
+                    if (null == ($itemInfo = $this->getModel()->getShoppingCartItemInfo($itemId))) { 
+                        continue;
+                    }
+
+                    // delete the item
+                    if (true !== ($deleteResult = $this->getModel()->deleteFromShoppingCart($itemId))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Error occurred'));
+
+                        break;
+                    }
+
+                    // return a discount back
+                    if ($itemInfo['discount']) {
+                        $this->getModel()
+                            ->getPaymentHandlerInstance($itemInfo['handler'])
+                            ->returnBackDiscount($itemId, $itemInfo['discount']);
+                    }
+
+                    $eventDescParams = UserService::isGuest()
+                        ? array($itemId)
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $itemId);
+
+                    PaymentEvent::fireEvent(PaymentEvent::DELETE_ITEM_FROM_SHOPPING_CART,
+                        $itemId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                }
+
+                if (true === $deleteResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected items have been deleted'));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('payment', 'shopping-cart', array(), true);
+    }
+
+    /**
+     * Activate a discount coupon
+     */
+    public function activateDiscountCouponAction()
+    {
+        $refreshPage = false;
+
+        $discountForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Payment\Form\DiscountForm')
+            ->setModel($this->getModel());
+
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $discountForm->getForm()->setData($request->getPost(), false);
+
+            if ($discountForm->getForm()->isValid()) {
+                // activate a discount coupon
+                $couponCode = $discountForm->getForm()->getData()['coupon'];
+
+                // save the activated discount in sessions
+                PaymentService::setCurrentDiscount($this->getModel()->getCouponInfo($couponCode, 'slug'));
+
+                // fire the event
+                $eventDesc = UserService::isGuest()
+                    ? 'Event - Discount coupon activated by guest'
+                    : 'Event - Discount coupon activated by user';
+
+                $eventDescParams = UserService::isGuest()
+                    ? array($couponCode)
+                    : array(UserService::getCurrentUserIdentity()->nick_name, $couponCode);
+
+                PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_DISCOUNT_COUPON,
+                        $couponCode, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+
+                $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('The coupon code has been activated'));
+
+                $refreshPage = true;
+            }
+        }
+
+        $view = new ViewModel(array(
+            'discountForm' => $discountForm->getForm(),
+            'refreshPage' => $refreshPage
+        ));
+
+        $view->setTerminal(true);
+        return $view;
+    }
+
+    /**
      * Add to shopping cart
      */
     public function addToShoppingCartAction()
@@ -99,11 +241,7 @@ class PaymentController extends AbstractBaseController
         }
         else {
             // create a payment handler class instance
-            $object = new $moduleInfo['handler']($this->getServiceLocator());
-            if (!$object instanceof PaymentInterfaceHandler) {
-                throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Handler\InterfaceHandler',
-                        $moduleInfo['handler']));
-            }
+            $object = $this->getModel()->getPaymentHandlerInstance($moduleInfo['handler']);
 
             // check an item existing in shopping cart
             if (true === ($result = $this->getModel()->inShoppingCart($objectId, $moduleInfo['id']))) {
@@ -194,5 +332,86 @@ class PaymentController extends AbstractBaseController
 
         $view->setTerminal(true);
         return $view;
+    }
+
+    /**
+     * Change currency
+     */
+    public function changeCurrencyAction()
+    {
+        $this->getModel()->setShoppingCartCurrency($this->params()->fromPost('currency'));
+        return  $this->getResponse();
+    }
+
+    /**
+     * Update shopping cart
+     */
+    public function updateShoppingCartAction()
+    {
+        $view = new ViewModel(array());
+        $view->setTerminal(true);
+
+        return $view;
+    }
+
+    /**
+     * Clean shopping cart
+     */
+    public function cleanShoppingCartAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            // get all shopping cart items
+            if (null != ($items = $this->getModel()->getAllShoppingCartItems(false))) {
+                // event's description
+                $eventDesc = UserService::isGuest()
+                    ? 'Event - Item deleted from shopping cart by guest'
+                    : 'Event - Item deleted from shopping cart by user';
+
+                // delete all items
+                foreach ($items as $itemInfo) {
+                    if (true !== ($deleteResult = $this->getModel()->deleteFromShoppingCart($itemInfo['id']))) {
+                        break;
+                    }
+
+                    // return a discount back
+                    if ($itemInfo['discount']) {
+                        $this->getModel()
+                            ->getPaymentHandlerInstance($itemInfo['handler'])
+                            ->returnBackDiscount($itemInfo['id'], $itemInfo['discount']);
+                    }
+
+                    $eventDescParams = UserService::isGuest()
+                        ? array($itemInfo['id'])
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $itemInfo['id']);
+
+                    PaymentEvent::fireEvent(PaymentEvent::DELETE_ITEM_FROM_SHOPPING_CART,
+                        $itemInfo['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                }
+            }
+        }
+
+        $view = new ViewModel(array());
+        $view->setTerminal(true);
+
+        return $view;
+    }
+
+    /**
+     * Shopping cart
+     */
+    public function shoppingCartAction()
+    {
+        // get data
+        $paginator = $this->getModel()->
+                getShoppingCartItems($this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType());
+
+        return new ViewModel(array(
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        ));
     }
 }

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-10 19:58+0600\n"
+"PO-Revision-Date: 2014-04-16 16:55+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,11 +14,80 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+msgid "Selected items have been deleted"
+msgstr "Selected items have been deleted"
+
+msgid "The coupon code has been deactivated"
+msgstr "The coupon code has been deactivated"
+
+msgid "Deactivate the discount code"
+msgstr "Deactivate the discount code"
+
+msgid "without discount"
+msgstr "without discount"
+
+msgid "discount"
+msgstr "discount"
+
+msgid "The coupon code has been activated"
+msgstr "The coupon code has been activated"
+
+msgid "The discount code not found or not activated"
+msgstr "The discount code not found or not activated"
+
+msgid "Enter a discount code"
+msgstr "Enter a discount code"
+
+msgid "Checkout"
+msgstr "Checkout"
+
+msgid "Total price"
+msgstr "Total price"
+
+msgid "Unit Price"
+msgstr "Unit Price"
+
+msgid "Selected items will be deleted. Are you sure?"
+msgstr "Selected items will be deleted. Are you sure?"
+
+msgid "Cost"
+msgstr "Cost"
+
+msgid "Item not active"
+msgstr "Item not active"
+
+msgid "Item deleted"
+msgstr "Item deleted"
+
+msgid "type_none"
+msgstr "Without rounding"
+
+msgid "type_floor"
+msgstr "Round fractions down"
+
+msgid "type_ceil"
+msgstr "Round fractions up side"
+
+msgid "type_round"
+msgstr "Automatic rounding to the nearest side"
+
+msgid "Type rounding of prices"
+msgstr "Type rounding of prices"
+
+msgid "Clear the shopping cart"
+msgstr "Clear the shopping cart"
+
+msgid "View the shopping cart"
+msgstr "View the shopping cart"
+
+msgid "Shopping cart is empty"
+msgstr "Shopping cart is empty"
+
 msgid "Currency"
 msgstr "Currency"
 
 msgid "Shopping cart info"
-msgstr "%d item(s) - %s"
+msgstr "%d item(s) %s"
 
 msgid "Shopping cart"
 msgstr "Shopping cart"
@@ -92,8 +161,8 @@ msgstr "Selected coupons will be deleted. Are you sure?"
 msgid "Add a coupon"
 msgstr "Add a coupon"
 
-msgid "Activated"
-msgstr "Activated"
+msgid "Used"
+msgstr "Used"
 
 msgid "Discount"
 msgstr "Discount"
@@ -171,6 +240,33 @@ msgstr "Payment"
 
 msgid "Payments"
 msgstr "Payments"
+
+msgid "Event - Deactivating discount coupons"
+msgstr "Deactivating discount coupons"
+
+msgid "Event - Discount coupon deactivated by guest"
+msgstr "Guest deactivated the discount coupon with id - \"%s\""
+
+msgid "Event - Discount coupon deactivated by user"
+msgstr "\"%s\" deactivated the discount coupon with id - \"%s\""
+
+msgid "Event - Activating discount coupons"
+msgstr "Activating discount coupons"
+
+msgid "Event - Discount coupon activated by guest"
+msgstr "Guest activated the discount coupon with id - \"%s\""
+
+msgid "Event - Discount coupon activated by user"
+msgstr "\"%s\" activated the discount coupon with id - \"%s\""
+
+msgid "Event - Deleting items from the shopping cart"
+msgstr "Deleting items from the shopping cart"
+
+msgid "Event - Item deleted from shopping cart by guest"
+msgstr "Guest deleted an item from the shopping cart with id - \"%d\""
+
+msgid "Event - Item deleted from shopping cart by user"
+msgstr "\"%s\" deleted an item from the shopping cart with id - \"%d\""
 
 msgid "Event - Adding items to the shopping cart"
 msgstr "Adding items to the shopping cart"

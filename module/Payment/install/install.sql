@@ -37,7 +37,10 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('delete_discount_coupon', @moduleId, 'Event - Deleting discount coupons'),
 ('add_discount_coupon', @moduleId, 'Event - Adding discount coupons'),
 ('edit_discount_coupon', @moduleId, 'Event - Editing discount coupons'),
-('add_item_to_shopping_cart', @moduleId, 'Event - Adding items to the shopping cart');
+('activate_discount_coupon', @moduleId, 'Event - Activating discount coupons'),
+('deactivate_discount_coupon', @moduleId, 'Event - Deactivating discount coupons'),
+('add_item_to_shopping_cart', @moduleId, 'Event - Adding items to the shopping cart'),
+('delete_item_from_shopping_cart', @moduleId, 'Event - Deleting items from the shopping cart');
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'head' ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
@@ -60,6 +63,19 @@ INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `orde
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '432000', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_type_rounding', 'Type rounding of prices', '', 'select', 1, 3, 1, @moduleId, 0, '', '', '');
+
+SET @settingId = (SELECT LAST_INSERT_ID());
+INSERT INTO `setting_predefined_value` (`setting_id`, `value`) VALUES
+(@settingId,  'type_round'),
+(@settingId,  'type_ceil'),
+(@settingId,  'type_floor'),
+(@settingId,  'type_none');
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'type_round', NULL);
 
 CREATE TABLE IF NOT EXISTS `payment_module` (
     `module` int(10) unsigned NOT NULL,
@@ -116,13 +132,13 @@ CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `slug` varchar(50) NOT NULL DEFAULT '',
     `discount` float unsigned NOT NULL DEFAULT 0,
-    `activated` tinyint(1) NOT NULL,
+    `used` tinyint(1) NOT NULL,
     `date_start` int(10) unsigned NOT NULL,
     `date_end` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `slug` (`slug`),
     KEY `discount` (`discount`),
-    KEY `activated` (`activated`),
+    KEY `used` (`used`),
     KEY `date_start` (`date_start`),
     KEY `date_end` (`date_end`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -165,8 +181,8 @@ CREATE TABLE IF NOT EXISTS `payment_transaction_item` (
     `discount` float unsigned NOT NULL DEFAULT 0,
     `count` int(10) unsigned NOT NULL DEFAULT 0,
     `deleted` tinyint(1) NOT NULL DEFAULT 0,
+    `active` tinyint(1) NOT NULL DEFAULT 1,
     `available` tinyint(1) NOT NULL DEFAULT 1,
-    `count_limit` tinyint(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (`object_id`, `module`, `transaction_id`),
     FOREIGN KEY (transaction_id) REFERENCES payment_transaction(id)
         ON UPDATE CASCADE
@@ -186,13 +202,13 @@ CREATE TABLE IF NOT EXISTS `payment_shopping_cart` (
     `discount` float unsigned NOT NULL DEFAULT 0,
     `count` int(10) unsigned NOT NULL DEFAULT 0,
     `shopping_cart_id` varchar(32) NOT NULL,
+    `active` tinyint(1) NOT NULL DEFAULT 1,
     `available` tinyint(1) NOT NULL DEFAULT 1,
-    `count_limit` tinyint(1) NOT NULL DEFAULT 0,
     `clear_date` int(10) unsigned NOT NULL,
     `deleted` tinyint(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`object_id`, `module`, `shopping_cart_id`),
-    KEY `available` (`available`,`count_limit`,`deleted`,`shopping_cart_id`),
+    KEY `available` (`active`,`available`,`deleted`,`shopping_cart_id`),
     FOREIGN KEY (module) REFERENCES payment_module(module)
         ON UPDATE CASCADE
         ON DELETE CASCADE
@@ -204,13 +220,5 @@ INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_ema
 
 SET @moduleId = (SELECT LAST_INSERT_ID());
 
-INSERT INTO `payment_module` (`update_event`, `delete_event`, `countable`, `must_login`, `module`, `handler`) VALUES
-('membership_edit_event', 'membership_delete_event', 0, 1, @moduleId, 'Example\\Payment\\MembershipHandler');
-
-INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-('Shop', 'custom', 1, '0.9.0', 'eSASe', 'alexermashev@gmail.com', '', '');
-
-SET @moduleId = (SELECT LAST_INSERT_ID());
-
-INSERT INTO `payment_module` (`update_event`, `delete_event`, `countable`, `must_login`, `module`, `handler`) VALUES
-('shop_edit_event', 'shop_delete_event', 1, 0, @moduleId, 'Example\\Payment\\ShopHandler');
+INSERT INTO `payment_module` (`update_event`, `delete_event`, `countable`, `must_login`, `module`, `handler`, `view_controller`, `view_action`) VALUES
+('membership_edit_event', 'membership_delete_event', 0, 1, @moduleId, 'Example\\Payment\\MembershipHandler', 'example_view_item', 'index');

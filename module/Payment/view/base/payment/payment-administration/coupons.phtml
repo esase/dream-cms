@@ -47,8 +47,8 @@
             'order_name' => 'discount'
         ),
         3 => array(
-            'title' => $this->translate('Activated'),
-            'order_name' => 'activated'
+            'title' => $this->translate('Used'),
+            'order_name' => 'used'
         ),
         4 => array(
             'title' => $this->translate('Activation date'),
@@ -62,7 +62,7 @@
     'paginator' => $this->paginator,
     'helpers' => array(
         'discount' => 'floatValue',
-        'activated' => 'booleanValue',
+        'used' => 'booleanValue',
         'start' => 'date',
         'end' => 'date'
     ),

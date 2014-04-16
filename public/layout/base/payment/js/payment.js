@@ -13,26 +13,78 @@ Payment = function()
     var popupShoppingCartId = '#popup-shopping-cart-window';
 
     /**
+     * Shopping cart wrapper
+     * @var string
+     */
+    var shoppingCartWrapper = 'shopping-cart-wrapper';
+
+    /**
+     * Sopping cart clear fix
+     * @var string
+     */
+    var shoppingCartClearFix = 'shopping-cart-clearfix';
+
+    /**
      * Current object
      * @var object
      */
     var self = this;
 
     /**
+     * Hide popup shopping
+     * @var boolean
+     */
+    var hidePopupShopping = false;
+
+    /**
      * Show popup's shopping cart
      *
+     * @param string action
      * @param object|string data
+     * @param string method
      * @return void
      */
-    var showPopupShoppingCart = function(data)
+    var _showPopupShoppingCart = function(action, data, method)
     {
-        // send form data
-        $.post(serverUrl + '/add-to-shopping-cart', data, function(data) {
-            $(document.body).append(data);
-            $(popupShoppingCartId).on('hidden.bs.modal', function (e) {
-               $(this).remove();
-            }).modal('show');
+        $.ajax({
+            'type'      : typeof method != 'undefined' ? method : "post",
+            'url'       : serverUrl + '/' + action,
+            'data'      : data,
+            'success'   : function(data) {
+                $(document.body).append(data);
+
+                if (!hidePopupShopping) {
+                    $(popupShoppingCartId).on('hidden.bs.modal', function (e) {
+                       $(this).remove();
+                    }).modal('show');
+                }
+                else {
+                    hidePopupShopping = false;
+                }
+            }
         });
+    }
+
+    /**
+     * Update shopping cart
+     *
+     * @param string data
+     * @return void
+     */
+    var _updateShoppingCart = function(data)
+    {
+        $('#' + shoppingCartClearFix).remove();
+        $('#' + shoppingCartWrapper).replaceWith(data);
+    }
+
+    /**
+     * Refresh page
+     *
+     * @return void
+     */
+    this.refreshPage = function()
+    {
+        location.href = document.location;
     }
 
     /**
@@ -45,7 +97,7 @@ Payment = function()
      */
     this.addToShoppingCart = function(objectId, module, count)
     {
-        showPopupShoppingCart({
+        _showPopupShoppingCart('add-to-shopping-cart', {
             'object_id': objectId,
             'module': module,
             'count' : (typeof count != 'undefined' ? count : 0)
@@ -63,7 +115,7 @@ Payment = function()
 
         // remove previously loaded popup
         $popup.on('hidden.bs.modal', function (e) {
-            showPopupShoppingCart($popup.find('form:first').serialize());
+            _showPopupShoppingCart('add-to-shopping-cart', $popup.find('form:first').serialize());
         }).modal('hide');
     }
 
@@ -74,7 +126,94 @@ Payment = function()
      */
     this.updateShoppingCart = function()
     {
-        alert('update shopping cart');
+        showLoadingBox(shoppingCartWrapper);
+
+        // update the shopping cart
+        $.get(serverUrl + '/update-shopping-cart?_r=' + Math.random(), function(data) {
+            _updateShoppingCart(data);
+        });
+    }
+
+    /**
+     * Change currency
+     *
+     * @return void
+     */
+    this.changeCurrency = function(currency)
+    {
+        showLoadingBox(shoppingCartWrapper);
+
+        // update the shopping cart
+        $.post(serverUrl + '/change-currency', {'currency' : currency}, function(data) {
+            // refresh current page
+            self.refreshPage();
+        });
+    }
+
+    /**
+     * Get a discount coupon form
+     *
+     * @return void
+     */
+    this.getDiscountCouponForm = function()
+    {
+        _showPopupShoppingCart('activate-discount-coupon', {}, 'get');
+    }
+
+    /**
+     * Send a discount coupon form
+     *
+     * @return void
+     */
+    this.sendDiscountCouponForm = function()
+    {
+        var $popup = $(popupShoppingCartId);
+
+        // remove previously loaded popup
+        $popup.on('hidden.bs.modal', function (e) {
+            _showPopupShoppingCart('activate-discount-coupon', $popup.find('form:first').serialize());
+        }).modal('hide');
+    }
+
+    /**
+     * Deactivate a discount coupon
+     *
+     * @return void
+     */
+    this.deactivateDiscountCoupon = function()
+    {
+        $.post(serverUrl + '/deactivate-discount-coupon', function(data) {
+            // refresh current page
+            self.refreshPage();
+        });
+    }
+
+    /**
+     * Hide popup shopping
+     *
+     * @return void
+     */
+    this.hidePopupShopping = function()
+    {
+        hidePopupShopping = true;
+    }
+
+    /**
+     * Clean shopping cart
+     *
+     * @param boolean isShoppingCartPage
+     * @return void
+     */
+    this.cleanShoppingCart = function(isShoppingCartPage)
+    {
+        showLoadingBox(shoppingCartWrapper);
+
+        // update the shopping cart
+        $.post(serverUrl + '/clean-shopping-cart', function(data) {
+            typeof isShoppingCartPage != 'undefined' && true == isShoppingCartPage
+                ? self.refreshPage()
+                : _updateShoppingCart(data);
+        });
     }
 
     /**

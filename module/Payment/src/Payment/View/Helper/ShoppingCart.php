@@ -3,14 +3,15 @@
 namespace Payment\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
+use Payment\Service\Service as PaymentService;
 
 class ShoppingCart extends AbstractHelper
 {
     /**
-     * Shopping cart items list
-     * @var array
+     * Shopping cart items amount
+     * @var float|integer
      */
-    protected $items;
+    protected $itemsAmount;
 
     /**
      * Shopping cart items count
@@ -25,8 +26,12 @@ class ShoppingCart extends AbstractHelper
      */
     public function __construct($items = array())
     {
-       $this->items = $items;
-       $this->itemsCount = count($items);
+        $this->itemsCount = count($items);
+
+        // process items amount price
+        foreach($items as $itemInfo) {
+            $this->itemsAmount += $itemInfo['cost'] * $itemInfo['count'] - $itemInfo['discount'];
+        }
     }
 
     /**
@@ -52,15 +57,32 @@ class ShoppingCart extends AbstractHelper
     /**
      * Get items amount
      *
-     * @return integer
+     * @return float
      */
     public function getItemsAmount()
     {
-        $amount = 0;
-        foreach($this->items as $itemInfo) {
-            $amount += $itemInfo['cost'] * $itemInfo['count'] - $itemInfo['discount'];
-        }
+        return $this->itemsAmount;
+    }
 
-        return $amount;
+    /**
+     * Get items amount with discount
+     *
+     * @return integer
+     */
+    public function getItemsDiscountedAmount()
+    {
+        return PaymentService::getCurrentDiscount()
+            ? $this->itemsAmount - ($this->itemsAmount * PaymentService::getCurrentDiscount()['discount'] / 100)
+            : $this->itemsAmount;
+    }
+
+    /**
+     * Get current discount
+     *
+     * @return integer
+     */
+    public function getCurrentDiscount()
+    {
+        return PaymentService::getCurrentDiscount() ? PaymentService::getCurrentDiscount()['discount'] : 0;
     }
 }

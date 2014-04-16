@@ -28,6 +28,7 @@
 
         <!-- Scripts -->
         <?php echo $this->headScript()
+            ->prependFile($this->asset('functions.js'))
             ->prependFile($this->asset('jquery.cookie.js'))
             ->prependFile($this->asset('bootstrap.js'))
             ->prependFile($this->asset('jquery-ui.js'))            

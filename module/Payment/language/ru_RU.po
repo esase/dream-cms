@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-10 19:58+0600\n"
+"PO-Revision-Date: 2014-04-16 16:55+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -14,11 +14,80 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+msgid "Selected items have been deleted"
+msgstr "Выбранные товары были удалены"
+
+msgid "The coupon code has been deactivated"
+msgstr "Скидочный код был дезактивирован"
+
+msgid "Deactivate the discount code"
+msgstr "Дезактивировать код скидки"
+
+msgid "without discount"
+msgstr "без скидки"
+
+msgid "discount"
+msgstr "скидка"
+
+msgid "The coupon code has been activated"
+msgstr "Скидочный код был активирован"
+
+msgid "The discount code not found or not activated"
+msgstr "Скидочный код не найден или не активирован"
+
+msgid "Enter a discount code"
+msgstr "Ввести код скидки"
+
+msgid "Checkout"
+msgstr "Оформить заказ"
+
+msgid "Total price"
+msgstr "Общая цена"
+
+msgid "Unit Price"
+msgstr "Цена за штуку"
+
+msgid "Selected items will be deleted. Are you sure?"
+msgstr "Выбранные товары будут удалены. Вы уверены?"
+
+msgid "Cost"
+msgstr "Стоимость"
+
+msgid "Item not active"
+msgstr "Товар не активен"
+
+msgid "Item deleted"
+msgstr "Товар удален"
+
+msgid "type_none"
+msgstr "Без округления"
+
+msgid "type_floor"
+msgstr "Округляет дробь в меньшую сторону"
+
+msgid "type_ceil"
+msgstr "Округляет дробь в большую сторону"
+
+msgid "type_round"
+msgstr "Автоматическое округление в ближайшую сторону"
+
+msgid "Type rounding of prices"
+msgstr "Тип округление цен"
+
+msgid "Clean the shopping cart"
+msgstr "Очистить корзину"
+
+msgid "View the shopping cart"
+msgstr "Просмотр корзины"
+
+msgid "Shopping cart is empty"
+msgstr "Корзина пуста"
+
 msgid "Currency"
 msgstr "Валюта"
 
 msgid "Shopping cart info"
-msgstr "%d шт. - %s"
+msgstr "%d шт. %s"
 
 msgid "Shopping cart"
 msgstr "Корзина"
@@ -92,8 +161,8 @@ msgstr "Выбранные купоны будут удалены. Вы увер
 msgid "Add a coupon"
 msgstr "Добавить купон"
 
-msgid "Activated"
-msgstr "Активированный"
+msgid "Used"
+msgstr "Использованный"
 
 msgid "Discount"
 msgstr "Скидка"
@@ -170,6 +239,33 @@ msgstr "Платеж"
 
 msgid "Payments"
 msgstr "Платежи"
+
+msgid "Event - Deactivating discount coupons"
+msgstr "Дезактивация скидочных купонов"
+
+msgid "Event - Discount coupon deactivated by guest"
+msgstr "Гость дезактивировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Discount coupon deactivated by user"
+msgstr "\"%s\" дезактивировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Activating discount coupons"
+msgstr "Активация скидочных купонов"
+
+msgid "Event - Discount coupon activated by guest"
+msgstr "Гость активировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Discount coupon activated by user"
+msgstr "\"%s\" активировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Deleting items from the shopping cart"
+msgstr "Удаление товаров из корзины"
+
+msgid "Event - Item deleted from shopping cart by guest"
+msgstr "Гость удалил товар из корзины с идентификатором - \"%d\""
+
+msgid "Event - Item deleted from shopping cart by user"
+msgstr "\"%s\" удалил товар из корзины с идентификатором - \"%d\""
 
 msgid "Event - Adding items to the shopping cart"
 msgstr "Добавление товаров в корзину"

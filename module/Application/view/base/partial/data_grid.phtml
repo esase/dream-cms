@@ -180,9 +180,15 @@
                     <?php if ($this->regularActionsCount) : ?>
                         <?php foreach ($this->regularActions as $action) : ?>
                             <li>
-                                <a href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action']), array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
-                                    <?php echo $action['name'] ?>
-                                </a>
+                                <?php if (empty($action['js'])) : ?>
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action']), array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
+                                        <?php echo $action['name'] ?>
+                                    </a>
+                                <?php else: ?>
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="javascript:void(0)" onclick="<?php echo $action['js'] ?>">
+                                        <?php echo $action['name'] ?>
+                                    </a>
+                                <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -300,8 +306,8 @@
                         <?php if (!empty($this->helpers[$fieldName])) : ?>
                             <?php
                                 echo empty($this->helpers_options[$fieldName])
-                                    ? $this->{$this->helpers[$fieldName]}($fieldValue)
-                                    : $this->{$this->helpers[$fieldName]}($fieldValue, $this->helpers_options[$fieldName])
+                                    ? $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data))
+                                    : $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data), $this->helpers_options[$fieldName])
                             ?>
                         <?php else: ?>
                             <?php echo $this->escapeHtml($fieldValue) ?>

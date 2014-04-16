@@ -4,7 +4,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'payments-administration' => 'Payment\Controller\PaymentAdministrationController',
-            'payment' => 'Payment\Controller\PaymentController'
+            'payments' => 'Payment\Controller\PaymentController'
         )
     ),
     'router' => array(

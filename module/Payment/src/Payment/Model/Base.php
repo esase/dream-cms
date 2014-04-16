@@ -21,32 +21,32 @@ class Base extends AbstractBase
     /**
      * Transaction paid
      */
-    CONST TRANSACTION_PAID = 1;
+    const TRANSACTION_PAID = 1;
 
     /**
      * Transaction not paid
      */
-    CONST TRANSACTION_NOT_PAID = 0;
+    const TRANSACTION_NOT_PAID = 0;
 
     /**
      * Primary currency
      */
-    CONST PRIMARY_CURRENCY = 1;
+    const PRIMARY_CURRENCY = 1;
 
     /**
      * Not primary currency
      */
-    CONST NOT_PRIMARY_CURRENCY = 0;
+    const NOT_PRIMARY_CURRENCY = 0;
 
     /**
-     * Coupon activated
+     * Coupon used
      */
-    CONST COUPON_ACTIVATED = 1;
+    const COUPON_USED = 1;
 
     /**
-     * Coupon not activated
+     * Coupon not used
      */
-    CONST COUPON_NOT_ACTIVATED = 0;
+    const COUPON_NOT_USED = 0;
 
     /**
      * Coupon min slug length
@@ -61,7 +61,7 @@ class Base extends AbstractBase
     /**
      * Shopping cart cookie
      */ 
-    CONST SHOPPING_CART_COOKIE = 'shopping_cart';
+    const SHOPPING_CART_COOKIE = 'shopping_cart';
 
     /**
      * Basket id length
@@ -69,34 +69,34 @@ class Base extends AbstractBase
     const SHOPPING_CART_ID_LENGTH = 50;
 
     /**
-     * Item count limit reached flag
+     * Item is active flag
      */ 
-    CONST ITEM_COUNT_LIMIT_REACHED = 1;
+    const ITEM_ACTIVE = 1;
 
     /**
-     * Item count limit not reached flag
+     * Item is not active flag
      */ 
-    CONST ITEM_COUNT_LIMIT_NOT_REACHED = 0;
+    const ITEM_NOT_ACTIVE = 0;
 
     /**
      * Item is not available flag
      */ 
-    CONST ITEM_NOT_AVAILABLE = 0;
+    const ITEM_NOT_AVAILABLE = 0;
 
     /**
      * Item is available flag
      */ 
-    CONST ITEM_AVAILABLE = 1;
+    const ITEM_AVAILABLE = 1;
 
     /**
      * Item deleted flag
      */ 
-    CONST ITEM_DELETED = 1;
+    const ITEM_DELETED = 1;
 
     /**
      * Item not deleted flag
      */ 
-    CONST ITEM_NOT_DELETED = 0;
+    const ITEM_NOT_DELETED = 0;
 
     /**
      * Payment modules cache
@@ -109,25 +109,107 @@ class Base extends AbstractBase
     const CACHE_EXCHANGE_RATES = 'Payment_Exchange_Rates';
 
     /**
-     * Get all active shopping cart items
+     * Payment handler instances
+     * @var array
+     */
+    protected $paymentHandlerInstances = array();
+
+    /**
+     * Get the coupon info
      *
+     * @param integer|sting $id
+     * @param string $field
      * @return array
      */
-    public function getAllShoppingCartItems()
+    public function getCouponInfo($id, $field = 'id')
     {
         $select = $this->select();
-        $select->from('payment_shopping_cart')
+        $select->from('payment_discount_cupon')
             ->columns(array(
+                'id',
+                'slug',
+                'discount',
+                'used',
+                'date_start',
+                'date_end'
+            ))
+            ->where(array(
+                ($field == 'id' ? $field : 'slug') => $id
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
+
+    /**
+     * Delete the shopping cart's item
+     *
+     * @param integer $itemId
+     * @return boolean|string
+     */
+    public function deleteFromShoppingCart($itemId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('payment_shopping_cart')
+                ->where(array(
+                    'id' => $itemId,
+                    'shopping_cart_id' => $this->getShoppingCartId()
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $result->count() ? true : false;
+    }
+
+    /**
+     * Get all active shopping cart items
+     *
+     * @param boolean $onlyActive
+     * @return array
+     */
+    public function getAllShoppingCartItems($onlyActive = true)
+    {
+        $select = $this->select();
+        $select->from(array('a' => 'payment_shopping_cart'))
+            ->columns(array(
+                'id',
                 'cost',
                 'discount',
                 'count'
             ))
-            ->where(array(
+            ->join(
+                array('b' => 'payment_module'),
+                'a.module = b.module',
+                array(
+                    'countable',
+                    'must_login',
+                    'handler'
+                )
+            );
+
+        if ($onlyActive) {
+            $select->where(array(
+                'active' => self::ITEM_ACTIVE,
                 'available' => self::ITEM_AVAILABLE,
-                'count_limit' => self::ITEM_COUNT_LIMIT_NOT_REACHED,
                 'deleted' => self::ITEM_NOT_DELETED,
                 'shopping_cart_id' => $this->getShoppingCartId()
             ));
+        }
 
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -136,7 +218,7 @@ class Base extends AbstractBase
     }
 
     /**
-     * Mark items as deleted
+     * Update items info
      *
      * @param integer $objectId
      * @param array $moduleInfo
@@ -156,18 +238,14 @@ class Base extends AbstractBase
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             // create a payment handler class instance
-            $object = new $moduleInfo['handler']($this->serviceManager);
-            if (!$object instanceof PaymentInterfaceHandler) {
-                throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Handler\InterfaceHandler',
-                        $moduleInfo['handler']));
-            }
+            $object = $this->getPaymentHandlerInstance($moduleInfo['handler']);
 
             // object is not active
             if (null == ($objectInfo = $object->getItemInfo($objectId))) {
                 $update = $this->update()
                     ->table('payment_shopping_cart')
                     ->set(array(
-                        'available'  => self::ITEM_NOT_AVAILABLE
+                        'active'  => self::ITEM_NOT_ACTIVE
                     ))
                     ->where(array(
                         'object_id' => $objectId,
@@ -180,7 +258,7 @@ class Base extends AbstractBase
                 $update = $this->update()
                     ->table('payment_transaction_item')
                     ->set(array(
-                        'available'  => self::ITEM_NOT_AVAILABLE
+                        'active'  => self::ITEM_NOT_ACTIVE
                     ))
                     ->where(array(
                         'object_id' => $objectId,
@@ -194,9 +272,8 @@ class Base extends AbstractBase
                 $data = array(
                     'title' =>  $objectInfo['title'],
                     'slug'  =>  $objectInfo['slug'],
-                    'count_limit' => $objectInfo['count'] <= 0 && $moduleInfo['countable']
-                            ? self::ITEM_COUNT_LIMIT_REACHED : self::ITEM_COUNT_LIMIT_NOT_REACHED,
-                    'available' => self::ITEM_AVAILABLE
+                    'available' => $objectInfo['count'] <= 0 && $moduleInfo['countable'] ? self::ITEM_NOT_AVAILABLE : self::ITEM_AVAILABLE,
+                    'active' => self::ITEM_ACTIVE
                 );
 
                 $update = $this->update()
@@ -398,6 +475,30 @@ class Base extends AbstractBase
     }
 
     /**
+     * Get the payment handler instance
+     *
+     * @param sting @name
+     * @return object
+     * @exception InvalidArgumentException
+     */
+    public function getPaymentHandlerInstance($name)
+    {
+        if (!array_key_exists($name, $this->paymentHandlerInstances)) {
+            $object = new $name($this->serviceManager);
+            if (!$object instanceof PaymentInterfaceHandler) {
+                throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Handler\InterfaceHandler', $name));
+            }
+
+            $this->paymentHandlerInstances[$name] = $object;
+        }
+        else {
+            $object = $this->paymentHandlerInstances[$name];
+        }
+
+        return $object;
+    }
+
+    /**
      * Update a user transactions info
      *
      * @param integer $userId
@@ -438,14 +539,29 @@ class Base extends AbstractBase
     }
 
     /**
+     * Remove the exchange rates cache
+     *
+     * @return void
+     */
+    protected function removeExchangeRatesCache()
+    {
+        $cacheName = CacheUtility::getCacheName(self::CACHE_EXCHANGE_RATES, array(true));
+        $this->staticCacheInstance->removeItem($cacheName);
+
+        $cacheName = CacheUtility::getCacheName(self::CACHE_EXCHANGE_RATES, array(false));
+        $this->staticCacheInstance->removeItem($cacheName);
+    }
+
+    /**
      * Get exchange rates
      *
+     * @param boolean $excludePrimary
      * @return array
      */
-    public function getExchangeRates()
+    public function getExchangeRates($excludePrimary = true)
     {
         // generate cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_EXCHANGE_RATES);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_EXCHANGE_RATES, array($excludePrimary));
 
         // check data in cache
         if (null === ($rates = $this->staticCacheInstance->getItem($cacheName))) {
@@ -464,11 +580,14 @@ class Base extends AbstractBase
                         'rate'
                     ),
                     'left'
-                )
-                ->where(array(
+                );
+
+            if ($excludePrimary) {
+                $select->where(array(
                     new NotInPredicate('primary_currency', array(self::PRIMARY_CURRENCY))
                 ));
-    
+            }
+
             $statement = $this->prepareStatementForSqlObject($select);
             $result = $statement->execute();
     
@@ -477,7 +596,8 @@ class Base extends AbstractBase
                     'id' => $rate['id'],
                     'code' => $rate['code'],
                     'name' => $rate['name'],
-                    'rate' => $rate['rate']
+                    'rate' => $rate['rate'],
+                    'primary_currency' => $rate['primary_currency']
                 );    
             }
 
