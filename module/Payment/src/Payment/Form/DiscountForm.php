@@ -81,6 +81,6 @@ class DiscountForm extends AbstractCustomForm
      */
     public function validateCoupon($value, array $context = array())
     {
-        return $this->model->isCouponActive($value);
+        return $this->model->getActiveCouponInfo($value) ? true : false;
     }
 }

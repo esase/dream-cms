@@ -60,4 +60,14 @@ class Event extends ApplicationEvent
      * Delete item from shopping cart event
      */
     const DELETE_ITEM_FROM_SHOPPING_CART = 'delete_item_from_shopping_cart';
+
+    /**
+     * Edit item into shopping cart event
+     */
+    const EDIT_ITEM_INTO_SHOPPING_CART = 'edit_item_into_shopping_cart';
+
+    /**
+     * Add payment transaction event
+     */
+    const ADD_PAYMENT_TRANSACTION = 'add_payment_transaction';
 }

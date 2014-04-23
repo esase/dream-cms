@@ -1,3 +1,5 @@
+<?php use Payment\Model\Base as  BaseModel ?>
+
 <?php $this->declareVars('pageTitle', 'regularActions') ?>
 <?php $this->pageTitle = $this->translate('Shopping cart') ?>
 
@@ -6,9 +8,15 @@
 <!-- render a breadcrumb -->
 <?php echo $this->partial('partial/breadcrumb', array(
     'pages' => array(
+        'home' => array(
+            'name' => $this->translate('Home'),
+            'controller' => 'Home',
+            'action' => 'index',
+            'check_acl' => false
+        ),
         'shopping_cart' => array(
             'name' => $this->pageTitle,
-            'controller' => 'payment',
+            'controller' => 'payments',
             'action' => 'shopping-cart',
             'check_acl' => false
         )
@@ -77,13 +85,16 @@
     ),
     'paginator' => $this->paginator,
     'skipped_fields' => array(
+        'object_id',
         'view_controller',
         'view_action',
         'countable',
         'must_login',
         'slug',
         'available',
-        'deleted'
+        'deleted',
+        'multi_costs',
+        'handler'
     ),
     'helpers' => array(
         'title' => 'paymentItemLink',
@@ -112,9 +123,9 @@
         'single_actions' => array (
             0 => array(
                 'name' => $this->translate('Edit'),
-                'js' => 'showImage(\'__value__\')',
+                'js' => 'payment.getEditItemForm(\'__value__\')',
                 'check_acl' => false,
-                'action' => 'view-image',
+                'action' => 'edit-item',
                 'image' => $this->asset('icon/edit_action.png', 'image')
             ),
         )
@@ -127,6 +138,40 @@
         )
     ),
     'actions_extra_check' => array(
+        'single_actions' => array(
+            'edit-item' => array(
+                0 => array(
+                    'param' => 'active',
+                    'condition' =>  'return (int) "__value__" == "' . BaseModel::ITEM_ACTIVE . '";'
+                ),
+                1 => array(
+                    'param' => 'available',
+                    'condition' =>  'return (int) "__value__" == "' . BaseModel::ITEM_AVAILABLE . '";'
+                ),
+                2 => array(
+                    'param' => 'deleted',
+                    'condition' =>  'return (int) "__value__" == "' . BaseModel::ITEM_NOT_DELETED . '";'
+                ),
+                0 => array(
+                    'function' => function($data) use ($model) {
+                        if ($data['countable'] == BaseModel::MODULE_COUNTABLE
+                                    || $data['multi_costs'] == BaseModel::MODULE_MULTI_COSTS) {
+
+                            return true;
+                        }
+
+                        // check a discount params
+                        if ($data['discount'] || $model->
+                                    getPaymentHandlerInstance($data['handler'])->getDiscount($data['object_id'])) {
+
+                            return true;
+                        }
+
+                        return false;
+                    }
+                )
+            )
+        )
     )
 )) ?>
 

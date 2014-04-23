@@ -10,10 +10,171 @@ use Application\Utility\Pagination as PaginationUtility;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
-use Zend\Db\Sql\Predicate\Literal as LiteralPredicate;
+use Payment\Service\Service as PaymentService;
+use User\Model\Base as UserBaseModel;
 
 class Payment extends Base
 {
+    /**
+     * Add a new transaction
+     *
+     * @param integer $userId
+     * @param array $transactionInfo
+     *      integer payment_type - required
+     *      string comments - optional
+     *      string first_name - required
+     *      string last_name - required
+     *      string email - required
+     *      string phone - required
+     *      string address - optional
+     * @param array $items
+     *      integer object_id
+     *      integer module
+     *      string title
+     *      string slug
+     *      float cost
+     *      float discount
+     *      integer count
+     * @return integer|string
+     */
+    public function addTransaction($userId, array $transactionInfo, array $items)
+    {
+        $transactionId = 0;
+
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $basicData = array(
+                'date' => new Expression('NOW()'),
+                'currency' => PaymentService::getPrimaryCurrency()['id'],
+                'clear_date' => time() + (int) ApplicationService::getSetting('payment_clearing_time')
+            );
+
+            // add the user id
+            if (UserBaseModel::DEFAULT_GUEST_ID != $userId) {
+                $basicData['user_id'] = $userId;
+            }
+
+            // add the discount id
+            if (PaymentService::getDiscountCouponInfo()) {
+                $basicData['discount_cupon'] = PaymentService::getDiscountCouponInfo()['id'];    
+            }
+
+            $insert = $this->insert()
+                ->into('payment_transaction')
+                ->values(array_merge($transactionInfo, $basicData));
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $transactionId = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            // update the discount coupon info
+            if (PaymentService::getDiscountCouponInfo()) {
+                $update = $this->update()
+                    ->table('payment_discount_cupon')
+                    ->set(array(
+                        'used' => self::COUPON_USED
+                    ))
+                    ->where(array(
+                        'id' => PaymentService::getDiscountCouponInfo()['id']
+                    ));
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+
+            // add items
+            foreach ($items as $item) {
+                $insert = $this->insert()
+                    ->into('payment_transaction_item')
+                    ->values(array(
+                        'transaction_id' => $transactionId,
+                        'object_id' => $item['object_id'],
+                        'module' => $item['module'],
+                        'title' => $item['title'],
+                        'slug' => $item['slug'],
+                        'cost' => $item['cost'],
+                        'discount' => $item['discount'],
+                        'count' => $item['count']
+                    ));
+
+                $statement = $this->prepareStatementForSqlObject($insert);
+                $statement->execute();
+            }
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $transactionId;
+    }
+
+    /**
+     * Get payments types
+     *
+     * @return array
+     */
+    public function getPaymentsTypes()
+    {
+        $paymentsTypes = array();
+
+        $select = $this->select();
+        $select->from('payment_type')
+            ->columns(array(
+                'id',
+                'description'
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        foreach ($result as $payment) {
+            $paymentsTypes[$payment['id']] = $payment['description'];
+        }
+
+        return $paymentsTypes;
+    }
+
+    /**
+     * Update the shopping cart's item
+     *
+     * @param integer $id
+     * @param array $itemInfo
+     * @return boolean|string
+     */
+    public function updateShoppingCartItem($id, array $itemInfo)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('payment_shopping_cart')
+                ->set($itemInfo)
+                ->where(array(
+                    'id' => $id,
+                    'shopping_cart_id' => $this->getShoppingCartId()
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
     /**
      * Activate a discount coupon
      *
@@ -50,46 +211,19 @@ class Payment extends Base
     }
 
     /**
-     * Is a coupon active
-     *
-     * @param string $code
-     * @return boolean
-     */
-    public function isCouponActive($code)
-    {
-        $select = $this->select();
-        $select->from('payment_discount_cupon')
-            ->columns(array(
-                'id'
-            ))
-            ->where(array(
-                'slug' => $code,
-                'used' => self::COUPON_NOT_USED
-            ))
-            ->where(array(
-                new LiteralPredicate('(date_start = 0 or
-                    (unix_timestamp() >= date_start)) and (date_end = 0 or (unix_timestamp() <= date_end))')
-            ));
-
-        $statement = $this->prepareStatementForSqlObject($select);
-        $resultSet = new ResultSet;
-        $resultSet->initialize($statement->execute());
-
-        return $resultSet->current() ? true : false;
-    }
-
-    /**
      * Get the shopping cart's item info
      *
      * @param integer $itemId
+     * @param boolean $onlyActive
      * @return array
      */
-    public function getShoppingCartItemInfo($itemId)
+    public function getShoppingCartItemInfo($itemId, $onlyActive = false)
     {
         $select = $this->select();
         $select->from(array('a' => 'payment_shopping_cart'))
             ->columns(array(
                 'id',
+                'object_id',
                 'cost',
                 'discount',
                 'count'
@@ -98,7 +232,9 @@ class Payment extends Base
                 array('b' => 'payment_module'),
                 'a.module = b.module',
                 array(
+                    'module',
                     'countable',
+                    'multi_costs',
                     'must_login',
                     'handler'
                 )
@@ -107,6 +243,14 @@ class Payment extends Base
                 'id' => $itemId,
                 'shopping_cart_id' => $this->getShoppingCartId()
             ));
+
+        if ($onlyActive) {
+            $select->where(array(
+                'active' => self::ITEM_ACTIVE,
+                'available' => self::ITEM_AVAILABLE,
+                'deleted' => self::ITEM_NOT_DELETED
+            ));
+        }
 
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -203,6 +347,7 @@ class Payment extends Base
                 'a.id = b.module',
                 array(
                     'countable',
+                    'multi_costs',
                     'must_login',
                     'handler'
                 )
@@ -250,6 +395,7 @@ class Payment extends Base
         $select->from(array('a' => 'payment_shopping_cart'))
             ->columns(array(
                 'id',
+                'object_id',
                 'title',
                 'cost',
                 'discount',
@@ -267,7 +413,9 @@ class Payment extends Base
                     'view_controller',
                     'view_action',
                     'countable',
-                    'must_login'
+                    'multi_costs',
+                    'must_login',
+                    'handler'
                 )
             )
             ->order($orderBy . ' ' . $orderType)

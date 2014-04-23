@@ -287,7 +287,16 @@
                                             $selectCheckbox->setAttributes(array(
                                                 'disabled' => 'disabled'
                                             ));
-    
+
+                                            break;
+                                        }
+                                    }
+                                    else if (isset($check['function'])) {
+                                        if (false === ($result = $check['function']($data))) {
+                                            $selectCheckbox->setAttributes(array(
+                                                'disabled' => 'disabled'
+                                            ));
+
                                             break;
                                         }
                                     }
@@ -327,6 +336,11 @@
                                                 : $data[$check['param']];
 
                                             if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
+                                                continue 2;
+                                            }
+                                        }
+                                        else if (isset($check['function'])) {
+                                            if (false === ($result = $check['function']($data))) {
                                                 continue 2;
                                             }
                                         }

@@ -67,13 +67,6 @@ class User extends AbstractCustomForm
             'required' => true,
             'category' => 'General info'
         ),
-        'phone' => array(
-            'name' => 'phone',
-            'type' => CustomFormBuilder::FIELD_TEXT,
-            'label' => 'Phone',
-            'required' => true,
-            'category' => 'General info'
-        ),
         'password' => array(
             'name' => 'password',
             'type' => CustomFormBuilder::FIELD_PASSWORD,
@@ -87,6 +80,39 @@ class User extends AbstractCustomForm
             'label' => 'Confirm password',
             'required' => true,
             'category' => 'General info'
+        ),
+        'captcha' => array(
+            'name' => 'captcha',
+            'type' => CustomFormBuilder::FIELD_CAPTCHA,
+            'category' => 'General info'
+        ),
+        'phone' => array(
+            'name' => 'phone',
+            'type' => CustomFormBuilder::FIELD_TEXT,
+            'label' => 'Phone',
+            'required' => false,
+            'category' => 'Miscellaneous info'
+        ),
+        'first_name' => array(
+            'name' => 'first_name',
+            'type' => CustomFormBuilder::FIELD_TEXT,
+            'label' => 'First Name',
+            'required' => false,
+            'category' => 'Miscellaneous info',
+        ),
+        'last_name' => array(
+            'name' => 'last_name',
+            'type' => CustomFormBuilder::FIELD_TEXT,
+            'label' => 'Last Name',
+            'required' => false,
+            'category' => 'Miscellaneous info',
+        ),
+        'address' => array(
+            'name' => 'address',
+            'type' => CustomFormBuilder::FIELD_TEXT,
+            'label' => 'Address',
+            'required' => false,
+            'category' => 'Miscellaneous info',
         ),
         'time_zone' => array(
             'name' => 'time_zone',
@@ -108,11 +134,6 @@ class User extends AbstractCustomForm
                 'delete_option' => true
             ),
             'category' => 'Miscellaneous info'
-        ),
-        'captcha' => array(
-            'name' => 'captcha',
-            'type' => CustomFormBuilder::FIELD_CAPTCHA,
-            'category' => 'Security image'
         ),
         'csrf' => array(
             'name' => 'csrf',

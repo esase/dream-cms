@@ -176,6 +176,33 @@ Payment = function()
     }
 
     /**
+     * Get an edit item form
+     *
+     * @param integer itemId
+     * @return void
+     */
+    this.getEditItemForm = function(itemId)
+    {
+        _showPopupShoppingCart('editShoppingCartItem/' + parseInt(itemId), {}, 'get');
+    }
+
+    /**
+     * Send a an item form
+     *
+     * @param integer itemId
+     * @return void
+     */
+    this.sendEditItemForm = function(itemId)
+    {
+        var $popup = $(popupShoppingCartId);
+
+        // remove previously loaded popup
+        $popup.on('hidden.bs.modal', function (e) {
+            _showPopupShoppingCart('editShoppingCartItem/' + parseInt(itemId), $popup.find('form:first').serialize());
+        }).modal('hide');
+    }
+
+    /**
      * Deactivate a discount coupon
      *
      * @return void

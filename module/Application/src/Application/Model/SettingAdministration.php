@@ -86,14 +86,13 @@ class SettingAdministration extends Setting
                 ->columns(array(
                     'id'
                 ))
-                ->order('c.language desc')
                 ->limit(1)
                 ->where(array('a.id' => new Expression('c.setting_id')))
                 ->where
-                    ->and->isNull('c.language')
+                    ->and->equalTo('c.language', $language)
                 ->where
                     ->or->equalTo('a.id', new Expression('c.setting_id'))
-                    ->and->equalTo('c.language', $language);
+                    ->and->isNull('c.language');
 
             $mainSelect = $this->select();
             $mainSelect->from(array('a' => 'setting'))

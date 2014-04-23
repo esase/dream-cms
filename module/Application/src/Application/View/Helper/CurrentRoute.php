@@ -58,7 +58,7 @@ class CurrentRoute extends AbstractHelper
      */
     public function getController()
     {
-        return $this->routeMatch->getParam('controller');
+        return strtolower($this->routeMatch->getParam('controller'));
     }
 
     /**
@@ -68,7 +68,7 @@ class CurrentRoute extends AbstractHelper
      */
     public function getAction()
     {
-        return $this->routeMatch->getParam('action');
+        return strtolower($this->routeMatch->getParam('action'));
     }
 
     /**

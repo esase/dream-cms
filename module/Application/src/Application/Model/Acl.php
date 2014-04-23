@@ -272,14 +272,13 @@ class Acl extends Base
             ->columns(array(
                 'id'
             ))
-            ->order('d.user_id desc')
             ->limit(1)
             ->where(array('d.connection_id' => new Expression('a.id')))
             ->where
-                ->and->isNull('d.user_id')
+                ->and->equalTo('d.user_id', $userId)
             ->where
                 ->or->equalTo('d.connection_id', new Expression('a.id'))
-                ->and->equalTo('d.user_id', $userId);
+                ->and->isNull('d.user_id');
 
         $extraTrackCondition = $userId == UserBaseModel::DEFAULT_GUEST_ID
             ? 'i.user_id is null'

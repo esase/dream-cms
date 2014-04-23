@@ -41,7 +41,7 @@ class ActivationCode extends AbstractCustomForm
         'captcha' => array(
             'name' => 'captcha',
             'type' => CustomFormBuilder::FIELD_CAPTCHA,
-            'category' => 'Security image'
+            'category' => 'Activation'
         ),
         'csrf' => array(
             'name' => 'csrf',

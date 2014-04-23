@@ -1,0 +1,38 @@
+<?php $this->declareVars('pageTitle', 'subPageTitle') ?>
+<?php $this->pageTitle = $this->translate('Shopping cart') ?>
+<?php $this->subPageTitle = $this->translate('Checkout') ?>
+
+<?php $this->headTitle($this->escapeHtml($this->subPageTitle)) ?>
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'home' => array(
+            'name' => $this->translate('Home'),
+            'controller' => 'Home',
+            'action' => 'index',
+            'check_acl' => false
+        ),
+        'shopping_cart' => array(
+            'name' => $this->pageTitle,
+            'controller' => 'payments',
+            'action' => 'shopping-cart',
+            'check_acl' => false
+        ),
+        'checkout' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'payments',
+            'action' => 'checkout',
+            'check_acl' => false
+        )
+    )
+)) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('partial/form', array(
+    'form' => $this->checkoutForm,
+    'controller' => 'payments',
+    'action' => 'checkout'
+)); ?>
+

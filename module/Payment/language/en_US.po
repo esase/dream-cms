@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-16 16:55+0600\n"
+"PO-Revision-Date: 2014-04-23 17:24+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,42 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Add a new payment transaction message"
+msgstr "Add a new payment transaction message"
+
+msgid "Add a payment transaction email notification"
+msgstr "Add a payment transaction email notification"
+
+msgid "Add a new payment transaction title"
+msgstr "Add a new payment transaction title"
+
+msgid "Send notification about new payment transactions"
+msgstr "Send notification about new payment transactions"
+
+msgid "Cash"
+msgstr "Cash"
+
+msgid "Delivery details"
+msgstr "Delivery details"
+
+msgid "Comments"
+msgstr "Comments"
+
+msgid "Payment type"
+msgstr "Payment type"
+
+msgid "Payment method"
+msgstr "Payment method"
+
+msgid "Some of the items in your shopping cart requires you to be logged in"
+msgstr "Some of the items in your shopping cart requires you to be logged in"
+
+msgid "Item has been edited"
+msgstr "Item has been edited"
+
+msgid "Edit the item"
+msgstr "Edit the item"
 
 msgid "Selected items have been deleted"
 msgstr "Selected items have been deleted"
@@ -240,6 +276,24 @@ msgstr "Payment"
 
 msgid "Payments"
 msgstr "Payments"
+
+msgid "Event - Adding payment transactions"
+msgstr "Adding payment transactions"
+
+msgid "Event - Payment transaction added by guest"
+msgstr "Guest added the payment transaction with id - \"%s\""
+
+msgid "Event - Payment transaction added by user"
+msgstr "\"%s\" added the payment transaction with id - \"%s\""
+
+msgid "Event - Editing items into the shopping cart"
+msgstr "Editing items into the shopping cart"
+
+msgid "Event - Item edited into the shopping cart by guest"
+msgstr "Guest edited the item into the shopping cart with id - \"%s\""
+
+msgid "Event - Item edited into the shopping cart by user"
+msgstr "\"%s\" edited the item into the shopping cart item with id - \"%s\""
 
 msgid "Event - Deactivating discount coupons"
 msgstr "Deactivating discount coupons"

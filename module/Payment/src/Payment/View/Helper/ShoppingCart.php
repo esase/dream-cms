@@ -21,17 +21,11 @@ class ShoppingCart extends AbstractHelper
 
     /**
      * Class constructor
-     *
-     * @param object|array $items
      */
-    public function __construct($items = array())
+    public function __construct()
     {
-        $this->itemsCount = count($items);
-
-        // process items amount price
-        foreach($items as $itemInfo) {
-            $this->itemsAmount += $itemInfo['cost'] * $itemInfo['count'] - $itemInfo['discount'];
-        }
+        $this->itemsCount  = count(PaymentService::getActiveShoppingCartItems());
+        $this->itemsAmount = PaymentService::getActiveShoppingCartItemsAmount();
     }
 
     /**
@@ -71,9 +65,7 @@ class ShoppingCart extends AbstractHelper
      */
     public function getItemsDiscountedAmount()
     {
-        return PaymentService::getCurrentDiscount()
-            ? $this->itemsAmount - ($this->itemsAmount * PaymentService::getCurrentDiscount()['discount'] / 100)
-            : $this->itemsAmount;
+        return PaymentService::getActiveShoppingCartItemsAmount(true);
     }
 
     /**
@@ -83,6 +75,8 @@ class ShoppingCart extends AbstractHelper
      */
     public function getCurrentDiscount()
     {
-        return PaymentService::getCurrentDiscount() ? PaymentService::getCurrentDiscount()['discount'] : 0;
+        return PaymentService::getDiscountCouponInfo()
+            ? PaymentService::getDiscountCouponInfo()['discount']
+            : 0;
     }
 }

@@ -5,6 +5,7 @@ namespace Payment\Model;
 use Application\Model\AbstractBase;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Sql\Predicate\In as InPredicate;
+use Zend\Db\Sql\Predicate\Predicate as Predicate;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression;
 use Application\Utility\ErrorLogger;
@@ -15,9 +16,25 @@ use Exception;
 use Application\Utility\Cache as CacheUtility;
 use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
 use Zend\Form\Exception\InvalidArgumentException;
+use Zend\Db\Sql\Predicate\Literal as LiteralPredicate;
 
 class Base extends AbstractBase
 {
+    /**
+     * Module countable flag
+     */
+    const MODULE_COUNTABLE = 1;
+
+    /**
+     * Module multi costs flag
+     */
+    const MODULE_MULTI_COSTS = 1;
+
+    /**
+     * Module must login flag
+     */
+    const MODULE_MUST_LOGIN = 1;
+
     /**
      * Transaction paid
      */
@@ -115,6 +132,41 @@ class Base extends AbstractBase
     protected $paymentHandlerInstances = array();
 
     /**
+     * Get an active coupon info
+     *
+     * @param string|integer $id
+     * @param string $field
+     * @return array
+     */
+    public function getActiveCouponInfo($id, $field = 'slug')
+    {
+        $select = $this->select();
+        $select->from('payment_discount_cupon')
+            ->columns(array(
+                'id',
+                'slug',
+                'discount',
+                'used',
+                'date_start',
+                'date_end'
+            ))
+            ->where(array(
+                ($field == 'id' ? $field : 'slug') => $id,
+                'used' => self::COUPON_NOT_USED
+            ))
+            ->where(array(
+                new LiteralPredicate('(date_start = 0 or
+                    (unix_timestamp() >= date_start)) and (date_end = 0 or (unix_timestamp() <= date_end))')
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->current() ? $resultSet->current() : array();
+    }
+
+    /**
      * Get the coupon info
      *
      * @param integer|sting $id
@@ -188,7 +240,11 @@ class Base extends AbstractBase
         $select->from(array('a' => 'payment_shopping_cart'))
             ->columns(array(
                 'id',
+                'object_id',
                 'cost',
+                'module',
+                'title',
+                'slug',
                 'discount',
                 'count'
             ))
@@ -200,21 +256,24 @@ class Base extends AbstractBase
                     'must_login',
                     'handler'
                 )
-            );
+            )
+            ->where(array(
+                'shopping_cart_id' => $this->getShoppingCartId()
+            ));
 
         if ($onlyActive) {
             $select->where(array(
                 'active' => self::ITEM_ACTIVE,
                 'available' => self::ITEM_AVAILABLE,
-                'deleted' => self::ITEM_NOT_DELETED,
-                'shopping_cart_id' => $this->getShoppingCartId()
+                'deleted' => self::ITEM_NOT_DELETED                
             ));
         }
 
         $statement = $this->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
 
-        return $result;
+        return $resultSet->toArray();
     }
 
     /**
@@ -269,16 +328,23 @@ class Base extends AbstractBase
                 $statement->execute();
             }
             else {
+                $countStatus = $objectInfo['count'] <= 0 && $moduleInfo['countable'] == self::MODULE_COUNTABLE
+                    ? self::ITEM_NOT_AVAILABLE
+                    : self::ITEM_AVAILABLE;
+
+                // main info
                 $data = array(
                     'title' =>  $objectInfo['title'],
-                    'slug'  =>  $objectInfo['slug'],
-                    'available' => $objectInfo['count'] <= 0 && $moduleInfo['countable'] ? self::ITEM_NOT_AVAILABLE : self::ITEM_AVAILABLE,
-                    'active' => self::ITEM_ACTIVE
+                    'slug'  =>  $objectInfo['slug']
                 );
 
+                // update the main info into shopping cart
                 $update = $this->update()
                     ->table('payment_shopping_cart')
-                    ->set($data)
+                    ->set(array_merge($data, array(
+                        'available' => $countStatus,
+                        'active' => self::ITEM_ACTIVE
+                    )))
                     ->where(array(
                         'object_id' => $objectId,
                         'module' => $moduleInfo['module']
@@ -287,9 +353,12 @@ class Base extends AbstractBase
                 $statement = $this->prepareStatementForSqlObject($update);
                 $statement->execute();
 
+                // update the main info into transactions
                 $update = $this->update()
                     ->table('payment_transaction_item')
-                    ->set($data)
+                    ->set(array_merge($data, array(
+                        'active' => self::ITEM_ACTIVE
+                    )))
                     ->where(array(
                         'object_id' => $objectId,
                         'module' => $moduleInfo['module']
@@ -297,6 +366,85 @@ class Base extends AbstractBase
 
                 $statement = $this->prepareStatementForSqlObject($update);
                 $statement->execute();
+
+                // update statuses for not paid transactions only
+                $select = $this->select();
+                $select->from(array('a' => 'payment_transaction_item'))
+                ->columns(array(
+                    'transaction_id'
+                ))
+                ->join(
+                    array('b' => 'payment_transaction'),
+                    new Expression('a.transaction_id  = b.id and b.paid = ?', array(self::TRANSACTION_NOT_PAID)),
+                    array()
+                )
+                ->where(array(
+                    'object_id' => $objectId,
+                    'module' => $moduleInfo['module']
+                ));
+
+                $statement = $this->prepareStatementForSqlObject($select);
+                $transactionItems = $statement->execute();
+                $transactionsIds  = array();
+
+                foreach ($transactionItems as $transactionItem) {
+                    $transactionsIds[] = $transactionItem['transaction_id'];
+
+                    $update = $this->update()
+                        ->table('payment_transaction_item')
+                        ->set(array(
+                            'available' => $countStatus,
+                            'active' => self::ITEM_ACTIVE
+                        ))
+                        ->where(array(
+                            'object_id' => $objectId,
+                            'module' => $moduleInfo['module'],
+                            'transaction_id' => $transactionItem['transaction_id']
+                        ));
+
+                    $statement = $this->prepareStatementForSqlObject($update);
+                    $statement->execute();
+                }
+
+                // update available count of items
+                if ($countStatus == self::ITEM_AVAILABLE
+                            && $moduleInfo['countable'] == self::MODULE_COUNTABLE) {
+
+                    $predicate = new Predicate();
+
+                    // update shopping cart items
+                    $update = $this->update()
+                        ->table('payment_shopping_cart')
+                        ->set(array(
+                            'count' => $objectInfo['count']
+                        ))
+                        ->where(array(
+                            'object_id' => $objectId,
+                            'module' => $moduleInfo['module'],
+                            $predicate->greaterThan('count', $objectInfo['count'])
+                        ));
+
+                    $statement = $this->prepareStatementForSqlObject($update);
+                    $statement->execute();
+
+                    // update not paid transactions items
+                    foreach ($transactionsIds as $transactionId) {
+                        $update = $this->update()
+                            ->table('payment_transaction_item')
+                            ->set(array(
+                                'count' => $objectInfo['count']
+                            ))
+                            ->where(array(
+                                'object_id' => $objectId,
+                                'module' => $moduleInfo['module'],
+                                'transaction_id' => $transactionId,
+                                $predicate->greaterThan('count', $objectInfo['count'])
+                            ));
+
+                        $statement = $this->prepareStatementForSqlObject($update);
+                        $statement->execute();
+                    }                    
+                }
             }
 
             $this->adapter->getDriver()->getConnection()->commit();

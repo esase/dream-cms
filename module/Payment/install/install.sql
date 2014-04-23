@@ -40,7 +40,9 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('activate_discount_coupon', @moduleId, 'Event - Activating discount coupons'),
 ('deactivate_discount_coupon', @moduleId, 'Event - Deactivating discount coupons'),
 ('add_item_to_shopping_cart', @moduleId, 'Event - Adding items to the shopping cart'),
-('delete_item_from_shopping_cart', @moduleId, 'Event - Deleting items from the shopping cart');
+('delete_item_from_shopping_cart', @moduleId, 'Event - Deleting items from the shopping cart'),
+('edit_item_into_shopping_cart', @moduleId, 'Event - Editing items into the shopping cart'),
+('add_payment_transaction', @moduleId, 'Event - Adding payment transactions');
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'head' ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
@@ -77,6 +79,34 @@ INSERT INTO `setting_predefined_value` (`setting_id`, `value`) VALUES
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  'type_round', NULL);
 
+INSERT INTO `setting_category` (`name`, `module`) VALUES
+('Email notifications', @moduleId);
+
+SET @settingCatgoryId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_add', 'Send notification about new payment transactions', '', 'checkbox', 0, 1, @settingCatgoryId, @moduleId, 0, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '1', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_add_title', 'Add a new payment transaction title', 'Add a payment transaction email notification', 'notification_title', 1, 2, @settingCatgoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'A new payment transaction added', NULL),
+(@settingId,  'Добавлена новая платежная операция', 'ru');
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_add_message', 'Add a new payment transaction message', '', 'notification_message', 1, 3, @settingCatgoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '<p><b>__FirstName__ __LastName__ (__Email__)</b> has added a new payment transaction</p>', NULL),
+(@settingId,  '<p><b>__LastName__  __FirstName__ (__Email__)</b> добавил(а) новую платежную операцию</p>', 'ru');
+
 CREATE TABLE IF NOT EXISTS `payment_module` (
     `module` int(10) unsigned NOT NULL,
     `update_event` varchar(50) NOT NULL,
@@ -84,6 +114,7 @@ CREATE TABLE IF NOT EXISTS `payment_module` (
     `view_controller` varchar(50) NOT NULL,
     `view_action` varchar(50) NOT NULL,
     `countable` tinyint(1) NOT NULL,
+    `multi_costs` tinyint(1) NOT NULL,
     `must_login` tinyint(1) unsigned NOT NULL,
     `handler` varchar(100) NOT NULL,
     PRIMARY KEY (`module`),
@@ -120,13 +151,12 @@ CREATE TABLE IF NOT EXISTS `payment_type` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL,
     `description` varchar(50) NOT NULL,
-    PRIMARY KEY (`id`)  
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `payment_type` (`id`, `name`, `description`) VALUES
-(1, 'robokassa', 'Robokassa'),
-(2, 'yandex-money', 'Yandex money'),
-(3, 'cash', 'Cash');
+(1, 'cash', 'Cash');
 
 CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -146,13 +176,16 @@ CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
 CREATE TABLE IF NOT EXISTS `payment_transaction` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `user_id` int(10) unsigned DEFAULT NULL,
-    `user_name` varchar(50) NOT NULL DEFAULT '',
-    `user_phone` varchar(255) NOT NULL DEFAULT '',
-    `user_email` varchar(255) NOT NULL DEFAULT '',
+    `first_name` varchar(255) NOT NULL DEFAULT '',
+    `last_name` varchar(255) NOT NULL DEFAULT '',
+    `email` varchar(255) NOT NULL DEFAULT '',
+    `phone` varchar(255) NOT NULL DEFAULT '',
+    `address` varchar(255) NOT NULL DEFAULT '',
     `date` date NOT NULL,
     `paid` tinyint(1) NOT NULL,
     `currency` int(10) unsigned NOT NULL,
     `payment_type` int(10) unsigned DEFAULT NULL,
+    `comments` text NOT NULL DEFAULT '',
     `discount_cupon` int(10) unsigned DEFAULT NULL,
     `clear_date` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
@@ -165,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `payment_transaction` (
         ON DELETE CASCADE,
     FOREIGN KEY (payment_type) REFERENCES payment_type(id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
+        ON DELETE SET NULL,
     FOREIGN KEY (discount_cupon) REFERENCES payment_discount_cupon(id)
         ON UPDATE CASCADE
         ON DELETE SET NULL    

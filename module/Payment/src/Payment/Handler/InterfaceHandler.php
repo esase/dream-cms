@@ -25,6 +25,14 @@ interface InterfaceHandler
     public function getItemInfo($id);
 
     /**
+     * Get discount
+     *
+     * @param integer $id
+     * @return float
+     */
+    public function getDiscount($id);
+
+    /**
      * Clear the discount
      *
      * @param integer $id

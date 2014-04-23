@@ -26,6 +26,70 @@ class Service extends ApplicationService
     protected static $model;
 
     /**
+     * Discount coupon info
+     * @var array
+     */
+    protected static $discountCouponInfo = null;
+
+    /**
+     * Shopping cart items
+     * @var array
+     */
+    protected static $activeShoppingCartItems = null;
+
+    /**
+     * Shopping cart items amount
+     * @var float
+     */
+    protected static $activeShoppingCartItemsAmount = null;
+
+    /**
+     * Get active shopping cart items
+     *
+     * @return array
+     */
+    public static function getActiveShoppingCartItems()
+    {
+        self::initActiveShoppingCartItems();
+        return self::$activeShoppingCartItems;
+    }
+
+    /**
+     * Init active shopping cart items
+     *
+     * @return void
+     */
+    protected static function initActiveShoppingCartItems()
+    {
+        if (self::$activeShoppingCartItems === null) {
+            self::$activeShoppingCartItems = self::getModel()->getAllShoppingCartItems();
+        }
+    }
+
+    /**
+     * Get active shopping cart items amount 
+     *
+     * @param boolean $discounted
+     * @return float
+     */
+    public static function getActiveShoppingCartItemsAmount($discounted = false)
+    {
+        if (null === self::$activeShoppingCartItemsAmount) {
+            self::initActiveShoppingCartItems();
+
+            // process items amount price
+            self::$activeShoppingCartItemsAmount = 0;
+            foreach(self::$activeShoppingCartItems as $itemInfo) {
+                self::$activeShoppingCartItemsAmount += $itemInfo['cost'] * $itemInfo['count'] - $itemInfo['discount'];
+            }
+        }
+
+        return $discounted && self::getDiscountCouponInfo()
+            ? self::$activeShoppingCartItemsAmount - (self::$activeShoppingCartItemsAmount * self::getDiscountCouponInfo()['discount'] / 100)
+            : self::$activeShoppingCartItemsAmount;
+    }
+
+    /**
      * Get model
      */
     protected static function getModel()
@@ -40,34 +104,45 @@ class Service extends ApplicationService
     }
 
     /**
-     * Set current discount
+     * Set a discount coupon ID
      *
-     * @param array $couponInfo
-     *      integer id
-     *      string slug
-     *      float discount
-     *      integer activated
-     *      integer date_start
-     *      integer date_end
+     * @param integer $couponId
      * @return void
      */
-    public static function setCurrentDiscount($couponInfo)
+    public static function setDiscountCouponId($couponId)
     {
         $paymentSession = new SessionContainer('payment');
-        $paymentSession->currentDiscount = $couponInfo;
+        $paymentSession->discountCouponId = $couponId;
     }
 
     /**
-     * Get current discount
+     * Get discount coupon info
      *
      * @return array
      */
-    public static function getCurrentDiscount()
+    public static function getDiscountCouponInfo()
     {
-        $paymentSession = new SessionContainer('payment');
-        return isset($paymentSession->currentDiscount)
-            ? $paymentSession->currentDiscount
-            : array();
+        if (self::$discountCouponInfo === null) {
+            // get a session
+            $paymentSession = new SessionContainer('payment');
+
+            if (!empty($paymentSession->discountCouponId)) {
+                // get a discount coupon info
+                if (null != ($discountInfo =
+                        self::getModel()->getActiveCouponInfo($paymentSession->discountCouponId, 'id'))) {
+
+                    self::$discountCouponInfo = $discountInfo;
+                    return $discountInfo;
+                }
+
+                // remove the discount from the session
+                $paymentSession->discountCouponId = null;
+            }
+
+            self::$discountCouponInfo = array();
+        }
+
+        return self::$discountCouponInfo;
     }
 
     /**
@@ -81,6 +156,7 @@ class Service extends ApplicationService
             // get primary currency
             if ($currencyInfo['primary_currency']) {
                 self::$primaryCurrency = array(
+                    'id'   => $currencyInfo['id'],
                     'name' => $currencyInfo['name'],
                     'code' => $currencyInfo['code']
                 );
@@ -93,6 +169,7 @@ class Service extends ApplicationService
             }
 
             self::$exchangeRates[$currency] = array(
+                'id'   => $currencyInfo['id'],
                 'rate' => $currencyInfo['rate'],
                 'name' => $currencyInfo['name'],
                 'code' => $currencyInfo['code']

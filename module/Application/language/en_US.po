@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-14 15:54+0600\n"
+"PO-Revision-Date: 2014-04-23 13:35+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,18 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Address"
+msgstr "Address"
+
+msgid "Last Name"
+msgstr "Last Name"
+
+msgid "First Name"
+msgstr "First Name"
+
+msgid "Home"
+msgstr "Home"
 
 msgid "Title"
 msgstr "Title"

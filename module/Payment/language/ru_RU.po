@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-16 16:55+0600\n"
+"PO-Revision-Date: 2014-04-23 17:24+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,42 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Add a new payment transaction message"
+msgstr "Сообщение об добавлении новой платежной операции"
+
+msgid "Add a payment transaction email notification"
+msgstr "Уведомление об добавлении новой платежной операции"
+
+msgid "Add a new payment transaction title"
+msgstr "Заголовок об добавлении новой платежной операции"
+
+msgid "Send notification about new payment transactions"
+msgstr "Отправлять уведомления о новых платежных операциях"
+
+msgid "Cash"
+msgstr "Наличные"
+
+msgid "Delivery details"
+msgstr "Детали поставки"
+
+msgid "Comments"
+msgstr "Комментарии"
+
+msgid "Payment type"
+msgstr "Вид оплаты"
+
+msgid "Payment method"
+msgstr "Способ оплаты"
+
+msgid "Some of the items in your shopping cart requires you to be logged in"
+msgstr "Некоторые из товаров в корзине требуют, чтобы вы были вошли на сайт"
+
+msgid "Item has been edited"
+msgstr "Товар был отредактирован"
+
+msgid "Edit the item"
+msgstr "Редактировать товар"
 
 msgid "Selected items have been deleted"
 msgstr "Выбранные товары были удалены"
@@ -239,6 +275,24 @@ msgstr "Платеж"
 
 msgid "Payments"
 msgstr "Платежи"
+
+msgid "Event - Adding payment transactions"
+msgstr "Добавление платежных операций"
+
+msgid "Event - Payment transaction added by guest"
+msgstr "Гость добавил платежную транзакцию с идентификатором - \"%s\""
+
+msgid "Event - Payment transaction added by user"
+msgstr "\"%s\" добавил платежную транзакцию с идентификатором - \"%s\""
+
+msgid "Event - Editing items into the shopping cart"
+msgstr "Редактирование товаров в корзине"
+
+msgid "Event - Item edited into the shopping cart by guest"
+msgstr "Гость отредактировал товар в корзине с идентификатором - \"%d\""
+
+msgid "Event - Item edited into the shopping cart by user"
+msgstr "\"%s\" отредактировал товар в корзине с идентификатором - \"%d\""
 
 msgid "Event - Deactivating discount coupons"
 msgstr "Дезактивация скидочных купонов"

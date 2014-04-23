@@ -89,16 +89,9 @@ class Module
                 'currency' => 'Payment\View\Helper\Currency',
                 'paymentItemStatus' => 'Payment\View\Helper\PaymentItemStatus',
                 'paymentItemLink' => 'Payment\View\Helper\PaymentItemlink',
+                'shoppingCart' => 'Payment\View\Helper\ShoppingCart',
             ),
             'factories' => array(
-                'shoppingCart' => function()
-                {
-                    $payment = $this->serviceManager
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Payment\Model\Base');
-
-                    return new \Payment\View\Helper\ShoppingCart($payment->getAllShoppingCartItems());
-                },
             )
         );
     }

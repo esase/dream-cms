@@ -5,6 +5,7 @@ namespace Payment\Form;
 use Application\Form\CustomFormBuilder;
 use Application\Form\AbstractCustomForm;
 use Application\Service\Service as ApplicationService;
+use Zend\Form\Exception\InvalidArgumentException;
 
 class ShoppingCart extends AbstractCustomForm 
 {
@@ -190,7 +191,10 @@ class ShoppingCart extends AbstractCustomForm
      */
     public function setTariffs(array $tariffs)
     {
-        $this->tariffs = $tariffs;
+        if (null == ($this->tariffs = $tariffs)) {
+            throw new InvalidArgumentException('Tariffs list must not be empty');    
+        }
+
         return $this;
     }
 
