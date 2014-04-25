@@ -68,6 +68,20 @@ class Payment extends Base
             $statement->execute();
             $transactionId = $this->adapter->getDriver()->getLastGeneratedValue();
 
+            // generate a random slug
+            $update = $this->update()
+                ->table('payment_transaction')
+                ->set(array(
+                    'slug' => strtoupper($this->generateSlug($transactionId, $this->
+                            generateRandString(self::TRANSACTION_MIN_SLUG_LENGTH, self::ALLOWED_SLUG_CHARS), 'payment_transaction', 'id'))
+                ))
+                ->where(array(
+                    'id' => $transactionId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
             // update the discount coupon info
             if (PaymentService::getDiscountCouponInfo()) {
                 $update = $this->update()

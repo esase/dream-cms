@@ -42,7 +42,8 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('add_item_to_shopping_cart', @moduleId, 'Event - Adding items to the shopping cart'),
 ('delete_item_from_shopping_cart', @moduleId, 'Event - Deleting items from the shopping cart'),
 ('edit_item_into_shopping_cart', @moduleId, 'Event - Editing items into the shopping cart'),
-('add_payment_transaction', @moduleId, 'Event - Adding payment transactions');
+('add_payment_transaction', @moduleId, 'Event - Adding payment transactions'),
+('activate_payment_transaction', @moduleId, 'Event - Activating payment transactions');
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'head' ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
@@ -104,8 +105,31 @@ INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `orde
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
-(@settingId,  '<p><b>__FirstName__ __LastName__ (__Email__)</b> has added a new payment transaction</p>', NULL),
-(@settingId,  '<p><b>__LastName__  __FirstName__ (__Email__)</b> добавил(а) новую платежную операцию</p>', 'ru');
+(@settingId,  '<p><b>__FirstName__ __LastName__ (__Email__)</b> has added a new payment transaction with id: __Id__</p>', NULL),
+(@settingId,  '<p><b>__LastName__  __FirstName__ (__Email__)</b> добавил(а) новую платежную операцию с идентификатором: __Id__</p>', 'ru');
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_paid', 'Send notification about paid payment transactions', '', 'checkbox', 0, 4, @settingCatgoryId, @moduleId, 0, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '1', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_paid_title', 'Paid payment transaction title', 'Paid payment transaction email notification', 'notification_title', 1, 5, @settingCatgoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'A payment transaction is paid', NULL),
+(@settingId,  'Платежная операция оплачена', 'ru');
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_paid_message', 'Paid payment transaction message', '', 'notification_message', 1, 6, @settingCatgoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '<p><b>__FirstName__ __LastName__ (__Email__)</b> has paid the payment transaction with id: __Id__</p>', NULL),
+(@settingId,  '<p><b>__LastName__  __FirstName__ (__Email__)</b> оплатил(а) платежную операцию с идентификатором: __Id__</p>', 'ru');
 
 CREATE TABLE IF NOT EXISTS `payment_module` (
     `module` int(10) unsigned NOT NULL,
@@ -175,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
 
 CREATE TABLE IF NOT EXISTS `payment_transaction` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `slug` varchar(50) NOT NULL DEFAULT '',
     `user_id` int(10) unsigned DEFAULT NULL,
     `first_name` varchar(255) NOT NULL DEFAULT '',
     `last_name` varchar(255) NOT NULL DEFAULT '',
@@ -189,6 +214,7 @@ CREATE TABLE IF NOT EXISTS `payment_transaction` (
     `discount_cupon` int(10) unsigned DEFAULT NULL,
     `clear_date` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `slug` (`slug`),
     KEY `paid` (`paid`),
     FOREIGN KEY (user_id) REFERENCES user(user_id)
         ON UPDATE CASCADE

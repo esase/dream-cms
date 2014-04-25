@@ -58,4 +58,26 @@ interface InterfaceHandler
      * @return void
      */
     public function decreaseCount($id, $count);
+
+    /**
+     * Set the item as paid
+     *
+     * @param integer $id
+     * @param array $transactionInfo
+     *      integer id
+     *      string slug
+     *      integer user_id
+     *      string first_name
+     *      string last_name
+     *      string phone
+     *      string address
+     *      string email
+     *      integer currency
+     *      integer payment_type
+     *      integer discount_cupon
+     *      string currency_code
+     *      string payment_name 
+     * @return void
+     */
+    public function setPaid($id, array $transactionInfo);
 }

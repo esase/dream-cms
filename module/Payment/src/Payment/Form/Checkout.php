@@ -21,6 +21,12 @@ class Checkout extends AbstractCustomForm
     protected $model;
 
     /**
+     * Hide payment type
+     * @var boolean
+     */
+    protected $hidePaymentType = false;
+
+    /**
      * Form elements
      * @var array
      */
@@ -30,14 +36,14 @@ class Checkout extends AbstractCustomForm
             'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Payment type',
             'required' => true,
-            'category' => 'Payment method'
+            'category' => 'Order information'
         ),
         'comments' => array(
             'name' => 'comments',
             'type' => CustomFormBuilder::FIELD_TEXT_AREA,
             'label' => 'Comments',
             'required' => false,
-            'category' => 'Payment method',
+            'category' => 'Order information',
         ),
         'first_name' => array(
             'name' => 'first_name',
@@ -90,9 +96,14 @@ class Checkout extends AbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            if ($this->model) {
-                // fill the form with default values
-                $this->formElements['payment_type']['values'] = $this->model->getPaymentsTypes();
+            // hide a payment type field
+            if ($this->hidePaymentType) {
+                unset($this->formElements['payment_type']);    
+            }else {
+                if ($this->model) {
+                    // fill the form with default values
+                    $this->formElements['payment_type']['values'] = $this->model->getPaymentsTypes();
+                }    
             }
 
             $this->form = new CustomFormBuilder($this->formName,
@@ -111,6 +122,18 @@ class Checkout extends AbstractCustomForm
     public function setModel(PaymentModel $model)
     {
         $this->model = $model;
+        return $this;
+    }
+
+    /**
+     * Hide payment type
+     *
+     * @param boolean $hide
+     * @return object fluent interface
+     */
+    public function hidePaymentType($hide)
+    {
+        $this->hidePaymentType = $hide;
         return $this;
     }
 }

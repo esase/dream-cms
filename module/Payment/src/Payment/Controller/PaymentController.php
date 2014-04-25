@@ -17,6 +17,7 @@ use User\Service\Service as UserService;
 use Payment\Service\Service as PaymentService;
 use Payment\Model\Payment as PaymentModel;
 use Application\Utility\EmailNotification;
+use User\Model\Base as UserBaseModel;
 
 class PaymentController extends AbstractBaseController
 {
@@ -468,40 +469,53 @@ class PaymentController extends AbstractBaseController
 
     /**
      * Clean shopping cart
+     *
+     * @param boolean $returnDiscount
+     * @return boolean
+     */
+    protected function cleanShoppingCart($returnDiscount = true)
+    {
+        // get all shopping cart items
+        if (null != ($items = $this->getModel()->getAllShoppingCartItems(false))) {
+            // event's description
+            $eventDesc = UserService::isGuest()
+                ? 'Event - Item deleted from shopping cart by guest'
+                : 'Event - Item deleted from shopping cart by user';
+
+            // delete all items
+            foreach ($items as $itemInfo) {
+                if (true !== ($deleteResult = $this->getModel()->deleteFromShoppingCart($itemInfo['id']))) {
+                    return false;
+                }
+
+                // return a discount back
+                if ($returnDiscount && $itemInfo['discount']) {
+                    $this->getModel()
+                        ->getPaymentHandlerInstance($itemInfo['handler'])
+                        ->returnBackDiscount($itemInfo['id'], $itemInfo['discount']);
+                }
+
+                $eventDescParams = UserService::isGuest()
+                    ? array($itemInfo['id'])
+                    : array(UserService::getCurrentUserIdentity()->nick_name, $itemInfo['id']);
+
+                PaymentEvent::fireEvent(PaymentEvent::DELETE_ITEM_FROM_SHOPPING_CART,
+                    $itemInfo['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Clean shopping cart
      */
     public function cleanShoppingCartAction()
     {
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            // get all shopping cart items
-            if (null != ($items = $this->getModel()->getAllShoppingCartItems(false))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Item deleted from shopping cart by guest'
-                    : 'Event - Item deleted from shopping cart by user';
-
-                // delete all items
-                foreach ($items as $itemInfo) {
-                    if (true !== ($deleteResult = $this->getModel()->deleteFromShoppingCart($itemInfo['id']))) {
-                        break;
-                    }
-
-                    // return a discount back
-                    if ($itemInfo['discount']) {
-                        $this->getModel()
-                            ->getPaymentHandlerInstance($itemInfo['handler'])
-                            ->returnBackDiscount($itemInfo['id'], $itemInfo['discount']);
-                    }
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($itemInfo['id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $itemInfo['id']);
-
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_ITEM_FROM_SHOPPING_CART,
-                        $itemInfo['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
-                }
-            }
+            $this->cleanShoppingCart();
         }
 
         $view = new ViewModel(array());
@@ -554,11 +568,15 @@ class PaymentController extends AbstractBaseController
             }
         }
 
+        $transactionPaid = (float) paymentService::
+                roundingCost(paymentService::getActiveShoppingCartItemsAmount(true)) > 0;
+
         // get a form instance
         $checkoutForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Payment\Form\Checkout')
-            ->setModel($this->getModel());
+            ->setModel($this->getModel())
+            ->hidePaymentType(!$transactionPaid);
 
         // set default values
         if (!UserService::isGuest()) {
@@ -604,19 +622,43 @@ class PaymentController extends AbstractBaseController
                                 'find' => array(
                                     'FirstName',
                                     'LastName',
-                                    'Email'
+                                    'Email',
+                                    'Id'
                                 ),
                                 'replace' => array(
                                     $formData['first_name'],
                                     $formData['last_name'],
-                                    $formData['email']
+                                    $formData['email'],
+                                    $result
                                 )
                             ));
                     }
 
-                    //WHAT IS NEXT?
-                    //2. Clear shopping cart
-                    //3. Redirect to selected payment 
+                    // clean the shopping cart
+                    $this->cleanShoppingCart(false);
+
+                    // get created transaction info
+                    $transactionInfo = $this->getModel()->getTransactionInfo($result);
+
+                    // redirect to the buying page
+                    if ($transactionPaid) {
+                        return $this->redirectTo('payments', 'buy', array(
+                            'slug'  => $transactionInfo['slug'],
+                            'extra' => $transactionInfo['payment_name']
+                        ));
+                    }
+                    else {
+                        // activate the transaction and redirect to success page
+                        if(true == ($result = $this->activateTransaction($transactionInfo))) {
+                            return $this->redirectTo('payments', 'success');
+                        }
+
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Transaction activation error'));
+
+                        return $this->redirectTo('payments', 'shopping-cart');
+                    }
                 }
                 else {
                     $this->flashMessenger()
@@ -631,5 +673,79 @@ class PaymentController extends AbstractBaseController
         return new ViewModel(array(
             'checkoutForm' => $checkoutForm->getForm(),
         ));
+    }
+
+    /**
+     * Activate transaction
+     *
+     * @param array $transactionInfo
+     *      integer id
+     *      string slug
+     *      integer user_id
+     *      string first_name
+     *      string last_name
+     *      string phone
+     *      string address
+     *      string email
+     *      integer currency
+     *      integer payment_type
+     *      integer discount_cupon
+     *      string currency_code
+     *      string payment_name 
+     * @return boolean
+     */
+    protected function activateTransaction(array $transactionInfo)
+    {
+        if (true === ($result = $this->getModel()->activateTransaction($transactionInfo['id']))) {
+            // mark as paid all transaction's items
+            if (null != ($activeTransactionItems =
+                    $this->getModel()->getAllTransactionItems($transactionInfo['id']))) {
+
+                foreach ($activeTransactionItems as $itemInfo) {
+                    $this->getModel()->getPaymentHandlerInstance($itemInfo['handler'])->setPaid($itemInfo['object_id'], $transactionInfo);
+                }
+            }
+
+            // fire the event
+            PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_PAYMENT_TRANSACTION, $transactionInfo['id'],
+                    UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Payment transaction activated by the system', array($transactionInfo['id']));
+
+            // send an email notification about the paid transaction
+            if ((int) $this->getSetting('payment_transaction_paid')) {
+                EmailNotification::sendNotification($this->getSetting('application_site_email'),
+                    $this->getSetting('payment_transaction_paid_title', UserService::getDefaultLocalization()['language']),
+                    $this->getSetting('payment_transaction_paid_message', UserService::getDefaultLocalization()['language']), array(
+                        'find' => array(
+                            'FirstName',
+                            'LastName',
+                            'Email',
+                            'Id'
+                        ),
+                        'replace' => array(
+                            $transactionInfo['first_name'],
+                            $transactionInfo['last_name'],
+                            $transactionInfo['email'],
+                            $transactionInfo['id']
+                        )
+                    ));
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Buy
+     */
+    public function buyAction()
+    {
+        //CHECK TRANSACTION INFO
+        //CHECK PAYMENT INFO
+        //etc
+        echo $this->getSlug() . '<Br>';
+        echo $this->getExtra();
+        return false;
     }
 }

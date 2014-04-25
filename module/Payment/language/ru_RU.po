@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-23 17:24+0600\n"
+"PO-Revision-Date: 2014-04-25 19:52+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,24 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Paid payment transaction message"
+msgstr "Сообщение об оплате платежной операции"
+
+msgid "Paid payment transaction email notification"
+msgstr "Уведомление об оплате платежной операции"
+
+msgid "Paid payment transaction title"
+msgstr "Заголовок об оплате платежной операции"
+
+msgid "Send notification about paid payment transactions"
+msgstr "Отправлять уведомления об оплаченных платежных операциях"
+
+msgid "Transaction activation error"
+msgstr "Ошибка активации платежной операции"
+
+msgid "Order information"
+msgstr "Информация о заказе"
 
 msgid "Add a new payment transaction message"
 msgstr "Сообщение об добавлении новой платежной операции"
@@ -30,16 +48,13 @@ msgid "Cash"
 msgstr "Наличные"
 
 msgid "Delivery details"
-msgstr "Детали поставки"
+msgstr "Детали доставки"
 
 msgid "Comments"
 msgstr "Комментарии"
 
 msgid "Payment type"
 msgstr "Вид оплаты"
-
-msgid "Payment method"
-msgstr "Способ оплаты"
 
 msgid "Some of the items in your shopping cart requires you to be logged in"
 msgstr "Некоторые из товаров в корзине требуют, чтобы вы были вошли на сайт"
@@ -275,6 +290,13 @@ msgstr "Платеж"
 
 msgid "Payments"
 msgstr "Платежи"
+
+msgid "Event - Activating payment transactions"
+msgstr "Активация платежных операций"
+
+msgid "Event - Payment transaction activated by the system"
+msgstr ""
+"Платежная операция с идентификатором - \"%d\" была активирована системой"
 
 msgid "Event - Adding payment transactions"
 msgstr "Добавление платежных операций"

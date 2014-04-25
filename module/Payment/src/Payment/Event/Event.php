@@ -70,4 +70,9 @@ class Event extends ApplicationEvent
      * Add payment transaction event
      */
     const ADD_PAYMENT_TRANSACTION = 'add_payment_transaction';
+
+    /**
+     * Activate payment transaction event
+     */
+    const ACTIVATE_PAYMENT_TRANSACTION = 'activate_payment_transaction';
 }

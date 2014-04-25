@@ -46,6 +46,11 @@ class Base extends AbstractBase
     const TRANSACTION_NOT_PAID = 0;
 
     /**
+     * Transaction min slug length
+     */
+    const TRANSACTION_MIN_SLUG_LENGTH = 15;
+
+    /**
      * Primary currency
      */
     const PRIMARY_CURRENCY = 1;
@@ -69,11 +74,6 @@ class Base extends AbstractBase
      * Coupon min slug length
      */
     const COUPON_MIN_SLUG_LENGTH = 15;
-
-    /**
-     * Coupon slug chars
-     */
-    const COUPON_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
     /**
      * Shopping cart cookie
@@ -126,10 +126,146 @@ class Base extends AbstractBase
     const CACHE_EXCHANGE_RATES = 'Payment_Exchange_Rates';
 
     /**
+     * Allowed slug chars
+     */
+    const ALLOWED_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+    /**
      * Payment handler instances
      * @var array
      */
     protected $paymentHandlerInstances = array();
+
+    /**
+     * Get all transaction items
+     *
+     * @param integer $transactionId
+     * @param boolean $onlyActive
+     * @return array
+     */
+    public function getAllTransactionItems($transactionId, $onlyActive = true)
+    {
+        $select = $this->select();
+        $select->from(array('a' => 'payment_transaction_item'))
+            ->columns(array(
+                'object_id'
+            ))
+            ->join(
+                array('b' => 'payment_module'),
+                'a.module = b.module',
+                array(
+                    'handler'
+                )
+            )
+            ->where(array(
+                'transaction_id' => $transactionId
+            ));
+
+        if ($onlyActive) {
+            $select->where(array(
+                'active' => self::ITEM_ACTIVE,
+                'available' => self::ITEM_AVAILABLE,
+                'deleted' => self::ITEM_NOT_DELETED                
+            ));
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
+    }
+
+    /**
+     * Activate the transaction
+     *
+     * @param integer $transactionId
+     * @param string $field
+     * @return boolean|string
+     */
+    public function activateTransaction($transactionId, $field = 'id')
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('payment_transaction')
+                ->set(array(
+                    'paid'  => self::TRANSACTION_PAID
+                ))
+                ->where(array(
+                    ($field == 'id' ? $field : 'slug') => $transactionId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the transaction info
+     *
+     * @param integer $id
+     * @param boolean $onlyNotPaid
+     * @return array
+     */
+    public function getTransactionInfo($id, $onlyNotPaid = true)
+    {
+        $select = $this->select();
+        $select->from(array('a' => 'payment_transaction'))
+            ->columns(array(
+                'id',
+                'slug',
+                'user_id',
+                'first_name',
+                'last_name',
+                'phone',
+                'address',
+                'email',
+                'currency',
+                'payment_type',
+                'discount_cupon'
+            ))
+            ->join(
+                array('b' => 'payment_currency'),
+                new Expression('a.currency = b.id and b.primary_currency = ' . (int) self::PRIMARY_CURRENCY),
+                array(
+                    'currency_code' => 'code'
+                )
+            )
+            ->join(
+                array('c' => 'payment_type'),
+                'a.payment_type = c.id',
+                array(
+                    'payment_name' => 'name'
+                ),
+                'left'
+            )
+            ->where(array(
+                'a.id' => $id
+            ));
+
+        if ($onlyNotPaid) {
+            $select->where(array(
+                'paid' => self::TRANSACTION_NOT_PAID
+            ));
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
 
     /**
      * Get an active coupon info

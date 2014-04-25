@@ -217,7 +217,7 @@ class PaymentAdministration extends Base
                 ->table('payment_discount_cupon')
                 ->set(array(
                     'slug' => strtoupper($this->generateSlug($insertId, $this->
-                            generateRandString(self::COUPON_MIN_SLUG_LENGTH, self::COUPON_SLUG_CHARS), 'payment_discount_cupon', 'id'))
+                            generateRandString(self::COUPON_MIN_SLUG_LENGTH, self::ALLOWED_SLUG_CHARS), 'payment_discount_cupon', 'id'))
                 ))
                 ->where(array(
                     'id' => $insertId

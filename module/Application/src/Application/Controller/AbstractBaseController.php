@@ -54,6 +54,12 @@ class AbstractBaseController extends AbstractActionController
     protected $slug = null;
 
     /**
+     * Extra
+     * @var string
+     */
+    protected $extra = null;
+
+    /**
      * Get slug
      *
      * @return string
@@ -65,6 +71,20 @@ class AbstractBaseController extends AbstractActionController
         }
 
         return $this->slug; 
+    }
+
+    /**
+     * Get extra
+     *
+     * @return string
+     */
+    public function getExtra()
+    {
+        if ($this->extra === null) {
+            $this->extra = $this->params()->fromRoute('extra');
+        }
+
+        return $this->extra; 
     }
 
     /**

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-23 17:24+0600\n"
+"PO-Revision-Date: 2014-04-25 19:52+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,24 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Paid payment transaction message"
+msgstr "Paid payment transaction message"
+
+msgid "Paid payment transaction email notification"
+msgstr "Paid payment transaction email notification"
+
+msgid "Paid payment transaction title"
+msgstr "Paid payment transaction title"
+
+msgid "Send notification about paid payment transactions"
+msgstr "Send notification about paid payment transactions"
+
+msgid "Transaction activation error"
+msgstr "Transaction activation error"
+
+msgid "Order information"
+msgstr "Order information"
 
 msgid "Add a new payment transaction message"
 msgstr "Add a new payment transaction message"
@@ -37,9 +55,6 @@ msgstr "Comments"
 
 msgid "Payment type"
 msgstr "Payment type"
-
-msgid "Payment method"
-msgstr "Payment method"
 
 msgid "Some of the items in your shopping cart requires you to be logged in"
 msgstr "Some of the items in your shopping cart requires you to be logged in"
@@ -276,6 +291,12 @@ msgstr "Payment"
 
 msgid "Payments"
 msgstr "Payments"
+
+msgid "Event - Activating payment transactions"
+msgstr "Activating payment transactions"
+
+msgid "Event - Payment transaction activated by the system"
+msgstr "Payment transaction with id - \"%d\" was activated by the system"
 
 msgid "Event - Adding payment transactions"
 msgstr "Adding payment transactions"
