@@ -10,10 +10,11 @@ class ProcessCost extends AbstractHelper
     /**
      * Process cost
      *
-     * @param float|integer 
+     * @param float|integer
+     * @param boolean $rounding
      * @return string
      */
-    public function __invoke($cost)
+    public function __invoke($cost, $rounding = false)
     {
         $exchangeRates = PaymentService::getExchangeRates();
         $activeShoppingCurrency = PaymentService::getShoppingCartCurrency();
@@ -23,6 +24,10 @@ class ProcessCost extends AbstractHelper
             $cost = $cost * $exchangeRates[$activeShoppingCurrency]['rate'];
         }
 
-        return $this->getView()->currencyFormat(PaymentService::roundingCost($cost), $activeShoppingCurrency);
+        if ($rounding) {
+            $cost = PaymentService::roundingCost($cost);
+        }
+
+        return $this->getView()->currencyFormat($cost, $activeShoppingCurrency);
     }
 }

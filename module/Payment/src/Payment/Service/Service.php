@@ -78,14 +78,12 @@ class Service extends ApplicationService
             self::initActiveShoppingCartItems();
 
             // process items amount price
-            self::$activeShoppingCartItemsAmount = 0;
-            foreach(self::$activeShoppingCartItems as $itemInfo) {
-                self::$activeShoppingCartItemsAmount += $itemInfo['cost'] * $itemInfo['count'] - $itemInfo['discount'];
-            }
+            self::$activeShoppingCartItemsAmount
+                    = self::getModel()->getItemsAmount(self::$activeShoppingCartItems);
         }
 
         return $discounted && self::getDiscountCouponInfo()
-            ? self::$activeShoppingCartItemsAmount - (self::$activeShoppingCartItemsAmount * self::getDiscountCouponInfo()['discount'] / 100)
+            ? self::getModel()->getDiscountedItemsAmount(self::$activeShoppingCartItemsAmount, self::getDiscountCouponInfo()['discount'])
             : self::$activeShoppingCartItemsAmount;
     }
 

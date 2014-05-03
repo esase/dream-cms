@@ -52,17 +52,17 @@ class PaymentController extends AbstractBaseController
      *      float cost - required
      *      float discount - optional
      *      integer count - required
-     * @param object $paymentObject
+     * @param object $paymentHandler
      * @return boolean
      */
-    protected function addToShoppingCart($itemInfo, PaymentInterfaceHandler $paymentObject)
+    protected function addToShoppingCart($itemInfo, PaymentInterfaceHandler $paymentHandler)
     {
         $result = $this->getModel()->addToShoppingCart($itemInfo);
 
         if (is_numeric($result)) {
             // clear the item's discount
             if ($itemInfo['discount']) {
-                $paymentObject->clearDiscount($itemInfo['object_id'], $itemInfo['discount']);
+                $paymentHandler->clearDiscount($itemInfo['object_id'], $itemInfo['discount']);
             }
 
             // fire the event
@@ -127,17 +127,22 @@ class PaymentController extends AbstractBaseController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
+        // get the payment handler
+        $paymentHandler = $this->getModel()->getPaymentHandlerInstance($itemInfo['handler']);
+
+        // get the item's additional info
+        $extraItemInfo = $paymentHandler->getItemInfo($itemInfo['object_id']);
+
         // extra checks
         if ($itemInfo['countable'] == PaymentModel::MODULE_COUNTABLE
                 || $itemInfo['multi_costs'] == PaymentModel::MODULE_MULTI_COSTS
+                || ($itemInfo['module_extra_options'] == PaymentModel::MODULE_EXTRA_OPTIONS && !empty($extraItemInfo['extra_options']))
                 || $itemInfo['discount']
-                || $this->getModel()->getPaymentHandlerInstance($itemInfo['handler'])->getDiscount($itemInfo['object_id'])) {
+                || $paymentHandler->getDiscount($itemInfo['object_id'])) {
 
             $refreshPage = false;
 
-            // get the item's additional info
-            $extraItemInfo = $this->getModel()->
-                    getPaymentHandlerInstance($itemInfo['handler'])->getItemInfo($itemInfo['object_id']);
+
 
             // get a form instance
             $shoppingCartForm = $this->getServiceLocator()
@@ -152,9 +157,23 @@ class PaymentController extends AbstractBaseController
             }
 
             // fill the form with default values
-            $shoppingCartForm->getForm()->setData(array_merge($itemInfo, array(
+            $defaultFormValues = array_merge($itemInfo, array(
                 'discount' => $itemInfo['discount'] ? 1 : 0
-            )));
+            ));
+
+            // add extra options in the form
+            if ($itemInfo['module_extra_options'] ==
+                        PaymentModel::MODULE_EXTRA_OPTIONS && !empty($extraItemInfo['extra_options'])) {
+
+                $shoppingCartForm->setExtraOptions($extraItemInfo['extra_options']);
+
+                // fill a default value
+                if ($itemInfo['extra_options']) {
+                    $defaultFormValues = array_merge($defaultFormValues, unserialize($itemInfo['extra_options']));
+                }
+            }
+
+            $shoppingCartForm->getForm()->setData($defaultFormValues);
 
             $request = $this->getRequest();
             $shoppingCartForm->getForm()->setData($request->getPost(), false);
@@ -165,12 +184,16 @@ class PaymentController extends AbstractBaseController
                     // get the form's data
                     $formData = $shoppingCartForm->getForm()->getData();
 
+                    // get the item's extra options
+                    $extraOptions = $shoppingCartForm->getExtraOptions($formData);
+
                     $newItemInfo = array(
                         'cost' => !empty($formData['cost']) ? $formData['cost'] : $itemInfo['cost'],
                         'count' => PaymentModel::MODULE_COUNTABLE == $itemInfo['countable'] ? $formData['count'] : 1,
                         'discount'  => !empty($formData['discount'])
                             ? ($itemInfo['discount'] ? $itemInfo['discount'] : $extraItemInfo['discount'])
-                            : 0
+                            : 0,
+                        'extra_options' => $extraOptions ? serialize($extraOptions) : '',
                     );
 
                     // update the item into the shopping cart
@@ -351,7 +374,7 @@ class PaymentController extends AbstractBaseController
         }
         else {
             // create a payment handler class instance
-            $object = $this->getModel()->getPaymentHandlerInstance($moduleInfo['handler']);
+            $paymentHandler = $this->getModel()->getPaymentHandlerInstance($moduleInfo['handler']);
 
             // check an item existing in shopping cart
             if (true === ($result = $this->getModel()->inShoppingCart($objectId, $moduleInfo['id']))) {
@@ -359,7 +382,7 @@ class PaymentController extends AbstractBaseController
             }
             else {
                 // get the item info
-                if (null == $objectInfo = $object->getItemInfo($objectId)) {
+                if (null == $objectInfo = $paymentHandler->getItemInfo($objectId)) {
                     $message = $this->getTranslator()->translate('Sorry but the item not found or not activated');    
                 }
                 else {
@@ -369,9 +392,11 @@ class PaymentController extends AbstractBaseController
                     }
                     else {
                         // show an additional shopping cart form
-                        if ($objectInfo['discount'] || PaymentModel::MODULE_MULTI_COSTS == $moduleInfo['multi_costs'] ||
-                                (PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] && ($count <= 0 || $count > $objectInfo['count']))) {
-    
+                        if ($objectInfo['discount']
+                                ||  PaymentModel::MODULE_MULTI_COSTS == $moduleInfo['multi_costs']
+                                || (PaymentModel::MODULE_EXTRA_OPTIONS == $moduleInfo['extra_options'] && !empty($objectInfo['extra_options']))
+                                || (PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] && ($count <= 0 || $count > $objectInfo['count']))) {
+
                             // get the form instance
                             $shoppingCartForm = $this->getServiceLocator()
                                 ->get('Application\Form\FormManager')
@@ -379,6 +404,12 @@ class PaymentController extends AbstractBaseController
                                 ->hideCountField($moduleInfo['countable'] != PaymentModel::MODULE_COUNTABLE)
                                 ->setDiscount($objectInfo['discount'])
                                 ->setCountLimit((PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] ? $objectInfo['count'] : 0));
+
+                            if (PaymentModel::MODULE_EXTRA_OPTIONS ==
+                                        $moduleInfo['extra_options'] && !empty($objectInfo['extra_options'])) {
+
+                                $shoppingCartForm->setExtraOptions($objectInfo['extra_options']);
+                            }
 
                             if (PaymentModel::MODULE_MULTI_COSTS == $moduleInfo['multi_costs']) {
                                 $shoppingCartForm->setTariffs($objectInfo['cost']);
@@ -391,19 +422,24 @@ class PaymentController extends AbstractBaseController
                             if ($request->isPost() && null !== $this->params()->fromPost('validate', null)) {
                                 if ($shoppingCartForm->getForm()->isValid()) {
                                     $formData = $shoppingCartForm->getForm()->getData();
+                                    
+                                    // get the item's extra options
+                                    $extraOptions = $shoppingCartForm->getExtraOptions($formData);
+
                                     $itemInfo = array(
-                                        'object_id' => $objectId,
-                                        'module'    => $moduleInfo['id'],
-                                        'title'     => $objectInfo['title'],
-                                        'slug'      => $objectInfo['slug'],
-                                        'cost'      => !empty($formData['cost']) ? $formData['cost'] : $objectInfo['cost'],
-                                        'discount'  => !empty($formData['discount']) ? $objectInfo['discount'] : 0,
-                                        'count'     => PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] ? $count : 1
+                                        'object_id'     => $objectId,
+                                        'module'        => $moduleInfo['id'],
+                                        'title'         => $objectInfo['title'],
+                                        'slug'          => $objectInfo['slug'],
+                                        'cost'          => !empty($formData['cost']) ? $formData['cost'] : $objectInfo['cost'],
+                                        'discount'      => !empty($formData['discount']) ? $objectInfo['discount'] : 0,
+                                        'count'         => PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] ? $count : 1,
+                                        'extra_options' => $extraOptions ? serialize($extraOptions) : '',
                                     );
-    
+
                                     // add the item into the shopping cart
                                     $shoppingCartForm = null;
-                                    if (true === ($result = $this->addToShoppingCart($itemInfo, $object))) {
+                                    if (true === ($result = $this->addToShoppingCart($itemInfo, $paymentHandler))) {
                                         $updateShopingCart = true;
                                         $message = $this->getTranslator()->translate('Item has been added to your shopping cart');
                                     }
@@ -415,16 +451,17 @@ class PaymentController extends AbstractBaseController
                         }
                         else {
                             $itemInfo = array(
-                                'object_id' => $objectId,
-                                'module'    => $moduleInfo['id'],
-                                'title'     => $objectInfo['title'],
-                                'slug'      => $objectInfo['slug'],
-                                'cost'      => $objectInfo['cost'],
-                                'discount'  => 0,
-                                'count'     => PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] ? $count : 1
+                                'object_id'     => $objectId,
+                                'module'        => $moduleInfo['id'],
+                                'title'         => $objectInfo['title'],
+                                'slug'          => $objectInfo['slug'],
+                                'cost'          => $objectInfo['cost'],
+                                'discount'      => 0,
+                                'count'         => PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] ? $count : 1,
+                                'extra_options' => ''
                             );
     
-                            if (true === ($result = $this->addToShoppingCart($itemInfo, $object))) {
+                            if (true === ($result = $this->addToShoppingCart($itemInfo, $paymentHandler))) {
                                 $updateShopingCart = true;
                                 $message = $this->getTranslator()->translate('Item has been added to your shopping cart');
                             }
@@ -563,7 +600,7 @@ class PaymentController extends AbstractBaseController
                         ->addMessage($this->getTranslator()->
                                 translate('Some of the items in your shopping cart requires you to be logged in'));
 
-                    return $this->redirectTo('payments', 'shopping-cart');
+                    return $this->redirectTo('user', 'login');
                 }
             }
         }
@@ -571,11 +608,21 @@ class PaymentController extends AbstractBaseController
         $transactionPaid = (float) paymentService::
                 roundingCost(paymentService::getActiveShoppingCartItemsAmount(true)) > 0;
 
+        // get payments types
+        if (null == ($paymentsTypes = $this->getModel()->getPaymentsTypes()) && $transactionPaid) {
+            $this->flashMessenger()
+                ->setNamespace('error')
+                ->addMessage($this->getTranslator()->
+                        translate('No available payment types. Please try again later'));
+
+            return $this->redirectTo('payments', 'shopping-cart');
+        }
+
         // get a form instance
         $checkoutForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Payment\Form\Checkout')
-            ->setModel($this->getModel())
+            ->setPaymentsTypes($paymentsTypes)
             ->hidePaymentType(!$transactionPaid);
 
         // set default values
@@ -737,15 +784,88 @@ class PaymentController extends AbstractBaseController
     }
 
     /**
+     * Success page
+     */
+    public function successAction()
+    {
+        return new ViewModel(array(
+        ));
+    }
+
+    /**
+     * Error page
+     */
+    public function errorAction()
+    {
+        return new ViewModel(array(
+        ));
+    }
+
+    /**
      * Buy
      */
     public function buyAction()
     {
-        //CHECK TRANSACTION INFO
-        //CHECK PAYMENT INFO
-        //etc
-        echo $this->getSlug() . '<Br>';
-        echo $this->getExtra();
-        return false;
+        // get a payments types list and the transaction info
+        if (null == ($paymentsTypes = $this->getModel()->getPaymentsTypes(false, true))
+                || null == ($transactionInfo = $this->getModel()->getTransactionInfo($this->getSlug(), true, 'slug'))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get a default payment type
+        if ($this->getExtra()) {
+            if (!array_key_exists($this->getExtra(), $paymentsTypes)) {
+                return $this->createHttpNotFoundModel($this->getResponse());    
+            }
+
+            $currentPayment = $this->getExtra();
+        }
+        else {
+            // get a first payment type from the list
+            $currentPayment = key($paymentsTypes);
+        }
+
+        // get the transaction's  items list
+        if (null == ($itemsList = $this->getModel()->getTransactionItems($transactionInfo['id']))) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get items amount
+        if (0 >= ($itemsAmount =
+                $this->getModel()->getItemsAmount($itemsList, $transactionInfo['discount_cupon'], true))) {
+
+            // activate the transaction and redirect to success page
+            if(true == ($result = $this->activateTransaction($transactionInfo))) {
+                return $this->redirectTo('payments', 'success');
+            }
+
+            $this->flashMessenger()
+                ->setNamespace('error')
+                ->addMessage($this->getTranslator()->translate('Transaction activation error'));
+
+            return $this->redirectTo('payments', 'shopping-cart');
+        }
+
+        // process payments
+        $processedPayments = array();
+        foreach ($paymentsTypes as $paymentName => $paymentInfo) {
+            $processedPayments[$paymentName] = $paymentInfo['description'];
+        }
+
+        // get the payment type instance
+        $paymentType = $this->getModel()
+                ->getPaymentTypeInstance($paymentsTypes[$currentPayment]['handler'], $this);
+
+        $viewModel = new ViewModel(array(
+            'transaction' => $transactionInfo,
+            'payments' => $processedPayments,
+            'current_payment' => $currentPayment,
+            'amount' => $itemsAmount,
+            'payment_options' => $paymentType->getPaymentOptions($itemsAmount, $transactionInfo),
+            'payment_url' => $paymentType->getPaymentUrl()
+        ));
+
+        return $viewModel->setTemplate('payment/payment-type/' . $currentPayment);
     }
 }

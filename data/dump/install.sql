@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS `setting` (
     `name` varchar(50) NOT NULL,
     `label` varchar(150) NOT NULL,
     `description` varchar(255) NOT NULL,
+    `description_helper` text NOT NULL,
     `type` enum('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
     `required` tinyint(1) unsigned NOT NULL,
     `order` smallint(5) unsigned NOT NULL,

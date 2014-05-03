@@ -92,6 +92,14 @@ class Module
                 'shoppingCart' => 'Payment\View\Helper\ShoppingCart',
             ),
             'factories' => array(
+                'paymentItemExtraOptions' =>  function()
+                {
+                    $baseModel = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Payment\Model\Base');
+
+                    return new \Payment\View\Helper\PaymentItemExtraOptions($baseModel);
+                },
             )
         );
     }

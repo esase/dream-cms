@@ -12,7 +12,7 @@ namespace Payment\Handler;
 interface InterfaceHandler
 {
     /**
-     * Get the item info
+     * Get the item's info
      *
      * @param integer $id
      * @return array
@@ -21,8 +21,17 @@ interface InterfaceHandler
      *      float|array cost - required
      *      float discount - optional
      *      integer count - required (only for countable modules)
+     *      array extra_options - optional (a form array notation)
      */
     public function getItemInfo($id);
+
+    /**
+     * Get the items' extra options
+     *
+     * @param integer $id
+     * @return array
+     */
+    public function getItemExtraOptions($id);
 
     /**
      * Get discount

@@ -15,10 +15,10 @@ class Checkout extends AbstractCustomForm
     protected $formName = 'checkout';
 
     /**
-     * Model
-     * @var object
+     * Payments types
+     * @var array
      */
-    protected $model;
+    protected $paymentsTypes = array();
 
     /**
      * Hide payment type
@@ -100,10 +100,8 @@ class Checkout extends AbstractCustomForm
             if ($this->hidePaymentType) {
                 unset($this->formElements['payment_type']);    
             }else {
-                if ($this->model) {
-                    // fill the form with default values
-                    $this->formElements['payment_type']['values'] = $this->model->getPaymentsTypes();
-                }    
+                // fill the form with default values
+                $this->formElements['payment_type']['values'] = $this->paymentsTypes;  
             }
 
             $this->form = new CustomFormBuilder($this->formName,
@@ -114,14 +112,14 @@ class Checkout extends AbstractCustomForm
     }
 
     /**
-     * Set model
+     * Set payments types
      *
-     * @param object $model
+     * @param array $paymentsTypes
      * @return object fluent interface
      */
-    public function setModel(PaymentModel $model)
+    public function setPaymentsTypes(array $paymentsTypes)
     {
-        $this->model = $model;
+        $this->paymentsTypes = $paymentsTypes;
         return $this;
     }
 

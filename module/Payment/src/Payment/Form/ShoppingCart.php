@@ -76,7 +76,7 @@ class ShoppingCart extends AbstractCustomForm
             'label' => 'Use discount',
             'description' => 'Item discount info'
         ),
-        'object' => array (
+        'object_id' => array (
             'name' => 'object_id',
             'type' => CustomFormBuilder::FIELD_HIDDEN,
             'required' => true
@@ -92,6 +92,33 @@ class ShoppingCart extends AbstractCustomForm
             'value' => 1
         )
     );
+
+    /**
+     * Extra form elements
+     * @var array
+     */
+    protected $extraFormElements = array();
+
+    /**
+     * Get extra options
+     *
+     * @param array $formData
+     * @param boolean $skipEmptyValues
+     * @return array
+     */
+    public function getExtraOptions(array $formData, $skipEmptyValues = true)
+    {
+        $extraData = array();
+        foreach ($formData as $name => $value) {
+            if (array_key_exists($name, $this->formElements) || ($skipEmptyValues && !$value)) {
+                continue;
+            }
+
+            $extraData[$name] = $value;
+        }
+
+        return $extraData;
+    }
 
     /**
      * Get form instance
@@ -152,8 +179,14 @@ class ShoppingCart extends AbstractCustomForm
                 unset($this->formElements['discount']);
             }
 
-            $this->form = new CustomFormBuilder($this->formName,
-                    $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
+            $formElements = $this->formElements;
+
+            if ($this->extraFormElements) {
+                $formElements = array_merge($formElements, $this->extraFormElements);
+            }
+
+            $this->form = new CustomFormBuilder($this->formName, $formElements,
+                    $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
         return $this->form;
@@ -195,6 +228,18 @@ class ShoppingCart extends AbstractCustomForm
             throw new InvalidArgumentException('Tariffs list must not be empty');    
         }
 
+        return $this;
+    }
+
+    /**
+     * Set extra options
+     *
+     * @param array $extraOptions
+     * @return object fluent interface
+     */
+    public function setExtraOptions(array $extraOptions)
+    {
+        $this->extraFormElements = $extraOptions;
         return $this;
     }
 

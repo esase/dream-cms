@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-25 19:52+0600\n"
+"PO-Revision-Date: 2014-05-03 18:50+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,69 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Set these links into your RBK Money account:"
+msgstr "Set these links into your RBK Money account:"
+
+msgid "Secret key"
+msgstr "Secret key"
+
+msgid "Account ID"
+msgstr "Account ID"
+
+msgid "Shop ID"
+msgstr "Shop ID"
+
+msgid "This title will be available on the RBK Money payment page"
+msgstr "This title will be available on the RBK Money payment page"
+
+msgid "RBK Money title"
+msgstr "RBK Money title"
+
+msgid "Pay"
+msgstr "Pay"
+
+msgid "RBK Money description"
+msgstr "RBK Money description"
+
+msgid "Enable RBK Money"
+msgstr "Enable RBK Money"
+
+msgid "RBK Money"
+msgstr "RBK Money"
+
+msgid "Extra options"
+msgstr "Extra options"
+
+msgid "Payment info"
+msgstr "Payment info"
+
+msgid "This description will be available on the payment page"
+msgstr "This description will be available on the payment page"
+
+msgid "Cash description"
+msgstr "Description"
+
+msgid "Buy items"
+msgstr "Buy items"
+
+msgid "No available payment types. Please try again later"
+msgstr "No available payment types. Please try again later"
+
+msgid "Enable cash"
+msgstr "Enable cash"
+
+msgid "Payment transaction status"
+msgstr "Payment transaction status"
+
+msgid "Unsuccessful payment transaction's message"
+msgstr "Unsuccessful payment transaction's message"
+
+msgid "Successful payment transaction's message"
+msgstr "Successful payment transaction's message"
+
+msgid "Payment transactions messages"
+msgstr "Payment transactions messages"
 
 msgid "Paid payment transaction message"
 msgstr "Paid payment transaction message"

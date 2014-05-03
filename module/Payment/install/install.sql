@@ -47,11 +47,11 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'head' ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
-('head', 'payment/patrial/shopping_cart_init', @moduleId, @maxOrder);
+('head', 'payment/patrial/shopping-cart-init', @moduleId, @maxOrder);
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'body' ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
-('body', 'payment/patrial/shopping_cart', @moduleId, @maxOrder);
+('body', 'payment/patrial/shopping-cart', @moduleId, @maxOrder);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
 ('payment_shopping_cart_session_time', 'The shopping cart\'s ID lifetime in seconds', '', 'integer', 1, 1, 1, @moduleId, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
@@ -83,25 +83,25 @@ INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 INSERT INTO `setting_category` (`name`, `module`) VALUES
 ('Email notifications', @moduleId);
 
-SET @settingCatgoryId = (SELECT LAST_INSERT_ID());
+SET @settingCategoryId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_transaction_add', 'Send notification about new payment transactions', '', 'checkbox', 0, 1, @settingCatgoryId, @moduleId, 0, '', '', '');
+('payment_transaction_add', 'Send notification about new payment transactions', '', 'checkbox', 0, 4, @settingCategoryId, @moduleId, 0, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '1', NULL);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_transaction_add_title', 'Add a new payment transaction title', 'Add a payment transaction email notification', 'notification_title', 1, 2, @settingCatgoryId, @moduleId, 1, '', '', '');
+('payment_transaction_add_title', 'Add a new payment transaction title', 'Add a payment transaction email notification', 'notification_title', 1, 5, @settingCategoryId, @moduleId, 1, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
-(@settingId,  'A new payment transaction added', NULL),
+(@settingId,  'A new payment transaction has been added', NULL),
 (@settingId,  'Добавлена новая платежная операция', 'ru');
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_transaction_add_message', 'Add a new payment transaction message', '', 'notification_message', 1, 3, @settingCatgoryId, @moduleId, 1, '', '', '');
+('payment_transaction_add_message', 'Add a new payment transaction message', '', 'notification_message', 1, 6, @settingCategoryId, @moduleId, 1, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
@@ -109,27 +109,117 @@ INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '<p><b>__LastName__  __FirstName__ (__Email__)</b> добавил(а) новую платежную операцию с идентификатором: __Id__</p>', 'ru');
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_transaction_paid', 'Send notification about paid payment transactions', '', 'checkbox', 0, 4, @settingCatgoryId, @moduleId, 0, '', '', '');
+('payment_transaction_paid', 'Send notification about paid payment transactions', '', 'checkbox', 0, 7, @settingCategoryId, @moduleId, 0, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '1', NULL);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_transaction_paid_title', 'Paid payment transaction title', 'Paid payment transaction email notification', 'notification_title', 1, 5, @settingCatgoryId, @moduleId, 1, '', '', '');
+('payment_transaction_paid_title', 'Paid payment transaction title', 'Paid payment transaction email notification', 'notification_title', 1, 8, @settingCategoryId, @moduleId, 1, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
-(@settingId,  'A payment transaction is paid', NULL),
+(@settingId,  'A payment transaction has been paid', NULL),
 (@settingId,  'Платежная операция оплачена', 'ru');
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_transaction_paid_message', 'Paid payment transaction message', '', 'notification_message', 1, 6, @settingCatgoryId, @moduleId, 1, '', '', '');
+('payment_transaction_paid_message', 'Paid payment transaction message', '', 'notification_message', 1, 9, @settingCategoryId, @moduleId, 1, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '<p><b>__FirstName__ __LastName__ (__Email__)</b> has paid the payment transaction with id: __Id__</p>', NULL),
 (@settingId,  '<p><b>__LastName__  __FirstName__ (__Email__)</b> оплатил(а) платежную операцию с идентификатором: __Id__</p>', 'ru');
+
+INSERT INTO `setting_category` (`name`, `module`) VALUES
+('Payment transactions messages', @moduleId);
+
+SET @settingCategoryId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_successful_message', 'Successful payment transaction\'s message', '', 'htmlarea', 1, 10, @settingCategoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '<p>Your payment transaction has been processed successfully!</p>', NULL),
+(@settingId,  '<p>Ваша платежная операция была успешно обработана!</p>', 'ru');
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_transaction_unsuccessful_message', 'Unsuccessful payment transaction\'s message', '', 'htmlarea', 1, 11, @settingCategoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '<p>Your payment transaction has not  been processed successfully. If you have any questions contact with our support please.</p>', NULL),
+(@settingId,  '<p>Ваша платежная операция не была успешно обработана. Если у вас возникли вопросы, свяжитесь с нашей поддержкой пожалуйста.</p>', 'ru');
+
+INSERT INTO `setting_category` (`name`, `module`) VALUES
+('Cash', @moduleId);
+
+SET @settingCategoryId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_cash_enable', 'Enable cash', '', 'checkbox', 0, 12, @settingCategoryId, @moduleId, 0, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '1', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_cash_description', 'Cash description', 'This description will be available on the payment page', 'htmlarea', 1, 13, @settingCategoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'Your description here (where and how users can buy selected items by cash)', NULL),
+(@settingId,  'Ваше описание здесь (где и как пользователи могут купить выбранные товары наличными)', 'ru');
+
+INSERT INTO `setting_category` (`name`, `module`) VALUES
+('RBK Money', @moduleId);
+
+SET @settingCategoryId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_rbk_money_enable', 'Enable RBK Money', '', 'checkbox', 0, 14, @settingCategoryId, @moduleId, 0, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '0', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_rbk_money_description', 'RBK Money description', 'This description will be available on the payment page', 'htmlarea', 1, 15, @settingCategoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'Your description here (where and how users can buy selected items by RBK Money)', NULL),
+(@settingId,  'Ваше описание здесь (где и как пользователи могут купить выбранные товары с помощью RBK Money)', 'ru');
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_rbk_money_title', 'RBK Money title', 'This title will be available on the RBK Money payment page', 'text', 1, 16, @settingCategoryId, @moduleId, 1, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'Pay for selected items and services', NULL),
+(@settingId,  'Купить выбранные товары и услуги', 'ru');
+
+INSERT INTO `setting` (`name`, `label`, `description_helper`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_rbk_eshop_id', 'Shop ID', '$serviceManager = Application\\Service\\Service::getServiceManager();\r\n$url = $serviceManager->get(''viewhelpermanager'')->get(''url'');\r\n$translate = $serviceManager->get(''viewhelpermanager'')->get(''translate'');\r\n\r\n$label  = $translate(''Set these links into your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''Success URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''success''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Fail URL'')    . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''error''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Callback URL'')    . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''process'', ''slug'' => ''rbk-money''), array(''force_canonical'' => true));\r\n\r\nreturn $label;', 'text', 1, 17, @settingCategoryId, @moduleId, 0, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'xxxx', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_rbk_account', 'Account ID', '', 'text', 1, 18, @settingCategoryId, @moduleId, 0, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'RUxxxx', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('payment_rbk_secret', 'Secret key', '', 'text', 1, 19, @settingCategoryId, @moduleId, 0, '', '', '');
+SET @settingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  'xxxx', NULL);
 
 CREATE TABLE IF NOT EXISTS `payment_module` (
     `module` int(10) unsigned NOT NULL,
@@ -139,6 +229,7 @@ CREATE TABLE IF NOT EXISTS `payment_module` (
     `view_action` varchar(50) NOT NULL,
     `countable` tinyint(1) NOT NULL,
     `multi_costs` tinyint(1) NOT NULL,
+    `extra_options` tinyint(1) NOT NULL,
     `must_login` tinyint(1) unsigned NOT NULL,
     `handler` varchar(100) NOT NULL,
     PRIMARY KEY (`module`),
@@ -175,12 +266,15 @@ CREATE TABLE IF NOT EXISTS `payment_type` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL,
     `description` varchar(50) NOT NULL,
+    `enable_option` varchar(255) NOT NULL,
+    `handler` varchar(100) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `payment_type` (`id`, `name`, `description`) VALUES
-(1, 'cash', 'Cash');
+INSERT INTO `payment_type` (`id`, `name`, `description`, `enable_option`, `handler`) VALUES
+(1, 'cash', 'Cash', 'payment_cash_enable', 'Payment\\Type\\Cash'),
+(2, 'rbk-money', 'RBK Money', 'payment_rbk_money_enable', 'Payment\\Type\\RBKMoney');
 
 CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -242,6 +336,7 @@ CREATE TABLE IF NOT EXISTS `payment_transaction_item` (
     `deleted` tinyint(1) NOT NULL DEFAULT 0,
     `active` tinyint(1) NOT NULL DEFAULT 1,
     `available` tinyint(1) NOT NULL DEFAULT 1,
+    `extra_options` text NOT NULL DEFAULT '',
     PRIMARY KEY (`object_id`, `module`, `transaction_id`),
     FOREIGN KEY (transaction_id) REFERENCES payment_transaction(id)
         ON UPDATE CASCADE
@@ -265,6 +360,7 @@ CREATE TABLE IF NOT EXISTS `payment_shopping_cart` (
     `available` tinyint(1) NOT NULL DEFAULT 1,
     `clear_date` int(10) unsigned NOT NULL,
     `deleted` tinyint(1) NOT NULL DEFAULT 0,
+    `extra_options` text NOT NULL DEFAULT '',
     PRIMARY KEY (`id`),
     UNIQUE KEY (`object_id`, `module`, `shopping_cart_id`),
     KEY `available` (`active`,`available`,`deleted`,`shopping_cart_id`),

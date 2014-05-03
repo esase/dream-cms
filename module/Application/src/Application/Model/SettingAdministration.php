@@ -101,6 +101,7 @@ class SettingAdministration extends Setting
                     'name',
                     'label',
                     'description',
+                    'description_helper',
                     'type',
                     'required',
                     'language_sensitive',
@@ -144,7 +145,9 @@ class SettingAdministration extends Setting
                     'category' => $setting->category_name,
                     'name' => $setting->name,
                     'label' => $setting->label,
-                    'description' => $setting->description,
+                    'description' => $setting->description_helper
+                        ? eval($setting->description_helper)
+                        : $setting->description,
                     'type' => $setting->type,
                     'required' => $setting->required,
                     'language_sensitive'  => $setting->language_sensitive,

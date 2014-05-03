@@ -24,6 +24,10 @@ class PaymentItemLink extends AbstractHelper
      *      string view_action
      *      integer countable
      *      integer must_login
+     *      string extra_options
+     *      string handler
+     *      integer object_id
+     *      integer module_extra_options
      * @return object - fluent interface
      */
    public function __invoke($info)

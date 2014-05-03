@@ -5,7 +5,7 @@
 
 <div class="row" id="shopping-cart-wrapper">
     <div class="span2" id="shopping-cart-info">
-        <h5><b><?php echo $this->translate('Shopping cart') ?></b><?php if ($this->shoppingCart()->getItemsCount()) : ?> - <?php echo sprintf($this->translate('Shopping cart info'), $this->shoppingCart()->getItemsCount(), $this->processCost($this->shoppingCart()->getItemsDiscountedAmount())) ?><?php if ($this->shoppingCart()->getCurrentDiscount()) : ?> - <?php echo $this->translate('discount') ?>: <?php echo $this->escapeHtml($this->shoppingCart()->getCurrentDiscount()) ?>%<?php endif; ?><?php endif; ?></h5>
+        <h5><b><?php echo $this->translate('Shopping cart') ?></b><?php if ($this->shoppingCart()->getItemsCount()) : ?> - <?php echo sprintf($this->translate('Shopping cart info'), $this->shoppingCart()->getItemsCount(), $this->processCost($this->shoppingCart()->getItemsDiscountedAmount(), true)) ?><?php if ($this->shoppingCart()->getCurrentDiscount()) : ?> - <?php echo $this->translate('discount') ?>: <?php echo $this->escapeHtml($this->shoppingCart()->getCurrentDiscount()) ?>%<?php endif; ?><?php endif; ?></h5>
         <?php if ($this->shoppingCart()->getItemsCount()) : ?>
             <a href="<?php echo $this->url('application', array('controller' => 'payments', 'action' => 'shopping-cart')) ?>">
                 <?php echo $this->translate('View the shopping cart') ?>

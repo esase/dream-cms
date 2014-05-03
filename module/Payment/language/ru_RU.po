@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-04-25 19:52+0600\n"
+"PO-Revision-Date: 2014-05-03 18:50+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,69 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Set these links into your RBK Money account:"
+msgstr "Установите эти ссылки в вашем RBK Money акаунте:"
+
+msgid "Secret key"
+msgstr "Секретный ключ"
+
+msgid "Account ID"
+msgstr "Акаунт ID"
+
+msgid "Shop ID"
+msgstr "Магазин ID"
+
+msgid "This title will be available on the RBK Money payment page"
+msgstr "Этот заголовок будет доступен на странице оплаты RBK Money"
+
+msgid "RBK Money title"
+msgstr "Заголовок RBK Money"
+
+msgid "Pay"
+msgstr "Заплатить"
+
+msgid "RBK Money description"
+msgstr "Описание покупки с помощью RBK Money"
+
+msgid "Enable RBK Money"
+msgstr "Включить RBK Money"
+
+msgid "RBK Money"
+msgstr "RBK Money"
+
+msgid "Extra options"
+msgstr "Дополнительно"
+
+msgid "Payment info"
+msgstr "Информация об оплате"
+
+msgid "This description will be available on the payment page"
+msgstr "Это описание будет доступно на странице оплаты"
+
+msgid "Cash description"
+msgstr "Описание покупки с помощью наличных"
+
+msgid "Buy items"
+msgstr "Купить товары"
+
+msgid "No available payment types. Please try again later"
+msgstr "Нет доступных типов платежей. Пожалуйста, повторите попытку позже"
+
+msgid "Enable cash"
+msgstr "Включить наличные"
+
+msgid "Payment transaction status"
+msgstr "Статус платежной операции"
+
+msgid "Unsuccessful payment transaction's message"
+msgstr "Сообщение о неудачной платежной операции"
+
+msgid "Successful payment transaction's message"
+msgstr "Сообщение об успешной платежной операции"
+
+msgid "Payment transactions messages"
+msgstr "Сообщения платежных операций"
 
 msgid "Paid payment transaction message"
 msgstr "Сообщение об оплате платежной операции"

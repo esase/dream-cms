@@ -35,6 +35,7 @@ class Payment extends Base
      *      float cost
      *      float discount
      *      integer count
+     *      string extra_options
      * @return integer|string
      */
     public function addTransaction($userId, array $transactionInfo, array $items)
@@ -109,7 +110,8 @@ class Payment extends Base
                         'slug' => $item['slug'],
                         'cost' => $item['cost'],
                         'discount' => $item['discount'],
-                        'count' => $item['count']
+                        'count' => $item['count'],
+                        'extra_options' => $item['extra_options']
                     ));
 
                 $statement = $this->prepareStatementForSqlObject($insert);
@@ -131,9 +133,11 @@ class Payment extends Base
     /**
      * Get payments types
      *
+     * @param boolean $keyId
+     * @param boolean $fullArray
      * @return array
      */
-    public function getPaymentsTypes()
+    public function getPaymentsTypes($keyId = true, $fullArray = false)
     {
         $paymentsTypes = array();
 
@@ -141,14 +145,23 @@ class Payment extends Base
         $select->from('payment_type')
             ->columns(array(
                 'id',
-                'description'
+                'name',
+                'description',
+                'enable_option',
+                'handler'
             ));
 
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
         foreach ($result as $payment) {
-            $paymentsTypes[$payment['id']] = $payment['description'];
+            if (!(int) ApplicationService::getSetting($payment['enable_option'])) {
+                continue;
+            }
+
+            $paymentsTypes[($keyId ? $payment['id'] : $payment['name'])] = $fullArray
+                ? $payment
+                : $payment['description'];
         }
 
         return $paymentsTypes;
@@ -240,7 +253,8 @@ class Payment extends Base
                 'object_id',
                 'cost',
                 'discount',
-                'count'
+                'count',
+                'extra_options'
             ))
             ->join(
                 array('b' => 'payment_module'),
@@ -250,6 +264,7 @@ class Payment extends Base
                     'countable',
                     'multi_costs',
                     'must_login',
+                    'module_extra_options' => 'extra_options',
                     'handler'
                 )
             )
@@ -310,6 +325,7 @@ class Payment extends Base
      *      float cost - required
      *      integer|float discount - optional
      *      integer count - required
+     *      string extra_options - optional (serialized array)
      * @return integer|string
      */
     public function addToShoppingCart(array $itemInfo)
@@ -362,6 +378,7 @@ class Payment extends Base
                 array(
                     'countable',
                     'multi_costs',
+                    'extra_options',
                     'must_login',
                     'handler'
                 )
@@ -415,6 +432,7 @@ class Payment extends Base
                 'discount',
                 'count',
                 'total' => new Expression('cost * count - discount'),
+                'extra_options',
                 'active',
                 'available',
                 'deleted',
@@ -429,6 +447,7 @@ class Payment extends Base
                     'countable',
                     'multi_costs',
                     'must_login',
+                    'module_extra_options' => 'extra_options',
                     'handler'
                 )
             )

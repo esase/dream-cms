@@ -15,8 +15,10 @@ use Application\Service\Service as ApplicationService;
 use Exception;
 use Application\Utility\Cache as CacheUtility;
 use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
-use Zend\Form\Exception\InvalidArgumentException;
+use Zend\Db\Exception\InvalidArgumentException;
 use Zend\Db\Sql\Predicate\Literal as LiteralPredicate;
+use Payment\Service\Service as PaymentService;
+use Payment\Type\PaymentTypeInterface as PaymentTypeInterface;
 
 class Base extends AbstractBase
 {
@@ -29,6 +31,11 @@ class Base extends AbstractBase
      * Module multi costs flag
      */
     const MODULE_MULTI_COSTS = 1;
+
+    /**
+     * Module extra options flag
+     */
+    const MODULE_EXTRA_OPTIONS = 1;
 
     /**
      * Module must login flag
@@ -48,7 +55,7 @@ class Base extends AbstractBase
     /**
      * Transaction min slug length
      */
-    const TRANSACTION_MIN_SLUG_LENGTH = 15;
+    const TRANSACTION_MIN_SLUG_LENGTH = 20;
 
     /**
      * Primary currency
@@ -213,13 +220,89 @@ class Base extends AbstractBase
     }
 
     /**
+     * Get items amount
+     *
+     * @param array $itemsList
+     *      float cost
+     *      integer count
+     *      float discount
+     * @param float $discount
+     * @param boolean $rounding
+     * @return float|integer
+     */
+    public function getItemsAmount(array $itemsList, $discount = 0, $rounding = false)
+    {
+        $itemsAmount = 0;
+        foreach($itemsList as $itemInfo) {
+            $itemsAmount += (float) $itemInfo['cost'] * (int) $itemInfo['count'] - (float) $itemInfo['discount'];
+        }
+
+        // calculate the discount
+        if ($discount) {
+            $itemsAmount = $this->getDiscountedItemsAmount($itemsAmount, $discount);
+        }
+
+        return $rounding
+            ? PaymentService::roundingCost($itemsAmount)
+            : $itemsAmount;
+    }
+
+    /**
+     * Get discounted items amount
+     *
+     * @param float $itemsAmount
+     * @param float $discount
+     * @return float|integer
+     */
+    public function getDiscountedItemsAmount($itemsAmount, $discount)
+    {
+        return $itemsAmount - ($itemsAmount * $discount / 100);
+    }
+
+    /**
+     * Get transaction's items
+     *
+     * @param integer $transactionId
+     * @param boolean $onlyActive
+     * @return float
+     */
+    public function getTransactionItems($transactionId, $onlyActive = true)
+    {
+        $select = $this->select();
+        $select->from('payment_transaction_item')
+            ->columns(array(
+                'cost',
+                'discount',
+                'count'
+            ))
+            ->where(array(
+                'transaction_id' => $transactionId
+            ));
+
+        if ($onlyActive) {
+            $select->where(array(
+                'active' => self::ITEM_ACTIVE,
+                'available' => self::ITEM_AVAILABLE,
+                'deleted' => self::ITEM_NOT_DELETED                
+            ));
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
+    }
+
+    /**
      * Get the transaction info
      *
      * @param integer $id
      * @param boolean $onlyNotPaid
+     * @param string $field
      * @return array
      */
-    public function getTransactionInfo($id, $onlyNotPaid = true)
+    public function getTransactionInfo($id, $onlyNotPaid = true, $field = 'id')
     {
         $select = $this->select();
         $select->from(array('a' => 'payment_transaction'))
@@ -233,8 +316,7 @@ class Base extends AbstractBase
                 'address',
                 'email',
                 'currency',
-                'payment_type',
-                'discount_cupon'
+                'payment_type'
             ))
             ->join(
                 array('b' => 'payment_currency'),
@@ -251,8 +333,16 @@ class Base extends AbstractBase
                 ),
                 'left'
             )
+            ->join(
+                array('d' => 'payment_discount_cupon'),
+                'a.discount_cupon = d.id',
+                array(
+                    'discount_cupon' => 'discount'
+                ),
+                'left'
+            )
             ->where(array(
-                'a.id' => $id
+                ($field == 'id' ? 'a.id' : 'a.slug') => $id
             ));
 
         if ($onlyNotPaid) {
@@ -382,7 +472,8 @@ class Base extends AbstractBase
                 'title',
                 'slug',
                 'discount',
-                'count'
+                'count',
+                'extra_options'
             ))
             ->join(
                 array('b' => 'payment_module'),
@@ -756,6 +847,25 @@ class Base extends AbstractBase
         return count($currencyId) == 2
             ? end($currencyId)
             : null;
+    }
+
+    /**
+     * Get the payment type instance
+     *
+     * @param sting @name
+     * @param object $controller
+     * @return object
+     * @exception InvalidArgumentException
+     */
+    public function getPaymentTypeInstance($name, $controller)
+    {
+        $object = new $name($controller);
+
+        if (!$object instanceof PaymentTypeInterface) {
+            throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Type\PaymentTypeInterface', $name));
+        }
+
+        return $object;
     }
 
     /**

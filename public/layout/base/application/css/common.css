@@ -142,6 +142,18 @@ table.table th {
     border-bottom: 0 !important;
 }
 
+table.table dl {
+    margin: 0;
+}
+
+table.table dl dt {
+    margin-top:5px;
+}
+
+table.table dl dt:first-child {
+    margin-top: 0;
+}
+
 /* breadcrumb */
 ol.breadcrumb {
     margin-top: 20px;

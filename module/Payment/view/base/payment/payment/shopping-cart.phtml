@@ -80,6 +80,9 @@
             'order_name' => 'total'
         ),
         6 => array(
+            'title' => $this->translate('Extra options')
+        ),
+        7 => array(
             'title' => $this->translate('Status')
         )
     ),
@@ -94,18 +97,21 @@
         'available',
         'deleted',
         'multi_costs',
-        'handler'
+        'handler',
+        'module_extra_options'
     ),
     'helpers' => array(
         'title' => 'paymentItemLink',
         'active' => 'paymentItemStatus',
         'cost' => 'processCost',
         'discount' => 'processCost',
-        'total' => 'processCost'
+        'total' => 'processCost',
+        'extra_options' => 'paymentItemExtraOptions'
     ),
     'helpers_set_array' => array(
         'active' => true,
-        'title' => true
+        'title' => true,
+        'extra_options' => true
     ),
     'helpers_options' => array(
     ),
@@ -154,16 +160,22 @@
                 ),
                 0 => array(
                     'function' => function($data) use ($model) {
-                        if ($data['countable'] == BaseModel::MODULE_COUNTABLE
-                                    || $data['multi_costs'] == BaseModel::MODULE_MULTI_COSTS) {
+                        $paymentHandler = $model->getPaymentHandlerInstance($data['handler']);
+
+                        if ($data['countable'] == BaseModel::MODULE_COUNTABLE ||
+                                    $data['multi_costs'] == BaseModel::MODULE_MULTI_COSTS) {
+
+                            return true;
+                        }
+
+                        if ($data['module_extra_options'] == BaseModel::MODULE_EXTRA_OPTIONS && $paymentHandler->
+                                    getItemExtraOptions($data['object_id'])) {
 
                             return true;
                         }
 
                         // check a discount params
-                        if ($data['discount'] || $model->
-                                    getPaymentHandlerInstance($data['handler'])->getDiscount($data['object_id'])) {
-
+                        if ($data['discount'] || $paymentHandler->getDiscount($data['object_id'])) {
                             return true;
                         }
 
@@ -177,7 +189,7 @@
 
 <?php if ($this->shoppingCart()->getItemsCount()) : ?>
     <div id="shopping-cart-price-wrapper">
-        <p><b><?php echo $this->translate('Total price') ?>:</b> <?php echo $this->escapeHtml($this->processCost($this->shoppingCart()->getItemsDiscountedAmount())) ?>
+        <p><b><?php echo $this->translate('Total price') ?>:</b> <?php echo $this->escapeHtml($this->processCost($this->shoppingCart()->getItemsDiscountedAmount(), true)) ?>
             <?php if ($this->shoppingCart()->getCurrentDiscount()) : ?>
                 - <?php echo $this->translate('without discount') ?>: <?php echo $this->escapeHtml($this->processCost($this->shoppingCart()->getItemsAmount())) ?>
             <?php endif; ?>

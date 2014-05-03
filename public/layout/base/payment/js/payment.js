@@ -93,15 +93,23 @@ Payment = function()
      * @param integer objectId
      * @param string module
      * @param integer count
+     * @param object extraOptions
      * @return void
      */
-    this.addToShoppingCart = function(objectId, module, count)
+    this.addToShoppingCart = function(objectId, module, count, extraOptions)
     {
-        _showPopupShoppingCart('add-to-shopping-cart', {
+        var baseOptions = {
             'object_id': objectId,
             'module': module,
             'count' : (typeof count != 'undefined' ? count : 0)
-        });
+        }
+
+        // merge the extra and base options
+        if (typeof extraOptions != 'undefined') {
+            baseOptions = $.extend({}, baseOptions, extraOptions);
+        }
+
+        _showPopupShoppingCart('add-to-shopping-cart', baseOptions);
     }
 
     /**

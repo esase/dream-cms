@@ -16,3 +16,9 @@ div#shopping-cart-wrapper div#shopping-cart-currencies {
 div#shopping-cart-price-wrapper {
     text-align: left;
 }
+
+/* payment form wrapper */
+div#payment-form-wrapper div#payment-amount-wrapper {
+    float: left;
+}
+
