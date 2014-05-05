@@ -3,9 +3,9 @@
 namespace Payment;
 
 use Zend\Mvc\MvcEvent;
-use User\Event\Event as UserEvent;
 use Payment\Event\Event as PaymentEvent;
 use Zend\ModuleManager\ModuleManager;
+use User\Model\Base as UserBaseModel;
 
 class Module
 {
@@ -24,27 +24,43 @@ class Module
      * Bootstrap
      */
     public function onBootstrap(MvcEvent $mvcEvent)
-    {
+    {           
         $model = $mvcEvent->getApplication()->getServiceManager()
             ->get('Application\Model\ModelManager')
             ->getInstance('Payment\Model\Base');
 
         // update a user transactions info
         $eventManager = PaymentEvent::getEventManager();
-        $eventManager->attach(UserEvent::EDIT, function ($e) use ($model) {
-            $model->updateUserTransactionsInfo($e->getParam('object_id'));
-        });
 
         // init edit and update events for payment modules
         foreach ($model->getPaymentModules() as $moduleInfo) {
+            // get the payment handler
+            $paymentHandler = $mvcEvent->getApplication()->getServiceManager()
+                ->get('Payment\Handler\HandlerManager')
+                ->getInstance($moduleInfo['handler']);
+
             // update items
-            $eventManager->attach($moduleInfo['update_event'], function ($e) use ($model, $moduleInfo) {
-                $model->updateItemsInfo($e->getParam('object_id'), $moduleInfo);
+            $eventManager->attach($moduleInfo['update_event'],
+                    function ($e) use ($model, $moduleInfo, $paymentHandler) {
+
+                if (true === ($result = $model->updateItemsInfo($e->getParam('object_id'), $moduleInfo, $paymentHandler))) {
+                    $eventDesc = 'Event - Shopping cart and transactions items were edited by the system';
+
+                    // fire the event
+                    PaymentEvent::fireEvent(PaymentEvent::EDIT_ITEMS, $e->getParam('object_id'),
+                        UserBaseModel::DEFAULT_SYSTEM_ID, $eventDesc, array($e->getParam('object_id'), $moduleInfo['module']));
+                }
             });
 
             // mark items as deleted
             $eventManager->attach($moduleInfo['delete_event'], function ($e) use ($model, $moduleInfo) {
-                $model->markItemsDeleted($e->getParam('object_id'), $moduleInfo['module']);
+                if (true === ($result = $model->markItemsDeleted($e->getParam('object_id'), $moduleInfo['module']))) {
+                    $eventDesc = 'Event - Shopping cart and transactions items were marked as deleted by the system';
+
+                    // fire the event
+                    PaymentEvent::fireEvent(PaymentEvent::MARK_DELETED_ITEMS, $e->getParam('object_id'),
+                        UserBaseModel::DEFAULT_SYSTEM_ID, $eventDesc, array($e->getParam('object_id'), $moduleInfo['module']));
+                }
             });
         }
     }
@@ -76,6 +92,21 @@ class Module
     public function getServiceConfig()
     {
         return array(
+            'factories' => array(
+                'Payment\Type\PaymentTypeManager' => function($serviceManager)
+                {
+                    $basePaymentModel = $serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Payment\Model\Base');
+
+                    return new Type\PaymentTypeManager($serviceManager->
+                            get('request'), $basePaymentModel, $serviceManager->get('viewhelpermanager')->get('url'));
+                },
+                'Payment\Handler\HandlerManager' => function($serviceManager)
+                {
+                    return new Handler\HandlerManager($serviceManager);
+                },
+            )
         );
     }
 
@@ -94,11 +125,11 @@ class Module
             'factories' => array(
                 'paymentItemExtraOptions' =>  function()
                 {
-                    $baseModel = $this->serviceManager
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Payment\Model\Base');
+                    // get the payment handler manager
+                    $paymentHandlerManager = $this->serviceManager
+                        ->get('Payment\Handler\HandlerManager');
 
-                    return new \Payment\View\Helper\PaymentItemExtraOptions($baseModel);
+                    return new \Payment\View\Helper\PaymentItemExtraOptions($paymentHandlerManager);
                 },
             )
         );

@@ -42,6 +42,15 @@ class PaymentController extends AbstractBaseController
     }
 
     /**
+     * Default action
+     */
+    public function indexAction()
+    {
+        // redirect to shopping cart action
+        return $this->redirectTo('payments', 'shopping-cart');
+    }
+
+    /**
      * Add to shopping cart
      *
      * @param array $itemInfo
@@ -128,7 +137,9 @@ class PaymentController extends AbstractBaseController
         }
 
         // get the payment handler
-        $paymentHandler = $this->getModel()->getPaymentHandlerInstance($itemInfo['handler']);
+        $paymentHandler = $this->getServiceLocator()
+            ->get('Payment\Handler\HandlerManager')
+            ->getInstance($itemInfo['handler']);
 
         // get the item's additional info
         $extraItemInfo = $paymentHandler->getItemInfo($itemInfo['object_id']);
@@ -202,8 +213,10 @@ class PaymentController extends AbstractBaseController
 
                         // return a discount back
                         if ($itemInfo['discount'] && empty($formData['discount'])) {
-                            $this->getModel()
-                                ->getPaymentHandlerInstance($itemInfo['handler'])
+                            // get the payment handler
+                            $this->getServiceLocator()
+                                ->get('Payment\Handler\HandlerManager')
+                                ->getInstance($itemInfo['handler'])
                                 ->returnBackDiscount($itemInfo['object_id'], $itemInfo['discount']);
                         }
 
@@ -277,8 +290,10 @@ class PaymentController extends AbstractBaseController
 
                     // return a discount back
                     if ($itemInfo['discount']) {
-                        $this->getModel()
-                            ->getPaymentHandlerInstance($itemInfo['handler'])
+                        // get the payment handler
+                        $this->getServiceLocator()
+                            ->get('Payment\Handler\HandlerManager')
+                            ->getInstance($itemInfo['handler'])
                             ->returnBackDiscount($itemId, $itemInfo['discount']);
                     }
 
@@ -373,8 +388,10 @@ class PaymentController extends AbstractBaseController
                 getTranslator()->translate('Received module not found'), $module);
         }
         else {
-            // create a payment handler class instance
-            $paymentHandler = $this->getModel()->getPaymentHandlerInstance($moduleInfo['handler']);
+            // get the payment handler
+            $paymentHandler = $this->getServiceLocator()
+                ->get('Payment\Handler\HandlerManager')
+                ->getInstance($moduleInfo['handler']);
 
             // check an item existing in shopping cart
             if (true === ($result = $this->getModel()->inShoppingCart($objectId, $moduleInfo['id']))) {
@@ -527,8 +544,10 @@ class PaymentController extends AbstractBaseController
 
                 // return a discount back
                 if ($returnDiscount && $itemInfo['discount']) {
-                    $this->getModel()
-                        ->getPaymentHandlerInstance($itemInfo['handler'])
+                    // get the payment handler
+                    $this->getServiceLocator()
+                        ->get('Payment\Handler\HandlerManager')
+                        ->getInstance($itemInfo['handler'])
                         ->returnBackDiscount($itemInfo['id'], $itemInfo['discount']);
                 }
 
@@ -570,8 +589,12 @@ class PaymentController extends AbstractBaseController
         $paginator = $this->getModel()->
                 getShoppingCartItems($this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType());
 
+        // get the payment handler manager
+        $paymentHandlerManager = $this->getServiceLocator()
+            ->get('Payment\Handler\HandlerManager');
+
         return new ViewModel(array(
-            'model' => $this->getModel(),
+            'paymentHandlerManager' => $paymentHandlerManager,
             'paginator' => $paginator,
             'order_by' => $this->getOrderBy(),
             'order_type' => $this->getOrderType(),
@@ -605,8 +628,9 @@ class PaymentController extends AbstractBaseController
             }
         }
 
-        $transactionPaid = (float) paymentService::
-                roundingCost(paymentService::getActiveShoppingCartItemsAmount(true)) > 0;
+        // get shopping cart items amount
+        $amount = (float) paymentService::roundingCost(paymentService::getActiveShoppingCartItemsAmount(true));
+        $transactionPaid = $amount > 0;
 
         // get payments types
         if (null == ($paymentsTypes = $this->getModel()->getPaymentsTypes()) && $transactionPaid) {
@@ -645,8 +669,8 @@ class PaymentController extends AbstractBaseController
             if ($checkoutForm->getForm()->isValid()) {
                 // add a new transaction
                 $formData = $checkoutForm->getForm()->getData();
-                $result = $this->getModel()->
-                        addTransaction(UserService::getCurrentUserIdentity()->user_id, $formData, $shoppingCartItems);
+                $result = $this->getModel()->addTransaction(UserService::getCurrentUserIdentity()->
+                        user_id, $formData, $shoppingCartItems, $amount);
 
                 if (is_numeric($result)) {
                     // fire the event
@@ -738,18 +762,25 @@ class PaymentController extends AbstractBaseController
      *      integer payment_type
      *      integer discount_cupon
      *      string currency_code
-     *      string payment_name 
+     *      string payment_name
+     * @param integer $paymentTypeId
      * @return boolean
      */
-    protected function activateTransaction(array $transactionInfo)
+    protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
     {
-        if (true === ($result = $this->getModel()->activateTransaction($transactionInfo['id']))) {
+        if (true === ($result =
+                $this->getModel()->activateTransaction($transactionInfo['id'], 'id', $paymentTypeId))) {
+
             // mark as paid all transaction's items
             if (null != ($activeTransactionItems =
                     $this->getModel()->getAllTransactionItems($transactionInfo['id']))) {
 
                 foreach ($activeTransactionItems as $itemInfo) {
-                    $this->getModel()->getPaymentHandlerInstance($itemInfo['handler'])->setPaid($itemInfo['object_id'], $transactionInfo);
+                    // get the payment handler
+                    $this->getServiceLocator()
+                        ->get('Payment\Handler\HandlerManager')
+                        ->getInstance($itemInfo['handler'])
+                        ->setPaid($itemInfo['object_id'], $transactionInfo);
                 }
             }
 
@@ -826,15 +857,8 @@ class PaymentController extends AbstractBaseController
             $currentPayment = key($paymentsTypes);
         }
 
-        // get the transaction's  items list
-        if (null == ($itemsList = $this->getModel()->getTransactionItems($transactionInfo['id']))) {
-            return $this->createHttpNotFoundModel($this->getResponse());
-        }
-
-        // get items amount
-        if (0 >= ($itemsAmount =
-                $this->getModel()->getItemsAmount($itemsList, $transactionInfo['discount_cupon'], true))) {
-
+        // check the transaction's amount
+        if (0 >= $transactionInfo['amount']) {
             // activate the transaction and redirect to success page
             if(true == ($result = $this->activateTransaction($transactionInfo))) {
                 return $this->redirectTo('payments', 'success');
@@ -853,19 +877,71 @@ class PaymentController extends AbstractBaseController
             $processedPayments[$paymentName] = $paymentInfo['description'];
         }
 
-        // get the payment type instance
-        $paymentType = $this->getModel()
-                ->getPaymentTypeInstance($paymentsTypes[$currentPayment]['handler'], $this);
+        $paymentType = $this->getServiceLocator()
+            ->get('Payment\Type\PaymentTypeManager')
+            ->getInstance($paymentsTypes[$currentPayment]['handler']);
 
         $viewModel = new ViewModel(array(
             'transaction' => $transactionInfo,
             'payments' => $processedPayments,
             'current_payment' => $currentPayment,
-            'amount' => $itemsAmount,
-            'payment_options' => $paymentType->getPaymentOptions($itemsAmount, $transactionInfo),
+            'amount' => $transactionInfo['amount'],
+            'payment_options' => $paymentType->getPaymentOptions($transactionInfo['amount'], $transactionInfo),
             'payment_url' => $paymentType->getPaymentUrl()
         ));
 
         return $viewModel->setTemplate('payment/payment-type/' . $currentPayment);
+    }
+
+    /**
+     * Process action
+     */
+    public function processAction()
+    {
+        // get the payment's  info
+        if (null == ($payment = $this->getModel()->getPaymentTypeInfo($this->getSlug()))) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get the payment type instance
+        $paymentInstance = $this->getServiceLocator()
+            ->get('Payment\Type\PaymentTypeManager')
+            ->getInstance($payment['handler']);
+
+        // validate payment
+        if (false !== ($transactionInfo = $paymentInstance->validatePayment())) {
+            if (true === ($result = $this->activateTransaction($transactionInfo, $payment['id']))) {
+                // send an email notification about the paid transaction
+                if ((int) $this->getSetting('payment_transaction_paid_users')) {
+                    // get the user's info
+                    $userInfo = !empty($transactionInfo['user_id'])
+                        ? UserService::getUserInfo($transactionInfo['user_id'])
+                        : array();
+
+                    $notificationLanguage = !empty($userInfo['language'])
+                        ? $userInfo['language'] // we should use the user's language
+                        : UserService::getDefaultLocalization()['language'];
+
+                    EmailNotification::sendNotification($transactionInfo['email'],
+                            $this->getSetting('payment_transaction_paid_users_title', $notificationLanguage),
+                            $this->getSetting('payment_transaction_paid_users_message', $notificationLanguage), array(
+                                'find' => array(
+                                    'Id',
+                                    'PaymentType'
+                                ),
+                                'replace' => array(
+                                    $transactionInfo['slug'],
+                                    $this->getTranslator()->translate($payment['description'],
+                                            'default', UserService::getLocalizations()[$notificationLanguage]['locale'])
+                                )
+                            ));
+                }
+            }
+        }
+        else {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        return $this->getResponse();
     }
 }

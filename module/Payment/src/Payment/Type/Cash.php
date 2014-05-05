@@ -34,4 +34,12 @@ class Cash extends AbstractType
      */
     public function getPaymentOptions($itemsAmount, array $transactionInfo)
     {}
+
+    /**
+     * Validate payment
+     *
+     * @return boolean|array
+     */
+    public function validatePayment()
+    {}
 }

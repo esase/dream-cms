@@ -15,7 +15,6 @@ use Application\Service\Service as ApplicationService;
 use Exception;
 use Application\Utility\Cache as CacheUtility;
 use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
-use Zend\Db\Exception\InvalidArgumentException;
 use Zend\Db\Sql\Predicate\Literal as LiteralPredicate;
 use Payment\Service\Service as PaymentService;
 use Payment\Type\PaymentTypeInterface as PaymentTypeInterface;
@@ -138,12 +137,6 @@ class Base extends AbstractBase
     const ALLOWED_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
     /**
-     * Payment handler instances
-     * @var array
-     */
-    protected $paymentHandlerInstances = array();
-
-    /**
      * Get all transaction items
      *
      * @param integer $transactionId
@@ -188,18 +181,27 @@ class Base extends AbstractBase
      *
      * @param integer $transactionId
      * @param string $field
+     * @param integer $paymentTypeId
      * @return boolean|string
      */
-    public function activateTransaction($transactionId, $field = 'id')
+    public function activateTransaction($transactionId, $field = 'id', $paymentTypeId = 0)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
+            $baseFields = array(
+                'paid'  => self::TRANSACTION_PAID
+            );
+
+            if ($paymentTypeId) {
+                $baseFields = array_merge($baseFields, array(
+                    'payment_type' => $paymentTypeId
+                ));
+            }
+
             $update = $this->update()
                 ->table('payment_transaction')
-                ->set(array(
-                    'paid'  => self::TRANSACTION_PAID
-                ))
+                ->set($baseFields)
                 ->where(array(
                     ($field == 'id' ? $field : 'slug') => $transactionId
                 ));
@@ -316,7 +318,8 @@ class Base extends AbstractBase
                 'address',
                 'email',
                 'currency',
-                'payment_type'
+                'payment_type',
+                'amount'
             ))
             ->join(
                 array('b' => 'payment_currency'),
@@ -516,18 +519,16 @@ class Base extends AbstractBase
      *      integer countable
      *      integer must_login
      *      string handler
+     * @param object $paymentHandler
      * @return boolean|string
      */
-    public function updateItemsInfo($objectId, $moduleInfo)
+    public function updateItemsInfo($objectId, $moduleInfo, $paymentHandler)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            // create a payment handler class instance
-            $object = $this->getPaymentHandlerInstance($moduleInfo['handler']);
-
             // object is not active
-            if (null == ($objectInfo = $object->getItemInfo($objectId))) {
+            if (null == ($objectInfo = $paymentHandler->getItemInfo($objectId))) {
                 $update = $this->update()
                     ->table('payment_shopping_cart')
                     ->set(array(
@@ -674,6 +675,9 @@ class Base extends AbstractBase
                 }
             }
 
+            // update transactions amount
+            $this->updateTransactionsAmount($objectId, $moduleInfo['module']);
+
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -684,6 +688,64 @@ class Base extends AbstractBase
         }
 
         return true;
+    }
+
+    /**
+     * Update transactions amount
+     *
+     * @param integer $objectId
+     * @param integer $moduleId
+     * @return void
+     */
+    protected function updateTransactionsAmount($objectId, $moduleId)
+    {
+        $select = $this->select();
+        $select->from(array('a' => 'payment_transaction_item'))
+        ->columns(array(
+            'transaction_id'
+        ))
+        ->join(
+            array('b' => 'payment_transaction'),
+            new Expression('a.transaction_id  = b.id and b.paid = ?', array(self::TRANSACTION_NOT_PAID)),
+            array()
+        )
+        ->join(
+            array('c' => 'payment_discount_cupon'),
+            'b.discount_cupon = c.id',
+            array(
+                'discount_cupon' => 'discount'
+            ),
+            'left'
+        )
+        ->where(array(
+            'object_id' => $objectId,
+            'module' => $moduleId
+        ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        foreach ($resultSet as $transaction) {
+            $amount = 0;
+
+            if (null != ($itemsList = $this->getTransactionItems($transaction['transaction_id']))) {
+                $amount = $this->getItemsAmount($itemsList, $transaction['discount_cupon'], true);
+            }
+
+            // update transaction's amount
+            $update = $this->update()
+                ->table('payment_transaction')
+                ->set(array(
+                    'amount' => $amount
+                ))
+                ->where(array(
+                    'id' => $transaction['transaction_id']
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+        }
     }
 
     /**
@@ -723,6 +785,9 @@ class Base extends AbstractBase
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
+
+            // update transactions amount
+            $this->updateTransactionsAmount($objectId, $moduleId);
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -847,89 +912,6 @@ class Base extends AbstractBase
         return count($currencyId) == 2
             ? end($currencyId)
             : null;
-    }
-
-    /**
-     * Get the payment type instance
-     *
-     * @param sting @name
-     * @param object $controller
-     * @return object
-     * @exception InvalidArgumentException
-     */
-    public function getPaymentTypeInstance($name, $controller)
-    {
-        $object = new $name($controller);
-
-        if (!$object instanceof PaymentTypeInterface) {
-            throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Type\PaymentTypeInterface', $name));
-        }
-
-        return $object;
-    }
-
-    /**
-     * Get the payment handler instance
-     *
-     * @param sting @name
-     * @return object
-     * @exception InvalidArgumentException
-     */
-    public function getPaymentHandlerInstance($name)
-    {
-        if (!array_key_exists($name, $this->paymentHandlerInstances)) {
-            $object = new $name($this->serviceManager);
-            if (!$object instanceof PaymentInterfaceHandler) {
-                throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Handler\InterfaceHandler', $name));
-            }
-
-            $this->paymentHandlerInstances[$name] = $object;
-        }
-        else {
-            $object = $this->paymentHandlerInstances[$name];
-        }
-
-        return $object;
-    }
-
-    /**
-     * Update a user transactions info
-     *
-     * @param integer $userId
-     * @return boolean|string
-     */
-    public function updateUserTransactionsInfo($userId)
-    {
-        try {
-            // get the updated user's info
-            $userInfo = UserService::getUserInfo($userId);
-
-            $this->adapter->getDriver()->getConnection()->beginTransaction();
-
-            $update = $this->update()
-                ->table('payment_transaction')
-                ->set(array(
-                    'user_name'  => $userInfo->nick_name,
-                    'user_email' => $userInfo->email,
-                    'user_phone' => $userInfo->phone
-                ))
-                ->where(array(
-                    'user_id' => $userId
-                ));
-
-            $statement = $this->prepareStatementForSqlObject($update);
-            $statement->execute();
-
-            $this->adapter->getDriver()->getConnection()->commit();
-        }
-        catch (Exception $e) {
-            $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
-
-            return $e->getMessage();
-        }
-
-        return true;
     }
 
     /**

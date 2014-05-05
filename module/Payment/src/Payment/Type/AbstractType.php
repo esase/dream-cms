@@ -9,25 +9,41 @@
 
 namespace Payment\Type;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Http\PhpEnvironment\Request as HttpRequest;
 use Application\Service\Service as ApplicationService;
+use Payment\Model\Base as BasePaymentModel;
+use Zend\View\Helper\Url as UrlViewHelper;
 
 abstract class AbstractType implements PaymentTypeInterface
 {
     /**
-     * Controller
+     * Request
      * @var object
      */
-    protected $controller;
+    protected $request;
+
+    /**
+     * Model
+     * @var object
+     */
+    protected $model;
+
+    /**
+     * Url view helper
+     * @var object
+     */
+    private $urlViewHelper;
 
     /**
      * Class constructor
      *
      * @param object $serviceManager
      */
-    public function __construct(AbstractActionController $controller)
+    public function __construct(HttpRequest $request, BasePaymentModel $model, UrlViewHelper $urlViewHelper)
     {
-        $this->controller = $controller;
+        $this->request = $request;
+        $this->model = $model;
+        $this->urlViewHelper = $urlViewHelper;
     }
 
     /**
@@ -37,7 +53,7 @@ abstract class AbstractType implements PaymentTypeInterface
      */
     public function getSuccessUrl()
     {
-        return $this->controller->url()->fromRoute('application', array(
+        return $this->urlViewHelper->__invoke('application', array(
             'controller' => 'payments',
             'action' => 'success'
         ), array('force_canonical' => true));
@@ -50,7 +66,7 @@ abstract class AbstractType implements PaymentTypeInterface
      */
     public function getErrorUrl()
     {
-        return $this->controller->url()->fromRoute('application', array(
+        return $this->urlViewHelper->__invoke('application', array(
             'controller' => 'payments',
             'action' => 'error'
         ), array('force_canonical' => true));

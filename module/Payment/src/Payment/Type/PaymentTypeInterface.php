@@ -39,4 +39,11 @@ interface PaymentTypeInterface
      * @return string
      */
     public function getPaymentUrl();
+
+    /**
+     * Validate payment
+     *
+     * @return boolean|array
+     */
+    public function validatePayment();    
 }

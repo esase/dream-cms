@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-03 18:50+0600\n"
+"PO-Revision-Date: 2014-05-05 16:50+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,36 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Callback URL"
+msgstr "Адрес оповещения о платеже"
+
+msgid "Fail URL"
+msgstr "Адрес отмененной операции"
+
+msgid "Success URL"
+msgstr "Адрес удачной операции"
+
+msgid "Control signature"
+msgstr "Контрольная подпись"
+
+msgid "HTTP method"
+msgstr "HTTP Метод"
+
+msgid "Also set these options into your RBK Money account:"
+msgstr "Также установите эти параметры в вашем RBK Money акаунте:"
+
+msgid "Paid users payment transactions message"
+msgstr "Пользовательское сообщение об оплате платежной операции"
+
+msgid "Paid users payment transaction email notification"
+msgstr "Пользовательское уведомление об оплате платежной операции"
+
+msgid "Paid users payment transactions title"
+msgstr "Пользовательский заголовок об оплате платежной операции"
+
+msgid "Send notification about paid payment transactions to users"
+msgstr "Отправлять уведомление об оплаченных платежных операциях пользователям"
 
 msgid "Set these links into your RBK Money account:"
 msgstr "Установите эти ссылки в вашем RBK Money акаунте:"
@@ -87,7 +117,7 @@ msgid "Paid payment transaction title"
 msgstr "Заголовок об оплате платежной операции"
 
 msgid "Send notification about paid payment transactions"
-msgstr "Отправлять уведомления об оплаченных платежных операциях"
+msgstr "Отправлять уведомление об оплаченных платежных операциях"
 
 msgid "Transaction activation error"
 msgstr "Ошибка активации платежной операции"
@@ -105,7 +135,7 @@ msgid "Add a new payment transaction title"
 msgstr "Заголовок об добавлении новой платежной операции"
 
 msgid "Send notification about new payment transactions"
-msgstr "Отправлять уведомления о новых платежных операциях"
+msgstr "Отправлять уведомление о новых платежных операциях"
 
 msgid "Cash"
 msgstr "Наличные"
@@ -353,6 +383,24 @@ msgstr "Платеж"
 
 msgid "Payments"
 msgstr "Платежи"
+
+msgid "Event - Shopping cart and transactions items were edited by the system"
+msgstr ""
+"Товары в корзине и в платежных операциях были отредактированы с помощью "
+"системы. Идентификатор товара - \"%d\", идентификатор модуля - \"%d\""
+
+msgid "Event - Editing shopping cart and transactions items"
+msgstr "Редактирование товаров в корзине и в платежных операциях"
+
+msgid "Event - Marking as deleted shopping cart and transactions items"
+msgstr "Отметка товаров как удаленные в корзине и в платежных операциях"
+
+msgid ""
+"Event - Shopping cart and transactions items were marked as deleted by the "
+"system"
+msgstr ""
+"Товары помечены как удаленные в корзине и в платежных операциях с помощью "
+"системы. Идентификатор товара - \"%d\", идентификатор модуля - \"%d\""
 
 msgid "Event - Activating payment transactions"
 msgstr "Активация платежных операций"

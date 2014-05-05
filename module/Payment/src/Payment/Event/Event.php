@@ -75,4 +75,14 @@ class Event extends ApplicationEvent
      * Activate payment transaction event
      */
     const ACTIVATE_PAYMENT_TRANSACTION = 'activate_payment_transaction';
+
+    /**
+     * Mark as deleted payment transactions and shopping cart items event
+     */
+    const MARK_DELETED_ITEMS = 'mark_deleted_payment_items';
+
+    /**
+     * Edit items event
+     */
+    const EDIT_ITEMS = 'edit_payment_items';
 }

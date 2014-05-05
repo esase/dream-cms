@@ -159,8 +159,8 @@
                     'condition' =>  'return (int) "__value__" == "' . BaseModel::ITEM_NOT_DELETED . '";'
                 ),
                 0 => array(
-                    'function' => function($data) use ($model) {
-                        $paymentHandler = $model->getPaymentHandlerInstance($data['handler']);
+                    'function' => function($data) use ($paymentHandlerManager) {
+                        $paymentHandler = $paymentHandlerManager->getInstance($data['handler']);
 
                         if ($data['countable'] == BaseModel::MODULE_COUNTABLE ||
                                     $data['multi_costs'] == BaseModel::MODULE_MULTI_COSTS) {

@@ -16,6 +16,36 @@ use User\Model\Base as UserBaseModel;
 class Payment extends Base
 {
     /**
+     * Get the payment type info
+     *
+     * @param string $name
+     * @return array
+     */
+    public function getPaymentTypeInfo($name)
+    {
+        $select = $this->select();
+        $select->from('payment_type')
+            ->columns(array(
+                'id',
+                'name',
+                'description',
+                'enable_option',
+                'handler'
+            ))
+            ->where(array(
+                'name' => $name
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result  = $statement->execute();
+        $payment = $result->current();
+
+        return (int) ApplicationService::getSetting($payment['enable_option']) 
+            ? $payment
+            : array();
+    }
+
+    /**
      * Add a new transaction
      *
      * @param integer $userId
@@ -36,9 +66,10 @@ class Payment extends Base
      *      float discount
      *      integer count
      *      string extra_options
+     * @param float $amount
      * @return integer|string
      */
-    public function addTransaction($userId, array $transactionInfo, array $items)
+    public function addTransaction($userId, array $transactionInfo, array $items, $amount)
     {
         $transactionId = 0;
 
@@ -48,7 +79,8 @@ class Payment extends Base
             $basicData = array(
                 'date' => new Expression('NOW()'),
                 'currency' => PaymentService::getPrimaryCurrency()['id'],
-                'clear_date' => time() + (int) ApplicationService::getSetting('payment_clearing_time')
+                'clear_date' => time() + (int) ApplicationService::getSetting('payment_clearing_time'),
+                'amount' => $amount
             );
 
             // add the user id

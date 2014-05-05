@@ -3,25 +3,27 @@
 namespace Payment\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Payment\Model\Base as BaseModel;
 use Application\Utility\Locale as LocaleUtility;
+use Application\Service\Service as ApplicationService;
+use Payment\Handler\HandlerManager;
+use Payment\Model\Base as BaseModel;
 
 class PaymentItemExtraOptions extends AbstractHelper
 {
     /**
-     * Model instance
+     * Payment handler manager
      * @var object
      */
-    protected $model;
+    protected $paymentHandlerManager;
 
     /**
      * Class constructor
      *
      * @param object $model
      */
-    public function __construct(BaseModel $model)
+    public function __construct(HandlerManager $paymentHandlerManager)
     {
-        $this->model = $model;
+        $this->paymentHandlerManager = $paymentHandlerManager;
     }
 
     /**
@@ -51,8 +53,8 @@ class PaymentItemExtraOptions extends AbstractHelper
     {
         if ($info['module_extra_options'] == BaseModel::MODULE_EXTRA_OPTIONS && !empty($info['extra_options'])) {
             // get list of available extra options
-            if (null != ($extraOptionsFields = $this->model->
-                    getPaymentHandlerInstance($info['handler'])->getItemExtraOptions($info['object_id']))) {
+            if (null != ($extraOptionsFields = $this->paymentHandlerManager
+                    ->getInstance($info['handler'])->getItemExtraOptions($info['object_id']))) {
 
                 $extraOptions = unserialize($info['extra_options']);
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-03 18:50+0600\n"
+"PO-Revision-Date: 2014-05-05 16:50+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,36 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Callback URL"
+msgstr "Callback URL"
+
+msgid "Fail URL"
+msgstr "Fail URL"
+
+msgid "Success URL"
+msgstr "Success URL"
+
+msgid "Control signature"
+msgstr "Control signature"
+
+msgid "HTTP method"
+msgstr "HTTP method"
+
+msgid "Also set these options into your RBK Money account:"
+msgstr "Also set these options into your RBK Money account:"
+
+msgid "Paid users payment transactions message"
+msgstr "Paid users payment transactions message"
+
+msgid "Paid users payment transaction email notification"
+msgstr "Paid users payment transaction email notification"
+
+msgid "Paid users payment transactions title"
+msgstr "Paid users payment transactions title"
+
+msgid "Send notification about paid payment transactions to users"
+msgstr "Send notification about paid payment transactions to users"
 
 msgid "Set these links into your RBK Money account:"
 msgstr "Set these links into your RBK Money account:"
@@ -354,6 +384,24 @@ msgstr "Payment"
 
 msgid "Payments"
 msgstr "Payments"
+
+msgid "Event - Shopping cart and transactions items were edited by the system"
+msgstr ""
+"Shopping cart and transactions items were edited by the system. Item's id - "
+"\"%d\", module's id - \"%d\""
+
+msgid "Event - Editing shopping cart and transactions items"
+msgstr "Editing shopping cart and transactions items"
+
+msgid "Event - Marking as deleted shopping cart and transactions items"
+msgstr "Marking as deleted shopping cart and transactions items"
+
+msgid ""
+"Event - Shopping cart and transactions items were marked as deleted by the "
+"system"
+msgstr ""
+"Shopping cart and transactions items were marked as deleted by the system. "
+"Item's id - \"%d\", module's id - \"%d\""
 
 msgid "Event - Activating payment transactions"
 msgstr "Activating payment transactions"
