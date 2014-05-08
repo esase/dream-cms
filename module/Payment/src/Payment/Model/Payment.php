@@ -274,9 +274,10 @@ class Payment extends Base
      *
      * @param integer $itemId
      * @param boolean $onlyActive
+     * @param boolean $checkModuleState
      * @return array
      */
-    public function getShoppingCartItemInfo($itemId, $onlyActive = false)
+    public function getShoppingCartItemInfo($itemId, $onlyActive = false, $checkModuleState = true)
     {
         $select = $this->select();
         $select->from(array('a' => 'payment_shopping_cart'))
@@ -299,17 +300,26 @@ class Payment extends Base
                     'module_extra_options' => 'extra_options',
                     'handler'
                 )
-            )
-            ->where(array(
-                'id' => $itemId,
-                'shopping_cart_id' => $this->getShoppingCartId()
-            ));
+            );
+
+        if ($checkModuleState) {
+            $select->join(
+                array('c' => 'module'),
+                new Expression('b.module = c.id and c.active = ?', array(self::MODULE_ACTIVE)),
+                array()
+            );
+        }
+
+        $select->where(array(
+            'a.id' => $itemId,
+            'a.shopping_cart_id' => $this->getShoppingCartId()
+        ));
 
         if ($onlyActive) {
             $select->where(array(
-                'active' => self::ITEM_ACTIVE,
-                'available' => self::ITEM_AVAILABLE,
-                'deleted' => self::ITEM_NOT_DELETED
+                'a.active' => self::ITEM_ACTIVE,
+                'a.available' => self::ITEM_AVAILABLE,
+                'a.deleted' => self::ITEM_NOT_DELETED
             ));
         }
 
@@ -481,6 +491,13 @@ class Payment extends Base
                     'must_login',
                     'module_extra_options' => 'extra_options',
                     'handler'
+                )
+            )
+            ->join(
+                array('c' => 'module'),
+                'b.module = c.id',
+                array(
+                    'module_state' => 'active'
                 )
             )
             ->order($orderBy . ' ' . $orderType)

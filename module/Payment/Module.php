@@ -32,6 +32,8 @@ class Module
         // update a user transactions info
         $eventManager = PaymentEvent::getEventManager();
 
+        //TODO: Here also need to attach modules change states events. And recalculate transactions amounts.
+
         // init edit and update events for payment modules
         foreach ($model->getPaymentModules() as $moduleInfo) {
             // get the payment handler
@@ -117,10 +119,12 @@ class Module
     {
         return array(
             'invokables' => array(
+                'costFormat' => 'Payment\View\Helper\CostFormat',
+                'processCost' => 'Payment\View\Helper\ProcessCost',
                 'currency' => 'Payment\View\Helper\Currency',
                 'paymentItemStatus' => 'Payment\View\Helper\PaymentItemStatus',
                 'paymentItemLink' => 'Payment\View\Helper\PaymentItemlink',
-                'shoppingCart' => 'Payment\View\Helper\ShoppingCart',
+                'shoppingCart' => 'Payment\View\Helper\ShoppingCart'
             ),
             'factories' => array(
                 'paymentItemExtraOptions' =>  function()

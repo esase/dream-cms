@@ -1,0 +1,131 @@
+<?php $this->declareVars('subPageTitle', 'parentPageTitle') ?>
+
+<?php $this->subPageTitle = $this->translate('View the transaction\'s items') ?>
+<?php $this->parentPageTitle = $this->translate('List of transactions') ?>
+
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->transaction['slug']) ?>
+<?php $this->headTitle($this->parentPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('payment/payment-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->parentPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ),
+        'view_items' => array(
+            'name' => $this->transaction['slug'] . ' - ' . $this->subPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'view-transaction-items',
+            'check_acl' => true
+        )
+    ) 
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data_grid', array(
+    'controller' => 'payments-administration',
+    'action' => 'view-transaction-items',
+    'slug' => $this->transaction['id'],
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'title',
+    'default_order_type' => 'desc',
+    //'filter_form' => $this->filter_form,
+    'headers' => array(
+        1 => array(
+            'title' => $this->translate('Title'),
+            'order_name' => 'title'
+        ),
+        2 => array(
+            'title' => $this->translate('Unit Price'),
+            'order_name' => 'cost'
+        ),
+        3 => array(
+            'title' => $this->translate('Discount'),
+            'order_name' => 'discount'
+        ),
+        4 => array(
+            'title' => $this->translate('Count'),
+            'order_name' => 'count'
+        ),
+        5 => array(
+            'title' => $this->translate('Total price'),
+            'order_name' => 'total'
+        ),
+        6 => array(
+            'title' => $this->translate('Extra options')
+        ),
+        7 => array(
+            'title' => $this->translate('Status')
+        ),
+    ),
+    'paginator' => $this->paginator,
+    'skipped_fields' => array(
+        'view_controller',
+        'view_action',
+        'countable',
+        'slug',
+        'available',
+        'deleted',
+        'module_extra_options',
+        'handler',
+        'object_id',
+        'module_state'
+    ),
+    'helpers' => array(
+        'title' => 'paymentItemLink',
+        'cost' => 'costFormat',
+        'discount' => 'costFormat',
+        'total' => 'costFormat',
+        'extra_options' => 'paymentItemExtraOptions',
+        'active' => 'paymentItemStatus',
+        'module' => 'translate'
+    ),
+    'helpers_set_array' => array(
+        'title' => true,
+        'extra_options' => true,
+        'active' => true
+    ),
+    'helpers_options' => array(
+        'cost' => array(
+            'currency' => $this->transaction['currency_code']  
+        ),
+        'discount' => array(
+            'currency' => $this->transaction['currency_code']  
+        ),
+        'total' => array(
+            'currency' => $this->transaction['currency_code']  
+        ),
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+        ),
+        'multiple_actions' => array(
+        ),
+        'single_actions' => array (
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => '',
+        'form_name' => 'items',
+        'multiple_actions' => array(
+            'items_name' => 'items[]'
+        )
+    ),
+    'actions_extra_check' => array(
+    )
+)) ?>

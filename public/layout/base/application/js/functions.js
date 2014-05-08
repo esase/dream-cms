@@ -28,3 +28,25 @@ function showLoadingBox(container)
         zIndex:100
     });
 }
+
+/**
+ * Show popup window
+ *
+ * @param string url
+ * @param string popupId
+ * @return void
+ */
+function showPopup(url, popupId)
+{
+    // remove previously opened popup
+    $('#' + popupId).remove();
+
+    $.ajax({
+	'type'      : "get",
+	'url'       : url + '?_r=' + Math.random(),
+	'success'   : function(data) {
+	    $(document.body).append(data);
+	    $('#' + popupId).modal('show');
+	}
+    });
+}

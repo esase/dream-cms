@@ -22,8 +22,5 @@ return array(
         )
     ),
     'view_helpers' => array(
-        'invokables' => array(
-            'processCost' => 'Payment\View\Helper\ProcessCost',
-        )
     )
 );

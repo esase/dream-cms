@@ -137,6 +137,7 @@ class PaymentAdministration extends Base
 
                 $this->skippActivatedPrimaryCurrency($oldCurrencyInfo['id']);
                 $this->clearExchangeRates();
+                $this->cleanShoppingCart();
             }
 
             $this->adapter->getDriver()->getConnection()->commit();
@@ -149,6 +150,20 @@ class PaymentAdministration extends Base
         }
 
         return true;
+    }
+
+    /**
+     * Clean shopping cart
+     *
+     * @return boolean
+     */
+    protected function cleanShoppingCart()
+    {
+        $delete = $this->delete()->from('payment_shopping_cart');
+        $statement = $this->prepareStatementForSqlObject($delete);
+        $result = $statement->execute();
+
+        return $result->count() ? true : false;
     }
 
     /**
@@ -266,6 +281,7 @@ class PaymentAdministration extends Base
             if ((int) $currencyInfo['primary_currency'] == self::PRIMARY_CURRENCY) {
                 $this->skippActivatedPrimaryCurrency($insertId);
                 $this->clearExchangeRates();
+                $this->cleanShoppingCart();
             }
 
             $this->adapter->getDriver()->getConnection()->commit();
@@ -489,6 +505,169 @@ class PaymentAdministration extends Base
                 'date_end' => $filters['end']
             ));
         }
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+
+        return $paginator;
+    }
+
+    /**
+     * Get currencies
+     *
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @param array $filters
+     *      string slug
+     *      integer paid
+     *      string email
+     *      string date
+     * @return object
+     */
+    public function getTransactions($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    {
+        $orderFields = array(
+            'id',
+            'slug',
+            'paid',
+            'cost',
+            'email',
+            'date',
+            'currency'
+        );
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'id';
+
+        $select = $this->select();
+        $select->from(array('a' => 'payment_transaction'))
+            ->columns(array(
+                'id',
+                'slug',
+                'paid',
+                'email',
+                'cost' => 'amount',
+                'date'
+            ))
+            ->join(
+                array('b' => 'payment_currency'),
+                'a.currency = b.id',
+                array(
+                    'currency' => 'code'
+                )
+            )
+            ->order($orderBy . ' ' . $orderType);
+
+        // filter by a slug
+        if (!empty($filters['slug'])) {
+            $select->where(array(
+                'a.slug' => $filters['slug']
+            ));
+        }
+
+        // filter by a paid status
+        if (isset($filters['paid']) && $filters['paid'] != null) {
+            $select->where(array(
+                'a.paid' => ((int) $filters['paid'] == self::TRANSACTION_PAID ? $filters['paid'] : self::TRANSACTION_NOT_PAID)
+            ));
+        }
+
+        // filter by a email
+        if (!empty($filters['email'])) {
+            $select->where(array(
+                'a.email' => $filters['email']
+            ));
+        }
+
+        // filter by a date
+        if (!empty($filters['date'])) {
+            $select->where(array(
+                'a.date' => $filters['date']
+            ));
+        }
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+
+        return $paginator;
+    }
+
+    /**
+     * Get the transaction's items
+     *
+     * @param integer $transactionId
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @return object
+     */
+    public function getTransactionItems($transactionId, $page = 1, $perPage = 0, $orderBy = null, $orderType = null)
+    {
+        $orderFields = array(
+            'title',
+            'cost',
+            'discount',
+            'count',
+            'total'
+        );
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'title';
+
+        $select = $this->select();
+        $select->from(array('a' => 'payment_transaction_item'))
+            ->columns(array(
+                'object_id',
+                'title',
+                'cost',
+                'discount',
+                'count',
+                'total' => new Expression('cost * count - discount'),
+                'extra_options',
+                'active',
+                'available',
+                'deleted',
+                'slug'
+            ))
+            ->join(
+                array('b' => 'payment_module'),
+                'a.module = b.module',
+                array(
+                    'view_controller',
+                    'view_action',
+                    'countable',
+                    'module_extra_options' => 'extra_options',
+                    'handler'
+                )
+            )
+            ->join(
+                array('c' => 'module'),
+                'b.module = c.id',
+                array(
+                    'module_state' => 'active'
+                )
+            )
+            ->where(array(
+                'transaction_id' => $transactionId
+            ))
+            ->order($orderBy . ' ' . $orderType);
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);

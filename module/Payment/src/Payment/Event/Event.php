@@ -72,6 +72,11 @@ class Event extends ApplicationEvent
     const ADD_PAYMENT_TRANSACTION = 'add_payment_transaction';
 
     /**
+     * Delete payment transaction event
+     */
+    const DELETE_PAYMENT_TRANSACTION = 'delete_payment_transaction';
+
+    /**
      * Activate payment transaction event
      */
     const ACTIVATE_PAYMENT_TRANSACTION = 'activate_payment_transaction';

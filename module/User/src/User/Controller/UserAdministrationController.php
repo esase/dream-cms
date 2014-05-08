@@ -529,6 +529,7 @@ class UserAdministrationController extends AbstractBaseController
                     : 'Event - User approved by user';
 
                 // approve selected users
+                $approveResult = false;
                 foreach ($usersIds as $userId) {
                     // default user should not be touched
                     if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||

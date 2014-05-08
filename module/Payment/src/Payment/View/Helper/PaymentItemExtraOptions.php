@@ -47,7 +47,7 @@ class PaymentItemExtraOptions extends AbstractHelper
      *      string handler
      *      integer object_id
      *      integer module_extra_options
-     * @return object - fluent interface
+     * @return string
      */
     public function __invoke($info)
     {

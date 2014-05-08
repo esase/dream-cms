@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-05 16:50+0600\n"
+"PO-Revision-Date: 2014-05-08 15:08+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,36 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Selected transactions have been activated"
+msgstr "Selected transactions have been activated"
+
+msgid "Selected transactions have been deleted"
+msgstr "Selected transactions have been deleted"
+
+msgid "Selected transactions will be deleted. Are you sure?"
+msgstr "Selected transactions will be deleted. Are you sure?"
+
+msgid "Activate selected"
+msgstr "Activate selected"
+
+msgid "Module is not active"
+msgstr "Module is not active"
+
+msgid "User registered"
+msgstr "User registered"
+
+msgid "View the transaction's items"
+msgstr "View the transaction's items"
+
+msgid "View the transaction's details"
+msgstr "View the transaction's details"
+
+msgid "Total amount"
+msgstr "Total amount"
+
+msgid "Paid"
+msgstr "Paid"
 
 msgid "Callback URL"
 msgstr "Callback URL"
@@ -197,8 +227,8 @@ msgstr "Selected items will be deleted. Are you sure?"
 msgid "Cost"
 msgstr "Cost"
 
-msgid "Item not active"
-msgstr "Item not active"
+msgid "Item is not active"
+msgstr "Item is not active"
 
 msgid "Item deleted"
 msgstr "Item deleted"
@@ -239,8 +269,8 @@ msgstr "Shopping cart"
 msgid "Time of clearing shopping cart and not paid transactions in seconds"
 msgstr "Time of clearing shopping cart and not paid transactions in seconds"
 
-msgid "Item not available"
-msgstr "Item not available"
+msgid "Item is not available"
+msgstr "Item is not available"
 
 msgid "Item count must be less or equal %d"
 msgstr "Item count must be less or equal %d"
@@ -385,6 +415,15 @@ msgstr "Payment"
 msgid "Payments"
 msgstr "Payments"
 
+msgid "Event - Deleting payment transactions"
+msgstr "Deleting payment transactions"
+
+msgid "Event - Payment transaction deleted by guest"
+msgstr "Guest deleted the payment transaction with id - \"%s\""
+
+msgid "Event - Payment transaction deleted by user"
+msgstr "\"%s\" deleted the payment transaction with id - \"%s\""
+
 msgid "Event - Shopping cart and transactions items were edited by the system"
 msgstr ""
 "Shopping cart and transactions items were edited by the system. Item's id - "
@@ -408,6 +447,12 @@ msgstr "Activating payment transactions"
 
 msgid "Event - Payment transaction activated by the system"
 msgstr "Payment transaction with id - \"%d\" was activated by the system"
+
+msgid "Event - Payment transaction activated by guest"
+msgstr "Guest activated the payment transaction with id - \"%d\""
+
+msgid "Event - Payment transaction activated by user"
+msgstr "\"%s\" activated the payment transaction with id - \"%d\""
 
 msgid "Event - Adding payment transactions"
 msgstr "Adding payment transactions"
@@ -525,6 +570,18 @@ msgstr "Guest added the payment currency with id - \"%d\""
 
 msgid "Event - Payment currency added by user"
 msgstr "\"%s\" added the payment currency with id - \"%d\""
+
+msgid "ACL - Activating payments transactions in admin area"
+msgstr "Activating payments transactions in admin area"
+
+msgid "ACL - Deleting payments transactions in admin area"
+msgstr "Deleting payments transactions in admin area"
+
+msgid "ACL - Viewing payments transactions items in admin area"
+msgstr "Viewing payments transactions items in admin area"
+
+msgid "ACL - Viewing payments transactions details in admin area"
+msgstr "Viewing payments transactions details in admin area"
 
 msgid "ACL - Viewing payment transactions in admin area"
 msgstr "Viewing payment transactions in admin area"

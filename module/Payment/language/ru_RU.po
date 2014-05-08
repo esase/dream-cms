@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-05 16:50+0600\n"
+"PO-Revision-Date: 2014-05-08 15:08+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,36 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Selected transactions have been activated"
+msgstr "Выбранные платежные операции были активированы"
+
+msgid "Selected transactions have been deleted"
+msgstr "Выбранные платежные операции были удалены"
+
+msgid "Selected transactions will be deleted. Are you sure?"
+msgstr "Выбранные платежные операции будут удалены. Вы уверены?"
+
+msgid "Activate selected"
+msgstr "Активировать выбранное"
+
+msgid "Module is not active"
+msgstr "Модуль не активирован"
+
+msgid "User registered"
+msgstr "Пользователь зарегистрирован"
+
+msgid "View the transaction's items"
+msgstr "Просмотр списка товаров платежной операции"
+
+msgid "View the transaction's details"
+msgstr "Просмотр деталей платежной операции"
+
+msgid "Total amount"
+msgstr "Общая сумма"
+
+msgid "Paid"
+msgstr "Оплачен"
 
 msgid "Callback URL"
 msgstr "Адрес оповещения о платеже"
@@ -197,7 +227,7 @@ msgstr "Выбранные товары будут удалены. Вы увер
 msgid "Cost"
 msgstr "Стоимость"
 
-msgid "Item not active"
+msgid "Item is not active"
 msgstr "Товар не активен"
 
 msgid "Item deleted"
@@ -239,7 +269,7 @@ msgstr "Корзина"
 msgid "Time of clearing shopping cart and not paid transactions in seconds"
 msgstr "Время очистки корзины и не оплаченных транзакций в секундах"
 
-msgid "Item not available"
+msgid "Item is not available"
 msgstr "Товар не доступен"
 
 msgid "Item count must be less or equal %d"
@@ -384,6 +414,15 @@ msgstr "Платеж"
 msgid "Payments"
 msgstr "Платежи"
 
+msgid "Event - Deleting payment transactions"
+msgstr "Удаление платежных операций"
+
+msgid "Event - Payment transaction deleted by guest"
+msgstr "Гость удалил платежную транзакцию с идентификатором - \"%s\""
+
+msgid "Event - Payment transaction deleted by user"
+msgstr "\"%s\" удалил платежную транзакцию с идентификатором - \"%s\""
+
 msgid "Event - Shopping cart and transactions items were edited by the system"
 msgstr ""
 "Товары в корзине и в платежных операциях были отредактированы с помощью "
@@ -408,6 +447,12 @@ msgstr "Активация платежных операций"
 msgid "Event - Payment transaction activated by the system"
 msgstr ""
 "Платежная операция с идентификатором - \"%d\" была активирована системой"
+
+msgid "Event - Payment transaction activated by guest"
+msgstr "Гость активировал платежную транзакцию с идентификатором - \"%d\""
+
+msgid "Event - Payment transaction activated by user"
+msgstr "\"%s\" активировал платежную транзакцию с идентификатором - \"%d\""
 
 msgid "Event - Adding payment transactions"
 msgstr "Добавление платежных операций"
@@ -525,6 +570,18 @@ msgstr "Гость добавил платежную валюту с идент�
 
 msgid "Event - Payment currency added by user"
 msgstr "\"%s\" добавил платежную валюту с идентификатором - \"%d\""
+
+msgid "ACL - Activating payments transactions in admin area"
+msgstr "Активация платежных операций в админке"
+
+msgid "ACL - Deleting payments transactions in admin area"
+msgstr "Удаление платежных операций в админке"
+
+msgid "ACL - Viewing payments transactions items in admin area"
+msgstr "Просмотр списка товаров платежных операций в админке"
+
+msgid "ACL - Viewing payments transactions details in admin area"
+msgstr "Просмотр деталей платежных операций в админке"
 
 msgid "ACL - Viewing payment transactions in admin area"
 msgstr "Просмотр платежных операций в админке"

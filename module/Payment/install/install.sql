@@ -27,7 +27,11 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('payments_administration_delete_coupons', 'ACL - Deleting discount coupons in admin area', @moduleId),
 ('payments_administration_add_coupon', 'ACL - Adding discount coupons in admin area', @moduleId),
 ('payments_administration_edit_coupon', 'ACL - Editing discount coupons in admin area', @moduleId),
-('payments_administration_settings', 'ACL - Editing payments settings in admin area', @moduleId);
+('payments_administration_settings', 'ACL - Editing payments settings in admin area', @moduleId),
+('payments_administration_view_transaction_details', 'ACL - Viewing payments transactions details in admin area', @moduleId),
+('payments_administration_view_transaction_items', 'ACL - Viewing payments transactions items in admin area', @moduleId),
+('payments_administration_delete_transactions', 'ACL - Deleting payments transactions in admin area', @moduleId),
+('payments_administration_activate_transactions', 'ACL - Activating payments transactions in admin area', @moduleId);
 
 INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('add_payment_currency', @moduleId, 'Event - Adding payment currencies'),
@@ -43,6 +47,7 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('delete_item_from_shopping_cart', @moduleId, 'Event - Deleting items from the shopping cart'),
 ('edit_item_into_shopping_cart', @moduleId, 'Event - Editing items into the shopping cart'),
 ('add_payment_transaction', @moduleId, 'Event - Adding payment transactions'),
+('delete_payment_transaction', @moduleId, 'Event - Deleting payment transactions'),
 ('activate_payment_transaction', @moduleId, 'Event - Activating payment transactions'),
 ('mark_deleted_payment_items', @moduleId, 'Event - Marking as deleted shopping cart and transactions items'),
 ('edit_payment_items', @moduleId, 'Event - Editing shopping cart and transactions items');
@@ -337,6 +342,8 @@ CREATE TABLE IF NOT EXISTS `payment_transaction` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `slug` (`slug`),
     KEY `paid` (`paid`),
+    KEY `email` (`email`),
+    KEY `date` (`date`),
     FOREIGN KEY (user_id) REFERENCES user(user_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,

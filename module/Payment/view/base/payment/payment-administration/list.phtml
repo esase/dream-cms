@@ -22,3 +22,109 @@
         )
     )
 )) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data_grid', array(
+    'controller' => 'payments-administration',
+    'action' => 'list',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Code'),
+            'order_name' => 'slug'
+        ),
+        2 => array(
+            'title' => $this->translate('Paid'),
+            'order_name' => 'paid'
+        ),
+        3 => array(
+            'title' => $this->translate('Email'),
+            'order_name' => 'email'
+        ),
+        4 => array(
+            'title' => $this->translate('Total amount'),
+            'order_name' => 'cost'
+        ),
+        5 => array(
+            'title' => $this->translate('Date'),
+            'order_name' => 'date'
+        )
+    ),
+    'paginator' => $this->paginator,
+    'skipped_fields' => array(
+        'currency'
+    ),
+    'helpers' => array(
+        'paid' => 'booleanValue',
+        'cost' => 'costFormat',
+        'date' => 'date',
+        'payment' => 'translate',
+    ),
+    'helpers_set_array' => array(
+        'slug' => true,
+        'cost' => true
+    ),
+    'helpers_options' => array(
+        'slug' => array(
+            'controller' => $this->currentRoute()->getController(),
+            'action' => 'get-transaction-info',
+            'check_acl' => true
+        ),
+        'date' => array(
+            'type' => 'date'
+        )
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+        ),
+        'multiple_actions' => array(
+            0 => array(
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'payments-administration',
+                'action' => 'delete-transactions',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected transactions will be deleted. Are you sure?')
+            ),
+            1 => array(
+                'name' => $this->translate('Activate selected'),
+                'controller' => 'payments-administration',
+                'action' => 'activate-transactions',
+                'check_acl' => true
+            )
+        ),
+        'single_actions' => array (
+            0 => array(
+                'name' => $this->translate('View the transaction\'s details'),
+                'controller' => 'payments-administration',
+                'action' => 'view-transaction-details',
+                'check_acl' => true,
+                'image' => $this->asset('icon/view_details_action.png', 'image', 'payment')
+            ),
+            1 => array(
+                'name' => $this->translate('View the transaction\'s items'),
+                'controller' => 'payments-administration',
+                'action' => 'view-transaction-items',
+                'check_acl' => true,
+                'image' => $this->asset('icon/browse_action.png', 'image')
+            ),
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'transactions',
+        'multiple_actions' => array(
+            'items_name' => 'transactions[]'
+        )
+    ),
+    'actions_extra_check' => array(
+    )
+)) ?>

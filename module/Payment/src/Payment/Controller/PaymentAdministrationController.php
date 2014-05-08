@@ -10,12 +10,11 @@
 namespace Payment\Controller;
 
 use Zend\View\Model\ViewModel;
-use Application\Controller\AbstractBaseController;
 use User\Service\Service as UserService;
 use Payment\Event\Event as PaymentEvent;
 use Payment\Model\Base as PaymentBaseModel;
 
-class PaymentAdministrationController extends AbstractBaseController
+class PaymentAdministrationController extends PaymentBaseController
 {
     /**
      * Model instance
@@ -65,6 +64,85 @@ class PaymentAdministrationController extends AbstractBaseController
         if (true !== ($result = $this->checkPermission())) {
             return $result;
         }
+
+        $filters = array();
+
+        // get a filter form
+        $filterForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Payment\Form\TransactionFilter');
+
+        $request = $this->getRequest();
+        $filterForm->getForm()->setData($request->getQuery(), false);
+
+        // check the filter form validation
+        if ($filterForm->getForm()->isValid()) {
+            $filters = $filterForm->getForm()->getData();
+        }
+
+        // get data
+        $paginator = $this->getModel()->getTransactions($this->
+                getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
+
+        return new ViewModel(array(
+            'filter_form' => $filterForm->getForm(),
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        ));
+    }
+
+    /**
+     * View transaction's items
+     */
+    public function viewTransactionItemsAction()
+    {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->checkPermission())) {
+            return $result;
+        }
+
+        // get the transaction info
+        if (null == ($transactionInfo = $this->getModel()->getTransactionInfo($this->
+                getSlug(), false, 'id', false))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get data
+        $paginator = $this->getModel()->getTransactionItems($transactionInfo['id'],
+                $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType());
+
+        return new ViewModel(array(
+            'transaction' => $transactionInfo,
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        ));
+    }
+
+    /**
+     * View transaction's details
+     */
+    public function viewTransactionDetailsAction()
+    {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->checkPermission())) {
+            return $result;
+        }
+
+        // get the transaction info
+        if (null == ($transactionInfo = $this->getModel()->getTransactionInfo($this->
+                getSlug(), false, 'id', false))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        return new ViewModel(array(
+            'transaction' => $transactionInfo
+        ));
     }
 
     /**
@@ -117,6 +195,117 @@ class PaymentAdministrationController extends AbstractBaseController
 
         // redirect back
         return $this->redirectTo('payments-administration', 'currencies', array(), true);
+    }
+
+    /**
+     * Activate selected transactions
+     */
+    public function activateTransactionsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($transactionsIds = $request->getPost('transactions', null))) {
+                // event's description
+                $eventDesc = UserService::isGuest()
+                    ? 'Event - Payment transaction activated by guest'
+                    : 'Event - Payment transaction activated by user';
+
+                // process transactions
+                $activationResult = true;
+                foreach ($transactionsIds as $transactionId) {
+                    // get the transaction info
+                    if (null == ($transactionInfo = $this->getModel()->getTransactionInfo($transactionId, false, 'id', false))
+                                || PaymentBaseModel::TRANSACTION_PAID == $transactionInfo['paid']) {
+
+                        continue;
+                    }
+
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->checkPermission())) {
+                        return $result;
+                    }
+
+                    // activate the transaction
+                    if(true !== ($activationResult = $this->activateTransaction($transactionInfo, 0, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Transaction activation error'));
+
+                        break;
+                    }
+
+                    // fire the event
+                    $eventDescParams = UserService::isGuest()
+                        ? array($transactionId)
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionId);
+
+                    PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_PAYMENT_TRANSACTION,
+                            $transactionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                }
+
+                if (true === $activationResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected transactions have been activated'));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('payments-administration', 'list', array(), true);
+    }
+
+    /**
+     * Delete selected transactions
+     */
+    public function deleteTransactionsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($transactionsIds = $request->getPost('transactions', null))) {
+                // event's description
+                $eventDesc = UserService::isGuest()
+                    ? 'Event - Payment transaction deleted by guest'
+                    : 'Event - Payment transaction deleted by user';
+
+                // delete selected transactions
+                foreach ($transactionsIds as $transactionsId) {
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->checkPermission())) {
+                        return $result;
+                    }
+
+                    // delete the transaction
+                    if (true !== ($deleteResult = $this->getModel()->deleteTransaction($transactionsId))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
+
+                        break;
+                    }
+
+                    // fire the event
+                    $eventDescParams = UserService::isGuest()
+                        ? array($transactionsId)
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionsId);
+
+                    PaymentEvent::fireEvent(PaymentEvent::DELETE_PAYMENT_TRANSACTION,
+                            $transactionsId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                }
+
+                if (true === $deleteResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected transactions have been deleted'));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('payments-administration', 'list', array(), true);
     }
 
     /**

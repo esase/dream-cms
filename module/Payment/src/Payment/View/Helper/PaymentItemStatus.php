@@ -28,7 +28,8 @@ class PaymentItemStatus extends AbstractHelper
      *      string handler
      *      integer object_id
      *      integer module_extra_options
-     * @return object - fluent interface
+     *      integer module_state
+     * @return string
      */
    public function __invoke($info)
    {
@@ -38,11 +39,15 @@ class PaymentItemStatus extends AbstractHelper
       }
 
       if ($info['active'] == BaseModel::ITEM_NOT_ACTIVE) {
-         return  $this->getView()->translate('Item not active');
+         return  $this->getView()->translate('Item is not active');
       }
 
       if ($info['available'] == BaseModel::ITEM_NOT_AVAILABLE) {
-         return  $this->getView()->translate('Item not available');
+         return  $this->getView()->translate('Item is not available');
+      }
+
+      if ($info['module_state'] != BaseModel::MODULE_ACTIVE) {
+         return  $this->getView()->translate('Module is not active');
       }
 
       return $this->getView()->translate('Active');

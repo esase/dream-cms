@@ -10,7 +10,7 @@ class ProcessCost extends AbstractHelper
     /**
      * Process cost
      *
-     * @param float|integer
+     * @param float|integer $cost
      * @param boolean $rounding
      * @return string
      */

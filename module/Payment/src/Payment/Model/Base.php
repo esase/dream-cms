@@ -137,6 +137,38 @@ class Base extends AbstractBase
     const ALLOWED_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
     /**
+     * Delete transaction
+     *
+     * @param integer $transactionId
+     * @return boolean|string
+     */
+    public function deleteTransaction($transactionId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('payment_transaction')
+                ->where(array(
+                    'id' => $transactionId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $result->count() ? true : false;
+    }
+
+    /**
      * Get all transaction items
      *
      * @param integer $transactionId
@@ -157,15 +189,20 @@ class Base extends AbstractBase
                     'handler'
                 )
             )
+            ->join(
+                array('c' => 'module'),
+                new Expression('b.module = c.id and c.active = ?', array(self::MODULE_ACTIVE)),
+                array()
+            )
             ->where(array(
                 'transaction_id' => $transactionId
             ));
 
         if ($onlyActive) {
             $select->where(array(
-                'active' => self::ITEM_ACTIVE,
-                'available' => self::ITEM_AVAILABLE,
-                'deleted' => self::ITEM_NOT_DELETED                
+                'a.active' => self::ITEM_ACTIVE,
+                'a.available' => self::ITEM_AVAILABLE,
+                'a.deleted' => self::ITEM_NOT_DELETED                
             ));
         }
 
@@ -302,10 +339,15 @@ class Base extends AbstractBase
      * @param integer $id
      * @param boolean $onlyNotPaid
      * @param string $field
+     * @param boolean $onlyPrimaryCurrency
      * @return array
      */
-    public function getTransactionInfo($id, $onlyNotPaid = true, $field = 'id')
+    public function getTransactionInfo($id, $onlyNotPaid = true, $field = 'id', $onlyPrimaryCurrency = true)
     {
+        $currencyCondition = $onlyPrimaryCurrency
+            ? new Expression('a.currency = b.id and b.primary_currency = ?', array(self::PRIMARY_CURRENCY))
+            : new Expression('a.currency = b.id');
+
         $select = $this->select();
         $select->from(array('a' => 'payment_transaction'))
             ->columns(array(
@@ -319,20 +361,25 @@ class Base extends AbstractBase
                 'email',
                 'currency',
                 'payment_type',
-                'amount'
+                'amount',
+                'comments',
+                'date',
+                'paid'
             ))
             ->join(
                 array('b' => 'payment_currency'),
-                new Expression('a.currency = b.id and b.primary_currency = ' . (int) self::PRIMARY_CURRENCY),
+                $currencyCondition,
                 array(
-                    'currency_code' => 'code'
+                    'currency_code' => 'code',
+                    'currency_name' => 'name'
                 )
             )
             ->join(
                 array('c' => 'payment_type'),
                 'a.payment_type = c.id',
                 array(
-                    'payment_name' => 'name'
+                    'payment_name' => 'name',
+                    'payment_description' => 'description'
                 ),
                 'left'
             )
@@ -487,15 +534,20 @@ class Base extends AbstractBase
                     'handler'
                 )
             )
+            ->join(
+                array('c' => 'module'),
+                new Expression('b.module = c.id and c.active = ?', array(self::MODULE_ACTIVE)),
+                array()
+            )
             ->where(array(
-                'shopping_cart_id' => $this->getShoppingCartId()
+                'a.shopping_cart_id' => $this->getShoppingCartId()
             ));
 
         if ($onlyActive) {
             $select->where(array(
-                'active' => self::ITEM_ACTIVE,
-                'available' => self::ITEM_AVAILABLE,
-                'deleted' => self::ITEM_NOT_DELETED                
+                'a.active' => self::ITEM_ACTIVE,
+                'a.available' => self::ITEM_AVAILABLE,
+                'a.deleted' => self::ITEM_NOT_DELETED                
             ));
         }
 

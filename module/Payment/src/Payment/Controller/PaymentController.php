@@ -10,7 +10,6 @@
 namespace Payment\Controller;
 
 use Zend\View\Model\ViewModel;
-use Application\Controller\AbstractBaseController;
 use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
 use Payment\Event\Event as PaymentEvent;
 use User\Service\Service as UserService;
@@ -19,7 +18,7 @@ use Payment\Model\Payment as PaymentModel;
 use Application\Utility\EmailNotification;
 use User\Model\Base as UserBaseModel;
 
-class PaymentController extends AbstractBaseController
+class PaymentController extends PaymentBaseController
 {
     /**
      * Model instance
@@ -275,7 +274,7 @@ class PaymentController extends AbstractBaseController
                 // delete selected items
                 foreach ($itemsIds as $itemId) {
                     // get an item info
-                    if (null == ($itemInfo = $this->getModel()->getShoppingCartItemInfo($itemId))) { 
+                    if (null == ($itemInfo = $this->getModel()->getShoppingCartItemInfo($itemId, false, false))) { 
                         continue;
                     }
 
@@ -405,7 +404,7 @@ class PaymentController extends AbstractBaseController
                 else {
                     // item's count is not available
                     if (PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] && $objectInfo['count'] <= 0) {
-                        $message = $this->getTranslator()->translate('Item not available');
+                        $message = $this->getTranslator()->translate('Item is not available');
                     }
                     else {
                         // show an additional shopping cart form
@@ -747,74 +746,6 @@ class PaymentController extends AbstractBaseController
     }
 
     /**
-     * Activate transaction
-     *
-     * @param array $transactionInfo
-     *      integer id
-     *      string slug
-     *      integer user_id
-     *      string first_name
-     *      string last_name
-     *      string phone
-     *      string address
-     *      string email
-     *      integer currency
-     *      integer payment_type
-     *      integer discount_cupon
-     *      string currency_code
-     *      string payment_name
-     * @param integer $paymentTypeId
-     * @return boolean
-     */
-    protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
-    {
-        if (true === ($result =
-                $this->getModel()->activateTransaction($transactionInfo['id'], 'id', $paymentTypeId))) {
-
-            // mark as paid all transaction's items
-            if (null != ($activeTransactionItems =
-                    $this->getModel()->getAllTransactionItems($transactionInfo['id']))) {
-
-                foreach ($activeTransactionItems as $itemInfo) {
-                    // get the payment handler
-                    $this->getServiceLocator()
-                        ->get('Payment\Handler\HandlerManager')
-                        ->getInstance($itemInfo['handler'])
-                        ->setPaid($itemInfo['object_id'], $transactionInfo);
-                }
-            }
-
-            // fire the event
-            PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_PAYMENT_TRANSACTION, $transactionInfo['id'],
-                    UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Payment transaction activated by the system', array($transactionInfo['id']));
-
-            // send an email notification about the paid transaction
-            if ((int) $this->getSetting('payment_transaction_paid')) {
-                EmailNotification::sendNotification($this->getSetting('application_site_email'),
-                    $this->getSetting('payment_transaction_paid_title', UserService::getDefaultLocalization()['language']),
-                    $this->getSetting('payment_transaction_paid_message', UserService::getDefaultLocalization()['language']), array(
-                        'find' => array(
-                            'FirstName',
-                            'LastName',
-                            'Email',
-                            'Id'
-                        ),
-                        'replace' => array(
-                            $transactionInfo['first_name'],
-                            $transactionInfo['last_name'],
-                            $transactionInfo['email'],
-                            $transactionInfo['id']
-                        )
-                    ));
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Success page
      */
     public function successAction()
@@ -841,6 +772,11 @@ class PaymentController extends AbstractBaseController
         if (null == ($paymentsTypes = $this->getModel()->getPaymentsTypes(false, true))
                 || null == ($transactionInfo = $this->getModel()->getTransactionInfo($this->getSlug(), true, 'slug'))) {
 
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // check count of transaction's items
+        if (!count($this->getModel()->getAllTransactionItems($transactionInfo['id']))) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
@@ -891,6 +827,38 @@ class PaymentController extends AbstractBaseController
         ));
 
         return $viewModel->setTemplate('payment/payment-type/' . $currentPayment);
+    }
+
+    /**
+     * Activate transaction
+     *
+     * @param array $transactionInfo
+     *      integer id
+     *      string slug
+     *      integer user_id
+     *      string first_name
+     *      string last_name
+     *      string phone
+     *      string address
+     *      string email
+     *      integer currency
+     *      integer payment_type
+     *      integer discount_cupon
+     *      string currency_code
+     *      string payment_name
+     * @param integer $paymentTypeId
+     * @param boolean $sendNotification
+     * @return boolean
+     */
+    protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
+    {
+        if (true === ($result = parent::activateTransaction($transactionInfo, $paymentTypeId))) {
+            // fire the event
+            PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_PAYMENT_TRANSACTION, $transactionInfo['id'],
+                    UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Payment transaction activated by the system', array($transactionInfo['id']));
+        }
+
+        return $result;
     }
 
     /**

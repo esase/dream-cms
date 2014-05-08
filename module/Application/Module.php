@@ -147,7 +147,10 @@ class Module
     public function loadAdministrationLayout(MvcEvent $e)
     {
         try {
-            if ($this->initAdminlayout) {
+            if ($this->initAdminlayout &&
+                    false === $e->getTarget()->getEvent()->getViewModel()->terminate()) {
+
+                // set admin layout
                 $e->getTarget()->layout('layout/administration');
             }
         }

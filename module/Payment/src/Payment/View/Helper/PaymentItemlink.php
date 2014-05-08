@@ -28,18 +28,19 @@ class PaymentItemLink extends AbstractHelper
      *      string handler
      *      integer object_id
      *      integer module_extra_options
-     * @return object - fluent interface
+     *      integer module_state
+     * @return string
      */
    public function __invoke($info)
    {
-      // check the item's status
-      if ($info['deleted'] == BaseModel::ITEM_DELETED || $info['active'] ==
-            BaseModel::ITEM_NOT_ACTIVE) {
+        // check the item's status
+        if ($info['deleted'] == BaseModel::ITEM_DELETED || $info['active'] ==
+                BaseModel::ITEM_NOT_ACTIVE || $info['module_state'] != BaseModel::MODULE_ACTIVE) {
 
-         return $info['title'];
-      }
+            return $info['title'];
+        }
 
-      return '<a target="_blank" href="' . $this->getView()->url('application',
-            array('controller' => $info['view_controller'], 'action' => $info['view_action'], 'slug' => $info['slug'])) . '">' . $info['title'] . '</a>';
+        return '<a target="_blank" href="' . $this->getView()->url('application', array('controller' =>
+                $info['view_controller'], 'action' => $info['view_action'], 'slug' => $info['slug'])) . '">' . $info['title'] . '</a>';
    }
 }

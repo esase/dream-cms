@@ -98,7 +98,8 @@
         'deleted',
         'multi_costs',
         'handler',
-        'module_extra_options'
+        'module_extra_options',
+        'module_state'
     ),
     'helpers' => array(
         'title' => 'paymentItemLink',
@@ -158,7 +159,11 @@
                     'param' => 'deleted',
                     'condition' =>  'return (int) "__value__" == "' . BaseModel::ITEM_NOT_DELETED . '";'
                 ),
-                0 => array(
+                3 => array(
+                    'param' => 'module_state',
+                    'condition' =>  'return (int) "__value__" == "' . BaseModel::MODULE_ACTIVE . '";'
+                ),
+                4 => array(
                     'function' => function($data) use ($paymentHandlerManager) {
                         $paymentHandler = $paymentHandlerManager->getInstance($data['handler']);
 
