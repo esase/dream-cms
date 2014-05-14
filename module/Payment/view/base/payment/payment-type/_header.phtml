@@ -5,6 +5,7 @@
 <?php $this->subPageTitle = $this->translate('Buy items') ?>
 
 <?php $this->headTitle($this->escapeHtml($this->subPageTitle)) ?>
+<?php $this->headTitle($this->transaction['slug']) ?>
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
 <!-- render a breadcrumb -->
@@ -23,7 +24,7 @@
             'check_acl' => false
         ),
         'buy' => array(
-            'name' => $this->subPageTitle,
+            'name' => $this->transaction['slug'] . ' - ' . $this->subPageTitle,
             'controller' => 'payments',
             'action' => 'buy',
             'check_acl' => false

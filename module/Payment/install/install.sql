@@ -16,6 +16,10 @@ INSERT INTO `admin_menu` (`name`, `controller`, `action`, `module`, `order`, `ca
 ('Discount coupons', 'payments-administration', 'coupons', @moduleId, @maxOrder + 2, @menuCategoryId),
 ('Settings', 'payments-administration', 'settings', @moduleId, @maxOrder + 3, @menuCategoryId);
 
+SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `user_menu` ORDER BY `order` DESC LIMIT 1), 1);
+INSERT INTO `user_menu` (`name`, `controller`, `action`, `module`, `order`, `check`) VALUES
+('List of transactions', 'payments', 'list', @moduleId, @maxOrder, '');
+
 INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('payments_administration_list', 'ACL - Viewing payment transactions in admin area', @moduleId),
 ('payments_administration_currencies', 'ACL - Viewing payment currencies in admin area', @moduleId),

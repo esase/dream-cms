@@ -734,6 +734,14 @@ class Module
 
                     return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
                 },
+                'userMenu' =>  function()
+                {
+                    $userMenu = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\UserMenu');
+
+                    return new \Application\View\Helper\UserMenu($userMenu->getMenu());
+                },
                 'injection' =>  function()
                 {
                     $injection = $this->serviceManager

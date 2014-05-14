@@ -7,12 +7,12 @@ use Application\Utility\Cache as CacheUtility;
 use Exception;
 use Zend\Db\Sql\Expression as Expression;
 
-class AdminMenu extends Base
+class UserMenu extends Base
 {
     /**
-     * Admin menu
+     * User menu
      */
-    const CACHE_ADMIN_MENU = 'Application_Admin_Menu';
+    const CACHE_USER_MENU = 'Application_User_Menu';
 
     /**
      * Get menu
@@ -22,16 +22,17 @@ class AdminMenu extends Base
     public function getMenu()
     {
         // generate cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_ADMIN_MENU);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_USER_MENU);
 
         // check data in cache
         if (null === ($menu = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from(array('a' => 'admin_menu'))
+            $select->from(array('a' => 'user_menu'))
                 ->columns(array(
                     'name',
                     'controller',
-                    'action'
+                    'action',
+                    'check'
                     
                 ))
             ->join(
@@ -39,13 +40,6 @@ class AdminMenu extends Base
                 new Expression('a.module = b.id and b.active = ' . (int) self::MODULE_ACTIVE),
                 array(
                     'module' => 'id'
-                )
-            )
-            ->join(
-                array('c' => 'admin_menu_category'),
-                'a.category = c.id',
-                array(
-                    'category' => 'name'
                 )
             )
             ->order('order');

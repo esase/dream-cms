@@ -3,6 +3,13 @@
 
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
+<!-- render user menu -->
+<?php echo $this->partial('partial/user_menu', array(
+    'menu' => $this->userMenu(),
+    'active_controller' => 'user',
+    'active_action' => 'edit'
+)) ?>
+
 <!-- render a breadcrumb -->
 <?php echo $this->partial('partial/breadcrumb', array(
     'pages' => array(

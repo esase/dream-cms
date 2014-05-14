@@ -912,4 +912,123 @@ class PaymentController extends PaymentBaseController
 
         return $this->getResponse();
     }
+
+    /**
+     * Transactions list 
+     */
+    public function listAction()
+    {
+        if ($this->isGuest()) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        $filters = array();
+
+        // get a filter form
+        $filterForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Payment\Form\UserTransactionFilter');
+
+        $request = $this->getRequest();
+        $filterForm->getForm()->setData($request->getQuery(), false);
+
+        // check the filter form validation
+        if ($filterForm->getForm()->isValid()) {
+            $filters = $filterForm->getForm()->getData();
+        }
+
+        // get data
+        $paginator = $this->getModel()->getUserTransactions(UserService::getCurrentUserIdentity()->
+                user_id, $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
+
+        return new ViewModel(array(
+            'current_currency' => PaymentService::getPrimaryCurrency(),
+            'payment_types' =>  $this->getModel()->getPaymentsTypes(false, true),
+            'filter_form' => $filterForm->getForm(),
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        ));
+    }
+
+    /**
+     * View transaction's items
+     */
+    public function viewTransactionItemsAction()
+    {
+        if ($this->isGuest()) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get the transaction info
+        if (null == ($transactionInfo = $this->getModel()->getTransactionInfo($this->
+                getSlug(), false, 'id', false, UserService::getCurrentUserIdentity()->user_id))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get data
+        $paginator = $this->getModel()->getTransactionItems($transactionInfo['id'],
+                $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType());
+
+        return new ViewModel(array(
+            'transaction' => $transactionInfo,
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        ));
+    }
+
+    /**
+     * Delete selected transactions
+     */
+    public function deleteTransactionsAction()
+    {
+        if ($this->isGuest()) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($transactionsIds = $request->getPost('transactions', null))) {
+                // event's description
+                $eventDesc = 'Event - Payment transaction deleted by user';
+
+                // delete selected transactions
+                foreach ($transactionsIds as $transactionId) {
+                    // delete the transaction
+                    if (true !== ($deleteResult = $this->getModel()->
+                            deleteTransaction($transactionId, UserService::getCurrentUserIdentity()->user_id))) {
+
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
+
+                        break;
+                    }
+
+                    // fire the event
+                    $eventDescParams = UserService::isGuest()
+                        ? array($transactionId)
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionId);
+
+                    PaymentEvent::fireEvent(PaymentEvent::DELETE_PAYMENT_TRANSACTION,
+                            $transactionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                }
+
+                if (true === $deleteResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected transactions have been deleted'));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('payments', 'list', array(), true);
+    }
 }

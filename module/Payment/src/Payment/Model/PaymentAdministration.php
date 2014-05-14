@@ -515,7 +515,7 @@ class PaymentAdministration extends Base
     }
 
     /**
-     * Get currencies
+     * Get transactions
      *
      * @param integer $page
      * @param integer $perPage
@@ -594,80 +594,6 @@ class PaymentAdministration extends Base
                 'a.date' => $filters['date']
             ));
         }
-
-        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
-        $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
-        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
-
-        return $paginator;
-    }
-
-    /**
-     * Get the transaction's items
-     *
-     * @param integer $transactionId
-     * @param integer $page
-     * @param integer $perPage
-     * @param string $orderBy
-     * @param string $orderType
-     * @return object
-     */
-    public function getTransactionItems($transactionId, $page = 1, $perPage = 0, $orderBy = null, $orderType = null)
-    {
-        $orderFields = array(
-            'title',
-            'cost',
-            'discount',
-            'count',
-            'total'
-        );
-
-        $orderType = !$orderType || $orderType == 'desc'
-            ? 'desc'
-            : 'asc';
-
-        $orderBy = $orderBy && in_array($orderBy, $orderFields)
-            ? $orderBy
-            : 'title';
-
-        $select = $this->select();
-        $select->from(array('a' => 'payment_transaction_item'))
-            ->columns(array(
-                'object_id',
-                'title',
-                'cost',
-                'discount',
-                'count',
-                'total' => new Expression('cost * count - discount'),
-                'extra_options',
-                'active',
-                'available',
-                'deleted',
-                'slug'
-            ))
-            ->join(
-                array('b' => 'payment_module'),
-                'a.module = b.module',
-                array(
-                    'view_controller',
-                    'view_action',
-                    'countable',
-                    'module_extra_options' => 'extra_options',
-                    'handler'
-                )
-            )
-            ->join(
-                array('c' => 'module'),
-                'b.module = c.id',
-                array(
-                    'module_state' => 'active'
-                )
-            )
-            ->where(array(
-                'transaction_id' => $transactionId
-            ))
-            ->order($orderBy . ' ' . $orderType);
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);

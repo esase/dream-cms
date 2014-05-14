@@ -179,6 +179,24 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
 (1, 'esase', 'esase', 'approved', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
 
+CREATE TABLE IF NOT EXISTS `user_menu` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `controller` varchar(255) NOT NULL,
+    `action` varchar(255) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    `order` int(10) unsigned NOT NULL,
+    `check` text NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `user_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `check`) VALUES
+(1, 'Edit account', 'user', 'edit', 2, 1, ''),
+(2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::getCurrentUserIdentity()->user_id == User\\Model\\User::DEFAULT_USER_ID ? false : true;');
+
 CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `connection_id` int(10) unsigned NOT NULL,

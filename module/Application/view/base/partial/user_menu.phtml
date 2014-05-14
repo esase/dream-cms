@@ -1,0 +1,20 @@
+<?php if (!empty($this->menu)): ?>
+    <?php $this->declareVars('baseUrl') ?>
+    <ul class="nav nav-tabs">
+        <?php foreach ($this->menu as $menu) : ?>
+            <?php
+                // get a base url
+                $this->baseUrl = array(
+                    'controller' => $menu['controller'],
+                    'action' => $menu['action']
+                );
+            ?>
+    
+            <li<?php if (!empty($this->active_controller) &&  !empty($this->active_action) && $this->active_controller == $menu['controller'] && $this->active_action == $menu['action']): ?> class="active"<?php endif; ?>>
+                <a href="<?php echo $this->url(null, $this->baseUrl) ?>">
+                    <?php echo $this->translate($menu['name']) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

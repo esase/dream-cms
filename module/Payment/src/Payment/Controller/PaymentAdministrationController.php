@@ -271,14 +271,14 @@ class PaymentAdministrationController extends PaymentBaseController
                     : 'Event - Payment transaction deleted by user';
 
                 // delete selected transactions
-                foreach ($transactionsIds as $transactionsId) {
+                foreach ($transactionsIds as $transactionId) {
                     // check the permission and increase permission's actions track
                     if (true !== ($result = $this->checkPermission())) {
                         return $result;
                     }
 
                     // delete the transaction
-                    if (true !== ($deleteResult = $this->getModel()->deleteTransaction($transactionsId))) {
+                    if (true !== ($deleteResult = $this->getModel()->deleteTransaction($transactionId))) {
                         $this->flashMessenger()
                             ->setNamespace('error')
                             ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
@@ -289,11 +289,11 @@ class PaymentAdministrationController extends PaymentBaseController
 
                     // fire the event
                     $eventDescParams = UserService::isGuest()
-                        ? array($transactionsId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionsId);
+                        ? array($transactionId)
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionId);
 
                     PaymentEvent::fireEvent(PaymentEvent::DELETE_PAYMENT_TRANSACTION,
-                            $transactionsId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            $transactionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
                 }
 
                 if (true === $deleteResult) {

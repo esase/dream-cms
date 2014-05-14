@@ -12,6 +12,7 @@ namespace Payment\Controller;
 use Application\Controller\AbstractBaseController;
 use Application\Utility\EmailNotification;
 use User\Service\Service as UserService;
+use Payment\Model\Payment as PaymentModel;
 
 abstract class PaymentBaseController extends AbstractBaseController
 {
@@ -47,10 +48,17 @@ abstract class PaymentBaseController extends AbstractBaseController
 
                 foreach ($activeTransactionItems as $itemInfo) {
                     // get the payment handler
-                    $this->getServiceLocator()
+                    $handler = $this->getServiceLocator()
                         ->get('Payment\Handler\HandlerManager')
-                        ->getInstance($itemInfo['handler'])
-                        ->setPaid($itemInfo['object_id'], $transactionInfo);
+                        ->getInstance($itemInfo['handler']);
+
+                    // set an item as paid
+                    $handler->setPaid($itemInfo['object_id'], $transactionInfo);
+
+                    // decrease the item's count
+                    if ($itemInfo['countable'] == PaymentModel::MODULE_COUNTABLE) {
+                        $handler->decreaseCount($itemInfo['object_id'], $itemInfo['count']);
+                    }
                 }
             }
 

@@ -512,4 +512,103 @@ class Payment extends Base
 
         return $paginator;
     }
+
+    /**
+     * Get user transactions
+     *
+     * @param integer $userId
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @param array $filters
+     *      string slug
+     *      integer paid
+     *      string date
+     * @return object
+     */
+    public function getUserTransactions($userId, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    {
+        $orderFields = array(
+            'id',
+            'slug',
+            'paid',
+            'cost',
+            'date',
+            'currency'
+        );
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'id';
+
+        $select = $this->select();
+        $select->from(array('a' => 'payment_transaction'))
+            ->columns(array(
+                'id',
+                'slug',
+                'paid',
+                'cost' => 'amount',
+                'date'
+            ))
+            ->join(
+                array('b' => 'payment_currency'),
+                'a.currency = b.id',
+                array(
+                    'currency' => 'code'
+                )
+            )
+            ->join(
+                array('c' => 'payment_transaction_item'),
+                new Expression('a.id = c.transaction_id and c.active = ? and c.available = ? and c.deleted = ?
+                        and c.module = (select id from  module as d where d.id = c.module and d.active = ?)', array(
+                            self::ITEM_ACTIVE,
+                            self::ITEM_AVAILABLE,
+                            self::ITEM_NOT_DELETED,
+                            self::MODULE_ACTIVE
+                        )
+                ),
+                array(
+                   'items_count' => new Expression('count(c.object_id)')
+                ),
+                'left'
+            )
+            ->where(array(
+                'a.user_id' => $userId
+            ))
+            ->group('a.id')
+            ->order($orderBy . ' ' . $orderType);
+
+        // filter by a slug
+        if (!empty($filters['slug'])) {
+            $select->where(array(
+                'a.slug' => $filters['slug']
+            ));
+        }
+
+        // filter by a paid status
+        if (isset($filters['paid']) && $filters['paid'] != null) {
+            $select->where(array(
+                'a.paid' => ((int) $filters['paid'] == self::TRANSACTION_PAID ? $filters['paid'] : self::TRANSACTION_NOT_PAID)
+            ));
+        }
+
+        // filter by a date
+        if (!empty($filters['date'])) {
+            $select->where(array(
+                'a.date' => $filters['date']
+            ));
+        }
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+
+        return $paginator;
+    }
 }
