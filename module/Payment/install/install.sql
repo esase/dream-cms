@@ -406,12 +406,3 @@ CREATE TABLE IF NOT EXISTS `payment_shopping_cart` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/* TEST DATA */
-INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-('Membership', 'custom', 1, '0.9.0', 'eSASe', 'alexermashev@gmail.com', '', '');
-
-SET @moduleId = (SELECT LAST_INSERT_ID());
-
-INSERT INTO `payment_module` (`update_event`, `delete_event`, `countable`, `must_login`, `module`, `handler`, `view_controller`, `view_action`) VALUES
-('membership_edit_event', 'membership_delete_event', 0, 1, @moduleId, 'Example\\Payment\\MembershipHandler', 'example_view_item', 'index');

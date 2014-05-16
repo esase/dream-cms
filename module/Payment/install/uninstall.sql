@@ -8,6 +8,3 @@ DROP TABLE IF EXISTS `payment_transaction`;
 DROP TABLE IF EXISTS `payment_currency`;
 DROP TABLE IF EXISTS `payment_type`;
 DROP TABLE IF EXISTS `payment_discount_cupon`;
-
-/* TEST DATA */
-DELETE FROM `module` WHERE `name` = 'Membership';
