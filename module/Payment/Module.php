@@ -6,8 +6,10 @@ use Zend\Mvc\MvcEvent;
 use Payment\Event\Event as PaymentEvent;
 use Zend\ModuleManager\ModuleManager;
 use User\Model\Base as UserBaseModel;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Zend\Console\Adapter\AdapterInterface as Console;
 
-class Module
+class Module implements ConsoleUsageProviderInterface
 {
     /**
      * Init
@@ -147,5 +149,21 @@ class Module
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
+    }
+
+    /**
+     * Get console usage info
+     *
+     * @param object $console
+     * @return array
+     */
+    public function getConsoleUsage(Console $console)
+    {
+        return array(
+            // describe available commands
+            'payment clean expired items [--verbose|-v]' => 'Clean expired shopping cart and items and expired not paid transactions',
+            // describe expected parameters
+            array('--verbose|-v', '(optional) turn on verbose mode'),
+        );
     }
 }

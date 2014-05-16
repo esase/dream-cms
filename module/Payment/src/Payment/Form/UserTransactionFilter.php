@@ -53,7 +53,7 @@ class UserTransactionFilter extends AbstractCustomForm
         ),
         'date' => array(
             'name' => 'date',
-            'type' => CustomFormBuilder::FIELD_DATE,
+            'type' => CustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'Date'
         ),
         'submit' => array(

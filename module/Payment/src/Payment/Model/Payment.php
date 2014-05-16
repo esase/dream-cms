@@ -77,9 +77,8 @@ class Payment extends Base
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $basicData = array(
-                'date' => new Expression('NOW()'),
+                'date' => new Expression('UNIX_TIMESTAMP(CURDATE())'),
                 'currency' => PaymentService::getPrimaryCurrency()['id'],
-                'clear_date' => time() + (int) ApplicationService::getSetting('payment_clearing_time'),
                 'amount' => $amount
             );
 
@@ -381,7 +380,7 @@ class Payment extends Base
                 ->into('payment_shopping_cart')
                 ->values(array_merge($itemInfo, array(
                     'shopping_cart_id' => $this->getShoppingCartId(),
-                    'clear_date' => time() + (int) ApplicationService::getSetting('payment_clearing_time')
+                    'date' => time()
                 )));
 
             $statement = $this->prepareStatementForSqlObject($insert);

@@ -461,9 +461,10 @@ class Base extends AbstractBase
      * Delete the shopping cart's item
      *
      * @param integer $itemId
+     * @param boolean $useShoppingCartId
      * @return boolean|string
      */
-    public function deleteFromShoppingCart($itemId)
+    public function deleteFromShoppingCart($itemId, $useShoppingCartId = true)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -471,9 +472,14 @@ class Base extends AbstractBase
             $delete = $this->delete()
                 ->from('payment_shopping_cart')
                 ->where(array(
-                    'id' => $itemId,
-                    'shopping_cart_id' => $this->getShoppingCartId()
+                    'id' => $itemId
                 ));
+
+            if ($useShoppingCartId) {
+                $delete->where(array(
+                   'shopping_cart_id' => $this->getShoppingCartId()
+                ));
+            }
 
             $statement = $this->prepareStatementForSqlObject($delete);
             $result = $statement->execute();

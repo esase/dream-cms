@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-08 15:08+0600\n"
+"PO-Revision-Date: 2014-05-16 11:51+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -417,6 +417,9 @@ msgstr "Платежи"
 msgid "Event - Deleting payment transactions"
 msgstr "Удаление платежных операций"
 
+msgid "Event - Payment transaction deleted by the system"
+msgstr "Платежная операция с идентификатором - \"%s\" была удалена системой"
+
 msgid "Event - Payment transaction deleted by guest"
 msgstr "Гость удалил платежную транзакцию с идентификатором - \"%s\""
 
@@ -492,6 +495,9 @@ msgstr "\"%s\" активировал скидочный купон с иден�
 
 msgid "Event - Deleting items from the shopping cart"
 msgstr "Удаление товаров из корзины"
+
+msgid "Event - Item deleted from shopping cart by the system"
+msgstr "Товар с идентификатором - \"%d\" был удален из корзины системой"
 
 msgid "Event - Item deleted from shopping cart by guest"
 msgstr "Гость удалил товар из корзины с идентификатором - \"%d\""
