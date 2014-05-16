@@ -5,7 +5,7 @@ data/cache/*
 data/session/*
 !data/cache/.htaccess
 !data/session/.htaccess
-srosta.komodoproject
+DreamCMS.komodoproject
 .komodotools/*
 module/Example/*
 public/layout_cache/css/*
