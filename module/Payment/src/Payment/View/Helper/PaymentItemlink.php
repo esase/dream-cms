@@ -33,6 +33,8 @@ class PaymentItemLink extends AbstractHelper
      */
    public function __invoke($info)
    {
+        $info['title'] = $this->getView()->translate($info['title']);
+
         // check the item's status
         if ($info['deleted'] == BaseModel::ITEM_DELETED || $info['active'] ==
                 BaseModel::ITEM_NOT_ACTIVE || $info['module_state'] != BaseModel::MODULE_ACTIVE) {

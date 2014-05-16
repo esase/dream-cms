@@ -23,7 +23,10 @@
 <?php echo $this->partial('partial/form', array(
     'form' => $this->loginForm,
     'controller' => 'user',
-    'action' => 'login'
+    'action' => 'login',
+    'queries' => array(
+        'back' => $this->back
+    )
 )); ?>
 <br />
 <br />

@@ -2,8 +2,6 @@
 
 namespace Payment\Model;
 
-use Application\Utility\ErrorLogger;
-use Exception;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\Predicate as Predicate;
 use Application\Service\Service as ApplicationService;

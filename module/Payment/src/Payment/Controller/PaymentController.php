@@ -622,7 +622,8 @@ class PaymentController extends PaymentBaseController
                         ->addMessage($this->getTranslator()->
                                 translate('Some of the items in your shopping cart requires you to be logged in'));
 
-                    return $this->redirectTo('user', 'login');
+                    return $this->redirectTo('user', 'login',
+                        array(), false, array('back' => $this->url()->fromRoute('application', array('controller' => 'payments', 'action' => 'checkout'))));
                 }
             }
         }

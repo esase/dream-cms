@@ -258,25 +258,27 @@ class Module
         // set the service manager
         ApplicationService::setServiceManager($this->serviceManager);
 
-        // init php settings
-        $this->initPhpSettings();
-
         $request = $this->serviceManager->get('Request');
 
         if (!$request instanceof ConsoleRequest) {
             // init session
             $this->initSession();
-    
-            // init user identity
-            $this->initUserIdentity();
-    
-            // init time zone
-            $this->initTimeZone();
+        }
 
-            // init default localization
-            $this->initDefaultLocalization();
-    
-            // init layout
+        // init user identity
+        $this->initUserIdentity();
+
+        // init time zone
+        $this->initTimeZone();
+
+        // init php settings
+        $this->initPhpSettings();
+
+        // init default localization
+        $this->initDefaultLocalization();
+
+        // init layout
+        if (!$request instanceof ConsoleRequest) {
             $this->initlayout();
         }
     }
