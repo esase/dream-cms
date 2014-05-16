@@ -4,9 +4,17 @@ namespace Application\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Exception;
+use Zend\ServiceManager\ServiceManager;
+use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
 
 class ModelManager
 {
+    /**
+     * Service manager
+     * @var object
+     */
+    protected $serviceManager;
+
     /**
      * Adapter
      * @var object
@@ -30,8 +38,9 @@ class ModelManager
      * 
      * @param object $serviceManager
      */
-    public function __construct(Adapter $adapter, $cache)
+    public function __construct(Adapter $adapter, CacheAdapter $cache, ServiceManager $serviceManager)
     {
+        $this->serviceManager =  $serviceManager;
         $this->adapter = $adapter;
         $this->cache = $cache;
     }
@@ -52,7 +61,7 @@ class ModelManager
             return $this->instances[$modelName];
         }
 
-        $this->instances[$modelName] = new $modelName($this->adapter, $this->cache);
+        $this->instances[$modelName] = new $modelName($this->adapter, $this->cache, $this->serviceManager);
         return $this->instances[$modelName];
     }
 }

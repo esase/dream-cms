@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS `module` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `module` (`id`, `name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(2, 'User', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(3, 'XmlRpc', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(4, 'FileManager', 'system', 1, '0.9', 'eSASe', 'alexermashev@gmail.com', '', '');
+(1, 'Application', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(2, 'User', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(3, 'XmlRpc', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(4, 'FileManager', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', '');
 
 CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
     `namespace` varchar(50) NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `layout` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `layout` (`name`, `type`, `active`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 1, 'Base layout', 'Default base layout', '0.9', 'eSASe', 'alexermashev@gmail.com');
+('base', 'system', 1, 'Base layout', 'Default base layout', '1.0.0', 'eSASe', 'alexermashev@gmail.com');
 
 CREATE TABLE IF NOT EXISTS `acl_role` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -91,10 +91,7 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (1,  'xmlrpc_get_localizations', 'ACL - Getting site\'s localizations via XmlRpc', 1),
 (2,  'xmlrpc_view_user_info', 'ACL - Getting user\'s info via XmlRpc', 2),
 (3,  'xmlrpc_set_user_timezone', 'ACL - Editing user\'s timezone via XmlRpc', 2),
-(4,  'module_administration_index', 'ACL - Viewing site\'s module in admin area', 1),
 (5,  'settings_administration_index', 'ACL - Editing site\'s settings in admin area', 1),
-(6,  'localizations_administration_index', 'ACL - Viewing site\'s localizations in admin area', 1),
-(7,  'layouts_administration_index', 'ACL - Viewing site\'s layouts in admin area', 1),
 (8,  'users_administration_list', 'ACL - Viewing users in admin area', 2),
 (9,  'acl_administration_list', 'ACL - Viewing ACL roles in admin area', 1),
 (10, 'acl_administration_add_role', 'ACL - Adding ACL roles in admin area', 1),
@@ -147,6 +144,10 @@ CREATE TABLE IF NOT EXISTS `user` (
     `slug` varchar(100) NOT NULL DEFAULT '',
     `status` enum('approved','disapproved') NOT NULL,
     `email` varchar(255) NOT NULL DEFAULT '',
+    `phone` varchar(255) NOT NULL DEFAULT '',
+    `first_name` varchar(255) NOT NULL DEFAULT '',
+    `last_name` varchar(255) NOT NULL DEFAULT '',
+    `address` varchar(255) NOT NULL DEFAULT '',
     `password` varchar(40) NOT NULL DEFAULT '',
     `salt` varchar(10) NOT NULL DEFAULT '',
     `role` int(10) unsigned DEFAULT NULL,
@@ -177,6 +178,24 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
 (1, 'esase', 'esase', 'approved', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
+
+CREATE TABLE IF NOT EXISTS `user_menu` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `controller` varchar(255) NOT NULL,
+    `action` varchar(255) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    `order` int(10) unsigned NOT NULL,
+    `check` text NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `user_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `check`) VALUES
+(1, 'Edit account', 'user', 'edit', 2, 1, ''),
+(2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::getCurrentUserIdentity()->user_id == User\\Model\\User::DEFAULT_USER_ID ? false : true;');
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -246,6 +265,7 @@ CREATE TABLE IF NOT EXISTS `setting` (
     `name` varchar(50) NOT NULL,
     `label` varchar(150) NOT NULL,
     `description` varchar(255) NOT NULL,
+    `description_helper` text NOT NULL,
     `type` enum('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
     `required` tinyint(1) unsigned NOT NULL,
     `order` smallint(5) unsigned NOT NULL,
@@ -355,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `setting_value` (
 
 INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (1,  1,  'Dream CMS', NULL),
-(2,  2,  '0.9.0', NULL),
+(2,  2,  '1.0.0', NULL),
 (3,  3,  'Dream CMS demo site', NULL),
 (4,  4,  'stuff@mysite.com', NULL),
 (5,  5,  'Dream CMS', NULL),
@@ -498,6 +518,22 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (29, 'edit_file', 4, 'Event - Editing files'),
 (30, 'edit_directory', 4, 'Event - Editing directories');
 
+CREATE TABLE IF NOT EXISTS `admin_menu_category` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `admin_menu_category` (`id`, `name`, `module`) VALUES
+(1, 'Site settings', 1),
+(2, 'Access Control List', 1),
+(3, 'Users', 2),
+(4, 'Files manager', 4);
+
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(150) NOT NULL,
@@ -505,17 +541,33 @@ CREATE TABLE IF NOT EXISTS `admin_menu` (
     `action` varchar(255) NOT NULL,
     `module` int(10) unsigned NOT NULL,
     `order` int(10) unsigned NOT NULL,
+    `category` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (category) REFERENCES admin_menu_category(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`) VALUES
-(1, 'Modules', 'module-administration', 'index', 1, 1),
-(2, 'Site settings', 'settings-administration', 'index', 1, 2),
-(3, 'Localizations', 'localizations-administration', 'index', 1, 3),
-(4, 'Layouts', 'layouts-administration', 'index', 1, 4),
-(5, 'Access Control List', 'acl-administration', 'list', 1, 5),
-(6, 'Users', 'users-administration', 'list', 2, 6),
-(7, 'Files manager', 'files-manager-administration', 'list', 4, 7);
+INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`) VALUES
+(1, 'List of settings', 'settings-administration', 'index', 1, 1, 1),
+(2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1),
+(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2),
+(4, 'List of users', 'users-administration', 'list', 2, 4, 3),
+(5, 'Settings', 'users-administration', 'settings', 2, 5, 3),
+(6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4),
+(7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4);
+
+CREATE TABLE IF NOT EXISTS `injection` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `position` enum('head', 'body','footer') NOT NULL,
+    `patrial` varchar(255) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    `order` int(10) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

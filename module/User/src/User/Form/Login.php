@@ -38,7 +38,7 @@ class Login extends AbstractCustomForm
         3 => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Save',
+            'label' => 'Submit',
         ),
         4 => array(
             'name' => 'csrf',

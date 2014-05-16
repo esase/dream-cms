@@ -35,7 +35,7 @@ class Forgot extends AbstractCustomForm
         'captcha' => array(
             'name' => 'captcha',
             'type' => CustomFormBuilder::FIELD_CAPTCHA,
-            'category' => 'Security image'
+            'category' => 'Account recovery'
         ),
         'csrf' => array(
             'name' => 'csrf',

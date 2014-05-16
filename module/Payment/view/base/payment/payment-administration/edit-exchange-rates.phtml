@@ -1,0 +1,45 @@
+<?php $this->declareVars('subPageTitle', 'parentPageTitle') ?>
+
+<?php $this->subPageTitle = $this->translate('Exchange rates') ?>
+<?php $this->parentPageTitle = $this->translate('Currencies') ?>
+
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->currency['code']) ?>
+<?php $this->headTitle($this->parentPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('payment/payment-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'currencies' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'currencies' => array(
+            'name' => $this->parentPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'currencies',
+            'check_acl' => true
+        ),
+        'exchange_rate' => array(
+            'name' => $this->currency['code'] . ' - ' . $this->subPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'exchange-rate',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('partial/form', array(
+    'form' => $this->exchangeRatesForm,
+    'controller' => 'payments-administration',
+    'action' => 'edit-exchange-rates',
+    'params' => array(
+        'slug' => $this->currency['id']
+    )
+)); ?>

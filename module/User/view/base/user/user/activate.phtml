@@ -1,9 +1,24 @@
 <?php $this->declareVars('pageTitle') ?>
 <?php $this->pageTitle = $this->translate('User activate') ?>
-
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
-<h1><?php echo $this->escapeHtml($this->pageTitle); ?></h1>
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'home' => array(
+            'name' => $this->translate('Home'),
+            'controller' => 'Home',
+            'action' => 'index',
+            'check_acl' => false
+        ),
+        'user_activate' => array(
+            'name' => $this->pageTitle,
+            'controller' => 'user',
+            'action' => 'activate',
+            'check_acl' => false
+        )
+    )
+)) ?>
 
 <!-- render a form -->
 <?php echo $this->partial('partial/form', array(

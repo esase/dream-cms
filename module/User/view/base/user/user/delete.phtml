@@ -1,9 +1,31 @@
 <?php $this->declareVars('pageTitle') ?>
 <?php $this->pageTitle = $this->translate('Delete your account') ?>
-
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
-<h1><?php echo $this->escapeHtml($this->pageTitle); ?></h1>
+<!-- render user menu -->
+<?php echo $this->partial('partial/user_menu', array(
+    'menu' => $this->userMenu(),
+    'active_controller' => 'user',
+    'active_action' => 'delete'
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'home' => array(
+            'name' => $this->translate('Home'),
+            'controller' => 'Home',
+            'action' => 'index',
+            'check_acl' => false
+        ),
+        'user_delete' => array(
+            'name' => $this->pageTitle,
+            'controller' => 'user',
+            'action' => 'delete',
+            'check_acl' => false
+        )
+    )
+)) ?>
 
 <!-- render a form -->
 <?php echo $this->partial('partial/form', array(

@@ -10,9 +10,16 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Application\Utility\Cache as CacheUtility;
 use Exception;
+use Zend\ServiceManager\ServiceManager;
 
 abstract class AbstractBase extends Sql
 {
+    /**
+     * Service manager
+     * @var object
+     */
+    protected $serviceManager;
+
     /**
      * Static cache instance
      * @var object
@@ -41,9 +48,11 @@ abstract class AbstractBase extends Sql
      * @param object $adapter
      * @param object $staticCacheInstance
      */
-    public function __construct(Adapter $adapter, CacheAdapter $staticCacheInstance)
+    public function __construct(Adapter $adapter, CacheAdapter $staticCacheInstance, ServiceManager $serviceManager)
     {
         parent::__construct($adapter);
+
+        $this->serviceManager = $serviceManager;
         $this->staticCacheInstance = $staticCacheInstance;
     }
 

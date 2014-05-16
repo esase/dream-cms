@@ -19,4 +19,4 @@
     $signature = md5(implode(':', array_merge($methodParams, array('__YOUR__SECRET_API_KEY__'))));
 
     // now we can send the request
-    $client->call('users.setUserTimeZone', array($methodParams['timeZone'], $signature));
+    $client->call('user.setUserTimeZone', array($methodParams['timeZone'], $signature));

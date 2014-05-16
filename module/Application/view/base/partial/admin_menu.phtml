@@ -1,0 +1,36 @@
+<?php if (count($this->adminMenu())): ?>
+    <?php $this->declareVars('currentCategory', 'closeCategory') ?>
+    <!-- select part -->
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-bookmark"></span>
+            <?php echo $this->title ?><b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <?php foreach ($this->adminMenu() as $menuItem) : ?>
+                <?php if ($this->currentCategory != $menuItem['category']): ?>
+                    <?php $this->currentCategory  = $menuItem['category'] ?>
+
+                    <?php if ($this->closeCategory): ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+
+                    <li class="dropdown-submenu">
+                        <a role="menuitem" tabindex="-1" href="#"><?php echo $this->translate($menuItem['category']) ?></a>
+                        <ul class="dropdown-menu">
+                <?php endif; ?>
+
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="<?php echo  $this->url(null, array('controller' => $menuItem['controller'], 'action' => $menuItem['action'])) ?>">
+                        <?php echo $this->translate($menuItem['name']) ?>
+                    </a>
+                </li>
+
+                <?php $this->closeCategory = true ?>
+            <?php endforeach; ?>
+                </ul>
+            </li>
+        </ul>
+    </li>
+<?php endif; ?>

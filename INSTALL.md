@@ -2,10 +2,10 @@
 
 ## SYSTEM REQUIREMENTS
 
-1. Apache WEB server 2 or later
+1. Apache WEB server 2 or later.
 2. PHP 5.4.0 or later.
-3. MySQL 5 or later with InnoDb support
-4. Memcached latest version or some of different cache engines such as: APC, WinCache, XCache 
+3. MySQL 5 or later with InnoDb support.
+4. Memcached latest version or some of different cache engines such as: APC, WinCache, XCache.
 
 ## PERMISSIONS
 
@@ -32,7 +32,7 @@
         2. mod_env
         3. mod_expires
 
-    2. Apache must allow to make changes with .htaccess file
+    2. Apache must allow to make changes with .htaccess file.
 
 ## PHP SETTINGS
 

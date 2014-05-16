@@ -1,0 +1,623 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-05-16 11:51+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Selected transactions have been activated"
+msgstr "Selected transactions have been activated"
+
+msgid "Selected transactions have been deleted"
+msgstr "Selected transactions have been deleted"
+
+msgid "Selected transactions will be deleted. Are you sure?"
+msgstr "Selected transactions will be deleted. Are you sure?"
+
+msgid "Activate selected"
+msgstr "Activate selected"
+
+msgid "Module is not active"
+msgstr "Module is not active"
+
+msgid "User registered"
+msgstr "User registered"
+
+msgid "View the transaction's items"
+msgstr "View the transaction's items"
+
+msgid "View the transaction's details"
+msgstr "View the transaction's details"
+
+msgid "Total amount"
+msgstr "Total amount"
+
+msgid "Paid"
+msgstr "Paid"
+
+msgid "Callback URL"
+msgstr "Callback URL"
+
+msgid "Fail URL"
+msgstr "Fail URL"
+
+msgid "Success URL"
+msgstr "Success URL"
+
+msgid "Control signature"
+msgstr "Control signature"
+
+msgid "HTTP method"
+msgstr "HTTP method"
+
+msgid "Also set these options into your RBK Money account:"
+msgstr "Also set these options into your RBK Money account:"
+
+msgid "Paid users payment transactions message"
+msgstr "Paid users payment transactions message"
+
+msgid "Paid users payment transaction email notification"
+msgstr "Paid users payment transaction email notification"
+
+msgid "Paid users payment transactions title"
+msgstr "Paid users payment transactions title"
+
+msgid "Send notification about paid payment transactions to users"
+msgstr "Send notification about paid payment transactions to users"
+
+msgid "Set these links into your RBK Money account:"
+msgstr "Set these links into your RBK Money account:"
+
+msgid "Secret key"
+msgstr "Secret key"
+
+msgid "Account ID"
+msgstr "Account ID"
+
+msgid "Shop ID"
+msgstr "Shop ID"
+
+msgid "This title will be available on the RBK Money payment page"
+msgstr "This title will be available on the RBK Money payment page"
+
+msgid "RBK Money title"
+msgstr "RBK Money title"
+
+msgid "Pay"
+msgstr "Pay"
+
+msgid "RBK Money description"
+msgstr "RBK Money description"
+
+msgid "Enable RBK Money"
+msgstr "Enable RBK Money"
+
+msgid "RBK Money"
+msgstr "RBK Money"
+
+msgid "Extra options"
+msgstr "Extra options"
+
+msgid "Payment info"
+msgstr "Payment info"
+
+msgid "This description will be available on the payment page"
+msgstr "This description will be available on the payment page"
+
+msgid "Cash description"
+msgstr "Description"
+
+msgid "Buy items"
+msgstr "Buy items"
+
+msgid "No available payment types. Please try again later"
+msgstr "No available payment types. Please try again later"
+
+msgid "Enable cash"
+msgstr "Enable cash"
+
+msgid "Payment transaction status"
+msgstr "Payment transaction status"
+
+msgid "Unsuccessful payment transaction's message"
+msgstr "Unsuccessful payment transaction's message"
+
+msgid "Successful payment transaction's message"
+msgstr "Successful payment transaction's message"
+
+msgid "Payment transactions messages"
+msgstr "Payment transactions messages"
+
+msgid "Paid payment transaction message"
+msgstr "Paid payment transaction message"
+
+msgid "Paid payment transaction email notification"
+msgstr "Paid payment transaction email notification"
+
+msgid "Paid payment transaction title"
+msgstr "Paid payment transaction title"
+
+msgid "Send notification about paid payment transactions"
+msgstr "Send notification about paid payment transactions"
+
+msgid "Transaction activation error"
+msgstr "Transaction activation error"
+
+msgid "Order information"
+msgstr "Order information"
+
+msgid "Add a new payment transaction message"
+msgstr "Add a new payment transaction message"
+
+msgid "Add a payment transaction email notification"
+msgstr "Add a payment transaction email notification"
+
+msgid "Add a new payment transaction title"
+msgstr "Add a new payment transaction title"
+
+msgid "Send notification about new payment transactions"
+msgstr "Send notification about new payment transactions"
+
+msgid "Cash"
+msgstr "Cash"
+
+msgid "Delivery details"
+msgstr "Delivery details"
+
+msgid "Comments"
+msgstr "Comments"
+
+msgid "Payment type"
+msgstr "Payment type"
+
+msgid "Some of the items in your shopping cart requires you to be logged in"
+msgstr "Some of the items in your shopping cart requires you to be logged in"
+
+msgid "Item has been edited"
+msgstr "Item has been edited"
+
+msgid "Edit the item"
+msgstr "Edit the item"
+
+msgid "Selected items have been deleted"
+msgstr "Selected items have been deleted"
+
+msgid "The coupon code has been deactivated"
+msgstr "The coupon code has been deactivated"
+
+msgid "Deactivate the discount code"
+msgstr "Deactivate the discount code"
+
+msgid "without discount"
+msgstr "without discount"
+
+msgid "discount"
+msgstr "discount"
+
+msgid "The coupon code has been activated"
+msgstr "The coupon code has been activated"
+
+msgid "The discount code not found or not activated"
+msgstr "The discount code not found or not activated"
+
+msgid "Enter a discount code"
+msgstr "Enter a discount code"
+
+msgid "Checkout"
+msgstr "Checkout"
+
+msgid "Total price"
+msgstr "Total price"
+
+msgid "Unit Price"
+msgstr "Unit Price"
+
+msgid "Selected items will be deleted. Are you sure?"
+msgstr "Selected items will be deleted. Are you sure?"
+
+msgid "Cost"
+msgstr "Cost"
+
+msgid "Item is not active"
+msgstr "Item is not active"
+
+msgid "Item deleted"
+msgstr "Item deleted"
+
+msgid "type_none"
+msgstr "Without rounding"
+
+msgid "type_floor"
+msgstr "Round fractions down"
+
+msgid "type_ceil"
+msgstr "Round fractions up side"
+
+msgid "type_round"
+msgstr "Automatic rounding to the nearest side"
+
+msgid "Type rounding of prices"
+msgstr "Type rounding of prices"
+
+msgid "Clear the shopping cart"
+msgstr "Clear the shopping cart"
+
+msgid "View the shopping cart"
+msgstr "View the shopping cart"
+
+msgid "Shopping cart is empty"
+msgstr "Shopping cart is empty"
+
+msgid "Currency"
+msgstr "Currency"
+
+msgid "Shopping cart info"
+msgstr "%d item(s) %s"
+
+msgid "Shopping cart"
+msgstr "Shopping cart"
+
+msgid "Time of clearing shopping cart and not paid transactions in seconds"
+msgstr "Time of clearing shopping cart and not paid transactions in seconds"
+
+msgid "Item is not available"
+msgstr "Item is not available"
+
+msgid "Item count must be less or equal %d"
+msgstr "Item count must be less or equal %d"
+
+msgid "Max items count description"
+msgstr "Maximum allowed items count is %d"
+
+msgid "Item already added into your shopping cart"
+msgstr "Item already added into your shopping cart"
+
+msgid "Item has been added to your shopping cart"
+msgstr "Item has been added to your shopping cart"
+
+msgid "Choose the tariff"
+msgstr "Choose the tariff"
+
+msgid "Received module not found"
+msgstr "Received module \"%s\" not found"
+
+msgid "Item discount info"
+msgstr "You have a  discount %s"
+
+msgid "Use discount"
+msgstr "Use discount"
+
+msgid "Item count must be more than 0"
+msgstr "Item count must be more than 0"
+
+msgid "Item count"
+msgstr "Item count"
+
+msgid "Sorry but the item not found or not activated"
+msgstr "Sorry but the item not found or not activated"
+
+msgid "Add the item to the shopping cart"
+msgstr "Add the item to the shopping cart"
+
+msgid "The shopping cart's id lifetime in seconds"
+msgstr "The shopping cart's id lifetime in seconds"
+
+msgid "Coupon has been edited"
+msgstr "Coupon has been edited"
+
+msgid "Edit the coupon"
+msgstr "Edit the coupon"
+
+msgid "Percentage ratio"
+msgstr "Percentage ratio"
+
+msgid "The discount must be more than 0 and less or equal 100"
+msgstr "The discount must be more than 0 and less or equal 100"
+
+msgid "Coupon has been added"
+msgstr "Coupon has been added"
+
+msgid "Selected coupons have been deleted"
+msgstr "Selected coupons have been deleted"
+
+msgid "Selected coupons will be deleted. Are you sure?"
+msgstr "Selected coupons will be deleted. Are you sure?"
+
+msgid "Add a coupon"
+msgstr "Add a coupon"
+
+msgid "Used"
+msgstr "Used"
+
+msgid "Discount"
+msgstr "Discount"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Discount coupons"
+msgstr "Discount coupons"
+
+msgid "Exchange rates have been edited"
+msgstr "Exchange rates have been edited"
+
+msgid "Exchange rates"
+msgstr "Exchange rates"
+
+msgid "Selected currencies have been deleted"
+msgstr "Selected currencies have been deleted"
+
+msgid ""
+"Selected currencies will be deleted with all interrelated transactions. Are "
+"you sure?"
+msgstr ""
+"Selected currencies will be deleted with all interrelated transactions. Are "
+"you sure?"
+
+msgid "Currency has been edited"
+msgstr "Currency has been edited"
+
+msgid "Edit the currency"
+msgstr "Edit the currency"
+
+msgid "Currency has been added"
+msgstr "Currency has been added"
+
+msgid "Currency code already used"
+msgstr "Currency code already used"
+
+msgid ""
+"Length of the currency code must be 3 characters and contain only Latin "
+"letters"
+msgstr ""
+"Length of the currency code must be 3 characters and contain only Latin "
+"letters"
+
+msgid "Primary site currency"
+msgstr "Primary site currency"
+
+msgid "Add a currency"
+msgstr "Add a currency"
+
+msgid "Currency code"
+msgstr "Currency code"
+
+msgid "Currency name"
+msgstr "Currency name"
+
+msgid "Currencies"
+msgstr "Currencies"
+
+msgid "List of transactions"
+msgstr "List of transactions"
+
+msgid "Euro"
+msgstr "Euro"
+
+msgid "Dollars USA"
+msgstr "Dollars USA"
+
+msgid "Rubles"
+msgstr "Rubles"
+
+msgid "Payment"
+msgstr "Payment"
+
+msgid "Payments"
+msgstr "Payments"
+
+msgid "Event - Deleting payment transactions"
+msgstr "Deleting payment transactions"
+
+msgid "Event - Payment transaction deleted by the system"
+msgstr "Payment transaction with id - \"%s\" was deleted by the system"
+
+msgid "Event - Payment transaction deleted by guest"
+msgstr "Guest deleted the payment transaction with id - \"%s\""
+
+msgid "Event - Payment transaction deleted by user"
+msgstr "\"%s\" deleted the payment transaction with id - \"%s\""
+
+msgid "Event - Shopping cart and transactions items were edited by the system"
+msgstr ""
+"Shopping cart and transactions items were edited by the system. Item's id - "
+"\"%d\", module's id - \"%d\""
+
+msgid "Event - Editing shopping cart and transactions items"
+msgstr "Editing shopping cart and transactions items"
+
+msgid "Event - Marking as deleted shopping cart and transactions items"
+msgstr "Marking as deleted shopping cart and transactions items"
+
+msgid ""
+"Event - Shopping cart and transactions items were marked as deleted by the "
+"system"
+msgstr ""
+"Shopping cart and transactions items were marked as deleted by the system. "
+"Item's id - \"%d\", module's id - \"%d\""
+
+msgid "Event - Activating payment transactions"
+msgstr "Activating payment transactions"
+
+msgid "Event - Payment transaction activated by the system"
+msgstr "Payment transaction with id - \"%d\" was activated by the system"
+
+msgid "Event - Payment transaction activated by guest"
+msgstr "Guest activated the payment transaction with id - \"%d\""
+
+msgid "Event - Payment transaction activated by user"
+msgstr "\"%s\" activated the payment transaction with id - \"%d\""
+
+msgid "Event - Adding payment transactions"
+msgstr "Adding payment transactions"
+
+msgid "Event - Payment transaction added by guest"
+msgstr "Guest added the payment transaction with id - \"%s\""
+
+msgid "Event - Payment transaction added by user"
+msgstr "\"%s\" added the payment transaction with id - \"%s\""
+
+msgid "Event - Editing items into the shopping cart"
+msgstr "Editing items into the shopping cart"
+
+msgid "Event - Item edited into the shopping cart by guest"
+msgstr "Guest edited the item into the shopping cart with id - \"%s\""
+
+msgid "Event - Item edited into the shopping cart by user"
+msgstr "\"%s\" edited the item into the shopping cart item with id - \"%s\""
+
+msgid "Event - Deactivating discount coupons"
+msgstr "Deactivating discount coupons"
+
+msgid "Event - Discount coupon deactivated by guest"
+msgstr "Guest deactivated the discount coupon with id - \"%s\""
+
+msgid "Event - Discount coupon deactivated by user"
+msgstr "\"%s\" deactivated the discount coupon with id - \"%s\""
+
+msgid "Event - Activating discount coupons"
+msgstr "Activating discount coupons"
+
+msgid "Event - Discount coupon activated by guest"
+msgstr "Guest activated the discount coupon with id - \"%s\""
+
+msgid "Event - Discount coupon activated by user"
+msgstr "\"%s\" activated the discount coupon with id - \"%s\""
+
+msgid "Event - Deleting items from the shopping cart"
+msgstr "Deleting items from the shopping cart"
+
+msgid "Event - Item deleted from shopping cart by the system"
+msgstr "Shopping cart item with id - \"%d\" was deleted by the system"
+
+msgid "Event - Item deleted from shopping cart by guest"
+msgstr "Guest deleted an item from the shopping cart with id - \"%d\""
+
+msgid "Event - Item deleted from shopping cart by user"
+msgstr "\"%s\" deleted an item from the shopping cart with id - \"%d\""
+
+msgid "Event - Adding items to the shopping cart"
+msgstr "Adding items to the shopping cart"
+
+msgid "Event - Item added to shopping cart by guest"
+msgstr "Guest added an item to the shopping cart with id - \"%d\""
+
+msgid "Event - Item added to shopping cart by user"
+msgstr "\"%s\" added an item to the shopping cart with id - \"%d\""
+
+msgid "Event - Editing discount coupons"
+msgstr "Editing discount coupons"
+
+msgid "Event - Discount coupon edited by guest"
+msgstr "Guest edited the discount coupon with id - \"%d\""
+
+msgid "Event - Discount coupon edited by user"
+msgstr "\"%s\" edited the discount coupon with id - \"%d\""
+
+msgid "Event - Adding discount coupons"
+msgstr "Adding discount coupons"
+
+msgid "Event - Discount coupon added by guest"
+msgstr "Guest added the discount coupon with id - \"%d\""
+
+msgid "Event - Discount coupon added by user"
+msgstr "\"%s\" added the discount coupon with id - \"%d\""
+
+msgid "Event - Deleting discount coupons"
+msgstr "Deleting discount coupons"
+
+msgid "Event - Discount coupon deleted by guest"
+msgstr "Guest deleted the discount coupon with id - \"%d\""
+
+msgid "Event - Discount coupon deleted by user"
+msgstr "\"%s\" deleted the discount coupon with id - \"%d\""
+
+msgid "Event - Editing exchange rates"
+msgstr "Editing exchange rates"
+
+msgid "Event - Payment exchange rates edited by guest"
+msgstr "Guest edited the exchange rates for currency with id - \"%d\""
+
+msgid "Event - Payment exchange rates edited by user"
+msgstr "\"%s\" edited the exchange rates for currency with id - \"%d\""
+
+msgid "Event - Deleting payment currencies"
+msgstr "Deleting payment currencies"
+
+msgid "Event - Payment currency deleted by guest"
+msgstr "Guest deleted the payment currency with id - \"%d\""
+
+msgid "Event - Payment currency deleted by user"
+msgstr "\"%s\" deleted the payment currency with id - \"%d\""
+
+msgid "Event - Editing payment currencies"
+msgstr "Editing payment currencies"
+
+msgid "Event - Payment currency edited by guest"
+msgstr "Guest edited the payment currency with id - \"%d\""
+
+msgid "Event - Payment currency edited by user"
+msgstr "\"%s\" edited the payment currency with id - \"%d\""
+
+msgid "Event - Adding payment currencies"
+msgstr "Adding payment currencies"
+
+msgid "Event - Payment currency added by guest"
+msgstr "Guest added the payment currency with id - \"%d\""
+
+msgid "Event - Payment currency added by user"
+msgstr "\"%s\" added the payment currency with id - \"%d\""
+
+msgid "ACL - Activating payments transactions in admin area"
+msgstr "Activating payments transactions in admin area"
+
+msgid "ACL - Deleting payments transactions in admin area"
+msgstr "Deleting payments transactions in admin area"
+
+msgid "ACL - Viewing payments transactions items in admin area"
+msgstr "Viewing payments transactions items in admin area"
+
+msgid "ACL - Viewing payments transactions details in admin area"
+msgstr "Viewing payments transactions details in admin area"
+
+msgid "ACL - Viewing payment transactions in admin area"
+msgstr "Viewing payment transactions in admin area"
+
+msgid "ACL - Viewing payment currencies in admin area"
+msgstr "Viewing payment currencies in admin area"
+
+msgid "ACL - Adding payment currencies in admin area"
+msgstr "Adding payment currencies in admin area"
+
+msgid "ACL - Editing payment currencies in admin area"
+msgstr "Editing payment currencies in admin area"
+
+msgid "ACL - Deleting payment currencies in admin area"
+msgstr "Deleting payment currencies in admin area"
+
+msgid "ACL - Editing exchange rates in admin area"
+msgstr "Editing exchange rates in admin area"
+
+msgid "ACL - Viewing discount coupons in admin area"
+msgstr "Viewing discount coupons in admin area"
+
+msgid "ACL - Deleting discount coupons in admin area"
+msgstr "Deleting discount coupons in admin area"
+
+msgid "ACL - Adding discount coupons in admin area"
+msgstr "Adding discount coupons in admin area"
+
+msgid "ACL - Editing discount coupons in admin area"
+msgstr "Editing discount coupons in admin area"
+
+msgid "ACL - Editing payments settings in admin area"
+msgstr "Editing payments settings in admin area"

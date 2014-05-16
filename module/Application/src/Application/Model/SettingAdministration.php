@@ -86,14 +86,13 @@ class SettingAdministration extends Setting
                 ->columns(array(
                     'id'
                 ))
-                ->order('c.language desc')
                 ->limit(1)
                 ->where(array('a.id' => new Expression('c.setting_id')))
                 ->where
-                    ->and->isNull('c.language')
+                    ->and->equalTo('c.language', $language)
                 ->where
                     ->or->equalTo('a.id', new Expression('c.setting_id'))
-                    ->and->equalTo('c.language', $language);
+                    ->and->isNull('c.language');
 
             $mainSelect = $this->select();
             $mainSelect->from(array('a' => 'setting'))
@@ -102,6 +101,7 @@ class SettingAdministration extends Setting
                     'name',
                     'label',
                     'description',
+                    'description_helper',
                     'type',
                     'required',
                     'language_sensitive',
@@ -145,7 +145,9 @@ class SettingAdministration extends Setting
                     'category' => $setting->category_name,
                     'name' => $setting->name,
                     'label' => $setting->label,
-                    'description' => $setting->description,
+                    'description' => $setting->description_helper
+                        ? eval($setting->description_helper)
+                        : $setting->description,
                     'type' => $setting->type,
                     'required' => $setting->required,
                     'language_sensitive'  => $setting->language_sensitive,

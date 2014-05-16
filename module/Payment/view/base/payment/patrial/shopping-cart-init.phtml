@@ -1,0 +1,12 @@
+<?php $this->headScript()->appendFile($this->asset('payment.js', 'js', 'payment')) ?>
+
+<?php if ($this->localization()->isCurrentLanguageLtr()): ?>
+    <?php $this->headLink()->appendStylesheet($this->asset('payment.css', 'css', 'payment')) ?>
+<?php else: ?>
+    <?php $this->headLink()->appendStylesheet($this->asset('payment.rtl.css', 'css', 'payment')) ?>
+<?php endif; ?>
+
+<?php $this->inlineScript()->captureStart() ?>
+    var payment = new Payment();
+    payment.setServerUrl('<?php echo $this->url(null, array('controller' => 'payments')) ?>');
+<?php $this->inlineScript()->captureEnd() ?>

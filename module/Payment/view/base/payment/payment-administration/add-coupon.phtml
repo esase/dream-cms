@@ -1,0 +1,41 @@
+<?php $this->declareVars('subPageTitle', 'parentPageTitle') ?>
+
+<?php $this->subPageTitle = $this->translate('Add a coupon') ?>
+<?php $this->parentPageTitle = $this->translate('Discount coupons') ?>
+
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->parentPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('payment/payment-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'coupons' // selected action is "coupons"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'coupons' => array(
+            'name' => $this->parentPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'coupons',
+            'check_acl' => true
+        ),
+        'add_coupon' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'add-coupon',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('partial/form', array(
+    'form' => $this->couponForm,
+    'controller' => 'payments-administration',
+    'action' => 'add-coupon'
+)); ?>

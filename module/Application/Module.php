@@ -114,28 +114,32 @@ class Module
             }
         });
 
-        // init user localization
-        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
-            $this, 'initUserLocalization'
-        ), 100);
+        $request = $this->serviceManager->get('Request');
 
-        // check administration privileges
-        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
-            $this, 'checkAdministrationPrivileges'
-        ), 2);
-
-        // load admin layout
-        $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
-            $this, 'loadAdministrationLayout'
-        ));
-
-        $config = $this->serviceManager->get('Config');
-
-        // init profiler
-        if ($config['profiler']) {
-            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, array(
-                $this, 'initProfiler'
+        if (!$request instanceof ConsoleRequest) {
+            // init user localization
+            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+                $this, 'initUserLocalization'
+            ), 100);
+    
+            // check administration privileges
+            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+                $this, 'checkAdministrationPrivileges'
+            ), 2);
+    
+            // load admin layout
+            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+                $this, 'loadAdministrationLayout'
             ));
+    
+            $config = $this->serviceManager->get('Config');
+    
+            // init profiler
+            if ($config['profiler']) {
+                $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, array(
+                    $this, 'initProfiler'
+                ));
+            }
         }
     }
 
@@ -147,7 +151,10 @@ class Module
     public function loadAdministrationLayout(MvcEvent $e)
     {
         try {
-            if ($this->initAdminlayout) {
+            if ($this->initAdminlayout &&
+                    false === $e->getTarget()->getEvent()->getViewModel()->terminate()) {
+
+                // set admin layout
                 $e->getTarget()->layout('layout/administration');
             }
         }
@@ -251,8 +258,12 @@ class Module
         // set the service manager
         ApplicationService::setServiceManager($this->serviceManager);
 
-        // init session
-        $this->initSession();
+        $request = $this->serviceManager->get('Request');
+
+        if (!$request instanceof ConsoleRequest) {
+            // init session
+            $this->initSession();
+        }
 
         // init user identity
         $this->initUserIdentity();
@@ -267,7 +278,9 @@ class Module
         $this->initDefaultLocalization();
 
         // init layout
-        $this->initlayout();
+        if (!$request instanceof ConsoleRequest) {
+            $this->initlayout();
+        }
     }
 
     /**
@@ -675,7 +688,7 @@ class Module
                 'Application\Model\ModelManager' => function($serviceManager)
                 {
                     return new Model\ModelManager($serviceManager->
-                            get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Cache\Static'));
+                            get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Cache\Static'), $serviceManager);
                 },
                 'Application\Form\FormManager' => function($serviceManager)
                 {
@@ -702,6 +715,7 @@ class Module
     {
         return array(
             'invokables' => array(
+                'floatValue' => 'Application\View\Helper\FloatValue',
                 'date' => 'Application\View\Helper\Date',
                 'getSetting' => 'Application\View\Helper\Setting',
                 'headScript' => 'Application\View\Helper\HeadScript',
@@ -714,15 +728,15 @@ class Module
                 'fileSize' => 'Application\View\Helper\FileSize',
             ),
             'factories' => array(
-                'asset' =>  function($serviceManager)
+                'asset' =>  function()
                 {
-                    return new \Application\View\Helper\Asset($serviceManager->getServiceLocator()->get('Cache\Dynamic'));
+                    return new \Application\View\Helper\Asset($this->serviceManager->get('Cache\Dynamic'));
                 },
-                'booleanValue' =>  function($serviceManager)
+                'booleanValue' =>  function()
                 {
-                    return new \Application\View\Helper\BooleanValue($serviceManager->getServiceLocator()->get('Translator'));
+                    return new \Application\View\Helper\BooleanValue($this->serviceManager->get('Translator'));
                 },
-                'adminMenu' =>  function($serviceManager)
+                'adminMenu' =>  function()
                 {
                     $adminMenu = $this->serviceManager
                         ->get('Application\Model\ModelManager')
@@ -730,7 +744,23 @@ class Module
 
                     return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
                 },
-                'currentRoute' =>  function($serviceManager)
+                'userMenu' =>  function()
+                {
+                    $userMenu = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\UserMenu');
+
+                    return new \Application\View\Helper\UserMenu($userMenu->getMenu());
+                },
+                'injection' =>  function()
+                {
+                    $injection = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\Injection');
+
+                    return new \Application\View\Helper\Injection($injection->getInjections());
+                },
+                'currentRoute' =>  function()
                 {
                     $router = $this->serviceManager->get('router');
                     $request = $this->serviceManager->get('request');
@@ -738,9 +768,9 @@ class Module
 
                     return new \Application\View\Helper\CurrentRoute($matches, $request->getQuery());
                 },
-                'flashMessage' => function($serviceManager)
+                'flashMessage' => function()
                 {
-                    $flashmessenger = $serviceManager->getServiceLocator()
+                    $flashmessenger = $this->serviceManager
                         ->get('ControllerPluginManager')
                         ->get('flashmessenger');
  

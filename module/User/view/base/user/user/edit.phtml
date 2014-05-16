@@ -3,12 +3,35 @@
 
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
-<h1><?php echo $this->escapeHtml($this->pageTitle); ?></h1>
+<!-- render user menu -->
+<?php echo $this->partial('partial/user_menu', array(
+    'menu' => $this->userMenu(),
+    'active_controller' => 'user',
+    'active_action' => 'edit'
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'home' => array(
+            'name' => $this->translate('Home'),
+            'controller' => 'Home',
+            'action' => 'index',
+            'check_acl' => false
+        ),
+        'user_edit' => array(
+            'name' => $this->pageTitle,
+            'controller' => 'user',
+            'action' => 'edit',
+            'check_acl' => false
+        )
+    )
+)) ?>
 
 <!-- render a form -->
 <?php echo $this->partial('partial/form', array(
     'form' => $this->userForm,
     'controller' => 'user',
     'action' => 'edit',
-    'categoriesAlwaysOpened' => true
+    'categoriesAlwaysOpened' => false
 )); ?>

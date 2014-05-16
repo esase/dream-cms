@@ -14,10 +14,11 @@
 
         <!-- Le styles -->
         <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icon/favicon.ico', 'image')))
+            ->prependStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr() ? 'administration.css' : 'administration.rtl.css'), 'css')) 
+            ->prependStylesheet($this->asset('jquery-ui.css', 'css'))
             ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
             ->prependStylesheet($this->asset('bootstrap.css', 'css'))
-            ->appendStylesheet($this->asset('jquery-ui.css', 'css'))
-            ->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr() ? 'administration.css' : 'administration.rtl.css'), 'css')) ?>
+        ?>
 
         <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
             <?php $this->headLink()->appendStylesheet($this->asset('bootstrap.rtl.css', 'css')) ?>
@@ -27,10 +28,11 @@
 
         <!-- Scripts -->
         <?php echo $this->headScript()
+            ->prependFile($this->asset('functions.js'))
+            ->prependFile($this->asset('jquery.cookie.js'))
+            ->prependFile($this->asset('bootstrap.js'))
+            ->prependFile($this->asset('jquery-ui.js'))            
             ->prependFile($this->asset('jquery-1.11.0.js'))
-            ->appendFile($this->asset('jquery.cookie.js'))
-            ->appendFile($this->asset('bootstrap.js'))
-            ->appendFile($this->asset('jquery-ui.js'))
             ->prependFile($this->asset('respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
             ->prependFile($this->asset('html5shiv.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
         ?>
@@ -53,24 +55,9 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">
-                        <?php if (count($this->adminMenu())): ?>
-                            <!-- select part -->
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="glyphicon glyphicon-bookmark"></span>
-                                    <?php echo $this->translate('Select Part') ?><b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <?php foreach ($this->adminMenu() as $menuItem) : ?>
-                                        <li <?php if ($this->currentRoute()->getController() == $menuItem['controller']): ?>class="disabled"<?php endif; ?>>
-                                            <a href="<?php echo  $this->url(null, array('controller' => $menuItem['controller'], 'action' => $menuItem['action'])) ?>">
-                                                <?php echo $this->translate($menuItem['name']) ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                        <?php endif; ?>
+                        <?php echo $this->partial('partial/admin_menu', array(
+                            'title' => $this->translate('Select Part')
+                        )) ?>
                         <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                             <!-- select language -->
                             <li class="dropdown">

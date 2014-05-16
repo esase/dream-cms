@@ -23,16 +23,17 @@ return array(
             'application' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/[:languge[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:slug]]]]',
+                    'route'    => '/[:languge[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:slug][/:extra]]]]',
                     'constraints' => array(
                         'languge' => '[a-z]{2}',
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'controller' => '[a-zA-Z][a-zA-Z0-9-]*',
+                        'action' => '[a-zA-Z][a-zA-Z0-9-]*',
                         'page' => '[0-9]+',
                         'per_page' => '[0-9]+',
                         'order_by' => '[a-zA-Z][a-zA-Z0-9-]*',
                         'order_type' => 'asc|desc',
-                        'slug'     => '[0-9a-z-_]+'
+                        'slug'     => '[0-9a-zA-Z-_]+',
+                        'extra'    => '[0-9a-zA-Z-_]+'
                     ),
                     'defaults' => array(
                         'controller' => 'Home',

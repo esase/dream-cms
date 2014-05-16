@@ -82,9 +82,10 @@ class UserController extends AbstractBaseController
      * @param integer $userId
      * @param string $userNickname
      * @param boolean $rememberMe
+     * @param string $backUrl
      * @return string
      */
-    protected function loginUser($userId, $userNickname, $rememberMe = false)
+    protected function loginUser($userId, $userNickname, $rememberMe = false, $backUrl = null)
     {
         $user = new StdClass();
         $user->user_id = $userId;
@@ -101,8 +102,9 @@ class UserController extends AbstractBaseController
                     get('Zend\Session\SessionManager')->rememberMe((int) $this->getSetting('user_session_time'));
         }
 
-        // redirect to home page
-        return $this->redirectTo();
+        return $backUrl
+            ? $this->redirect()->toUrl($backUrl)
+            : $this->redirectTo(); // redirect to home page
     }
 
     /**
@@ -299,7 +301,8 @@ class UserController extends AbstractBaseController
                         ? true
                         : false;
 
-                    return $this->loginUser($userData->user_id, $userData->nick_name, $rememberMe);
+                    return $this->loginUser($userData->user_id,
+                            $userData->nick_name, $rememberMe, $request->getQuery('back'));
                 }
                 else {
                     // generate error messages
@@ -314,12 +317,14 @@ class UserController extends AbstractBaseController
                     UserEvent::fireEvent(UserEvent::LOGIN_FAILED, 0,
                             AclModel::DEFAULT_ROLE_GUEST, 'Event - User login failed', array($request->getPost('nickname')));
 
-                    return $this->redirectTo('user', 'login');
+                    return $this->redirectTo('user', 'login',
+                            array(), false, array('back' => $request->getQuery('back')));
                 }
             }
         }
 
         return new ViewModel(array(
+            'back' => $request->getQuery('back'),
             'loginForm' => $loginForm->getForm()
         ));
     }
@@ -625,7 +630,7 @@ class UserController extends AbstractBaseController
                     }
                     else {
                         // login and redirect the registered user
-                        return $this->loginUser($result, $userInfo['nick_name']);
+                        return $this->loginUser($result, $userInfo['nick_name'], false, $request->getQuery('back'));
                     }
                 }
                 else {
@@ -634,11 +639,13 @@ class UserController extends AbstractBaseController
                         ->addMessage($this->getTranslator()->translate('Error occurred'));
                 }
 
-                return $this->redirectTo('user', 'register');
+                return $this->redirectTo('user', 'register',
+                            array(), false, array('back' => $request->getQuery('back')));
             }
         }
 
         return new ViewModel(array(
+            'back' => $request->getQuery('back'),
             'userForm' => $userForm->getForm()
         ));
     }

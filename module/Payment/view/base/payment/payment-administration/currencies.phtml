@@ -1,0 +1,120 @@
+<?php use Payment\Model\Base as PaymentBaseModel ?>
+
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Currencies') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('payment/payment-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'currencies' // selected action is "currencies"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'payments-administration',
+            'action' => 'currencies',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data_grid', array(
+    'controller' => 'payments-administration',
+    'action' => 'currencies',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Currency code'),
+            'order_name' => 'code'
+        ),
+        2 => array(
+            'title' => $this->translate('Currency name')
+        ),
+        3 => array(
+            'title' => $this->translate('Primary site currency'),
+            'order_name' => 'primary'
+        )
+    ),
+    'paginator' => $this->paginator,
+    'helpers' => array(
+        'name' => 'translate',
+        'primary' => 'booleanValue'
+    ),
+    'helpers_options' => array(
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+            0 => array(
+                'name' => $this->translate('Add a currency'),
+                'controller' => 'payments-administration',
+                'action' => 'add-currency',
+                'check_acl' => true
+            )
+        ),
+        'multiple_actions' => array(
+            0 => array(
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'payments-administration',
+                'action' => 'delete-currencies',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected currencies will be deleted with all interrelated transactions. Are you sure?')
+            )
+        ),
+        'single_actions' => array (
+            0 => array(
+                'name' => $this->translate('Exchange rates'),
+                'controller' => 'payments-administration',
+                'action' => 'edit-exchange-rates',
+                'check_acl' => true,
+                'image' => $this->asset('icon/exchange_rate_action.png', 'image', 'payment')
+            ),
+            1 => array(
+                'name' => $this->translate('Edit the currency'),
+                'controller' => 'payments-administration',
+                'action' => 'edit-currency',
+                'check_acl' => true,
+                'image' => $this->asset('icon/edit_action.png', 'image')
+            ),
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'currencies',
+        'multiple_actions' => array(
+            'items_name' => 'currencies[]'
+        )
+    ),
+    'actions_extra_check' => array(
+        'multiple_actions' => array(
+            'primary_currency' => array(
+                'param' => 'primary',
+                'condition' =>  'return (int) "__value__" == "' . PaymentBaseModel::PRIMARY_CURRENCY . '" ? false : true;'
+            )
+        ),
+        'single_actions' => array(
+            'edit-exchange-rates' => array(
+                0 => array(
+                    'param' => 'primary',
+                    'condition' =>  'return (int) "__value__" == "' .
+                            PaymentBaseModel::PRIMARY_CURRENCY . '" && (int) "' . $this->paginator->getTotalItemCount() . '" > 1;'
+                )
+            ),
+        )
+    )
+)) ?>

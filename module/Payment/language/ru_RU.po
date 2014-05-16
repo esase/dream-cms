@@ -1,0 +1,623 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-05-16 11:51+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: Русский\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Selected transactions have been activated"
+msgstr "Выбранные платежные операции были активированы"
+
+msgid "Selected transactions have been deleted"
+msgstr "Выбранные платежные операции были удалены"
+
+msgid "Selected transactions will be deleted. Are you sure?"
+msgstr "Выбранные платежные операции будут удалены. Вы уверены?"
+
+msgid "Activate selected"
+msgstr "Активировать выбранное"
+
+msgid "Module is not active"
+msgstr "Модуль не активирован"
+
+msgid "User registered"
+msgstr "Пользователь зарегистрирован"
+
+msgid "View the transaction's items"
+msgstr "Просмотр списка товаров платежной операции"
+
+msgid "View the transaction's details"
+msgstr "Просмотр деталей платежной операции"
+
+msgid "Total amount"
+msgstr "Общая сумма"
+
+msgid "Paid"
+msgstr "Оплачен"
+
+msgid "Callback URL"
+msgstr "Адрес оповещения о платеже"
+
+msgid "Fail URL"
+msgstr "Адрес отмененной операции"
+
+msgid "Success URL"
+msgstr "Адрес удачной операции"
+
+msgid "Control signature"
+msgstr "Контрольная подпись"
+
+msgid "HTTP method"
+msgstr "HTTP Метод"
+
+msgid "Also set these options into your RBK Money account:"
+msgstr "Также установите эти параметры в вашем RBK Money акаунте:"
+
+msgid "Paid users payment transactions message"
+msgstr "Пользовательское сообщение об оплате платежной операции"
+
+msgid "Paid users payment transaction email notification"
+msgstr "Пользовательское уведомление об оплате платежной операции"
+
+msgid "Paid users payment transactions title"
+msgstr "Пользовательский заголовок об оплате платежной операции"
+
+msgid "Send notification about paid payment transactions to users"
+msgstr "Отправлять уведомление об оплаченных платежных операциях пользователям"
+
+msgid "Set these links into your RBK Money account:"
+msgstr "Установите эти ссылки в вашем RBK Money акаунте:"
+
+msgid "Secret key"
+msgstr "Секретный ключ"
+
+msgid "Account ID"
+msgstr "Акаунт ID"
+
+msgid "Shop ID"
+msgstr "Магазин ID"
+
+msgid "This title will be available on the RBK Money payment page"
+msgstr "Этот заголовок будет доступен на странице оплаты RBK Money"
+
+msgid "RBK Money title"
+msgstr "Заголовок RBK Money"
+
+msgid "Pay"
+msgstr "Заплатить"
+
+msgid "RBK Money description"
+msgstr "Описание покупки с помощью RBK Money"
+
+msgid "Enable RBK Money"
+msgstr "Включить RBK Money"
+
+msgid "RBK Money"
+msgstr "RBK Money"
+
+msgid "Extra options"
+msgstr "Дополнительно"
+
+msgid "Payment info"
+msgstr "Информация об оплате"
+
+msgid "This description will be available on the payment page"
+msgstr "Это описание будет доступно на странице оплаты"
+
+msgid "Cash description"
+msgstr "Описание покупки с помощью наличных"
+
+msgid "Buy items"
+msgstr "Купить товары"
+
+msgid "No available payment types. Please try again later"
+msgstr "Нет доступных типов платежей. Пожалуйста, повторите попытку позже"
+
+msgid "Enable cash"
+msgstr "Включить наличные"
+
+msgid "Payment transaction status"
+msgstr "Статус платежной операции"
+
+msgid "Unsuccessful payment transaction's message"
+msgstr "Сообщение о неудачной платежной операции"
+
+msgid "Successful payment transaction's message"
+msgstr "Сообщение об успешной платежной операции"
+
+msgid "Payment transactions messages"
+msgstr "Сообщения платежных операций"
+
+msgid "Paid payment transaction message"
+msgstr "Сообщение об оплате платежной операции"
+
+msgid "Paid payment transaction email notification"
+msgstr "Уведомление об оплате платежной операции"
+
+msgid "Paid payment transaction title"
+msgstr "Заголовок об оплате платежной операции"
+
+msgid "Send notification about paid payment transactions"
+msgstr "Отправлять уведомление об оплаченных платежных операциях"
+
+msgid "Transaction activation error"
+msgstr "Ошибка активации платежной операции"
+
+msgid "Order information"
+msgstr "Информация о заказе"
+
+msgid "Add a new payment transaction message"
+msgstr "Сообщение об добавлении новой платежной операции"
+
+msgid "Add a payment transaction email notification"
+msgstr "Уведомление об добавлении новой платежной операции"
+
+msgid "Add a new payment transaction title"
+msgstr "Заголовок об добавлении новой платежной операции"
+
+msgid "Send notification about new payment transactions"
+msgstr "Отправлять уведомление о новых платежных операциях"
+
+msgid "Cash"
+msgstr "Наличные"
+
+msgid "Delivery details"
+msgstr "Детали доставки"
+
+msgid "Comments"
+msgstr "Комментарии"
+
+msgid "Payment type"
+msgstr "Вид оплаты"
+
+msgid "Some of the items in your shopping cart requires you to be logged in"
+msgstr "Некоторые из товаров в корзине требуют, чтобы вы были вошли на сайт"
+
+msgid "Item has been edited"
+msgstr "Товар был отредактирован"
+
+msgid "Edit the item"
+msgstr "Редактировать товар"
+
+msgid "Selected items have been deleted"
+msgstr "Выбранные товары были удалены"
+
+msgid "The coupon code has been deactivated"
+msgstr "Скидочный код был дезактивирован"
+
+msgid "Deactivate the discount code"
+msgstr "Дезактивировать код скидки"
+
+msgid "without discount"
+msgstr "без скидки"
+
+msgid "discount"
+msgstr "скидка"
+
+msgid "The coupon code has been activated"
+msgstr "Скидочный код был активирован"
+
+msgid "The discount code not found or not activated"
+msgstr "Скидочный код не найден или не активирован"
+
+msgid "Enter a discount code"
+msgstr "Ввести код скидки"
+
+msgid "Checkout"
+msgstr "Оформить заказ"
+
+msgid "Total price"
+msgstr "Общая цена"
+
+msgid "Unit Price"
+msgstr "Цена за штуку"
+
+msgid "Selected items will be deleted. Are you sure?"
+msgstr "Выбранные товары будут удалены. Вы уверены?"
+
+msgid "Cost"
+msgstr "Стоимость"
+
+msgid "Item is not active"
+msgstr "Товар не активен"
+
+msgid "Item deleted"
+msgstr "Товар удален"
+
+msgid "type_none"
+msgstr "Без округления"
+
+msgid "type_floor"
+msgstr "Округляет дробь в меньшую сторону"
+
+msgid "type_ceil"
+msgstr "Округляет дробь в большую сторону"
+
+msgid "type_round"
+msgstr "Автоматическое округление в ближайшую сторону"
+
+msgid "Type rounding of prices"
+msgstr "Тип округление цен"
+
+msgid "Clean the shopping cart"
+msgstr "Очистить корзину"
+
+msgid "View the shopping cart"
+msgstr "Просмотр корзины"
+
+msgid "Shopping cart is empty"
+msgstr "Корзина пуста"
+
+msgid "Currency"
+msgstr "Валюта"
+
+msgid "Shopping cart info"
+msgstr "%d шт. %s"
+
+msgid "Shopping cart"
+msgstr "Корзина"
+
+msgid "Time of clearing shopping cart and not paid transactions in seconds"
+msgstr "Время очистки корзины и не оплаченных транзакций в секундах"
+
+msgid "Item is not available"
+msgstr "Товар не доступен"
+
+msgid "Item count must be less or equal %d"
+msgstr "Количество товара должно быть меньше или равно %d"
+
+msgid "Max items count description"
+msgstr "Максимально допустимое количество элементов %d"
+
+msgid "Item already added into your shopping cart"
+msgstr "Товар уже добавлен в корзину"
+
+msgid "Item has been added to your shopping cart"
+msgstr "Товар добавлен в корзину покупок"
+
+msgid "Choose the tariff"
+msgstr "Выберите тариф"
+
+msgid "Received module not found"
+msgstr "Полученный модуль \"%s\" не найден"
+
+msgid "Item discount info"
+msgstr "У вас есть скидка %s"
+
+msgid "Use discount"
+msgstr "Использовать скидку"
+
+msgid "Item count must be more than 0"
+msgstr "Количество товара должно быть больше 0"
+
+msgid "Item count"
+msgstr "Количество товара"
+
+msgid "Sorry but the item not found or not activated"
+msgstr "Жаль, но этот товар не найден или не активирован"
+
+msgid "Add the item to the shopping cart"
+msgstr "Добавить товар в корзину"
+
+msgid "The shopping cart's ID lifetime in seconds"
+msgstr "Время жизни идентификатора корзины в секундах"
+
+msgid "Coupon has been edited"
+msgstr "Купон был отредактирован"
+
+msgid "Edit the coupon"
+msgstr "Редактировать купон"
+
+msgid "Percentage ratio"
+msgstr "Процентное соотношение"
+
+msgid "The discount must be more than 0 and less or equal 100"
+msgstr "Скидка должна быть больше 0 и меньше или равна 100"
+
+msgid "Coupon has been added"
+msgstr "Купон был добавлен"
+
+msgid "Selected coupons have been deleted"
+msgstr "Выбранные купоны были удалены"
+
+msgid "Selected coupons will be deleted. Are you sure?"
+msgstr "Выбранные купоны будут удалены. Вы уверены?"
+
+msgid "Add a coupon"
+msgstr "Добавить купон"
+
+msgid "Used"
+msgstr "Использованный"
+
+msgid "Discount"
+msgstr "Скидка"
+
+msgid "Code"
+msgstr "Код"
+
+msgid "Discount coupons"
+msgstr "Скидочные купоны"
+
+msgid "Exchange rates have been edited"
+msgstr "Курсы валют были отредактированы"
+
+msgid "Exchange rates"
+msgstr "Обменные курсы"
+
+msgid "Selected currencies have been deleted"
+msgstr "Выбранные валюты были удалены"
+
+msgid ""
+"Selected currencies will be deleted with all interrelated transactions. Are "
+"you sure?"
+msgstr ""
+"Выбранные валюты будут удалены со всеми взаимосвязанными транзакциями. Вы "
+"уверены?"
+
+msgid "Currency has been edited"
+msgstr "Валюта была отредактирована"
+
+msgid "Edit the currency"
+msgstr "Редактировать валюту"
+
+msgid "Currency has been added"
+msgstr "Валюта была добавлена"
+
+msgid "Currency code already used"
+msgstr "Код валюты уже используется"
+
+msgid ""
+"Length of the currency code must be 3 characters and contain only Latin "
+"letters"
+msgstr ""
+"Длина кода валюты должна быть 3 символа и состоять только из латинских букв"
+
+msgid "Primary site currency"
+msgstr "Основная валюта сайта"
+
+msgid "Add a currency"
+msgstr "Добавить валюту"
+
+msgid "Currency code"
+msgstr "Код валюты"
+
+msgid "Currency name"
+msgstr "Название валюты"
+
+msgid "Currencies"
+msgstr "Валюты"
+
+msgid "List of transactions"
+msgstr "Список транзакций"
+
+msgid "Euro"
+msgstr "Евро"
+
+msgid "Dollars USA"
+msgstr "Доллары США"
+
+msgid "Rubles"
+msgstr "Рубли"
+
+msgid "Payment"
+msgstr "Платеж"
+
+msgid "Payments"
+msgstr "Платежи"
+
+msgid "Event - Deleting payment transactions"
+msgstr "Удаление платежных операций"
+
+msgid "Event - Payment transaction deleted by the system"
+msgstr "Платежная операция с идентификатором - \"%s\" была удалена системой"
+
+msgid "Event - Payment transaction deleted by guest"
+msgstr "Гость удалил платежную транзакцию с идентификатором - \"%s\""
+
+msgid "Event - Payment transaction deleted by user"
+msgstr "\"%s\" удалил платежную транзакцию с идентификатором - \"%s\""
+
+msgid "Event - Shopping cart and transactions items were edited by the system"
+msgstr ""
+"Товары в корзине и в платежных операциях были отредактированы с помощью "
+"системы. Идентификатор товара - \"%d\", идентификатор модуля - \"%d\""
+
+msgid "Event - Editing shopping cart and transactions items"
+msgstr "Редактирование товаров в корзине и в платежных операциях"
+
+msgid "Event - Marking as deleted shopping cart and transactions items"
+msgstr "Отметка товаров как удаленные в корзине и в платежных операциях"
+
+msgid ""
+"Event - Shopping cart and transactions items were marked as deleted by the "
+"system"
+msgstr ""
+"Товары помечены как удаленные в корзине и в платежных операциях с помощью "
+"системы. Идентификатор товара - \"%d\", идентификатор модуля - \"%d\""
+
+msgid "Event - Activating payment transactions"
+msgstr "Активация платежных операций"
+
+msgid "Event - Payment transaction activated by the system"
+msgstr ""
+"Платежная операция с идентификатором - \"%d\" была активирована системой"
+
+msgid "Event - Payment transaction activated by guest"
+msgstr "Гость активировал платежную транзакцию с идентификатором - \"%d\""
+
+msgid "Event - Payment transaction activated by user"
+msgstr "\"%s\" активировал платежную транзакцию с идентификатором - \"%d\""
+
+msgid "Event - Adding payment transactions"
+msgstr "Добавление платежных операций"
+
+msgid "Event - Payment transaction added by guest"
+msgstr "Гость добавил платежную транзакцию с идентификатором - \"%s\""
+
+msgid "Event - Payment transaction added by user"
+msgstr "\"%s\" добавил платежную транзакцию с идентификатором - \"%s\""
+
+msgid "Event - Editing items into the shopping cart"
+msgstr "Редактирование товаров в корзине"
+
+msgid "Event - Item edited into the shopping cart by guest"
+msgstr "Гость отредактировал товар в корзине с идентификатором - \"%d\""
+
+msgid "Event - Item edited into the shopping cart by user"
+msgstr "\"%s\" отредактировал товар в корзине с идентификатором - \"%d\""
+
+msgid "Event - Deactivating discount coupons"
+msgstr "Дезактивация скидочных купонов"
+
+msgid "Event - Discount coupon deactivated by guest"
+msgstr "Гость дезактивировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Discount coupon deactivated by user"
+msgstr "\"%s\" дезактивировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Activating discount coupons"
+msgstr "Активация скидочных купонов"
+
+msgid "Event - Discount coupon activated by guest"
+msgstr "Гость активировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Discount coupon activated by user"
+msgstr "\"%s\" активировал скидочный купон с идентификатором - \"%s\""
+
+msgid "Event - Deleting items from the shopping cart"
+msgstr "Удаление товаров из корзины"
+
+msgid "Event - Item deleted from shopping cart by the system"
+msgstr "Товар с идентификатором - \"%d\" был удален из корзины системой"
+
+msgid "Event - Item deleted from shopping cart by guest"
+msgstr "Гость удалил товар из корзины с идентификатором - \"%d\""
+
+msgid "Event - Item deleted from shopping cart by user"
+msgstr "\"%s\" удалил товар из корзины с идентификатором - \"%d\""
+
+msgid "Event - Adding items to the shopping cart"
+msgstr "Добавление товаров в корзину"
+
+msgid "Event - Item added to shopping cart by guest"
+msgstr "Гость добавил товар в корзину с идентификатором - \"%d\""
+
+msgid "Event - Item added to shopping cart by user"
+msgstr "\"%s\" добавил товар в корзину с идентификатором - \"%d\""
+
+msgid "Event - Editing discount coupons"
+msgstr "Редактирование скидочных купонов"
+
+msgid "Event - Discount coupon edited by guest"
+msgstr "Гость отредактировал скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Discount coupon edited by user"
+msgstr "\"%s\" отредактировал скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Adding discount coupons"
+msgstr "Добавление скидочных купонов"
+
+msgid "Event - Discount coupon added by guest"
+msgstr "Гость добавил скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Discount coupon added by user"
+msgstr "\"%s\" добавил скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Deleting discount coupons"
+msgstr "Удаление скидочных купонов"
+
+msgid "Event - Discount coupon deleted by guest"
+msgstr "Гость удалил скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Discount coupon deleted by user"
+msgstr "\"%s\" удалил скидочный купон с идентификатором - \"%d\""
+
+msgid "Event - Editing exchange rates"
+msgstr "Редактирование курсов валют"
+
+msgid "Event - Payment exchange rates edited by guest"
+msgstr "Гость отредактировал курс валют для валюты с идентификатором - \"%d\""
+
+msgid "Event - Payment exchange rates edited by user"
+msgstr "\"%s\" отредактировал курс валют для валюты с идентификатором - \"%d\""
+
+msgid "Event - Deleting payment currencies"
+msgstr "Удаление платежных валют"
+
+msgid "Event - Payment currency deleted by guest"
+msgstr "Гость удалил платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Payment currency deleted by user"
+msgstr "\"%s\" удалил платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Editing payment currencies"
+msgstr "Редактирование платежных валют"
+
+msgid "Event - Payment currency edited by guest"
+msgstr "Гость отредактировал платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Payment currency edited by user"
+msgstr "\"%s\" отредактировал платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Adding payment currencies"
+msgstr "Добавление платежных валют"
+
+msgid "Event - Payment currency added by guest"
+msgstr "Гость добавил платежную валюту с идентификатором - \"%d\""
+
+msgid "Event - Payment currency added by user"
+msgstr "\"%s\" добавил платежную валюту с идентификатором - \"%d\""
+
+msgid "ACL - Activating payments transactions in admin area"
+msgstr "Активация платежных операций в админке"
+
+msgid "ACL - Deleting payments transactions in admin area"
+msgstr "Удаление платежных операций в админке"
+
+msgid "ACL - Viewing payments transactions items in admin area"
+msgstr "Просмотр списка товаров платежных операций в админке"
+
+msgid "ACL - Viewing payments transactions details in admin area"
+msgstr "Просмотр деталей платежных операций в админке"
+
+msgid "ACL - Viewing payment transactions in admin area"
+msgstr "Просмотр платежных операций в админке"
+
+msgid "ACL - Viewing payment currencies in admin area"
+msgstr "Просмотр платежных валют в админке"
+
+msgid "ACL - Adding payment currencies in admin area"
+msgstr "Добавление платежных валют в админке"
+
+msgid "ACL - Editing payment currencies in admin area"
+msgstr "Редактирование платежных валют в админке"
+
+msgid "ACL - Deleting payment currencies in admin area"
+msgstr "Удаление платежных валют в админке"
+
+msgid "ACL - Editing exchange rates in admin area"
+msgstr "Редактирование курсов валют в админке"
+
+msgid "ACL - Viewing discount coupons in admin area"
+msgstr "Просмотр скидочных купонов в админке"
+
+msgid "ACL - Deleting discount coupons in admin area"
+msgstr "Удаление скидочных купонов в админке"
+
+msgid "ACL - Adding discount coupons in admin area"
+msgstr "Добавление скидочных купонов в админке"
+
+msgid "ACL - Editing discount coupons in admin area"
+msgstr "Редактирование скидочных купонов в админке"
+
+msgid "ACL - Editing payments settings in admin area"
+msgstr "Изменение платежных настроек в админке"

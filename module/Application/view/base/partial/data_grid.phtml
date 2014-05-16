@@ -180,9 +180,15 @@
                     <?php if ($this->regularActionsCount) : ?>
                         <?php foreach ($this->regularActions as $action) : ?>
                             <li>
-                                <a href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action']), array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
-                                    <?php echo $action['name'] ?>
-                                </a>
+                                <?php if (empty($action['js'])) : ?>
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action']), array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
+                                        <?php echo $action['name'] ?>
+                                    </a>
+                                <?php else: ?>
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="javascript:void(0)" onclick="<?php echo $action['js'] ?>">
+                                        <?php echo $action['name'] ?>
+                                    </a>
+                                <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -222,148 +228,169 @@
         <?php echo $this->form()->openTag($form) ?>
     <?php endif; ?>
 
-    <table class="table table-hover">
-        <thead>
-        <?php if ($this->multipleActionsCount) : ?>    
-            <th class="selector-items">
-                <?php
-                    $selectCheckbox = new Element\Checkbox($this->multipleActionsSelectorId);
-                    $selectCheckbox->setUseHiddenElement(false);
-                    $selectCheckbox->setAttributes(array(
-                        'onclick' => "$('input[name=\'{$this->multipleActionsItemsName}\']:enabled').prop('checked', this.checked)",
-                        'id' => $this->multipleActionsSelectorId
-                    ));
-
-                    echo $this->formCheckbox($selectCheckbox);                    
-                ?>
-            </th>
-        <?php endif; ?>
-        <?php foreach ($this->headers as $index => $header) : ?>
-            <th>
-                <?php if (empty($header['order_name'])) : ?>
-                    <?php echo $header['title'] ?>
-                <?php else: ?>
-                    <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array(
-                        'per_page' => $this->per_page,
-                        'order_type' => ($this->order_type == 'asc' ? 'desc' : 'asc'),
-                        'order_by' => $header['order_name']
-                    )), array('query' => $this->filterParams)) ?>">
-                        <?php echo $header['title'] ?>
-
-                        <!-- order direction icon -->
-                        <?php if ($this->order_by == $header['order_name']): ?>
-                            <img src="<?php  echo $this->asset('icon/s_' . $this->order_type . '.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->order_type) ?>" />
-                        <?php endif; ?>
-                    </a>
-                <?php endif; ?>
-            </th>
-        <?php endforeach; ?>
-        </thead>
-        <tbody>
-        <?php foreach ($paginator as $data) : ?>
-            <tr>
-                <?php if ($this->multipleActionsCount) : ?>
-                    <td>
-                        <?php
-                            $selectCheckbox = new Element\Checkbox($this->multipleActionsItemsName);
-                            $selectCheckbox->setCheckedValue($data[$this->actions_options['action_identity']]);
-                            $selectCheckbox->setUseHiddenElement(false);
-
-                            // extra check
-                            if (!empty($this->actions_extra_check['multiple_actions'])) {
-                                foreach ($this->actions_extra_check['multiple_actions'] as $check) {
-                                    if (isset($check['param'], $check['condition'])) {
-                                        $this->value = is_object($data)
-                                            ? $data->{$check['param']}
-                                            : $data[$check['param']];
-
-                                        if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
-                                            $selectCheckbox->setAttributes(array(
-                                                'disabled' => 'disabled'
-                                            ));
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <?php if ($this->multipleActionsCount) : ?>    
+                <th class="selector-items">
+                    <?php
+                        $selectCheckbox = new Element\Checkbox($this->multipleActionsSelectorId);
+                        $selectCheckbox->setUseHiddenElement(false);
+                        $selectCheckbox->setAttributes(array(
+                            'onclick' => "$('input[name=\'{$this->multipleActionsItemsName}\']:enabled').prop('checked', this.checked)",
+                            'id' => $this->multipleActionsSelectorId
+                        ));
     
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            echo $this->formCheckbox($selectCheckbox);
-                        ?>
-                    </td>
-                <?php endif; ?>
-                <?php foreach ($data as $fieldName => $fieldValue) : ?>
-                    <?php if (is_array($this->skipped_fields) && in_array($fieldName, $this->skipped_fields)) : ?>
-                        <?php continue ?>
+                        echo $this->formCheckbox($selectCheckbox);                    
+                    ?>
+                </th>
+            <?php endif; ?>
+            <?php foreach ($this->headers as $index => $header) : ?>
+                <th>
+                    <?php if (empty($header['order_name'])) : ?>
+                        <?php echo $header['title'] ?>
+                    <?php else: ?>
+                        <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array(
+                            'per_page' => $this->per_page,
+                            'order_type' => ($this->order_type == 'asc' ? 'desc' : 'asc'),
+                            'order_by' => $header['order_name']
+                        )), array('query' => $this->filterParams)) ?>">
+                            <?php echo $header['title'] ?>
+    
+                            <!-- order direction icon -->
+                            <?php if ($this->order_by == $header['order_name']): ?>
+                                <img src="<?php  echo $this->asset('icon/s_' . $this->order_type . '.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->order_type) ?>" />
+                            <?php endif; ?>
+                        </a>
                     <?php endif; ?>
-                    <td>
-                        <?php if (!empty($this->helpers[$fieldName])) : ?>
+                </th>
+            <?php endforeach; ?>
+            </thead>
+            <tbody>
+            <?php foreach ($paginator as $data) : ?>
+                <tr>
+                    <?php if ($this->multipleActionsCount) : ?>
+                        <td>
                             <?php
-                                echo empty($this->helpers_options[$fieldName])
-                                    ? $this->{$this->helpers[$fieldName]}($fieldValue)
-                                    : $this->{$this->helpers[$fieldName]}($fieldValue, $this->helpers_options[$fieldName])
-                            ?>
-                        <?php else: ?>
-                            <?php echo $this->escapeHtml($fieldValue) ?>
-                        <?php endif; ?>
-                    </td>
-                <?php endforeach; ?>
-                <?php if ($this->singleActionsCount) : ?>
-                    <?php foreach ($this->singleActions as $action) : ?>
-                        <td class="action">
-                            <?php
+                                $selectCheckbox = new Element\Checkbox($this->multipleActionsItemsName);
+                                $selectCheckbox->setCheckedValue($data[$this->actions_options['action_identity']]);
+                                $selectCheckbox->setUseHiddenElement(false);
+    
                                 // extra check
-                                if (!empty($this->actions_extra_check['single_actions'][$action['action']])) {
-                                    foreach ($this->actions_extra_check['single_actions'][$action['action']] as $check) {
+                                if (!empty($this->actions_extra_check['multiple_actions'])) {
+                                    foreach ($this->actions_extra_check['multiple_actions'] as $check) {
                                         if (isset($check['param'], $check['condition'])) {
                                             $this->value = is_object($data)
                                                 ? $data->{$check['param']}
                                                 : $data[$check['param']];
-
+    
                                             if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
-                                                continue 2;
+                                                $selectCheckbox->setAttributes(array(
+                                                    'disabled' => 'disabled'
+                                                ));
+    
+                                                break;
+                                            }
+                                        }
+                                        else if (isset($check['function'])) {
+                                            if (false === ($result = $check['function']($data))) {
+                                                $selectCheckbox->setAttributes(array(
+                                                    'disabled' => 'disabled'
+                                                ));
+    
+                                                break;
                                             }
                                         }
                                     }
                                 }
+    
+                                echo $this->formCheckbox($selectCheckbox);
                             ?>
-                            <?php if (empty($action['js'])) : ?>
-                                <?php $this->urlQueries = !empty($action['queries']) && is_array($action['queries']) ? $action['queries'] : array() ?>
-                                <?php
-                                    if (!empty($action['slug_params']['use_query']) && $action['slug_params']['use_query'] === true) {
-                                        $this->urlQueries = array_merge($this->urlQueries, array(
-                                            'slug' => !empty($action['param'])
-                                                ? $data[$action['param']]
-                                                : $data[$this->actions_options['action_identity']]
-                                        ));
-                                    }
+                        </td>
+                    <?php endif; ?>
+                    <?php foreach ($data as $fieldName => $fieldValue) : ?>
+                        <?php if (is_array($this->skipped_fields) && in_array($fieldName, $this->skipped_fields)) : ?>
+                            <?php continue ?>
+                        <?php endif; ?>
+                        <td>
+                            <?php if (!empty($this->helpers[$fieldName])) : ?>
+    
+                                <?php if ($fieldValue === null) : ?>
+                                    <?php $fieldValue = '' ?>
+                                <?php endif; ?>
+    
+                                <?php    
+                                    echo empty($this->helpers_options[$fieldName])
+                                        ? $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data))
+                                        : $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data), $this->helpers_options[$fieldName])
                                 ?>
-
-                                <a class="single-actions" href="<?php echo $this->url('application', array(
-                                        'controller' => $action['controller'],
-                                        'action' => $action['action'],
-                                        'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
-                                            ? !empty($action['param'])
-                                                ? $data[$action['param']]
-                                                : $data[$this->actions_options['action_identity']]
-                                            : null
-                                    ),
-                                    array('query' => $this->urlQueries)) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
-
-                                    <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
-                                </a>
                             <?php else: ?>
-                                <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']]), $action['js']) ?>">
-                                    <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
-                                </a>
+                                <?php echo $this->escapeHtml($fieldValue) ?>
                             <?php endif; ?>
                         </td>
                     <?php endforeach; ?>
-                <?php endif; ?>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+                    <?php if ($this->singleActionsCount) : ?>
+                        <?php foreach ($this->singleActions as $action) : ?>
+                            <td class="action">
+                                <?php
+                                    // extra check
+                                    if (!empty($this->actions_extra_check['single_actions'][$action['action']])) {
+                                        foreach ($this->actions_extra_check['single_actions'][$action['action']] as $check) {
+                                            if (isset($check['param'], $check['condition'])) {
+                                                $this->value = is_object($data)
+                                                    ? $data->{$check['param']}
+                                                    : $data[$check['param']];
+    
+                                                if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
+                                                    continue 2;
+                                                }
+                                            }
+                                            else if (isset($check['function'])) {
+                                                if (false === ($result = $check['function']($data))) {
+                                                    continue 2;
+                                                }
+                                            }
+                                        }
+                                    }
+                                ?>
+                                <?php if (empty($action['js'])) : ?>
+                                    <?php $this->urlQueries = !empty($action['queries']) && is_array($action['queries']) ? $action['queries'] : array() ?>
+                                    <?php
+                                        if (!empty($action['slug_params']['use_query']) && $action['slug_params']['use_query'] === true) {
+                                            $this->urlQueries = array_merge($this->urlQueries, array(
+                                                'slug' => !empty($action['param'])
+                                                    ? $data[$action['param']]
+                                                    : $data[$this->actions_options['action_identity']]
+                                            ));
+                                        }
+                                    ?>
+    
+                                    <a class="single-actions" href="<?php echo $this->url('application', array(
+                                            'controller' => $action['controller'],
+                                            'action' => $action['action'],
+                                            'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
+                                                ? !empty($action['param'])
+                                                    ? $data[$action['param']]
+                                                    : $data[$this->actions_options['action_identity']]
+                                                : null
+                                        ),
+                                        array('query' => $this->urlQueries)) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+    
+                                        <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
+                                    </a>
+                                <?php else: ?>
+                                    <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']]), $action['js']) ?>">
+                                        <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
+                                    </a>
+                                <?php endif; ?>
+                            </td>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 
     <?php if ($this->multipleActionsCount) : ?>
         <?php echo $this->form()->closeTag() ?>

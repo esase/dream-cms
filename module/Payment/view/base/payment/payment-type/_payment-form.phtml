@@ -1,0 +1,63 @@
+<?php use Zend\Form\Form ?>
+<?php use Zend\Form\Element ?>
+
+<?php $this->declareVars(array(
+    'currentPageUrl',
+    'paymentType'
+)) ?>
+
+<?php
+    $this->currentPageUrl = $this->url('application', array(
+        'controller' => $this->currentRoute()->getController(),
+        'action' => $this->currentRoute()->getAction(),
+        'slug' => $this->transaction['slug']
+    ));
+
+    $this->paymentType = new Element\Select('type');
+    $this->paymentType->setValueOptions($this->payments)
+        ->setValue($this->current_payment)
+        ->setAttribute('class', 'form-control')
+        ->setAttribute('onchange', "location.href='{$this->currentPageUrl}/' + this.value");
+?>
+
+<div id="payment-form-wrapper">
+
+    <?php if (!empty($this->payment_options) && !empty($this->payment_url)) : ?>
+        <?php $form = new Form() ?>
+        <?php $form->setAttribute('action', $this->payment_url) ?>
+        <?php $form->setAttribute('method', 'post') ?>
+
+        <?php echo $this->form()->openTag($form) ?>
+    <?php endif; ?>
+
+    <?php
+        echo $this->partial('partial/accordion', array(
+            'name' => 'payment-form',
+            'items' => array(
+                'Payment info' => $this->payment_info,
+                'Payment type' => $this->formSelect($this->paymentType)
+            )
+        ));
+    ?>
+
+    <div id="payment-amount-wrapper">
+        <p><b><?php echo $this->translate('Total price') ?>:</b> <?php echo $this->processCost($this->amount, true) ?></p>
+    </div>
+
+    <?php if (!empty($this->payment_options) && !empty($this->payment_url)) : ?>
+
+        <?php foreach ($this->payment_options as $name => $value) : ?>
+            <?php $option = new Element\Hidden($name) ?>
+            <?php $option->setValue($value) ?>
+            <?php echo $this->formHidden($option) ?>
+        <?php endforeach; ?>
+
+        <?php $submit = new Element\Submit('submit') ?>
+        <?php $submit->setValue('Pay')->setAttribute('class', 'btn btn-default btn-submit') ?>
+        <?php echo $this->formSubmit($submit) ?>
+
+        <?php echo $this->form()->closeTag() ?>
+    <?php endif; ?>
+
+    <div class="clearfix"></div>
+</div>

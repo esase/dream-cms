@@ -1,0 +1,23 @@
+@import url("common.css");
+
+div#shopping-cart-wrapper {
+    float: right;
+}
+
+div#shopping-cart-wrapper div#shopping-cart-info {
+    float:right;
+    margin-left: 50px;
+}
+
+div#shopping-cart-wrapper div#shopping-cart-currencies {
+    float:right;
+}
+
+div#shopping-cart-price-wrapper {
+    text-align: right;
+}
+
+/* payment form wrapper */
+div#payment-form-wrapper div#payment-amount-wrapper {
+    float: right;
+}
