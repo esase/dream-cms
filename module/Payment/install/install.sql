@@ -62,7 +62,7 @@ INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `injection` where `position` = 'body' ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
-('body', 'payment/patrial/shopping-cart', @moduleId, @maxOrder);
+('before-menu', 'payment/patrial/shopping-cart', @moduleId, @maxOrder);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
 ('payment_shopping_cart_session_time', 'The shopping cart\'s ID lifetime in seconds', '', 'integer', 1, 1, 1, @moduleId, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');

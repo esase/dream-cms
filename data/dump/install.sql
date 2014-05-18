@@ -562,7 +562,7 @@ INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order
 
 CREATE TABLE IF NOT EXISTS `injection` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `position` enum('head', 'body','footer') NOT NULL,
+    `position` enum('head', 'body','footer', 'before-menu', 'after-menu') NOT NULL,
     `patrial` varchar(255) NOT NULL,
     `module` int(10) unsigned NOT NULL,
     `order` int(10) NOT NULL,
