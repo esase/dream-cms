@@ -1,7 +1,5 @@
 config/autoload/local.php
 config/autoload/*.local.php
-config/module/custom.php
-data/cache/*
 data/session/*
 !data/cache/.htaccess
 !data/session/.htaccess

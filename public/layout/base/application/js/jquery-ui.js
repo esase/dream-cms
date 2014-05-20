@@ -9384,7 +9384,7 @@ $.extend(Datepicker.prototype, {
 				if ((!inMinYear || month >= minDate.getMonth()) && (!inMaxYear || month <= maxDate.getMonth())) {
 					monthHtml += "<option value='" + month + "'" +
 						(month === drawMonth ? " selected='selected'" : "") +
-						">" + monthNamesShort[month] + "</option>";
+						">" + monthNames[month] + "</option>";
 				}
 			}
 			monthHtml += "</select>";

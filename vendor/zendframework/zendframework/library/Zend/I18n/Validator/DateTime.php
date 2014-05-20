@@ -280,7 +280,7 @@ class DateTime extends AbstractValidator
             return false;
         }
 
-        if ($position != strlen($value)) {
+        if ($position != mb_strlen($value)) {
             $this->error(self::INVALID_DATETIME);
 
             return false;

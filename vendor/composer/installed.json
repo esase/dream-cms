@@ -287,7 +287,7 @@
                 "library/HTMLPurifier.composer.php"
             ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "http://packagist.org/downloads/",
         "license": [
             "LGPL"
         ],
