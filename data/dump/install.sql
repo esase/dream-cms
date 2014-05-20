@@ -532,8 +532,7 @@ CREATE TABLE IF NOT EXISTS `admin_menu_part` (
 
 INSERT INTO `admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'System', 1, 'system_menu.png'),
-(2, 'Users', 2, 'user_menu.png'),
-(3, 'Modules', 1, 'module_menu.png');
+(2, 'Modules', 1, 'module_menu.png');
 
 CREATE TABLE IF NOT EXISTS `admin_menu_category` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -578,9 +577,9 @@ CREATE TABLE IF NOT EXISTS `admin_menu` (
 INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
 (1, 'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
 (2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
-(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 2),
-(4, 'List of users', 'users-administration', 'list', 2, 4, 3, 2),
-(5, 'Settings', 'users-administration', 'settings', 2, 5, 3, 2),
+(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
+(4, 'List of users', 'users-administration', 'list', 2, 4, 3, 1),
+(5, 'Settings', 'users-administration', 'settings', 2, 5, 3, 1),
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
 (7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
 

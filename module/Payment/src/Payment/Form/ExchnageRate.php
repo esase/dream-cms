@@ -46,7 +46,8 @@ class ExchnageRate extends AbstractCustomForm
                     'name' => $rate['code'],
                     'type' => CustomFormBuilder::FIELD_FLOAT,
                     'label' => $rate['name'],
-                    'value' => $rate['rate']
+                    'value' => $rate['rate'],
+                    'category' => 'General info',
                 )), $this->formElements);
             }
 
