@@ -35,17 +35,33 @@ class AdminMenu extends Base
                     
                 ))
             ->join(
-                array('b' => 'module'),
-                new Expression('a.module = b.id and b.active = ' . (int) self::MODULE_ACTIVE),
+                array('b' => 'admin_menu_category'),
+                'a.category = b.id',
                 array(
-                    'module' => 'id'
+                    'category' => 'name',
+                    'category_icon' => 'icon'
                 )
             )
             ->join(
-                array('c' => 'admin_menu_category'),
-                'a.category = c.id',
+                array('c' => 'admin_menu_part'),
+                'a.part = c.id',
                 array(
-                    'category' => 'name'
+                    'part' => 'name',
+                    'part_icon' => 'icon'
+                )
+            )
+            ->join(
+                array('d' => 'module'),
+                new Expression('c.module = d.id and d.active = ' . (int) self::MODULE_ACTIVE),
+                array(
+                    'part_module' => 'name'
+                )
+            )
+            ->join(
+                array('i' => 'module'),
+                new Expression('b.module = i.id and i.active = ' . (int) self::MODULE_ACTIVE),
+                array(
+                    'category_module' => 'name'
                 )
             )
             ->order('order');
@@ -53,7 +69,37 @@ class AdminMenu extends Base
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
-            $menu = $resultSet->toArray();
+
+            // process admin menu
+            foreach ($resultSet as $menuItem) {
+                if (!isset($menu[$menuItem['part']])) {
+                    $menu[$menuItem['part']] = array(
+                        'part' => $menuItem['part'],
+                        'icon' => $menuItem['part_icon'],
+                        'module' => $menuItem['part_module'],
+                        'items' => array(
+                            0 => array(
+                                'name' => $menuItem['name'],
+                                'controller' => $menuItem['controller'],
+                                'action'  => $menuItem['action'],
+                                'category' => $menuItem['category'],
+                                'category_icon' => $menuItem['category_icon'],
+                                'category_module' => $menuItem['category_module']
+                            )
+                        )
+                    );
+                }
+                else {
+                    $menu[$menuItem['part']]['items'][] = array(
+                        'name' => $menuItem['name'],
+                        'controller' => $menuItem['controller'],
+                        'action'  => $menuItem['action'],
+                        'category' => $menuItem['category'],
+                        'category_icon' => $menuItem['category_icon'],
+                        'category_module' => $menuItem['category_module']
+                    );
+                }
+            }
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $menu);

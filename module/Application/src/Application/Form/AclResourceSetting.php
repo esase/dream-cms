@@ -58,31 +58,36 @@ class AclResourceSetting extends AbstractCustomForm
             'name' => 'actions_limit',
             'type' => CustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of allowed actions',
-            'required' => false
+            'required' => false,
+            'category' => 'General info',
         ),
         'actions_reset' => array(
             'name' => 'actions_reset',
             'type' => CustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of actions is reset every N seconds',
-            'required' => false
+            'required' => false,
+            'category' => 'General info',
         ),
         'date_start' => array(
             'name' => 'date_start',
             'type' => CustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available since',
-            'required' => false
+            'required' => false,
+            'category' => 'General info',
         ),
         'date_end' => array(
             'name' => 'date_end',
             'type' => CustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available until',
-            'required' => false
+            'required' => false,
+            'category' => 'General info',
         ),
         'clean_counter' => array(
             'name' => 'clean_counter',
             'type' => CustomFormBuilder::FIELD_CHECKBOX,
             'label' => 'Clean the action counter',
             'required' => false,
+            'category' => 'General info',
         ),
         'submit' => array(
             'name' => 'submit',

@@ -22,7 +22,7 @@ class Base extends AbstractBase
      * Files directory
      * @var string
      */
-    protected static $filesDir = 'file_manager/';
+    protected static $filesDir = 'filemanager/';
 
     /**
      * Home directory name

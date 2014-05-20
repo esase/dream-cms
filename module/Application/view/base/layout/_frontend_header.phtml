@@ -61,9 +61,6 @@
                         
                     </ul>
                     <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
-                        <?php echo $this->partial('partial/admin_menu', array(
-                            'title' => $this->translate('Administration')
-                        )) ?>
                         <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                             <!-- select language -->
                             <li class="dropdown">

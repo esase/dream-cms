@@ -5,16 +5,17 @@ INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_ema
 SET @moduleId = (SELECT LAST_INSERT_ID());
 SET @maxOrder = (SELECT `order` + 1 FROM `admin_menu` ORDER BY `order` DESC LIMIT 1);
 
-INSERT INTO `admin_menu_category` (`name`, `module`) VALUES
-('Payments', @moduleId);
+INSERT INTO `admin_menu_category` (`name`, `module`, `icon`) VALUES
+('Payments', @moduleId, 'payment_menu.png');
 
 SET @menuCategoryId = (SELECT LAST_INSERT_ID());
+SET @menuPartId = (SELECT `id` from `admin_menu_part` where `name` = 'Modules');
 
-INSERT INTO `admin_menu` (`name`, `controller`, `action`, `module`, `order`, `category`) VALUES
-('List of transactions', 'payments-administration', 'list', @moduleId, @maxOrder, @menuCategoryId),
-('Currencies', 'payments-administration', 'currencies', @moduleId, @maxOrder + 1, @menuCategoryId),
-('Discount coupons', 'payments-administration', 'coupons', @moduleId, @maxOrder + 2, @menuCategoryId),
-('Settings', 'payments-administration', 'settings', @moduleId, @maxOrder + 3, @menuCategoryId);
+INSERT INTO `admin_menu` (`name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
+('List of transactions', 'payments-administration', 'list', @moduleId, @maxOrder, @menuCategoryId, @menuPartId),
+('Currencies', 'payments-administration', 'currencies', @moduleId, @maxOrder + 1, @menuCategoryId, @menuPartId),
+('Discount coupons', 'payments-administration', 'coupons', @moduleId, @maxOrder + 2, @menuCategoryId, @menuPartId),
+('Settings', 'payments-administration', 'settings', @moduleId, @maxOrder + 3, @menuCategoryId, @menuPartId);
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `user_menu` ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `user_menu` (`name`, `controller`, `action`, `module`, `order`, `check`) VALUES

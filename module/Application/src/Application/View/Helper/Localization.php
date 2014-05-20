@@ -65,6 +65,16 @@ class Localization extends AbstractHelper
     }
 
     /**
+     * Get current language's description
+     *
+     * @return string
+     */
+    public function getCurrentLanguageDescription()
+    {
+        return $this->currentLocalization['description'];
+    }
+
+    /**
      * Get current language direction
      *
      * @return string

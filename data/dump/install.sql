@@ -518,21 +518,40 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (29, 'edit_file', 4, 'Event - Editing files'),
 (30, 'edit_directory', 4, 'Event - Editing directories');
 
-CREATE TABLE IF NOT EXISTS `admin_menu_category` (
+CREATE TABLE IF NOT EXISTS `admin_menu_part` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(150) NOT NULL,
     `module` int(10) unsigned NOT NULL,
+    `icon` varchar(150) NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `name` (`name`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `admin_menu_category` (`id`, `name`, `module`) VALUES
-(1, 'Site settings', 1),
-(2, 'Access Control List', 1),
-(3, 'Users', 2),
-(4, 'Files manager', 4);
+INSERT INTO `admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
+(1, 'System', 1, 'system_menu.png'),
+(2, 'Users', 2, 'user_menu.png'),
+(3, 'Modules', 1, 'module_menu.png');
+
+CREATE TABLE IF NOT EXISTS `admin_menu_category` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `module` int(10) unsigned NOT NULL,
+    `icon` varchar(150) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `name` (`name`),
+    FOREIGN KEY (module) REFERENCES module(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `admin_menu_category` (`id`, `name`, `module`, `icon`) VALUES
+(1, 'Site settings', 1, 'setting_menu.png'),
+(2, 'Access Control List', 1, 'acl-menu.png'),
+(3, 'Users', 2, 'user_group_menu.png'),
+(4, 'Files manager', 4, 'file_manager_menu.png');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -542,23 +561,28 @@ CREATE TABLE IF NOT EXISTS `admin_menu` (
     `module` int(10) unsigned NOT NULL,
     `order` int(10) unsigned NOT NULL,
     `category` int(10) unsigned NOT NULL,
+    `part` int(10) unsigned NOT NULL,
+    `icon` varchar(150) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (category) REFERENCES admin_menu_category(id)
         ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (part) REFERENCES admin_menu_part(id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`) VALUES
-(1, 'List of settings', 'settings-administration', 'index', 1, 1, 1),
-(2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1),
-(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2),
-(4, 'List of users', 'users-administration', 'list', 2, 4, 3),
-(5, 'Settings', 'users-administration', 'settings', 2, 5, 3),
-(6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4),
-(7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4);
+INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
+(1, 'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
+(2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
+(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 2),
+(4, 'List of users', 'users-administration', 'list', 2, 4, 3, 2),
+(5, 'Settings', 'users-administration', 'settings', 2, 5, 3, 2),
+(6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
+(7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
 
 CREATE TABLE IF NOT EXISTS `injection` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

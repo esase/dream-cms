@@ -11,7 +11,7 @@ class AdminMenu extends AbstractHelper
      * Admin menu
      * @var array
      */
-    protected $menu;
+    protected $menu = array();
 
     /**
      * Class constructor
@@ -21,13 +21,42 @@ class AdminMenu extends AbstractHelper
     public function __construct(array $menu = array())
     {
         if ($menu) {
-            foreach ($menu as $menuItem) {
-                // check user permission
-                if (!UserService::checkPermission($menuItem['controller'] . ' ' . $menuItem['action'], false)) {
-                    continue;
-                }
+            // check menu permissions
+            foreach ($menu as $menuPart => $menuInfo) {
+                foreach ($menuInfo['items'] as $menuItem) {
+                    // check a permission
+                    if (!UserService::checkPermission($menuItem['controller'] . ' ' . $menuItem['action'], false)) {
+                        continue;
+                    }
 
-                $this->menu[] = $menuItem;
+                    if (!isset($this->menu[$menuPart])) {
+                        $this->menu[$menuPart] = array(
+                            'part' => $menuInfo['part'],
+                            'icon' => $menuInfo['icon'],
+                            'module' => $menuInfo['module'],
+                            'items' => array(
+                                0 => array(
+                                    'name' => $menuItem['name'],
+                                    'controller' => $menuItem['controller'],
+                                    'action'  => $menuItem['action'],
+                                    'category' => $menuItem['category'],
+                                    'category_icon' => $menuItem['category_icon'],
+                                    'category_module' => $menuItem['category_module']
+                                )
+                            )
+                        );
+                    }
+                    else {
+                        $this->menu[$menuPart]['items'][] = array(
+                            'name' => $menuItem['name'],
+                            'controller' => $menuItem['controller'],
+                            'action'  => $menuItem['action'],
+                            'category' => $menuItem['category'],
+                            'category_icon' => $menuItem['category_icon'],
+                            'category_module' => $menuItem['category_module']
+                        );
+                    }
+                }
             }
         }
     }
