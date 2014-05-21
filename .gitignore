@@ -1,12 +1,12 @@
-config/autoload/local.php
-config/autoload/*.local.php
+DreamCMS.komodoproject
+.komodotools/*
 data/session/*
 data/cache/application/*
 data/cache/config/*
 !data/cache/.htaccess
 !data/session/.htaccess
-DreamCMS.komodoproject
-.komodotools/*
+config/autoload/local.php
+config/autoload/*.local.php
 module/Example/*
 public/layout_cache/css/*
 !public/layout_cache/css/.htaccess
@@ -17,3 +17,5 @@ public/resource/user/*
 public/resource/user/thumbnail/*
 !public/resource/user/thumbnail/.htaccess
 !public/resource/user/.htaccess
+public/resource/filemanager/*
+!public/resource/filemanager/.htaccess
