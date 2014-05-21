@@ -433,30 +433,34 @@ class Module
             $localization = $this->serviceManager
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Application\Model\Localization');
-    
+
             // init default localization
             $this->localizations = $localization->getAllLocalizations();
             $acceptLanguage = Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
-    
+
             $defaultLanguage = !empty($this->userIdentity->language)
                 ? $this->userIdentity->language
                 : ($acceptLanguage ? substr($acceptLanguage, 0, 2) : null);
-    
+
             // setup locale
             $this->defaultLocalization =  array_key_exists($defaultLanguage, $this->localizations)
                 ? $this->localizations[$defaultLanguage]
                 : current($this->localizations);
-    
+
             // init translator settings
             $translator = $this->serviceManager->get('translator');
             $translator->setLocale($this->defaultLocalization['locale']);
-    
+
             // add a cache for translator
-            $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
-    
+            $request = $this->serviceManager->get('Request');
+
+            if (!$request instanceof ConsoleRequest) {
+                $translator->setCache($this->serviceManager->get('Cache\Dynamic'));
+            }
+
             // init default localization
             Locale::setDefault($this->defaultLocalization['locale']);
-    
+
             AbstractValidator::setDefaultTranslator($translator);
             ApplicationService::setCurrentLocalization($this->defaultLocalization);
             ApplicationService::setLocalizations($this->localizations);

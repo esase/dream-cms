@@ -29,15 +29,15 @@ class LocaleTest extends PHPUnit_Framework_TestCase
      */
     public function testConvertFloatToLocalizedValues()
     {
-        $this->setLocale('ru_RU');
+        $this->setCustomLocale('ru_RU');
         $this->assertEquals('0,9', LocaleUtility::convertToLocalizedValue(0.9, 'float'));
         $this->assertEquals(1, LocaleUtility::convertToLocalizedValue(1, 'float'));
 
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $this->assertEquals(0.9, LocaleUtility::convertToLocalizedValue(0.9, 'float'));
         $this->assertEquals(1, LocaleUtility::convertToLocalizedValue(1, 'float'));
 
-        $this->setLocale('fr_FR');
+        $this->setCustomLocale('fr_FR');
         $this->assertEquals('0,9', LocaleUtility::convertToLocalizedValue(0.9, 'float'));
         $this->assertEquals(1, LocaleUtility::convertToLocalizedValue(1, 'float'));
     }
@@ -47,13 +47,13 @@ class LocaleTest extends PHPUnit_Framework_TestCase
      */
     public function testConvertDateToLocalizedValues()
     {
-        $this->setLocale('ru_RU');
-        $this->assertEquals('16.03.2012', LocaleUtility::convertToLocalizedValue('2012-03-16', 'date', IntlDateFormatter::MEDIUM));
+        $this->setCustomLocale('ru_RU');
+        $this->assertEquals('21 мая 2014 г.', LocaleUtility::convertToLocalizedValue('2014-05-21', 'date', IntlDateFormatter::MEDIUM));
 
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $this->assertEquals('Mar 16, 2012', LocaleUtility::convertToLocalizedValue('2012-03-16', 'date', IntlDateFormatter::MEDIUM));
 
-        $this->setLocale('fr_FR');
+        $this->setCustomLocale('fr_FR');
         $this->assertEquals('16 mars 2012', LocaleUtility::convertToLocalizedValue('2012-03-16', 'date', IntlDateFormatter::MEDIUM));
     }
 
@@ -62,15 +62,15 @@ class LocaleTest extends PHPUnit_Framework_TestCase
      */
     public function testConvertDateFromLocalizedValues()
     {
-        $this->setLocale('ru_RU');
+        $this->setCustomLocale('ru_RU');
         $this->assertEquals('2012-03-16', LocaleUtility::convertFromLocalizedValue('16.03.2012', 'date',
                 IntlDateFormatter::MEDIUM, 'Y-m-d'));
 
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $this->assertEquals('2012-03-16', LocaleUtility::convertFromLocalizedValue('Mar 16, 2012', 'date',
                 IntlDateFormatter::MEDIUM, 'Y-m-d'));
 
-        $this->setLocale('fr_FR');
+        $this->setCustomLocale('fr_FR');
         $this->assertEquals('2012-03-16', LocaleUtility::convertFromLocalizedValue('16 mars 2012', 'date',
                 IntlDateFormatter::MEDIUM, 'Y-m-d'));
     }
@@ -80,15 +80,15 @@ class LocaleTest extends PHPUnit_Framework_TestCase
      */
     public function testConvertFloatFromLocalizedValues()
     {
-        $this->setLocale('ru_RU');
+        $this->setCustomLocale('ru_RU');
         $this->assertEquals(0.9, LocaleUtility::convertFromLocalizedValue('0,9', 'float'));
         $this->assertEquals(1, LocaleUtility::convertFromLocalizedValue(1, 'float'));
 
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $this->assertEquals(0.9, LocaleUtility::convertFromLocalizedValue(0.9, 'float'));
         $this->assertEquals(1, LocaleUtility::convertFromLocalizedValue(1, 'float'));
 
-        $this->setLocale('fr_FR');
+        $this->setCustomLocale('fr_FR');
         $this->assertEquals(0.9, LocaleUtility::convertFromLocalizedValue('0,9', 'float'));
         $this->assertEquals(1, LocaleUtility::convertFromLocalizedValue(1, 'float'));
     }
@@ -99,7 +99,7 @@ class LocaleTest extends PHPUnit_Framework_TestCase
      * @param string $locale
      * @return void
      */
-    protected function setLocale($locale)
+    protected function setCustomLocale($locale)
     {
         Locale::setDefault($locale);
         LocaleUtility::setLocale($locale);

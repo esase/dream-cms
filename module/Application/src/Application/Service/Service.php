@@ -87,7 +87,7 @@ class Service
      * @param array $resources
      * @return void
      */
-    public function setCurrentAclResources(array $resources)
+    public static function setCurrentAclResources(array $resources)
     {
         self::$currentAclResources = $resources;    
     }

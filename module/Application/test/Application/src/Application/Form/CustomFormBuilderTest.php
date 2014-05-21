@@ -124,7 +124,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($form->isValid());
 
         // test a correct value with locale
-        $this->setLocale('ru_RU');
+        $this->setCustomLocale('ru_RU');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -134,11 +134,11 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         );
 
         $form  = new CustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '02.11.2013'), false);
+        $form->setData(array('test' => '21 мая 2014 г.'), false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value with locale
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -183,7 +183,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($form->isValid());
 
         // test a correct value with locale
-        $this->setLocale('ru_RU');
+        $this->setCustomLocale('ru_RU');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -193,11 +193,11 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         );
 
         $form  = new CustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '02.11.2013'), false);
+        $form->setData(array('test' => '21 мая 2014 г.'), false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value with locale
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -211,7 +211,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($form->isValid());
 
         // test a date convertation
-        $this->setLocale('fr_FR');
+        $this->setCustomLocale('fr_FR');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -1077,7 +1077,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -1091,7 +1091,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($form->isValid());
 
         // test a correct value with locale
-        $this->setLocale('ru_RU');
+        $this->setCustomLocale('ru_RU');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -1105,7 +1105,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($form->isValid());
 
         // test a incorrect value with locale
-        $this->setLocale('en_US');
+        $this->setCustomLocale('en_US');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -1119,7 +1119,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($form->isValid());
 
         // test a float convertation
-        $this->setLocale('fr_FR');
+        $this->setCustomLocale('fr_FR');
         $field = array(
             0 => array(
                 'name' => 'test',
@@ -1137,12 +1137,12 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Set locale
+     * Set custom locale
      *
      * @param string $locale
      * @return void
      */
-    protected function setLocale($locale)
+    protected function setCustomLocale($locale)
     {
         Locale::setDefault($locale);
         LocaleUtility::setLocale($locale);

@@ -183,7 +183,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         foreach ($this->settingsNames as $settingName) {
             $this->addSetting($settingName, $settingValues);
         }
-        
+
         // get current language
         $currentLocalization = ApplicationService::getCurrentLocalization();
 
