@@ -148,7 +148,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         );
 
         $form  = new CustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '02.11.2013'), false);
+        $form->setData(array('test' => '21 мая 2014 г.'), false);
         $this->assertFalse($form->isValid());
     }
 
@@ -207,7 +207,7 @@ class CustomFormBuilderTest extends PHPUnit_Framework_TestCase
         );
 
         $form  = new CustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '02.11.2013'), false);
+        $form->setData(array('test' => '21 мая 2014 г'), false);
         $this->assertFalse($form->isValid());
 
         // test a date convertation

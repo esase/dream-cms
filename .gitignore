@@ -1,6 +1,8 @@
 config/autoload/local.php
 config/autoload/*.local.php
 data/session/*
+data/cache/application/*
+data/cache/config/*
 !data/cache/.htaccess
 !data/session/.htaccess
 DreamCMS.komodoproject
