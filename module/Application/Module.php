@@ -320,7 +320,9 @@ class Module
      
             // get language from cookie
             if (!$request instanceof ConsoleRequest) {
-                $this->userIdentity->language = $request->getCookie()->{self::LOCALIZATION_COOKIE};
+                $this->userIdentity->language = isset($request->getCookie()->{self::LOCALIZATION_COOKIE})
+                    ? $request->getCookie()->{self::LOCALIZATION_COOKIE}
+                    : null;
             }
     
             $authService->getStorage()->write($this->userIdentity);
