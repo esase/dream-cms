@@ -307,6 +307,10 @@ class CustomFormBuilder extends Form
                         $elementValues = array('' => '') + $elementValues;
                     }
 
+                    if ($elementType == self::FIELD_RADIO) {
+                        $elementAttrs = array_merge($elementAttrs, array('class' => ''));
+                    }
+
                     $elementType  = $elementType == self::FIELD_SELECT
                         ? 'Select'
                         : 'Radio';
@@ -344,6 +348,7 @@ class CustomFormBuilder extends Form
                             'use_hidden_element' => true
                         );
 
+                        $elementAttrs = array_merge($elementAttrs, array('class' => ''));
                         $elementAttrs = array_merge(array('required' => false), $elementAttrs);
                         $elementType  = 'MultiCheckbox';                        
                     }
@@ -378,6 +383,7 @@ class CustomFormBuilder extends Form
                         );
                     }
 
+                    $elementAttrs = array_merge($elementAttrs, array('class' => ''));
                     $elementType  = 'Checkbox';
                     break;
                 case self::FIELD_HIDDEN :
