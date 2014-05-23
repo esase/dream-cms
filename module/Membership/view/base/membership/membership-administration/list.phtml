@@ -1,0 +1,96 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('List of membership levels') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('membership/membership-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'memberships-administration',
+            'action' => 'list',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data_grid', array(
+    'controller' => 'memberships-administration',
+    'action' => 'list',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Cost'),
+            'order_name' => 'cost'
+        ),
+        2 => array(
+            'title' => $this->translate('Lifetime in days'),
+            'order_name' => 'lifetime'
+        ),
+        3 => array(
+            'title' => $this->translate('Role')
+        )
+    ),
+    'paginator' => $this->paginator,
+    'skipped_fields' => array(
+        'currency'
+    ),
+    'helpers' => array(
+        'role' => 'translate',
+        'cost' => 'costFormat',
+    ),
+    'helpers_set_array' => array(
+        'cost' => true
+    ),
+    'helpers_options' => array(
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+            0 => array(
+                'name' => $this->translate('Add a role'),
+                'controller' => 'memberships-administration',
+                'action' => 'add-role',
+                'check_acl' => true
+            )
+        ),
+        'multiple_actions' => array(
+        ),
+        'single_actions' => array (
+            0 => array(
+                'name' => $this->translate('Edit the role'),
+                'controller' => 'memberships-administration',
+                'action' => 'edit-role',
+                'check_acl' => true,
+                'image' => $this->asset('icon/edit_action.png', 'image')
+            ),
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'memberships',
+        'multiple_actions' => array(
+            'items_name' => 'memberships[]'
+        )
+    ),
+    'actions_extra_check' => array(
+    )
+)) ?>

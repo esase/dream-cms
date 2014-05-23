@@ -1,0 +1,64 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-05-23 18:35+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: Русский\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Membership"
+msgstr "Членство"
+
+msgid "Lifetime in days"
+msgstr "Срок службы в днях"
+
+msgid "Membership Levels"
+msgstr "Уровни членства"
+
+msgid "List of membership levels"
+msgstr "Список уровней членства"
+
+msgid "Event - Deleting membership roles"
+msgstr "Удаление ролей членства"
+
+msgid "Event - Membership role deleted by the system"
+msgstr ""
+"Роль членства была удалена с помощью системы. ID роли членства - \"%d\""
+
+msgid "Event - Editing membership roles"
+msgstr "Редактирование ролей членства"
+
+msgid "Event - Membership role edited by guest"
+msgstr "Гость отредактировал роль членства с идентификатором - \"%d\""
+
+msgid "Event - Membership role edited by user"
+msgstr "\"%s\" отредактировал роль членства с идентификатором - \"%d\""
+
+msgid "Event - Adding membership roles"
+msgstr "Добавление ролей членства"
+
+msgid "Event - Membership role added by guest"
+msgstr "Гость добавил роль членства с идентификатором - \"%d\""
+
+msgid "Event - Membership role added by user"
+msgstr "\"%s\" добавил роль членства с идентификатором - \"%d\""
+
+msgid "ACL - Editing membership settings in admin area"
+msgstr "Изменение настроек ролей членства в админке"
+
+msgid "ACL - Editing membership roles in admin area"
+msgstr "Редактирование ролей членства в админке"
+
+msgid "ACL - Adding membership roles in admin area"
+msgstr "Добавление ролей членства в админке"
+
+msgid "ACL - Viewing list of membership levels  in admin area"
+msgstr "Просмотр списка уровней членства в админке"

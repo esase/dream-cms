@@ -1,0 +1,63 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-05-23 18:35+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Membership"
+msgstr "Membership"
+
+msgid "Lifetime in days"
+msgstr "Lifetime in days"
+
+msgid "Membership Levels"
+msgstr "Membership Levels"
+
+msgid "List of membership levels"
+msgstr "List of membership levels"
+
+msgid "Event - Deleting membership roles"
+msgstr "Deleting membership roles"
+
+msgid "Event - Membership role deleted by the system"
+msgstr "The membership's role with id - \"%d\" was deleted by the system."
+
+msgid "Event - Editing membership roles"
+msgstr "Editing membership roles"
+
+msgid "Event - Membership role edited by guest"
+msgstr "Guest edited the membership role with id - \"%d\""
+
+msgid "Event - Membership role edited by user"
+msgstr "\"%s\" edited the membership role with id - \"%d\""
+
+msgid "Event - Adding membership roles"
+msgstr "Adding membership roles"
+
+msgid "Event - Membership role added by guest"
+msgstr "Guest added the membership role with id - \"%d\""
+
+msgid "Event - Membership role added by user"
+msgstr "\"%s\" added the membership role with id - \"%d\""
+
+msgid "ACL - Editing membership settings in admin area"
+msgstr "Editing membership settings in admin area"
+
+msgid "ACL - Editing membership roles in admin area"
+msgstr "Editing membership roles in admin area"
+
+msgid "ACL - Adding membership roles in admin area"
+msgstr "Adding membership roles in admin area"
+
+msgid "ACL - Viewing list of membership levels  in admin area"
+msgstr "Viewing list of membership levels  in admin area"

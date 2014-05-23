@@ -6,7 +6,7 @@ SET @moduleId = (SELECT LAST_INSERT_ID());
 SET @maxOrder = (SELECT `order` + 1 FROM `admin_menu` ORDER BY `order` DESC LIMIT 1);
 
 INSERT INTO `admin_menu_category` (`name`, `module`, `icon`) VALUES
-('Payments', @moduleId, 'payment_menu.png');
+('Payments', @moduleId, 'payment_menu_item.png');
 
 SET @menuCategoryId = (SELECT LAST_INSERT_ID());
 SET @menuPartId = (SELECT `id` from `admin_menu_part` where `name` = 'Modules');

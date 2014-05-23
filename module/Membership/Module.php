@@ -1,10 +1,9 @@
 <?php
 
-namespace User;
+namespace Membership;
 
-use User\Event\Event as UserEvent;
+use Membership\Event\Event as MembershipEvent;
 use Zend\Mvc\MvcEvent;
-use Application\Model\Acl as AclModel;
 use User\Model\Base as UserBaseModel;
 
 class Module
@@ -14,20 +13,18 @@ class Module
      */
     public function onBootstrap(MvcEvent $mvcEvent)
     {
-        $eventManager = UserEvent::getEventManager();
-        $eventManager->attach(UserEvent::DELETE_ACL_ROLE, function ($e) use ($mvcEvent) {
-            $users = $model = $mvcEvent->getApplication()->getServiceManager()
+        $eventManager = MembershipEvent::getEventManager();
+        $eventManager->attach(MembershipEvent::DELETE_ACL_ROLE, function ($e) use ($mvcEvent) {
+            $model = $mvcEvent->getApplication()->getServiceManager()
                 ->get('Application\Model\ModelManager')
-                ->getInstance('User\Model\Base');
+                ->getInstance('Membership\Model\Base');
 
-            // change the empty role with the default role
-            if (null != ($usersList = $users->getUsersWithEmptyRole())) {
-                foreach ($usersList as $userInfo) {
-                    if (true === ($result =
-                            $users->editUserRole($userInfo['user_id'], AclModel::DEFAULT_ROLE_MEMBER))) {
-
-                        UserEvent::fireEvent(UserEvent::EDIT_ROLE,
-                            $userInfo['user_id'], UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - User\'s role edited by the system', array($userInfo['user_id']));
+            // delete connected membership levels
+            if (null != ($membershipLevels = $model->getAllMembershipLevels($e->getParam('object_id')))) {
+                foreach ($membershipLevels as $levelInfo) {
+                    if (true === ($result = $model->deleteRole($levelInfo))) {
+                        MembershipEvent::fireEvent(MembershipEvent::DELETE_MEMBERSHIP_ROLE, $e->getParam('object_id'), 
+                                UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Membership role deleted by the system', array($e->getParam('object_id')));
                     }
                 }
             }
@@ -70,9 +67,6 @@ class Module
     public function getViewHelperConfig()
     {
         return array(
-            'invokables' => array(
-                'userAvatarUrl' => 'User\View\Helper\UserAvatarUrl'
-            ),
         );
     }
 

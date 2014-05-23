@@ -51,8 +51,8 @@
                     </button>
                 </div>
                 <div class="navbar-collapse collapse">
-                    <?php if (count($this->adminMenu())): ?>
-                        <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">
+                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">
+                        <?php if (count($this->adminMenu())): ?>
                             <?php $this->declareVars('currentMenuCategory') ?>
                             <?php foreach ($this->adminMenu() as $menuPart => $menuInfo) : ?>
                                 <?php $this->currentMenuCategory = null ?>
@@ -87,19 +87,20 @@
                                     </ul>
                                 </li>
                             <?php endforeach; ?>
-                        </ul>
-                    <?php endif; ?>
-                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
+                        <?php endif; ?>
                         <li>
                             <a title="<?php echo $this->escapeHtmlAttr($this->translate('Back to site')) ?>" href="<?php echo  $this->url('application') ?>">
                                 <img src="<?php  echo $this->asset('icon/home_menu.png', 'image') ?>" />
                             </a>
                         </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
                         <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                             <!-- select language -->
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <a href="#" class="dropdown-toggle current-language" data-toggle="dropdown">
                                     <img title="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLanguageDescription()) ?>" src="<?php  echo $this->asset('icon/flag/' . $this->localization()->getCurrentLanguage() . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLanguageDescription()) ?>" />
+                                    <?php echo $this->localization()->getCurrentLanguage() ?>
                                     <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">

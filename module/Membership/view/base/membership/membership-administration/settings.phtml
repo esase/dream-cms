@@ -3,7 +3,7 @@
 <?php $this->headTitle($this->subPageTitle) ?>
 
 <!-- render a header -->
-<?php echo $this->render('payment/payment-administration/_header') ?>
+<?php echo $this->render('membership/membership-administration/_header') ?>
 
 <!-- render tabs -->
 <?php echo $this->partial('partial/tab', array(
@@ -16,7 +16,7 @@
     'pages' => array(
         'settings' => array(
             'name' => $this->subPageTitle,
-            'controller' => 'payments-administration',
+            'controller' => 'memberships-administration',
             'action' => 'settings',
             'check_acl' => true
         )
@@ -26,6 +26,6 @@
 <!-- render a form -->
 <?php echo $this->partial('partial/form', array(
     'form' => $this->settingsForm,
-    'controller' => 'payments-administration',
+    'controller' => 'memberships-administration',
     'action' => 'settings'
 )); ?>

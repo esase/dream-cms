@@ -547,10 +547,10 @@ CREATE TABLE IF NOT EXISTS `admin_menu_category` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `admin_menu_category` (`id`, `name`, `module`, `icon`) VALUES
-(1, 'Site settings', 1, 'setting_menu.png'),
-(2, 'Access Control List', 1, 'acl-menu.png'),
-(3, 'Users', 2, 'user_group_menu.png'),
-(4, 'Files manager', 4, 'file_manager_menu.png');
+(1, 'Site settings', 1, 'setting_menu_item.png'),
+(2, 'Access Control List', 1, 'acl_menu_item.png'),
+(3, 'Users', 2, 'user_group_menu_item.png'),
+(4, 'Files manager', 4, 'file_manager_menu_item.png');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
