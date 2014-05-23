@@ -19,3 +19,5 @@ public/resource/user/thumbnail/*
 !public/resource/user/.htaccess
 public/resource/filemanager/*
 !public/resource/filemanager/.htaccess
+public/resource/membership/*
+!public/resource/membership/.htaccess
