@@ -9,6 +9,10 @@ div.navbar li.dropdown-header{
     white-space:nowrap;
 }
 
+div.navbar a.current-language{
+    text-transform:capitalize;
+}
+
 div.page-header {
     margin-bottom: 20px;
     margin-top: 0;
