@@ -27,6 +27,12 @@ class Service
     protected static $currentAclResources;
 
     /**
+     * Acl roles
+     * @var array
+     */
+    protected static $aclRoles;
+
+    /**
      * Service manager
      */
     protected static $serviceManager;
@@ -121,6 +127,24 @@ class Service
     public static function getCurrentAcl()
     {
         return self::$currentAcl;
+    }
+
+    /**
+     * Get acl roles
+     *
+     * @param boolean $excludeGuest
+     * @return array
+     */
+    public static function getAclRoles($excludeGuest = true)
+    {
+        if (!isset(self::$aclRoles[$excludeGuest])) {
+            self::$aclRoles[$excludeGuest] = self::$serviceManager
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Application\Model\AclAdministration')
+                ->getRolesList($excludeGuest);
+        }
+
+        return self::$aclRoles[$excludeGuest];
     }
 
     /**

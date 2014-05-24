@@ -23,12 +23,6 @@ class MembershipAdministrationController extends AbstractBaseController
     protected $model;
 
     /**
-     * Acl model instance
-     * @var object  
-     */
-    protected $aclModel;
-
-    /**
      * Get model
      */
     protected function getModel()
@@ -40,20 +34,6 @@ class MembershipAdministrationController extends AbstractBaseController
         }
 
         return $this->model;
-    }
-
-    /**
-     * Get acl model
-     */
-    protected function getAclModel()
-    {
-        if (!$this->aclModel) {
-            $this->aclModel = $this->getServiceLocator()
-                ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\AclAdministration');
-        }
-
-        return $this->aclModel;
     }
 
     /**
@@ -90,8 +70,7 @@ class MembershipAdministrationController extends AbstractBaseController
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Membership\Form\MembershipFilter')
-            ->setAclModel($this->getAclModel());
+            ->getInstance('Membership\Form\MembershipFilter');
 
         $request = $this->getRequest();
         $filterForm->getForm()->setData($request->getQuery(), false);
@@ -122,8 +101,7 @@ class MembershipAdministrationController extends AbstractBaseController
         // get an acl role form
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Membership\Form\AclRole')
-            ->setAclModel($this->getAclModel());
+            ->getInstance('Membership\Form\AclRole');
 
         $request  = $this->getRequest();
 
@@ -195,7 +173,6 @@ class MembershipAdministrationController extends AbstractBaseController
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Membership\Form\AclRole')
-            ->setAclModel($this->getAclModel())
             ->setImage($role['image']);
 
         $aclRoleForm->getForm()->setData($role);
@@ -256,5 +233,56 @@ class MembershipAdministrationController extends AbstractBaseController
             'role' => $role,
             'aclRoleForm' => $aclRoleForm->getForm()
         ));
+    }
+
+    /**
+     * Delete selected membership roles
+     */
+    public function deleteRolesAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($rolesIds = $request->getPost('roles', null))) {
+                // event's description
+                $eventDesc = UserService::isGuest()
+                    ? 'Event - Membership role deleted by guest'
+                    : 'Event - Membership role deleted by user';
+
+                // delete selected membership roles
+                foreach ($rolesIds as $roleId) {
+                    // get the role info
+                    if (null == ($roleInfo = $this->getModel()->getRoleInfo($roleId))) { 
+                        continue;
+                    }
+
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->checkPermission())) {
+                        return $result;
+                    }
+
+                    // delete the role
+                    if (true !== ($deleteResult = $this->getModel()->deleteRole($roleInfo))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
+
+                        break;
+                    }
+
+                    // fire the event
+                    $eventDescParams = UserService::isGuest()
+                        ? array($roleId)
+                        : array(UserService::getCurrentUserIdentity()->nick_name, $roleId);
+
+                    MembershipEvent::fireEvent(MembershipEvent::DELETE_MEMBERSHIP_ROLE,
+                            $roleId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('memberships-administration', 'list', array(), true);
     }
 }

@@ -489,14 +489,17 @@ class Base extends AbstractBase
     /**
      * Get users with empty role
      *
-     * @return array
+     * @return object
      */
     public function getUsersWithEmptyRole()
     {
         $select = $this->select();
         $select->from('user')
             ->columns(array(
-                'user_id'
+                'user_id',
+                'nick_name',
+                'email',
+                'language'
             ))
             ->where(array(
                 new IsNullPredicate('role')
@@ -504,9 +507,7 @@ class Base extends AbstractBase
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
-        $resultSet->initialize($statement->execute());
-
-        return $resultSet->toArray();
+        return $resultSet->initialize($statement->execute());
     }
 
     /**
@@ -639,7 +640,7 @@ class Base extends AbstractBase
         // check data in cache
         if (null === ($userInfo = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('user')
+            $select->from(array('a' =>'user'))
                 ->columns(array(
                     'user_id',
                     'nick_name',
@@ -660,6 +661,14 @@ class Base extends AbstractBase
                     'activation_code',
                     'avatar'
                 ))
+                ->join(
+                    array('b' => 'acl_role'),
+                    'a.role = b.id',
+                    array(
+                        'role_name' => 'name'
+                    ),
+                    'left'
+                )
                 ->where(array(
                     $field => $userId
                 ));

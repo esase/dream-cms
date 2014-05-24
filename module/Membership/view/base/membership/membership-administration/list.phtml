@@ -73,6 +73,13 @@
             )
         ),
         'multiple_actions' => array(
+            0 => array(
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'memberships-administration',
+                'action' => 'delete-roles',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected roles will be deleted. Are you sure?')
+            ),
         ),
         'single_actions' => array (
             0 => array(
@@ -88,7 +95,7 @@
         'action_identity' => 'id',
         'form_name' => 'memberships',
         'multiple_actions' => array(
-            'items_name' => 'memberships[]'
+            'items_name' => 'roles[]'
         )
     ),
     'actions_extra_check' => array(

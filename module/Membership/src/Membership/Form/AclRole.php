@@ -4,7 +4,6 @@ namespace Membership\Form;
 
 use Application\Form\CustomFormBuilder;
 use Application\Form\AbstractCustomForm;
-use Application\Model\AclAdministration as AclModelAdministration;
 use Application\Service\Service as ApplicationService;
 use Membership\Model\MembershipAdministration as MembershipAdministrationModel;
 
@@ -21,12 +20,6 @@ class AclRole extends AbstractCustomForm
      * @var array
      */
     protected $ignoredElements = array('image');
-
-    /**
-     * Acl model
-     * @var object
-     */
-    protected $aclModel;
 
     /**
      * Image
@@ -102,11 +95,8 @@ class AclRole extends AbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // file the form with default values
-            if ($this->aclModel) {
-                // get list of acl roles
-                $this->formElements['role_id']['values'] = $this->aclModel->getRolesList();
-            }
+            // get list of acl roles
+            $this->formElements['role_id']['values'] = ApplicationService::getAclRoles();
 
             // init localizations
             $localizations = ApplicationService::getLocalizations();
@@ -136,18 +126,6 @@ class AclRole extends AbstractCustomForm
         }
 
         return $this->form;
-    }
-
-    /**
-     * Set acl model
-     *
-     * @param object $aclModel
-     * @return object fluent interface
-     */
-    public function setAclModel(AclModelAdministration $aclModel)
-    {
-        $this->aclModel = $aclModel;
-        return $this;   
     }
 
     /**

@@ -356,7 +356,10 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (69, 'file_manager_window_image_width', 'Window width', '', 'integer', 1, 1, 16, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (70, 'file_manager_window_image_height', 'Window height', '', 'integer', 1, 2, 16, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 5, 8, 2, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
+(72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(73, 'user_role_edited_send', 'Send notifications about editing users roles', '', 'checkbox', 0, 17, 9, 2, 0, '', '', ''),
+(74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, '', '', ''),
+(75, 'user_role_edited_message', 'User role edited message', '', 'notification_message', 1, 18, 9, 2, 1, '', '', '');
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -397,7 +400,7 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (21, 21, '100', NULL),
 (22, 22, '10', NULL),
 (23, 23, '10', NULL),
-(24, 24, 'memcached', NULL),
+(24, 24, 'xcache', NULL),
 (25, 25, '600', NULL),
 (26, 26, 'localhost', NULL),
 (27, 27, '11211', NULL),
@@ -454,7 +457,12 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (79, 69, '500', NULL),
 (80, 70, '300', NULL),
 (81, 71, '7776000', NULL),
-(82, 72, '6912000', NULL);
+(82, 72, '6912000', NULL),
+(83, 73, '1', NULL),
+(84, 74, 'Your role was edited', NULL),
+(85, 74, 'Ваша роль была отредактирована', 'ru'),
+(86, 75, '<p><b>Dear __RealName__</b>,</p>\r\n<p>Now your role on the site is: <b>__Role__</b></p>', NULL),
+(87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru');
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
     `setting_id` int(10) unsigned NOT NULL,

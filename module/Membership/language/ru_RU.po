@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-23 18:35+0600\n"
+"PO-Revision-Date: 2014-05-24 20:24+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,12 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "All users with expired membership levels will have the default role"
+msgstr "Пользователи с истекшим уровнем членства будут иметь роль по умолчанию"
+
+msgid "Default role"
+msgstr "Роль по умолчанию"
 
 msgid "Membership"
 msgstr "Членство"
@@ -33,6 +39,12 @@ msgid "Event - Membership role deleted by the system"
 msgstr ""
 "Роль членства была удалена с помощью системы. ID роли членства - \"%d\""
 
+msgid "Event - Membership role deleted by guest"
+msgstr "Гость удалил роль членства с идентификатором - \"%d\""
+
+msgid "Event - Membership role deleted by user"
+msgstr "\"%s\" удалил(а) роль членства с идентификатором - \"%d\""
+
 msgid "Event - Editing membership roles"
 msgstr "Редактирование ролей членства"
 
@@ -40,7 +52,7 @@ msgid "Event - Membership role edited by guest"
 msgstr "Гость отредактировал роль членства с идентификатором - \"%d\""
 
 msgid "Event - Membership role edited by user"
-msgstr "\"%s\" отредактировал роль членства с идентификатором - \"%d\""
+msgstr "\"%s\" отредактировал(а) роль членства с идентификатором - \"%d\""
 
 msgid "Event - Adding membership roles"
 msgstr "Добавление ролей членства"
@@ -49,7 +61,10 @@ msgid "Event - Membership role added by guest"
 msgstr "Гость добавил роль членства с идентификатором - \"%d\""
 
 msgid "Event - Membership role added by user"
-msgstr "\"%s\" добавил роль членства с идентификатором - \"%d\""
+msgstr "\"%s\" добавил(а) роль членства с идентификатором - \"%d\""
+
+msgid "ACL - Deleting membership roles in admin area"
+msgstr "Удаление ролей членства в админке"
 
 msgid "ACL - Editing membership settings in admin area"
 msgstr "Изменение настроек ролей членства в админке"

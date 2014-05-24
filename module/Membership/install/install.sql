@@ -19,7 +19,8 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('memberships_administration_list', 'ACL - Viewing list of membership levels  in admin area', @moduleId),
 ('memberships_administration_add_role', 'ACL - Adding membership roles in admin area', @moduleId),
 ('memberships_administration_edit_role', 'ACL - Editing membership roles in admin area', @moduleId),
-('memberships_administration_settings', 'ACL - Editing membership settings in admin area', @moduleId);
+('memberships_administration_settings', 'ACL - Editing membership settings in admin area', @moduleId),
+('memberships_administration_delete_roles', 'ACL - Deleting membership roles in admin area', @moduleId);
 
 INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('add_membership_role', @moduleId, 'Event - Adding membership roles'),
@@ -39,6 +40,13 @@ INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `orde
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '200', NULL);
+
+INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+('membership_default_role', 'Default role', 'All users with expired membership levels will have the default role', 'select', 1, 3, 1, @moduleId, 0, 'return Application\\Service\\Service::getAclRoles();', '', '');
+
+SET @settingId = (SELECT LAST_INSERT_ID());
+INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
+(@settingId,  '1', NULL);
 
 CREATE TABLE IF NOT EXISTS `membership_level` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

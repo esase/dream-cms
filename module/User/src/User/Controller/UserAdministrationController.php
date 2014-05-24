@@ -219,8 +219,7 @@ class UserAdministrationController extends AbstractBaseController
         // get a role form
         $roleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('User\Form\Role')
-            ->setModel($this->getAclModel());
+            ->getInstance('User\Form\Role');
 
         // fill the form with default values
         $roleForm->getForm()->setData($user);
@@ -240,6 +239,27 @@ class UserAdministrationController extends AbstractBaseController
 
                 if (true === ($result = $this->getModel()->
                         editUserRole($user['user_id'], $roleForm->getForm()->getData()['role']))) {
+
+                    // send a notification
+                    if ((int) $this->getSetting('user_role_edited_send')) {
+                        $notificationLanguage = $user['language']
+                            ? $user['language'] // we should use the user's language
+                            : UserService::getDefaultLocalization()['language'];
+
+                        EmailNotification::sendNotification($user['email'],
+                                $this->getSetting('user_role_edited_title', $notificationLanguage),
+                                $this->getSetting('user_role_edited_message', $notificationLanguage), array(
+                                    'find' => array(
+                                        'RealName',
+                                        'Role'
+                                    ),
+                                    'replace' => array(
+                                        $user['nick_name'],
+                                        $this->getTranslator()->translate(UserService::getAclRoles()[$roleForm->getForm()->getData()['role']],
+                                            'default', UserService::getLocalizations()[$notificationLanguage]['locale'])
+                                    )
+                                ));
+                    }
 
                     // event's description
                     $eventDesc = UserService::isGuest()
@@ -681,8 +701,7 @@ class UserAdministrationController extends AbstractBaseController
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('User\Form\UserFilter')
-            ->setAclModel($this->getAclModel());
+            ->getInstance('User\Form\UserFilter');
 
         $request = $this->getRequest();
         $filterForm->getForm()->setData($request->getQuery(), false);

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-23 18:35+0600\n"
+"PO-Revision-Date: 2014-05-24 20:18+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -13,6 +13,12 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "All users with expired membership levels will have the default role"
+msgstr "All users with expired membership levels will have the default role"
+
+msgid "Default role"
+msgstr "Default role"
 
 msgid "Membership"
 msgstr "Membership"
@@ -32,6 +38,12 @@ msgstr "Deleting membership roles"
 msgid "Event - Membership role deleted by the system"
 msgstr "The membership's role with id - \"%d\" was deleted by the system."
 
+msgid "Event - Membership role deleted by guest"
+msgstr "Guest deleted the membership role with id - \"%d\""
+
+msgid "Event - Membership role deleted by user"
+msgstr "\"%s\" deleted the membership role with id - \"%d\""
+
 msgid "Event - Editing membership roles"
 msgstr "Editing membership roles"
 
@@ -49,6 +61,9 @@ msgstr "Guest added the membership role with id - \"%d\""
 
 msgid "Event - Membership role added by user"
 msgstr "\"%s\" added the membership role with id - \"%d\""
+
+msgid "ACL - Deleting membership roles in admin area"
+msgstr "Deleting membership roles in admin area"
 
 msgid "ACL - Editing membership settings in admin area"
 msgstr "Editing membership settings in admin area"

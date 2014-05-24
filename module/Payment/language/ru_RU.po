@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-16 11:51+0600\n"
+"PO-Revision-Date: 2014-05-24 20:30+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -424,7 +424,7 @@ msgid "Event - Payment transaction deleted by guest"
 msgstr "Гость удалил платежную транзакцию с идентификатором - \"%s\""
 
 msgid "Event - Payment transaction deleted by user"
-msgstr "\"%s\" удалил платежную транзакцию с идентификатором - \"%s\""
+msgstr "\"%s\" удалил(а) платежную транзакцию с идентификатором - \"%s\""
 
 msgid "Event - Shopping cart and transactions items were edited by the system"
 msgstr ""
@@ -455,7 +455,7 @@ msgid "Event - Payment transaction activated by guest"
 msgstr "Гость активировал платежную транзакцию с идентификатором - \"%d\""
 
 msgid "Event - Payment transaction activated by user"
-msgstr "\"%s\" активировал платежную транзакцию с идентификатором - \"%d\""
+msgstr "\"%s\" активировал(а) платежную транзакцию с идентификатором - \"%d\""
 
 msgid "Event - Adding payment transactions"
 msgstr "Добавление платежных операций"
@@ -464,7 +464,7 @@ msgid "Event - Payment transaction added by guest"
 msgstr "Гость добавил платежную транзакцию с идентификатором - \"%s\""
 
 msgid "Event - Payment transaction added by user"
-msgstr "\"%s\" добавил платежную транзакцию с идентификатором - \"%s\""
+msgstr "\"%s\" добавил(а) платежную транзакцию с идентификатором - \"%s\""
 
 msgid "Event - Editing items into the shopping cart"
 msgstr "Редактирование товаров в корзине"
@@ -473,7 +473,7 @@ msgid "Event - Item edited into the shopping cart by guest"
 msgstr "Гость отредактировал товар в корзине с идентификатором - \"%d\""
 
 msgid "Event - Item edited into the shopping cart by user"
-msgstr "\"%s\" отредактировал товар в корзине с идентификатором - \"%d\""
+msgstr "\"%s\" отредактировал(а) товар в корзине с идентификатором - \"%d\""
 
 msgid "Event - Deactivating discount coupons"
 msgstr "Дезактивация скидочных купонов"
@@ -482,7 +482,7 @@ msgid "Event - Discount coupon deactivated by guest"
 msgstr "Гость дезактивировал скидочный купон с идентификатором - \"%s\""
 
 msgid "Event - Discount coupon deactivated by user"
-msgstr "\"%s\" дезактивировал скидочный купон с идентификатором - \"%s\""
+msgstr "\"%s\" дезактивировал(а) скидочный купон с идентификатором - \"%s\""
 
 msgid "Event - Activating discount coupons"
 msgstr "Активация скидочных купонов"
@@ -491,7 +491,7 @@ msgid "Event - Discount coupon activated by guest"
 msgstr "Гость активировал скидочный купон с идентификатором - \"%s\""
 
 msgid "Event - Discount coupon activated by user"
-msgstr "\"%s\" активировал скидочный купон с идентификатором - \"%s\""
+msgstr "\"%s\" активировал(а) скидочный купон с идентификатором - \"%s\""
 
 msgid "Event - Deleting items from the shopping cart"
 msgstr "Удаление товаров из корзины"
@@ -503,7 +503,7 @@ msgid "Event - Item deleted from shopping cart by guest"
 msgstr "Гость удалил товар из корзины с идентификатором - \"%d\""
 
 msgid "Event - Item deleted from shopping cart by user"
-msgstr "\"%s\" удалил товар из корзины с идентификатором - \"%d\""
+msgstr "\"%s\" удалил(а) товар из корзины с идентификатором - \"%d\""
 
 msgid "Event - Adding items to the shopping cart"
 msgstr "Добавление товаров в корзину"
@@ -512,7 +512,7 @@ msgid "Event - Item added to shopping cart by guest"
 msgstr "Гость добавил товар в корзину с идентификатором - \"%d\""
 
 msgid "Event - Item added to shopping cart by user"
-msgstr "\"%s\" добавил товар в корзину с идентификатором - \"%d\""
+msgstr "\"%s\" добавил(а) товар в корзину с идентификатором - \"%d\""
 
 msgid "Event - Editing discount coupons"
 msgstr "Редактирование скидочных купонов"
@@ -521,7 +521,7 @@ msgid "Event - Discount coupon edited by guest"
 msgstr "Гость отредактировал скидочный купон с идентификатором - \"%d\""
 
 msgid "Event - Discount coupon edited by user"
-msgstr "\"%s\" отредактировал скидочный купон с идентификатором - \"%d\""
+msgstr "\"%s\" отредактировал(а) скидочный купон с идентификатором - \"%d\""
 
 msgid "Event - Adding discount coupons"
 msgstr "Добавление скидочных купонов"
@@ -530,7 +530,7 @@ msgid "Event - Discount coupon added by guest"
 msgstr "Гость добавил скидочный купон с идентификатором - \"%d\""
 
 msgid "Event - Discount coupon added by user"
-msgstr "\"%s\" добавил скидочный купон с идентификатором - \"%d\""
+msgstr "\"%s\" добавил(а) скидочный купон с идентификатором - \"%d\""
 
 msgid "Event - Deleting discount coupons"
 msgstr "Удаление скидочных купонов"
@@ -539,7 +539,7 @@ msgid "Event - Discount coupon deleted by guest"
 msgstr "Гость удалил скидочный купон с идентификатором - \"%d\""
 
 msgid "Event - Discount coupon deleted by user"
-msgstr "\"%s\" удалил скидочный купон с идентификатором - \"%d\""
+msgstr "\"%s\" удалил(а) скидочный купон с идентификатором - \"%d\""
 
 msgid "Event - Editing exchange rates"
 msgstr "Редактирование курсов валют"
@@ -548,7 +548,8 @@ msgid "Event - Payment exchange rates edited by guest"
 msgstr "Гость отредактировал курс валют для валюты с идентификатором - \"%d\""
 
 msgid "Event - Payment exchange rates edited by user"
-msgstr "\"%s\" отредактировал курс валют для валюты с идентификатором - \"%d\""
+msgstr ""
+"\"%s\" отредактировал(а) курс валют для валюты с идентификатором - \"%d\""
 
 msgid "Event - Deleting payment currencies"
 msgstr "Удаление платежных валют"
@@ -557,7 +558,7 @@ msgid "Event - Payment currency deleted by guest"
 msgstr "Гость удалил платежную валюту с идентификатором - \"%d\""
 
 msgid "Event - Payment currency deleted by user"
-msgstr "\"%s\" удалил платежную валюту с идентификатором - \"%d\""
+msgstr "\"%s\" удалил(а) платежную валюту с идентификатором - \"%d\""
 
 msgid "Event - Editing payment currencies"
 msgstr "Редактирование платежных валют"
@@ -566,7 +567,7 @@ msgid "Event - Payment currency edited by guest"
 msgstr "Гость отредактировал платежную валюту с идентификатором - \"%d\""
 
 msgid "Event - Payment currency edited by user"
-msgstr "\"%s\" отредактировал платежную валюту с идентификатором - \"%d\""
+msgstr "\"%s\" отредактировал(а) платежную валюту с идентификатором - \"%d\""
 
 msgid "Event - Adding payment currencies"
 msgstr "Добавление платежных валют"
@@ -575,7 +576,7 @@ msgid "Event - Payment currency added by guest"
 msgstr "Гость добавил платежную валюту с идентификатором - \"%d\""
 
 msgid "Event - Payment currency added by user"
-msgstr "\"%s\" добавил платежную валюту с идентификатором - \"%d\""
+msgstr "\"%s\" добавил(а) платежную валюту с идентификатором - \"%d\""
 
 msgid "ACL - Activating payments transactions in admin area"
 msgstr "Активация платежных операций в админке"

@@ -4,7 +4,7 @@ namespace User\Form;
 
 use Application\Form\AbstractCustomForm;
 use Application\Form\CustomFormBuilder;
-use Application\Model\Acl as AclModel;
+use Application\Service\Service as ApplicationService;
 
 class Role extends AbstractCustomForm 
 {
@@ -13,12 +13,6 @@ class Role extends AbstractCustomForm
      * @var string
      */
     protected $formName = 'user-role';
-
-    /**
-     * Model instance
-     * @var object  
-     */
-    protected $model;
 
     /**
      * Form elements
@@ -49,24 +43,12 @@ class Role extends AbstractCustomForm
         // get form builder
         if (!$this->form) {
             // fill the form with default values
-            $this->formElements['role']['values'] = $this->model->getRolesList();
+            $this->formElements['role']['values'] = ApplicationService::getAclRoles();
 
             $this->form = new CustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
         return $this->form;
-    }
-
-    /**
-     * Set a model
-     *
-     * @param object $model
-     * @return object fluent interface
-     */
-    public function setModel(AclModel $model)
-    {
-        $this->model = $model;
-        return $this;
     }
 }

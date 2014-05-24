@@ -4,8 +4,8 @@ namespace User\Form;
 
 use Application\Form\AbstractCustomForm;
 use User\Model\Base as UserBaseModel;
-use Application\Model\AclAdministration as AclModelAdministration;
 use Application\Form\CustomFormBuilder;
+use Application\Service\Service as ApplicationService;
 
 class UserFilter extends AbstractCustomForm 
 {
@@ -26,12 +26,6 @@ class UserFilter extends AbstractCustomForm
      * @var array
      */
     protected $notValidatedElements = array('submit');
-
-    /**
-     * Acl model
-     * @var object
-     */
-    protected $aclModel;
 
     /**
      * Form elements
@@ -80,28 +74,13 @@ class UserFilter extends AbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // file the form with default values
-            if ($this->aclModel) {
-                // get list of acl roles
-                $this->formElements['role']['values'] = $this->aclModel->getRolesList();
-            }
+            // get list of acl roles
+            $this->formElements['role']['values'] = ApplicationService::getAclRoles();
 
             $this->form = new CustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
         return $this->form;
-    }
-
-    /**
-     * Set acl model
-     *
-     * @param object $aclModel
-     * @return object fluent interface
-     */
-    public function setAclModel(AclModelAdministration $aclModel)
-    {
-        $this->aclModel = $aclModel;
-        return $this;   
     }
 }

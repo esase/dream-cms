@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-23 16:43+0600\n"
+"PO-Revision-Date: 2014-05-24 20:35+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -13,6 +13,12 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "A 403 error occurred"
+msgstr "Произошла 403 ошибка"
+
+msgid "Your request is forbidden"
+msgstr "Ваш запрос запрещен"
 
 msgid "Image width"
 msgstr "Ширина изображения"
@@ -650,7 +656,7 @@ msgid "Event - Settings were changed by guest"
 msgstr "Гость изменил настройки для модуля \"%s\""
 
 msgid "Event - Settings were changed by user"
-msgstr "\"%s\" изменил настройки для модуля \"%s\""
+msgstr "\"%s\" изменил(а) настройки для модуля \"%s\""
 
 msgid "Event - Getting localizations via XmlRpc"
 msgstr "Получение локализаций через XmlRpc"
@@ -659,7 +665,7 @@ msgid "Event - Localizations were got by guest via XmlRpc"
 msgstr "Гость получил локализации через XmlRpc"
 
 msgid "Event - Localizations were got by user via XmlRpc"
-msgstr "\"%s\" получил локализации через XmlRpc"
+msgstr "\"%s\" получил(а) локализации через XmlRpc"
 
 msgid "Event - Deleting ACL roles"
 msgstr "Удаленение ACL ролей"
@@ -668,7 +674,7 @@ msgid "Event - ACL role deleted by guest"
 msgstr "Гость удалил роль ACL с идентификатором - \"%d\""
 
 msgid "Event - ACL role deleteted by user"
-msgstr "\"%s\" удалил роль ACL с идентификатором - \"%d\""
+msgstr "\"%s\" удалил(а) роль ACL с идентификатором - \"%d\""
 
 msgid "Event - Adding ACL roles"
 msgstr "Добавление ACL ролей"
@@ -677,7 +683,7 @@ msgid "Event - ACL role added by guest"
 msgstr "Гость добавил роль ACL с идентификатором - \"%d\""
 
 msgid "Event - ACL role added by user"
-msgstr "\"%s\" добавил роль ACL с идентификатором - \"%d\""
+msgstr "\"%s\" добавил(а) роль ACL с идентификатором - \"%d\""
 
 msgid "Event - Editing ACL roles"
 msgstr "Редактирование ACL ролей"
@@ -686,7 +692,7 @@ msgid "Event - ACL role edited by guest"
 msgstr "Гость отредактировал роль ACL с идентификатором - \"%d\""
 
 msgid "Event - ACL role edited by user"
-msgstr "\"%s\" отредактировал роль ACL с идентификатором - \"%d\""
+msgstr "\"%s\" отредактировал(а) роль ACL с идентификатором - \"%d\""
 
 msgid "Event - Allowing ACL resources"
 msgstr "Разрешение ACL ресурсов"
@@ -695,7 +701,7 @@ msgid "Event - ACL resource allowed by guest"
 msgstr "Гость разрешил ресурс ACL с идентификатором - \"%d\""
 
 msgid "Event - ACL resource allowed by user"
-msgstr "\"%s\" разрешил ресурс ACL с идентификатором - \"%d\""
+msgstr "\"%s\" разрешил(а) ресурс ACL с идентификатором - \"%d\""
 
 msgid "Event - Disallowing ACL resources"
 msgstr "Запрет ACL ресурсов"
@@ -704,7 +710,7 @@ msgid "Event - ACL resource disallowed by guest"
 msgstr "Гость запретил ресурс ACL с идентификатором - \"%d\""
 
 msgid "Event - ACL resource disallowed by user"
-msgstr "\"%s\" запретил ресурс ACL с идентификатором - \"%d\""
+msgstr "\"%s\" запретил(а) ресурс ACL с идентификатором - \"%d\""
 
 msgid "Event - Editing ACL resources settings"
 msgstr "Изменение настроек ACL ресурсов"
@@ -716,8 +722,8 @@ msgstr ""
 
 msgid "Event - ACL resource settings edited by user"
 msgstr ""
-"\"%s\" отредактировал настройки ACL ресурса с идентификатором роли - \"%d\" "
-"и идентификатором ресурса - \"%d\""
+"\"%s\" отредактировал(а) настройки ACL ресурса с идентификатором роли - \"%d"
+"\" и идентификатором ресурса - \"%d\""
 
 msgid "Event - Sending email notifications"
 msgstr "Отправка уведомлений по электронной почте"
@@ -734,13 +740,7 @@ msgid "Event - Cache cleared by guest"
 msgstr "Гость очистил кэш - \"%s\""
 
 msgid "Event - Cache cleared by user"
-msgstr "\"%s\" очистил кэш - \"%s\""
-
-msgid "A 403 error occurred"
-msgstr "Произошла 403 ошибка"
-
-msgid "Your request is forbidden"
-msgstr "Ваш запрос запрещен"
+msgstr "\"%s\" очистил(а) кэш - \"%s\""
 
 msgid "ACL - Getting site's localizations via XmlRpc"
 msgstr "Получение локализации сайта через XMLRPC"
