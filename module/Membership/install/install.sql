@@ -25,7 +25,9 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('add_membership_role', @moduleId, 'Event - Adding membership roles'),
 ('edit_membership_role', @moduleId, 'Event - Editing membership roles'),
-('delete_membership_role', @moduleId, 'Event - Deleting membership roles');
+('delete_membership_role', @moduleId, 'Event - Deleting membership roles'),
+('delete_membership_conection', @moduleId, 'Event - Deleting membership connections'),
+('activate_membership_conection', @moduleId, 'Event - Activating membership connections');
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
 ('membership_image_width', 'Image width', '', 'integer', 1, 1, 1, @moduleId, 0, '', '', '');
@@ -60,7 +62,23 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     KEY `cost` (`cost`),
     KEY `lifetime` (`lifetime`),
     KEY `role` (`role_id`),
-    FOREIGN KEY (language) REFERENCES localization(language)
+    FOREIGN KEY (`language`) REFERENCES `localization`(`language`)
         ON UPDATE CASCADE
         ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `membership_level_connection` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id` int(10) unsigned NOT NULL,
+    `membership_id` int(10) unsigned NOT NULL,
+    `active` tinyint(1) unsigned NOT NULL,
+    `expire` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `expire` (`active`, `expire`),
+    FOREIGN KEY (`user_id`) REFERENCES `user`(`user_id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`membership_id`) REFERENCES `membership_level`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

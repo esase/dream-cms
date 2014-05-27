@@ -5,8 +5,10 @@ namespace Membership;
 use Membership\Event\Event as MembershipEvent;
 use Zend\Mvc\MvcEvent;
 use User\Model\Base as UserBaseModel;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Zend\Console\Adapter\AdapterInterface as Console;
 
-class Module
+class Module implements ConsoleUsageProviderInterface
 {
     /**
      * Bootstrap
@@ -78,5 +80,21 @@ class Module
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
+    }
+
+    /**
+     * Get console usage info
+     *
+     * @param object $console
+     * @return array
+     */
+    public function getConsoleUsage(Console $console)
+    {
+        return array(
+            // describe available commands
+            'membership clean expired memberships connections [--verbose|-v]' => 'Clean expired membership connections',
+            // describe expected parameters
+            array('--verbose|-v', '(optional) turn on verbose mode'),
+        );
     }
 }

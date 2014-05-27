@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-05-24 20:24+0600\n"
+"PO-Revision-Date: 2014-05-25 14:28+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -31,6 +31,22 @@ msgstr "Уровни членства"
 
 msgid "List of membership levels"
 msgstr "Список уровней членства"
+
+msgid "Event - Activating membership connections"
+msgstr "Активация связей ролей членства"
+
+msgid "Event - Membership connection activated by the system"
+msgstr ""
+"Связь роли членства была активирована с помощью системы. ID связи роли "
+"членства - \"%d\""
+
+msgid "Event - Deleting membership connections"
+msgstr "Удаление связей ролей членства"
+
+msgid "Event - Membership connection deleted by the system"
+msgstr ""
+"Связь роли членства была удалена с помощью системы. ID связи роли членства - "
+"\"%d\""
 
 msgid "Event - Deleting membership roles"
 msgstr "Удаление ролей членства"

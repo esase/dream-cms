@@ -240,39 +240,8 @@ class UserAdministrationController extends AbstractBaseController
                 if (true === ($result = $this->getModel()->
                         editUserRole($user['user_id'], $roleForm->getForm()->getData()['role']))) {
 
-                    // send a notification
-                    if ((int) $this->getSetting('user_role_edited_send')) {
-                        $notificationLanguage = $user['language']
-                            ? $user['language'] // we should use the user's language
-                            : UserService::getDefaultLocalization()['language'];
-
-                        EmailNotification::sendNotification($user['email'],
-                                $this->getSetting('user_role_edited_title', $notificationLanguage),
-                                $this->getSetting('user_role_edited_message', $notificationLanguage), array(
-                                    'find' => array(
-                                        'RealName',
-                                        'Role'
-                                    ),
-                                    'replace' => array(
-                                        $user['nick_name'],
-                                        $this->getTranslator()->translate(UserService::getAclRoles()[$roleForm->getForm()->getData()['role']],
-                                            'default', UserService::getLocalizations()[$notificationLanguage]['locale'])
-                                    )
-                                ));
-                    }
-
-                    // event's description
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - User\'s role edited by guest'
-                        : 'Event - User\'s role edited by user';
-
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($user['user_id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $user['user_id']);
-
-                    UserEvent::fireEvent(UserEvent::EDIT_ROLE,
-                            $user['user_id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the edit user role event
+                    UserEvent::fireEditRoleEvent($user, UserService::getAclRoles()[$roleForm->getForm()->getData()['role']]);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -345,18 +314,8 @@ class UserAdministrationController extends AbstractBaseController
                 if (true === ($result = $this->getModel()->editUser($user, $userForm->
                         getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
 
-                    // event's description
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - User edited by guest'
-                        : 'Event - User edited by user';
-
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($user['user_id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $user['user_id']);
-
-                    UserEvent::fireEvent(UserEvent::EDIT,
-                            $user['user_id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the edit user event
+                    UserEvent::fireUserEditEvent($user['user_id']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -416,18 +375,8 @@ class UserAdministrationController extends AbstractBaseController
                         addUser($userForm->getForm()->getData(), true, $this->params()->fromFiles('avatar'));
 
                 if (is_numeric($result)) {
-                    // event's description
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - User added by guest'
-                        : 'Event - User added by user';
-
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($result)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $result);
-
-                    UserEvent::fireEvent(UserEvent::ADD,
-                            $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the add user event
+                    UserEvent::fireUserAddEvent($result);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -466,11 +415,6 @@ class UserAdministrationController extends AbstractBaseController
 
         if ($request->isPost()) {
             if (null !== ($usersIds = $request->getPost('users', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - User deleted by guest'
-                    : 'Event - User deleted by user';
-
                 // delete selected users
                 foreach ($usersIds as $userId) {
                     // default user should not be deleted
@@ -485,13 +429,8 @@ class UserAdministrationController extends AbstractBaseController
                         return $result;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($userId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $userId);
-
-                    UserEvent::fireEvent(UserEvent::DELETE,
-                            $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the delete user event
+                    UserEvent::fireUserDeleteEvent($userId, $userInfo);
 
                     // delete the user
                     if (true !== ($deleteResult = $this->getModel()->deleteUser($userInfo))) {
@@ -501,24 +440,6 @@ class UserAdministrationController extends AbstractBaseController
                                 : $this->getTranslator()->translate('Error occurred')));
 
                         break;
-                    }
-
-                    // send an email notification
-                    if ((int) $this->getSetting('user_deleted_send')) {
-                        $notificationLanguage = $userInfo['language']
-                            ? $userInfo['language'] // we should use the user's language
-                            : UserService::getDefaultLocalization()['language'];
-    
-                        EmailNotification::sendNotification($userInfo['email'],
-                                $this->getSetting('user_deleted_title', $notificationLanguage),
-                                $this->getSetting('user_deleted_message', $notificationLanguage), array(
-                                    'find' => array(
-                                        'RealName'
-                                    ),
-                                    'replace' => array(
-                                        $userInfo['nick_name']
-                                    )
-                                ));
                     }
                 }
 
@@ -543,11 +464,6 @@ class UserAdministrationController extends AbstractBaseController
 
         if ($request->isPost()) {
             if (null !== ($usersIds = $request->getPost('users', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - User approved by guest'
-                    : 'Event - User approved by user';
-
                 // approve selected users
                 $approveResult = false;
                 foreach ($usersIds as $userId) {
@@ -572,31 +488,8 @@ class UserAdministrationController extends AbstractBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($userId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $userId);
-
-                    UserEvent::fireEvent(UserEvent::APPROVE,
-                            $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
-
-                    // send an email notification
-                    $notificationLanguage = $userInfo['language']
-                        ? $userInfo['language'] // we should use the user's language
-                        : UserService::getDefaultLocalization()['language'];
-
-                    EmailNotification::sendNotification($userInfo['email'],
-                            $this->getSetting('user_approved_title', $notificationLanguage),
-                            $this->getSetting('user_approved_message', $notificationLanguage), array(
-                                'find' => array(
-                                    'RealName',
-                                    'Email'
-                                ),
-                                'replace' => array(
-                                    $userInfo['nick_name'],
-                                    $userInfo['email']
-                                )
-                            ));
+                    // fire the approve user event
+                    UserEvent::fireUserApproveEvent($userId, $userInfo);
                 }
 
                 if (true === $approveResult) {
@@ -620,11 +513,6 @@ class UserAdministrationController extends AbstractBaseController
 
         if ($request->isPost()) {
             if (null !== ($usersIds = $request->getPost('users', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - User disapproved by guest'
-                    : 'Event - User disapproved by user';
-
                 // disapprove selected users
                 foreach ($usersIds as $userId) {
                     if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||
@@ -647,31 +535,8 @@ class UserAdministrationController extends AbstractBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($userId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $userId);
-
-                    UserEvent::fireEvent(UserEvent::DISAPPROVE,
-                            $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
-
-                    // send an email notification
-                    $notificationLanguage = $userInfo['language']
-                        ? $userInfo['language'] // we should use the user's language
-                        : UserService::getDefaultLocalization()['language'];
-
-                    EmailNotification::sendNotification($userInfo['email'],
-                            $this->getSetting('user_disapproved_title', $notificationLanguage),
-                            $this->getSetting('user_disapproved_message', $notificationLanguage), array(
-                                'find' => array(
-                                    'RealName',
-                                    'Email'
-                                ),
-                                'replace' => array(
-                                    $userInfo['nick_name'],
-                                    $userInfo['email']
-                                )
-                            ));
+                    // fire the disapprove user event
+                    UserEvent::fireUserDisapproveEvent($userId, $userInfo);
                 }
 
                 if (true === $disapproveResult) {

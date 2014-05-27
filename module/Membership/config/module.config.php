@@ -4,10 +4,26 @@ return array (
     'controllers' => array(
         'invokables' => array(
             'memberships-administration' => 'Membership\Controller\MembershipAdministrationController',
+            'memberships-console' => 'Membership\Controller\MembershipConsoleController'
         )
     ),
     'router' => array(
         'routes' => array(
+        )
+    ),
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'membership clean connections' => array(
+                    'options' => array(
+                        'route'    => 'membership clean expired memberships connections [--verbose|-v]',
+                        'defaults' => array(
+                            'controller' => 'memberships-console',
+                            'action'     => 'cleanExpiredMembershipsConnections'
+                        )
+                    )
+                )
+            )
         )
     ),
     'translator' => array(

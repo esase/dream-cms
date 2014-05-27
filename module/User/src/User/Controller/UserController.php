@@ -65,15 +65,14 @@ class UserController extends AbstractBaseController
     {
         $user = UserService::getCurrentUserIdentity();
 
-        // fire the event
-        UserEvent::fireEvent(UserEvent::LOGOUT, $user->user_id,
-            $user->user_id, 'Event - User successfully logged out', array($user->nick_name));
-
         // clear logged user's identity
         $this->getAuthService()->clearIdentity();
 
         // skip a remember me time
         $this->serviceLocator->get('Zend\Session\SessionManager')->rememberMe(0);
+
+        // fire the user logout event
+        UserEvent::fireLogoutEvent($user->user_id, $user->nick_name);
     }
 
     /**
@@ -89,13 +88,12 @@ class UserController extends AbstractBaseController
     {
         $user = new StdClass();
         $user->user_id = $userId;
-
+        
         // save user id
         $this->getAuthService()->getStorage()->write($user);
 
-        // fire event
-        UserEvent::fireEvent(UserEvent::LOGIN,
-                $userId, $userId, 'Event - User successfully logged in', array($userNickname));
+        // fire the user login event
+        UserEvent::fireLoginEvent($userId, $userNickname);
 
         if ($rememberMe) {
             $this->serviceLocator->
@@ -157,9 +155,8 @@ class UserController extends AbstractBaseController
                     return $this->redirectTo('user', 'activate', array('slug' => $this->getSlug()));
                 }
 
-                // fire the event
-                UserEvent::fireEvent(UserEvent::APPROVE,
-                        $userInfo['user_id'], $userInfo['user_id'], 'Event - User confirmed email', array($userInfo['nick_name']));
+                // fire the approve user event
+                UserEvent::fireUserApproveEvent($userInfo['user_id'], $userInfo, $userInfo['nick_name']);
 
                 // login and redirect the user
                 return $this->loginUser($userInfo['user_id'], $userInfo['nick_name']);
@@ -203,23 +200,8 @@ class UserController extends AbstractBaseController
                 $resetedPassword = $this->getModel()->resetUserPassword($userInfo['user_id']);
 
                 if (is_array($resetedPassword)) {
-                    // send an email password reseted notification
-                    EmailNotification::sendNotification($userInfo['email'],
-                        $this->getSetting('user_password_reseted_title'),
-                        $this->getSetting('user_password_reseted_message'), array(
-                            'find' => array(
-                                'RealName',
-                                'Password'
-                            ),
-                            'replace' => array(
-                                $userInfo['nick_name'],
-                                $resetedPassword['password']
-                            )
-                        ));
-
-                    // fire the event
-                    UserEvent::fireEvent(UserEvent::RESET_PASSWORD,
-                            $userInfo['user_id'], $userInfo['user_id'], 'Event - User reseted password', array($userInfo['nick_name'], $userInfo['user_id']));
+                    // fire the user password reset event
+                    UserEvent::fireUserPasswordResetEvent($userInfo['user_id'], $userInfo, $resetedPassword['password']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -313,9 +295,8 @@ class UserController extends AbstractBaseController
                         $this->flashMessenger()->addMessage($errorMessage);
                     }
 
-                    // fire the event
-                    UserEvent::fireEvent(UserEvent::LOGIN_FAILED, 0,
-                            AclModel::DEFAULT_ROLE_GUEST, 'Event - User login failed', array($request->getPost('nickname')));
+                    // fire the user login failed event
+                    UserEvent::fireLoginFailedEvent(AclModel::DEFAULT_ROLE_GUEST, $request->getPost('nickname'));
 
                     return $this->redirectTo('user', 'login',
                             array(), false, array('back' => $request->getQuery('back')));
@@ -354,11 +335,8 @@ class UserController extends AbstractBaseController
 
             // delete the user's account
             if ($deleteForm->getForm()->isValid()) {
-                // fire the event
-                UserEvent::fireEvent(UserEvent::DELETE, UserService::getCurrentUserIdentity()->user_id,
-                        UserService::getCurrentUserIdentity()->user_id,
-                        'Event - User deleted', array(UserService::getCurrentUserIdentity()->nick_name,
-                        UserService::getCurrentUserIdentity()->user_id));
+                // fire the delete user event
+                UserEvent::fireUserDeleteEvent(UserService::getCurrentUserIdentity()->user_id);
 
                 if (true !== ($deleteResult = $this->getModel()->deleteUser((array) UserService::getCurrentUserIdentity()))) {
                     $this->flashMessenger()
@@ -427,11 +405,8 @@ class UserController extends AbstractBaseController
                 if (true == ($result = $this->getModel()->editUser((array) UserService::getCurrentUserIdentity(),
                         $userForm->getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
 
-                    // fire the event
-                    UserEvent::fireEvent(UserEvent::EDIT, UserService::getCurrentUserIdentity()->user_id,
-                            UserService::getCurrentUserIdentity()->user_id,
-                            'Event - User edited', array(UserService::getCurrentUserIdentity()->nick_name,
-                            UserService::getCurrentUserIdentity()->user_id));
+                    // fire the edit user event
+                    UserEvent::fireUserEditEvent(UserService::getCurrentUserIdentity()->user_id, true);
 
                     if ($status) {
                         $this->flashMessenger()
@@ -495,27 +470,8 @@ class UserController extends AbstractBaseController
                 $activationCode = $this->getModel()->generateActivationCode($userInfo['user_id']);
 
                 if (is_array($activationCode)) {
-                    // send an email password reset notification
-                    EmailNotification::sendNotification($userInfo['email'],
-                        $this->getSetting('user_reset_password_title'),
-                        $this->getSetting('user_reset_password_message'), array(
-                            'find' => array(
-                                'RealName',
-                                'ConfirmationLink',
-                                'ConfCode'
-                            ),
-                            'replace' => array(
-                                $userInfo['nick_name'],
-                                $this->url()->fromRoute('application', array('controller' => 'user',
-                                        'action' => 'password-reset', 'slug' => $userInfo['slug']), array('force_canonical' => true)),
-
-                                $activationCode['activation_code']
-                            )
-                        ));
-
-                    // fire the event
-                    UserEvent::fireEvent(UserEvent::RESET_PASSWORD_REQUEST,
-                            $userInfo['user_id'], $userInfo['user_id'], 'Event - User requested password reset', array($userInfo['nick_name'], $userInfo['user_id']));
+                    // fire the user password reset request event
+                    UserEvent::fireUserPasswordResetRequestEvent($userInfo['user_id'], $userInfo, $activationCode['activation_code']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -581,25 +537,8 @@ class UserController extends AbstractBaseController
                     // get the user info
                     $userInfo = $this->getModel()->getUserInfo($result);
 
-                    // fire the event
-                    UserEvent::fireEvent(UserEvent::ADD,
-                            $result, $result, 'Event - User registered', array($userInfo['nick_name'], $userInfo['user_id']));
-
-                    // send an email notification about register the new user
-                    if ((int) $this->getSetting('user_registered_send')) {
-                        EmailNotification::sendNotification($this->getSetting('application_site_email'),
-                            $this->getSetting('user_registered_title', UserService::getDefaultLocalization()['language']),
-                            $this->getSetting('user_registered_message', UserService::getDefaultLocalization()['language']), array(
-                                'find' => array(
-                                    'RealName',
-                                    'Email'
-                                ),
-                                'replace' => array(
-                                    $userInfo['nick_name'],
-                                    $userInfo['email']
-                                )
-                            ));
-                    }
+                    // fire the add user event
+                    UserEvent::fireUserAddEvent($result, $userInfo);
 
                     // check the user status
                     if (!$status) {

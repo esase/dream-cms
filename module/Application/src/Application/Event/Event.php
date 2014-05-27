@@ -4,14 +4,8 @@ namespace Application\Event;
 
 use Zend\EventManager\EventManager as EventManager;
 
-class Event
+class Event extends AbstractEvent
 {
-    /**
-     * Event manager
-     * @var object
-     */
-    protected static $eventManager;
-
     /**
      * Get localizations by xmlrpc event
      */
@@ -61,39 +55,4 @@ class Event
      * Send email notification
      */
     const SEND_EMAIL_NOTIFICATION = 'send_email_notification';
-
-    /**
-     * Fire event
-     *
-     * @param string $event
-     * @param integer|string $objectid
-     * @param integer $userId
-     * @param string $description
-     * @param array $descriptionParams
-     * @return object
-     */
-    public static function fireEvent($event, $objectid, $userId, $description, array $descriptionParams = array())
-    {
-        return self::getEventManager()->trigger($event, __METHOD__, array(
-            'object_id' => $objectid,
-            'description' => $description,
-            'description_params' => $descriptionParams,
-            'user_id' => $userId
-        ));
-    }
-
-    /**
-     * Get instance of event manager
-     *
-     * @return object
-     */
-    public static function getEventManager()
-    {
-        if (self::$eventManager) {
-            return self::$eventManager;
-        }
-
-        self::$eventManager = new EventManager();
-        return self::$eventManager;
-    }
 }

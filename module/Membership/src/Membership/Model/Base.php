@@ -11,6 +11,21 @@ use Zend\Db\ResultSet\ResultSet;
 class Base extends AbstractBase
 {
     /**
+     * Seconds in a day
+     */
+    const SECONDS_IN_DAY = 86400;
+
+    /**
+     * Membership level active flag
+     */
+    const MEMBERSHIP_LEVEL_ACTIVE = 1;
+
+    /**
+     * Membership level not active flag
+     */
+    const MEMBERSHIP_LEVEL_NOT_ACTIVE = 0;
+
+    /**
      * Images directory
      * @var string
      */
@@ -24,6 +39,42 @@ class Base extends AbstractBase
     public static function getImagesDir()
     {
         return self::$imagesDir;
+    }
+
+    /**
+     * Get a user's membership connection from a queue
+     *
+     * @param integer $userId
+     * @return array
+     */
+    public function getMembershipConnectionFromQueue($userId)
+    {
+        $select = $this->select();
+        $select->from(array('a' => 'membership_level_connection'))
+            ->columns(array(
+                'id',
+                'user_id'
+            ))
+            ->join(
+                array('b' => 'membership_level'),
+                'a.membership_id = b.id',
+                array(
+                    'role_id',
+                    'lifetime'
+                )
+            )
+            ->where(array(
+                'a.user_id' => $userId,
+                'a.active' => self::MEMBERSHIP_LEVEL_NOT_ACTIVE
+            ))
+            ->order('a.id')
+            ->limit(1);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $result = $resultSet->initialize($statement->execute());
+
+        return $result->current();
     }
 
     /**

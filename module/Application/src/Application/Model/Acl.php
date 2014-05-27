@@ -17,14 +17,29 @@ class Acl extends Base
     const DEFAULT_ROLE_ADMIN  = 1;
 
     /**
+     * Default role admin name
+     */
+    const DEFAULT_ROLE_ADMIN_NAME  = 'admin';
+
+    /**
      * Default role guest id
      */
     const DEFAULT_ROLE_GUEST  = 2;
 
     /**
+     * Default role guest name
+     */
+    const DEFAULT_ROLE_GUEST_NAME  = 'guest';
+
+    /**
      * Default role member
      */
     const DEFAULT_ROLE_MEMBER = 3;
+
+    /**
+     * Default role member name
+     */
+    const DEFAULT_ROLE_MEMBER_NAME  = 'member';
 
     /**
      * Allowed action

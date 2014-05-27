@@ -20,4 +20,14 @@ class Event extends ApplicationEvent
      * Delete membership role event
      */
     const DELETE_MEMBERSHIP_ROLE = 'delete_membership_role';
+
+    /**
+     * Delete membership connection event
+     */
+    const DELETE_MEMBERSHIP_CONNECTION = 'delete_membership_conection';
+
+    /**
+     * Activate membership connection event
+     */
+    const ACTIVATE_MEMBERSHIP_CONNECTION = 'activate_membership_conection';
 }
