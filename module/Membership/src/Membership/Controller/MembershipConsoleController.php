@@ -14,7 +14,6 @@ use RuntimeException;
 use Application\Controller\AbstractBaseController;
 use Membership\Event\Event as MembershipEvent;
 use User\Event\Event as UserEvent;
-use User\Model\Base as UserBaseModel;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
 
@@ -76,16 +75,12 @@ class MembershipConsoleController extends AbstractBaseController
         // get a list of expired memberships connections
         $deletedConnections = 0;
         if (null != ($expiredConnections = $this->getModel()->getExpiredMembershipsConnections())) {
-            $eventDeleteDesc   = 'Event - Membership connection deleted by the system';
-            $eventActivateDesc = 'Event - Membership connection activated by the system';
-
             // process expired memberships connections
             foreach ($expiredConnections as $connectionInfo) {
                 // delete the connection
                 if (true === ($deleteResult = $this->getModel()->deleteMembershipConnection($connectionInfo['id']))) {
-                    // generate the delete  membership connection  event
-                    MembershipEvent::fireEvent(MembershipEvent::DELETE_MEMBERSHIP_CONNECTION,
-                        $connectionInfo['id'], UserBaseModel::DEFAULT_SYSTEM_ID, $eventDeleteDesc, array($connectionInfo['id']));
+                    // fire the delete membership connection event
+                    MembershipEvent::fireDeleteMembershipConnectionEvent($connectionInfo['id']);
 
                     // get a next membership connection
                     $nextMembershipConnection = $this->getModel()->getMembershipConnectionFromQueue($connectionInfo['user_id']);
@@ -101,9 +96,8 @@ class MembershipConsoleController extends AbstractBaseController
                         if ($nextMembershipConnection && true === ($activateResult = $this->getModel()->
                                 activateMembershipConnection($nextMembershipConnection['id'], $nextMembershipConnection['lifetime']))) {
 
-                            // generate the activate membership connection event
-                            MembershipEvent::fireEvent(MembershipEvent::ACTIVATE_MEMBERSHIP_CONNECTION,
-                                $nextMembershipConnection['id'], UserBaseModel::DEFAULT_SYSTEM_ID, $eventActivateDesc, array($nextMembershipConnection['id']));
+                            // fire the activate membership connection event
+                            MembershipEvent::fireActivateMembershipConnectionEvent($nextMembershipConnection['id']);
                         }
 
                         // fire the edit user role event

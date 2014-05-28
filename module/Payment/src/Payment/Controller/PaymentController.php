@@ -16,7 +16,6 @@ use User\Service\Service as UserService;
 use Payment\Service\Service as PaymentService;
 use Payment\Model\Payment as PaymentModel;
 use Application\Utility\EmailNotification;
-use User\Model\Base as UserBaseModel;
 
 class PaymentController extends PaymentBaseController
 {
@@ -73,17 +72,8 @@ class PaymentController extends PaymentBaseController
                 $paymentHandler->clearDiscount($itemInfo['object_id'], $itemInfo['discount']);
             }
 
-            // fire the event
-            $eventDesc = UserService::isGuest()
-                ? 'Event - Item added to shopping cart by guest'
-                : 'Event - Item added to shopping cart by user';
-
-            $eventDescParams = UserService::isGuest()
-                ? array($result)
-                : array(UserService::getCurrentUserIdentity()->nick_name, $result);
-
-            PaymentEvent::fireEvent(PaymentEvent::ADD_ITEM_TO_SHOPPING_CART,
-                    $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+            // fire the add item to shopping cart event
+            PaymentEvent::fireAddItemToShoppingCartEvent($result);
 
             return true;
         }
@@ -102,17 +92,8 @@ class PaymentController extends PaymentBaseController
             if (null != ($discountCouponInfo = PaymentService::getDiscountCouponInfo())) {
                 PaymentService::setDiscountCouponId(null);
 
-                // fire the event
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Discount coupon deactivated by guest'
-                    : 'Event - Discount coupon deactivated by user';
-
-                $eventDescParams = UserService::isGuest()
-                    ? array($discountCouponInfo['slug'])
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $discountCouponInfo['slug']);
-
-                PaymentEvent::fireEvent(PaymentEvent::DEACTIVATE_DISCOUNT_COUPON,
-                        $discountCouponInfo['slug'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                // fire the deactivate discount coupon event
+                PaymentEvent::fireDeactivateDiscountCouponEvent($discountCouponInfo['slug']);
 
                 $this->flashMessenger()
                     ->setNamespace('success')
@@ -219,17 +200,8 @@ class PaymentController extends PaymentBaseController
                                 ->returnBackDiscount($itemInfo['object_id'], $itemInfo['discount']);
                         }
 
-                        // fire the event
-                        $eventDesc = UserService::isGuest()
-                            ? 'Event - Item edited into the shopping cart by guest'
-                            : 'Event - Item edited into the shopping cart by user';
-
-                        $eventDescParams = UserService::isGuest()
-                            ? array($itemInfo['id'])
-                            : array(UserService::getCurrentUserIdentity()->nick_name, $itemInfo['id']);
-
-                        PaymentEvent::fireEvent(PaymentEvent::EDIT_ITEM_INTO_SHOPPING_CART,
-                                $itemInfo['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                        // fire the edit item into shopping cart event
+                        PaymentEvent::fireEditItemIntoShoppingCartEvent($itemInfo['id']);
 
                         $this->flashMessenger()
                             ->setNamespace('success')
@@ -266,11 +238,6 @@ class PaymentController extends PaymentBaseController
 
         if ($request->isPost()) {
             if (null !== ($itemsIds = $request->getPost('items', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Item deleted from shopping cart by guest'
-                    : 'Event - Item deleted from shopping cart by user';
-
                 // delete selected items
                 foreach ($itemsIds as $itemId) {
                     // get an item info
@@ -296,12 +263,8 @@ class PaymentController extends PaymentBaseController
                             ->returnBackDiscount($itemId, $itemInfo['discount']);
                     }
 
-                    $eventDescParams = UserService::isGuest()
-                        ? array($itemId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $itemId);
-
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_ITEM_FROM_SHOPPING_CART,
-                        $itemId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the delete item from shopping cart event
+                    PaymentEvent::fireDeleteItemFromShoppingCartEvent($itemId);
                 }
 
                 if (true === $deleteResult) {
@@ -340,17 +303,8 @@ class PaymentController extends PaymentBaseController
                 // save the activated discount coupon's ID in sessions
                 PaymentService::setDiscountCouponId($this->getModel()->getCouponInfo($couponCode, 'slug')['id']);
 
-                // fire the event
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Discount coupon activated by guest'
-                    : 'Event - Discount coupon activated by user';
-
-                $eventDescParams = UserService::isGuest()
-                    ? array($couponCode)
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $couponCode);
-
-                PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_DISCOUNT_COUPON,
-                        $couponCode, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                // fire the activate discount coupon event
+                PaymentEvent::fireActivateDiscountCouponEvent($couponCode);
 
                 $this->flashMessenger()
                         ->setNamespace('success')
@@ -530,11 +484,6 @@ class PaymentController extends PaymentBaseController
     {
         // get all shopping cart items
         if (null != ($items = $this->getModel()->getAllShoppingCartItems(false))) {
-            // event's description
-            $eventDesc = UserService::isGuest()
-                ? 'Event - Item deleted from shopping cart by guest'
-                : 'Event - Item deleted from shopping cart by user';
-
             // delete all items
             foreach ($items as $itemInfo) {
                 if (true !== ($deleteResult = $this->getModel()->deleteFromShoppingCart($itemInfo['id']))) {
@@ -549,13 +498,9 @@ class PaymentController extends PaymentBaseController
                         ->getInstance($itemInfo['handler'])
                         ->returnBackDiscount($itemInfo['id'], $itemInfo['discount']);
                 }
-
-                $eventDescParams = UserService::isGuest()
-                    ? array($itemInfo['id'])
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $itemInfo['id']);
-
-                PaymentEvent::fireEvent(PaymentEvent::DELETE_ITEM_FROM_SHOPPING_CART,
-                    $itemInfo['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+        
+                // fire the delete item from shopping cart event
+                PaymentEvent::fireDeleteItemFromShoppingCartEvent($itemInfo['id']);
             }
         }
 
@@ -673,37 +618,8 @@ class PaymentController extends PaymentBaseController
                         user_id, $formData, $shoppingCartItems, $amount);
 
                 if (is_numeric($result)) {
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Payment transaction added by guest'
-                        : 'Event - Payment transaction added by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($result)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $result);
-        
-                    PaymentEvent::fireEvent(PaymentEvent::ADD_PAYMENT_TRANSACTION,
-                            $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
-
-                    // send an email notification about register the new transaction
-                    if ((int) $this->getSetting('payment_transaction_add')) {
-                        EmailNotification::sendNotification($this->getSetting('application_site_email'),
-                            $this->getSetting('payment_transaction_add_title', UserService::getDefaultLocalization()['language']),
-                            $this->getSetting('payment_transaction_add_message', UserService::getDefaultLocalization()['language']), array(
-                                'find' => array(
-                                    'FirstName',
-                                    'LastName',
-                                    'Email',
-                                    'Id'
-                                ),
-                                'replace' => array(
-                                    $formData['first_name'],
-                                    $formData['last_name'],
-                                    $formData['email'],
-                                    $result
-                                )
-                            ));
-                    }
+                    // fire the add payment transaction event
+                    PaymentEvent::fireAddPaymentTransactionEvent($result, $formData);
 
                     // clean the shopping cart
                     $this->cleanShoppingCart(false);
@@ -848,15 +764,13 @@ class PaymentController extends PaymentBaseController
      *      string currency_code
      *      string payment_name
      * @param integer $paymentTypeId
-     * @param boolean $sendNotification
      * @return boolean
      */
     protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
     {
         if (true === ($result = parent::activateTransaction($transactionInfo, $paymentTypeId))) {
-            // fire the event
-            PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_PAYMENT_TRANSACTION, $transactionInfo['id'],
-                    UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Payment transaction activated by the system', array($transactionInfo['id']));
+            // fire the activate payment transaction event
+            PaymentEvent::fireActivatePaymentTransactionEvent($transactionInfo['id'], true, $transactionInfo);
         }
 
         return $result;
@@ -995,9 +909,6 @@ class PaymentController extends PaymentBaseController
 
         if ($request->isPost()) {
             if (null !== ($transactionsIds = $request->getPost('transactions', null))) {
-                // event's description
-                $eventDesc = 'Event - Payment transaction deleted by user';
-
                 // delete selected transactions
                 foreach ($transactionsIds as $transactionId) {
                     // delete the transaction
@@ -1012,13 +923,8 @@ class PaymentController extends PaymentBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($transactionId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionId);
-
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_PAYMENT_TRANSACTION,
-                            $transactionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the delete payment transaction event
+                    PaymentEvent::fireDeletePaymentTransactionEvent($transactionId, 'user');
                 }
 
                 if (true === $deleteResult) {

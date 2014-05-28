@@ -48,22 +48,16 @@ class Module implements ConsoleUsageProviderInterface
                     function ($e) use ($model, $moduleInfo, $paymentHandler) {
 
                 if (true === ($result = $model->updateItemsInfo($e->getParam('object_id'), $moduleInfo, $paymentHandler))) {
-                    $eventDesc = 'Event - Shopping cart and transactions items were edited by the system';
-
-                    // fire the event
-                    PaymentEvent::fireEvent(PaymentEvent::EDIT_ITEMS, $e->getParam('object_id'),
-                        UserBaseModel::DEFAULT_SYSTEM_ID, $eventDesc, array($e->getParam('object_id'), $moduleInfo['module']));
+                    // fire edit items event
+                    PaymentEvent::fireEditItemsEvent($e->getParam('object_id'), $moduleInfo['module']);
                 }
             });
 
             // mark items as deleted
             $eventManager->attach($moduleInfo['delete_event'], function ($e) use ($model, $moduleInfo) {
                 if (true === ($result = $model->markItemsDeleted($e->getParam('object_id'), $moduleInfo['module']))) {
-                    $eventDesc = 'Event - Shopping cart and transactions items were marked as deleted by the system';
-
-                    // fire the event
-                    PaymentEvent::fireEvent(PaymentEvent::MARK_DELETED_ITEMS, $e->getParam('object_id'),
-                        UserBaseModel::DEFAULT_SYSTEM_ID, $eventDesc, array($e->getParam('object_id'), $moduleInfo['module']));
+                    // fire the mark deleted items event
+                    PaymentEvent::fireMarkDeletedItemsEvent($e->getParam('object_id'), $moduleInfo['module']);
                 }
             });
         }

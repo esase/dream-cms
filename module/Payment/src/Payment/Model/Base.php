@@ -600,7 +600,7 @@ class Base extends AbstractBase
                 $statement->execute();
             }
             else {
-                $countStatus = $objectInfo['count'] <= 0 && $moduleInfo['countable'] == self::MODULE_COUNTABLE
+                $countStatus = $moduleInfo['countable'] == self::MODULE_COUNTABLE && $objectInfo['count'] <= 0
                     ? self::ITEM_NOT_AVAILABLE
                     : self::ITEM_AVAILABLE;
 

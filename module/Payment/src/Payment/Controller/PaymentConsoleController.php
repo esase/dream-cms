@@ -48,20 +48,19 @@ class PaymentConsoleController extends PaymentBaseController
         if (!$request instanceof ConsoleRequest) {
             throw new RuntimeException('You can only use this action from a console!');
         }
-
+        
         // get list of expired shopping cart items
         $deletedShoppingCartItems = 0;
         if (null != ($items = $this->getModel()->getExpiredShoppingCartItems())) {
-            $eventDesc = 'Event - Item deleted from shopping cart by the system';
-
             foreach ($items as $item) {
                 // delete the item
                 if (true === ($deleteResult =
                         $this->getModel()->deleteFromShoppingCart($item['id'], false))) {
 
                     $deletedShoppingCartItems++;
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_ITEM_FROM_SHOPPING_CART,
-                        $item['id'], UserBaseModel::DEFAULT_SYSTEM_ID, $eventDesc, array($item['id']));
+
+                    // fire the delete item from shopping cart event
+                    PaymentEvent::fireDeleteItemFromShoppingCartEvent($item['id'], true);
                 }
             }
         }
@@ -69,16 +68,16 @@ class PaymentConsoleController extends PaymentBaseController
         // get list of expired not paid transactions
         $deletedTransactions = 0;
         if (null != ($transactions = $this->getModel()->getExpiredTransactions())) {
-            $eventDesc = 'Event - Payment transaction deleted by the system';
-
+            // process list of transactions
             foreach ($transactions as $transaction) {
                 // delete the transaction
                 if (true === ($deleteResult =
                         $this->getModel()->deleteTransaction($transaction['id'], false))) {
 
                     $deletedTransactions++;
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_PAYMENT_TRANSACTION,
-                        $transaction['slug'], UserBaseModel::DEFAULT_SYSTEM_ID, $eventDesc, array($transaction['slug']));
+
+                    // fire the delete payment transaction event
+                    PaymentEvent::fireDeletePaymentTransactionEvent($transaction['id'], 'system');
                 }
             }
         }

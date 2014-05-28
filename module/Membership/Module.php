@@ -2,9 +2,9 @@
 
 namespace Membership;
 
+use Application\Event\Event as ApplicationEvent;
 use Membership\Event\Event as MembershipEvent;
 use Zend\Mvc\MvcEvent;
-use User\Model\Base as UserBaseModel;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface as Console;
 
@@ -16,7 +16,7 @@ class Module implements ConsoleUsageProviderInterface
     public function onBootstrap(MvcEvent $mvcEvent)
     {
         $eventManager = MembershipEvent::getEventManager();
-        $eventManager->attach(MembershipEvent::DELETE_ACL_ROLE, function ($e) use ($mvcEvent) {
+        $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($mvcEvent) {
             $model = $mvcEvent->getApplication()->getServiceManager()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Membership\Model\Base');
@@ -25,8 +25,8 @@ class Module implements ConsoleUsageProviderInterface
             if (null != ($membershipLevels = $model->getAllMembershipLevels($e->getParam('object_id')))) {
                 foreach ($membershipLevels as $levelInfo) {
                     if (true === ($result = $model->deleteRole($levelInfo))) {
-                        MembershipEvent::fireEvent(MembershipEvent::DELETE_MEMBERSHIP_ROLE, $e->getParam('object_id'), 
-                                UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Membership role deleted by the system', array($e->getParam('object_id')));
+                        // fire the delete membership role event
+                        MembershipEvent::fireDeleteMembershipRoleEvent($e->getParam('object_id'), true);
                     }
                 }
             }

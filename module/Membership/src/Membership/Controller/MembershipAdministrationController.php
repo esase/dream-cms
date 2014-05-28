@@ -128,17 +128,8 @@ class MembershipAdministrationController extends AbstractBaseController
                         getForm()->getData(), $this->params()->fromFiles('image'));
 
                 if (is_numeric($result)) {
-                    // event's description
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Membership role added by guest'
-                        : 'Event - Membership role added by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($result)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $result);
-
-                    MembershipEvent::fireEvent(MembershipEvent::ADD_MEMBERSHIP_ROLE,
-                            $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the add membership role event
+                    MembershipEvent::fireAddMembershipRoleEvent($result);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -201,17 +192,8 @@ class MembershipAdministrationController extends AbstractBaseController
                 if (true == ($result = $this->getModel()->editRole($role, 
                         $aclRoleForm->getForm()->getData(), $this->params()->fromFiles('image')))) {
 
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Membership role edited by guest'
-                        : 'Event - Membership role edited by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($role['id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $role['id']);
-
-                    MembershipEvent::fireEvent(MembershipEvent::EDIT_MEMBERSHIP_ROLE,
-                            $role['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the edit membership role event
+                    MembershipEvent::fireEditMembershipRoleEvent($role['id']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -244,11 +226,6 @@ class MembershipAdministrationController extends AbstractBaseController
 
         if ($request->isPost()) {
             if (null !== ($rolesIds = $request->getPost('roles', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Membership role deleted by guest'
-                    : 'Event - Membership role deleted by user';
-
                 // delete selected membership roles
                 foreach ($rolesIds as $roleId) {
                     // get the role info
@@ -271,13 +248,8 @@ class MembershipAdministrationController extends AbstractBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($roleId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $roleId);
-
-                    MembershipEvent::fireEvent(MembershipEvent::DELETE_MEMBERSHIP_ROLE,
-                            $roleId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the delete membership role event
+                    MembershipEvent::fireDeleteMembershipRoleEvent($roleId);
                 }
             }
         }

@@ -10,8 +10,6 @@
 namespace Payment\Controller;
 
 use Application\Controller\AbstractBaseController;
-use Application\Utility\EmailNotification;
-use User\Service\Service as UserService;
 use Payment\Model\Payment as PaymentModel;
 
 abstract class PaymentBaseController extends AbstractBaseController
@@ -34,10 +32,9 @@ abstract class PaymentBaseController extends AbstractBaseController
      *      string currency_code
      *      string payment_name
      * @param integer $paymentTypeId
-     * @param boolean $sendNotification
      * @return boolean
      */
-    protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0, $sendNotification = true)
+    protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
     {
         if (true === ($result =
                 $this->getModel()->activateTransaction($transactionInfo['id'], 'id', $paymentTypeId))) {
@@ -60,26 +57,6 @@ abstract class PaymentBaseController extends AbstractBaseController
                         $handler->decreaseCount($itemInfo['object_id'], $itemInfo['count']);
                     }
                 }
-            }
-
-            // send an email notification about the paid transaction
-            if ($sendNotification && (int) $this->getSetting('payment_transaction_paid')) {
-                EmailNotification::sendNotification($this->getSetting('application_site_email'),
-                    $this->getSetting('payment_transaction_paid_title', UserService::getDefaultLocalization()['language']),
-                    $this->getSetting('payment_transaction_paid_message', UserService::getDefaultLocalization()['language']), array(
-                        'find' => array(
-                            'FirstName',
-                            'LastName',
-                            'Email',
-                            'Id'
-                        ),
-                        'replace' => array(
-                            $transactionInfo['first_name'],
-                            $transactionInfo['last_name'],
-                            $transactionInfo['email'],
-                            $transactionInfo['id']
-                        )
-                    ));
             }
 
             return true;

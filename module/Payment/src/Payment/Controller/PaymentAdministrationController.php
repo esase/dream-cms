@@ -154,11 +154,6 @@ class PaymentAdministrationController extends PaymentBaseController
 
         if ($request->isPost()) {
             if (null !== ($currenciesIds = $request->getPost('currencies', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Payment currency deleted by guest'
-                    : 'Event - Payment currency deleted by user';
-
                 // delete selected currencies
                 foreach ($currenciesIds as $currencyId) {
                     // check the permission and increase permission's actions track
@@ -176,13 +171,8 @@ class PaymentAdministrationController extends PaymentBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($currencyId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $currencyId);
-
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_PAYMENT_CURRENCY,
-                            $currencyId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the delete payment currency event
+                    PaymentEvent::fireDeletePaymentCurrencyEvent($currencyId);
                 }
 
                 if (true === $deleteResult) {
@@ -206,11 +196,6 @@ class PaymentAdministrationController extends PaymentBaseController
 
         if ($request->isPost()) {
             if (null !== ($transactionsIds = $request->getPost('transactions', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Payment transaction activated by guest'
-                    : 'Event - Payment transaction activated by user';
-
                 // process transactions
                 $activationResult = true;
                 foreach ($transactionsIds as $transactionId) {
@@ -227,7 +212,7 @@ class PaymentAdministrationController extends PaymentBaseController
                     }
 
                     // activate the transaction
-                    if(true !== ($activationResult = $this->activateTransaction($transactionInfo, 0, false))) {
+                    if(true !== ($activationResult = $this->activateTransaction($transactionInfo))) {
                         $this->flashMessenger()
                             ->setNamespace('error')
                             ->addMessage($this->getTranslator()->translate('Transaction activation error'));
@@ -235,13 +220,8 @@ class PaymentAdministrationController extends PaymentBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($transactionId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionId);
-
-                    PaymentEvent::fireEvent(PaymentEvent::ACTIVATE_PAYMENT_TRANSACTION,
-                            $transactionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the activate payment transaction event
+                    PaymentEvent::fireActivatePaymentTransactionEvent($transactionId);
                 }
 
                 if (true === $activationResult) {
@@ -265,11 +245,6 @@ class PaymentAdministrationController extends PaymentBaseController
 
         if ($request->isPost()) {
             if (null !== ($transactionsIds = $request->getPost('transactions', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Payment transaction deleted by guest'
-                    : 'Event - Payment transaction deleted by user';
-
                 // delete selected transactions
                 foreach ($transactionsIds as $transactionId) {
                     // check the permission and increase permission's actions track
@@ -287,13 +262,8 @@ class PaymentAdministrationController extends PaymentBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($transactionId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $transactionId);
-
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_PAYMENT_TRANSACTION,
-                            $transactionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the delete payment transaction event
+                    PaymentEvent::fireDeletePaymentTransactionEvent($transactionId);
                 }
 
                 if (true === $deleteResult) {
@@ -343,17 +313,8 @@ class PaymentAdministrationController extends PaymentBaseController
                 if (true == ($result = $this->
                         getModel()->editExchangeRates($exchangeRates, $exchangeRatesForm->getForm()->getData()))) {
 
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Payment exchange rates edited by guest'
-                        : 'Event - Payment exchange rates edited by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($currency['id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $currency['id']);
-
-                    PaymentEvent::fireEvent(PaymentEvent::EDIT_EXCHANGE_RATES,
-                            $currency['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the edit exchange rates event
+                    PaymentEvent::fireEditExchangeRatesEvent($currency['id']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -417,17 +378,8 @@ class PaymentAdministrationController extends PaymentBaseController
                 if (true == ($result = $this->
                         getModel()->editCurrency($currency, $currencyForm->getForm()->getData()))) {
 
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Payment currency edited by guest'
-                        : 'Event - Payment currency edited by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($currency['id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $currency['id']);
-
-                    PaymentEvent::fireEvent(PaymentEvent::EDIT_PAYMENT_CURRENCY,
-                            $currency['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the edit payment currency event
+                    PaymentEvent::fireEditPaymentCurrencyEvent($currency['id']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -479,17 +431,8 @@ class PaymentAdministrationController extends PaymentBaseController
                 $result = $this->getModel()->addCurrency($currencyForm->getForm()->getData());
 
                 if (is_numeric($result)) {
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Payment currency added by guest'
-                        : 'Event - Payment currency added by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($result)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $result);
-
-                    PaymentEvent::fireEvent(PaymentEvent::ADD_PAYMENT_CURRENCY,
-                            $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the add payment currency event
+                    PaymentEvent::fireAddPaymentCurrencyEvent($result);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -516,9 +459,7 @@ class PaymentAdministrationController extends PaymentBaseController
     public function editCouponAction()
     {
         // get the coupon info
-        if (null == ($coupon =
-                $this->getModel()->getCouponInfo($this->getSlug()))) {
-
+        if (null == ($coupon = $this->getModel()->getCouponInfo($this->getSlug()))) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
@@ -548,17 +489,8 @@ class PaymentAdministrationController extends PaymentBaseController
                 if (true == ($result = $this->
                         getModel()->editCoupon($coupon['id'], $couponForm->getForm()->getData()))) {
 
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Discount coupon edited by guest'
-                        : 'Event - Discount coupon edited by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($coupon['id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $coupon['id']);
-
-                    PaymentEvent::fireEvent(PaymentEvent::EDIT_DISCOUNT_COUPON,
-                            $coupon['id'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the edit discount coupon event
+                    PaymentEvent::fireEditDiscountCouponEvent($coupon['id']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -610,17 +542,8 @@ class PaymentAdministrationController extends PaymentBaseController
                 $result = $this->getModel()->addCoupon($couponForm->getForm()->getData());
 
                 if (is_numeric($result)) {
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Discount coupon added by guest'
-                        : 'Event - Discount coupon added by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($result)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $result);
-
-                    PaymentEvent::fireEvent(PaymentEvent::ADD_DISCOUNT_COUPON,
-                            $result, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the add discount coupon event
+                    PaymentEvent::fireAddDiscountCouponEvent($result);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -672,11 +595,6 @@ class PaymentAdministrationController extends PaymentBaseController
 
         if ($request->isPost()) {
             if (null !== ($couponsIds = $request->getPost('coupons', null))) {
-                // event's description
-                $eventDesc = UserService::isGuest()
-                    ? 'Event - Discount coupon deleted by guest'
-                    : 'Event - Discount coupon deleted by user';
-
                 // delete selected coupons
                 foreach ($couponsIds as $couponId) {
                     // check the permission and increase permission's actions track
@@ -694,13 +612,8 @@ class PaymentAdministrationController extends PaymentBaseController
                         break;
                     }
 
-                    // fire the event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($couponId)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $couponId);
-
-                    PaymentEvent::fireEvent(PaymentEvent::DELETE_DISCOUNT_COUPON,
-                            $couponId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the  delete discount coupon event
+                    PaymentEvent::fireDeleteDiscountCouponEvent($couponId);
                 }
 
                 if (true === $deleteResult) {
