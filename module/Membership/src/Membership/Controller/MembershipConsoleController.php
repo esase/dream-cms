@@ -9,15 +9,13 @@
 
 namespace Membership\Controller;
 
-use Zend\Console\Request as ConsoleRequest;
-use RuntimeException;
-use Application\Controller\AbstractBaseController;
+use Application\Controller\AbstractBaseConsoleController;
 use Membership\Event\Event as MembershipEvent;
 use User\Event\Event as UserEvent;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
 
-class MembershipConsoleController extends AbstractBaseController
+class MembershipConsoleController extends AbstractBaseConsoleController
 {
     /**
      * Model instance
@@ -65,13 +63,6 @@ class MembershipConsoleController extends AbstractBaseController
     public function cleanExpiredMembershipsConnectionsAction()
     {
         $request = $this->getRequest();
-        
-        // Make sure that we are running in a console and the user has not tricked our
-        // application into running this action from a public web server.
-        if (!$request instanceof ConsoleRequest) {
-            throw new RuntimeException('You can only use this action from a console!');
-        }
-
         // get a list of expired memberships connections
         $deletedConnections = 0;
         if (null != ($expiredConnections = $this->getModel()->getExpiredMembershipsConnections())) {

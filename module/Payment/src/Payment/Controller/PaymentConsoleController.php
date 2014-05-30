@@ -9,12 +9,10 @@
 
 namespace Payment\Controller;
 
-use Zend\Console\Request as ConsoleRequest;
-use RuntimeException;
+use Application\Controller\AbstractBaseConsoleController;
 use Payment\Event\Event as PaymentEvent;
-use User\Model\Base as UserBaseModel;
 
-class PaymentConsoleController extends PaymentBaseController
+class PaymentConsoleController extends AbstractBaseConsoleController
 {
     /**
      * Model instance
@@ -42,12 +40,6 @@ class PaymentConsoleController extends PaymentBaseController
     public function cleanExpiredItemsAction()
     {
         $request = $this->getRequest();
-
-        // Make sure that we are running in a console and the user has not tricked our
-        // application into running this action from a public web server.
-        if (!$request instanceof ConsoleRequest) {
-            throw new RuntimeException('You can only use this action from a console!');
-        }
         
         // get list of expired shopping cart items
         $deletedShoppingCartItems = 0;
