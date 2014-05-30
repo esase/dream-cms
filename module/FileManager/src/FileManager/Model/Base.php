@@ -189,7 +189,6 @@ class Base extends AbstractBase
      */
     public function addUserFile(array $fileInfo, $path)
     {
-        print_r($fileInfo);
         if (false !== ($userDirectory = $this->getUserDirectory($path, false))) {
             if (false !== ($fileName = FileSystemUtility::uploadResourceFile(self::slugifyFileName($fileInfo['name']),
                     $fileInfo, $userDirectory, false))) {

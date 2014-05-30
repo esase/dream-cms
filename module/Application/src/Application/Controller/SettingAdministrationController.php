@@ -76,11 +76,6 @@ class SettingAdministrationController extends AbstractBaseController
             // check the form validation
             if ($cacheForm->getForm()->isValid()) {
                 if (null != ($caches = $cacheForm->getForm()->getData()['cache'])) {
-                    // event's description
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - Cache cleared by guest'
-                        : 'Event - Cache cleared by user';
-
                     // clear caches
                     foreach ($caches as $cache) {
                         // check the permission and increase permission's actions track
@@ -114,13 +109,8 @@ class SettingAdministrationController extends AbstractBaseController
                             break;
                         }
 
-                        // fire the event
-                        $eventDescParams = UserService::isGuest()
-                            ? array($cache)
-                            : array(UserService::getCurrentUserIdentity()->nick_name, $cache);
-
-                        ApplicationEvent::fireEvent(ApplicationEvent::CLEAR_CACHE,
-                                $cache, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                        // fire the clear cache event
+                        ApplicationEvent::fireClearCacheEvent($cache);
                     }
 
                     if (true === $clearResult) {

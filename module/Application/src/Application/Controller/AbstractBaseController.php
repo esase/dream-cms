@@ -223,17 +223,8 @@ class AbstractBaseController extends AbstractActionController
                     if (true === ($result = $settings->
                             saveSettings($settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
 
-                        // fire the event
-                        $eventDesc = UserService::isGuest()
-                            ? 'Event - Settings were changed by guest'
-                            : 'Event - Settings were changed by user';
-
-                        $eventDescParams = UserService::isGuest()
-                            ? array($module)
-                            : array(UserService::getCurrentUserIdentity()->nick_name, $module);
-
-                        ApplicationEvent::fireEvent(ApplicationEvent::CHANGE_SETTINGS,
-                                $module, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                        // fire the change settings event
+                        ApplicationEvent::fireChangeSettingsEvent($module);
 
                         $this->flashMessenger()
                             ->setNamespace('success')

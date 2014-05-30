@@ -18,7 +18,7 @@ class Module
         // delete the user's files and dirs
         $eventManager = FileManagerEvent::getEventManager();
         $eventManager->attach(UserEvent::DELETE, function ($e) use ($mvcEvent) {
-
+            // get a model instance
             $model = $mvcEvent->getApplication()->getServiceManager()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('FileManager\Model\Base');
@@ -29,9 +29,8 @@ class Module
                 ErrorLogger::log('Cannot delete files and directories for user id: ' . $e->getParam('object_id'));
             }
             else if (null != $fullPath) {
-                // fire the event
-                FileManagerEvent::fireEvent(FileManagerEvent::DELETE_DIRECTORY,
-                        $fullPath, UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Directory deleted by the system', array($fullPath));
+                // fire the delete directory event
+                FileManagerEvent::fireDeleteDirectoryEvent($fullPath, true);
             }
         });
     }

@@ -29,9 +29,8 @@ class EmailNotification
     public static function sendNotification($email, $subject, $message,
             array $replacements = array(), $replaceLeftDevider = '__', $replaceRightDevider = '__')
     {
-        // fire the event
-        $result = ApplicationEvent::fireEvent(ApplicationEvent::SEND_EMAIL_NOTIFICATION,
-                $email, UserBaseModel::DEFAULT_SYSTEM_ID, 'Event - Email notification will be send', array($email, $subject));
+        // fire the send email notification event
+        $result = ApplicationEvent::fireSendEmailNotificationEvent($email, $subject);
 
         if ($result->stopped()) {
             return false;

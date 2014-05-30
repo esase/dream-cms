@@ -14,6 +14,7 @@ use Application\Controller\AbstractBaseController;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
 use User\Event\Event as UserEvent;
+use Application\Event\Event as ApplicationEvent;
 use Application\Utility\EmailNotification;
 use User\Model\UserAdministration as UserAdministrationModel;
 
@@ -117,17 +118,9 @@ class UserAdministrationController extends AbstractBaseController
                 if (true == ($result = $this->getAclModel()->editResourceSettings(
                         $resourceSettings['connection'], $aclResourceSettingsForm->getForm()->getData(), $user['user_id'], $cleanCounter))) {
 
-                    // fire the event
-                    $eventDesc = UserService::isGuest()
-                        ? 'Event - ACL user\'s resource settings edited by guest'
-                        : 'Event - ACL user\'s resource settings edited by user';
-
-                    $eventDescParams = UserService::isGuest()
-                        ? array($resourceSettings['role'], $resourceSettings['resource'], $user['user_id'])
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $resourceSettings['role'], $resourceSettings['resource'], $user['user_id']);
-
-                    UserEvent::fireEvent(UserEvent::EDIT_ACL_RESOURCE_SETTINGS,
-                            $resourceSettings['connection'], UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                    // fire the edit acl resource settings event
+                    ApplicationEvent::fireEditAclResourceSettingsEvent($resourceSettings['connection'], $resourceSettings['resource'], 
+                            $resourceSettings['role'], $user['user_id']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')

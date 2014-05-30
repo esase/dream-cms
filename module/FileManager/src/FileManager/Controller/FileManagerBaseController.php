@@ -99,20 +99,8 @@ abstract class FileManagerBaseController extends AbstractBaseController
                             ->addMessage($this->getTranslator()->translate('Impossible add a new file. Check the received path permission'));
                     }
                     else {
-                        // event's description
-                        $eventDesc = UserService::isGuest()
-                            ? 'Event - File added by guest'
-                            : 'Event - File added by user';
-
-                        // get a full path
-                        $fullPath = $this->getModel()->getUserDirectory($userPath) . $fileName;
-
-                        $eventDescParams = UserService::isGuest()
-                            ? array($fullPath)
-                            : array(UserService::getCurrentUserIdentity()->nick_name, $fullPath);
-
-                        FileManagerEvent::fireEvent(FileManagerEvent::ADD_FILE,
-                                $fullPath, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                        // fire the add file event
+                        FileManagerEvent::fireAddFileEvent($this->getModel()->getUserDirectory($userPath) . $fileName);
 
                         $this->flashMessenger()
                             ->setNamespace('success')
@@ -162,34 +150,25 @@ abstract class FileManagerBaseController extends AbstractBaseController
             if ($request->isPost()) {
                 // fill the form with received values
                 $directoryForm->getForm()->setData($request->getPost(), false);
-    
+
                 // save data
                 if ($directoryForm->getForm()->isValid()) {
                     // check the permission and increase permission's actions track
                     if (true !== ($result = $this->checkPermission())) {
                         return $result;
                     }
-    
+
                     // add a new directory
                     if (true === ($result = $this->getModel()->
                             addUserDirectory($directoryForm->getForm()->getData()['name'], $userPath))) {
-    
+
                         // get a full path
                         $fullPath = $this->getModel()->
                                 getUserDirectory($userPath) . $directoryForm->getForm()->getData()['name'];
-    
-                        $eventDescParams = UserService::isGuest()
-                            ? array($fullPath)
-                            : array(UserService::getCurrentUserIdentity()->nick_name, $fullPath);
-    
-                        // event's description
-                        $eventDesc = UserService::isGuest()
-                            ? 'Event - Directory added by guest'
-                            : 'Event - Directory added by user';
-    
-                        FileManagerEvent::fireEvent(FileManagerEvent::ADD_DIRECTORY,
-                                $fullPath, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
-    
+
+                        // fire the add directory event
+                        FileManagerEvent::fireAddDirectoryEvent($fullPath);
+
                         $this->flashMessenger()
                             ->setNamespace('success')
                             ->addMessage($this->getTranslator()->translate('Directory has been added'));
@@ -199,7 +178,7 @@ abstract class FileManagerBaseController extends AbstractBaseController
                             ->setNamespace('error')
                             ->addMessage($this->getTranslator()->translate('Impossible add a new directory. Check the received path permission'));
                     }
-    
+
                     return $this->redirectTo($this->
                             params('controller'), 'add-directory', array(), false, array('path' => $userPath));
                 }
@@ -273,31 +252,10 @@ abstract class FileManagerBaseController extends AbstractBaseController
                                         translate((!$isDirectory ? 'Impossible edit selected file' : 'Impossible edit selected directory')));
                         }
                         else {
-                            // event's description
-                            $eventFileDesc = UserService::isGuest()
-                                ? 'Event - File edited by guest'
-                                : 'Event - File edited by user';
-
-                            $eventDirDesc  = UserService::isGuest()
-                                ? 'Event - Directory edited by guest'
-                                : 'Event - Directory edited by user';
-
-                            // fire the system event
-                            $eventDescParams = UserService::isGuest()
-                                ? array($fullFilePath, $userDirectory . $newFileName)
-                                : array(UserService::getCurrentUserIdentity()->nick_name, $fullFilePath, $userDirectory . $newFileName);
-
-                            if ($isDirectory) {
-                                $eventDesc = $eventDirDesc;
-                                $eventName = FileManagerEvent::EDIT_DIRECTORY;
-                            }
-                            else {
-                                $eventDesc = $eventFileDesc;
-                                $eventName = FileManagerEvent::EDIT_FILE;
-                            }
-
-                            FileManagerEvent::fireEvent($eventName, $fullFilePath,
-                                    UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                            // fire the event
+                            $isDirectory
+                                ? FileManagerEvent::fireEditDirectoryEvent($fullFilePath, $userDirectory . $newFileName)
+                                : FileManagerEvent::fireEditFileEvent($fullFilePath, $userDirectory . $newFileName);
 
                             $this->flashMessenger()
                                 ->setNamespace('success')
@@ -336,15 +294,6 @@ abstract class FileManagerBaseController extends AbstractBaseController
                 // process requested path
                 $userPath = $this->getUserPath();
 
-                // event's description
-                $eventFileDesc = UserService::isGuest()
-                    ? 'Event - File deleted by guest'
-                    : 'Event - File deleteted by user';
-
-                $eventDirDesc  = UserService::isGuest()
-                    ? 'Event - Directory deleted by guest'
-                    : 'Event - Directory deleteted by user';
-
                 // process files names
                 foreach ($fileNames as $file) {
                     // check the permission and increase permission's actions track
@@ -365,23 +314,11 @@ abstract class FileManagerBaseController extends AbstractBaseController
 
                         break;
                     }
-
-                    // fire the system event
-                    $eventDescParams = UserService::isGuest()
-                        ? array($fullPath)
-                        : array(UserService::getCurrentUserIdentity()->nick_name, $fullPath);
-
-                    if ($isDirectory) {
-                        $eventDesc = $eventDirDesc;
-                        $eventName = FileManagerEvent::DELETE_DIRECTORY;
-                    }
-                    else {
-                        $eventDesc = $eventFileDesc;
-                        $eventName = FileManagerEvent::DELETE_FILE;
-                    }
-
-                    FileManagerEvent::fireEvent($eventName, $fullPath,
-                            UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+        
+                    // fire the event
+                    $isDirectory
+                        ? FileManagerEvent::fireDeleteDirectoryEvent($fullPath)
+                        : FileManagerEvent::fireDeleteFileEvent($fullPath);
                 }
 
                 if (true === $deleteResult) {
