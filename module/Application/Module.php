@@ -90,7 +90,7 @@ class Module
      *
      * @param object $moduleManager
      */
-    function init(ModuleManager $moduleManager)
+    public function init(ModuleManager $moduleManager)
     {
         // get service manager
         $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
@@ -253,7 +253,7 @@ class Module
      * 
      * @param object $e
      */
-    public function initApplication(\Zend\ModuleManager\ModuleEvent $e)
+    public function initApplication(ModuleEvent $e)
     {
         // set the service manager
         ApplicationService::setServiceManager($this->serviceManager);

@@ -4,22 +4,28 @@ namespace Membership;
 
 use Application\Event\Event as ApplicationEvent;
 use Membership\Event\Event as MembershipEvent;
-use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface as Console;
+use Membership\Model\Base as BaseMembershipModel;
+use User\Service\Service as UserService;
+use User\Event\Event as UserEvent;
+use Zend\ModuleManager\ModuleManager;
 
 class Module implements ConsoleUsageProviderInterface
 {
     /**
-     * Bootstrap
+     * Init
      */
-    public function onBootstrap(MvcEvent $mvcEvent)
+    public function init(ModuleManager $moduleManager)
     {
         $eventManager = MembershipEvent::getEventManager();
-        $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($mvcEvent) {
-            $model = $mvcEvent->getApplication()->getServiceManager()
-                ->get('Application\Model\ModelManager')
-                ->getInstance('Membership\Model\Base');
+        $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($moduleManager) {
+            // get the model manager instance
+            $modelManager = $moduleManager->getEvent()
+                ->getParam('ServiceManager')
+                ->get('Application\Model\ModelManager');
+
+            $model = $modelManager->getInstance('Membership\Model\Base');
 
             // delete connected membership levels
             if (null != ($membershipLevels = $model->getAllMembershipLevels($e->getParam('object_id')))) {
@@ -27,6 +33,29 @@ class Module implements ConsoleUsageProviderInterface
                     if (true === ($result = $model->deleteRole($levelInfo))) {
                         // fire the delete membership role event
                         MembershipEvent::fireDeleteMembershipRoleEvent($e->getParam('object_id'), true);
+                    }
+                }
+
+                // synchronize users membership levels
+                if (null != ($membershipLevels  = $model->getUsersMembershipLevels())) {
+                    $userModel = $modelManager->getInstance('User\Model\Base');
+
+                    // process membership levels
+                    foreach ($membershipLevels as $levelInfo) {
+                        // set the next membership level
+                        if ($levelInfo['active'] != BaseMembershipModel::MEMBERSHIP_LEVEL_ACTIVE) {
+                            // change the user's role 
+                            if (true === ($result = $userModel->editUserRole($levelInfo['user_id'], $levelInfo['role_id']))) {
+                                // activate the next membership connection
+                                if (true === ($activateResult = $model->activateMembershipConnection($levelInfo['connection_id']))) {
+                                    // fire the activate membership connection event
+                                    MembershipEvent::fireActivateMembershipConnectionEvent($levelInfo['connection_id']);
+                                }
+
+                                // fire the edit user role event
+                                UserEvent::fireEditRoleEvent($levelInfo, UserService::getAclRoles()[$levelInfo['role_id']], true);
+                            }
+                        }
                     }
                 }
             }

@@ -10,28 +10,88 @@ use Zend\Db\ResultSet\ResultSet;
 class MembershipConsole extends Base
 {
     /**
-     * Activte the membership connection
+     * Mark the membership connection as notified
      *
      * @param integer $connectionId
-     * @param integer $lifeTime
      * @return boolean
      */
-    public function activateMembershipConnection($connectionId, $lifeTime)
+    public function markConnectionAsNotified($connectionId)
     {
-        $update = $this->update()
-            ->table('membership_level_connection')
-            ->set(array(
-                'active' => self::MEMBERSHIP_LEVEL_ACTIVE,
-                'expire' => time() + ($lifeTime * self::SECONDS_IN_DAY)
-            ))
-            ->where(array(
-               'id' => $connectionId
-            ));
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-        $statement = $this->prepareStatementForSqlObject($update);
-        $result = $statement->execute();
+            $update = $this->update()
+                ->table('membership_level_connection')
+                ->set(array(
+                    'notified' => self::MEMBERSHIP_LEVEL_NOTIFIED,
+                ))
+                ->where(array(
+                   'id' => $connectionId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $result = $statement->execute();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
 
         return $result->count() ? true : false;
+    }
+
+    /**
+     * Get not notified memberships connections
+     *
+     * @return object
+     */
+    public function getNotNotifiedMembershipsConnections()
+    {
+        $predicate = new Predicate();
+        $time = time();
+
+        $select = $this->select();
+        $select->from(array('a' => 'membership_level_connection'))
+            ->columns(array(
+                'id',
+                'user_id',
+                'expire_date'
+            ))
+            ->join(
+                array('b' => 'membership_level'),
+                'a.membership_id = b.id',
+                array(
+                    'role_id'
+                )
+            )
+            ->join(
+                array('c' => 'acl_role'),
+                'b.role_id = c.id',
+                array(
+                    'role_name' => 'name'
+                )
+            )
+            ->join(
+                array('d' => 'user'),
+                'a.user_id = d.user_id',
+                array(
+                    'nick_name',
+                    'email',
+                    'language',
+                )
+            )
+            ->where(array(
+                'a.active' => self::MEMBERSHIP_LEVEL_ACTIVE,
+                $predicate->lessThanOrEqualTo('a.notify_date', $time),
+                'a.notified' => self::MEMBERSHIP_LEVEL_NOT_NOTIFIED
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        return $resultSet->initialize($statement->execute());
     }
 
     /**
@@ -66,7 +126,7 @@ class MembershipConsole extends Base
             )
             ->where(array(
                 'a.active' => self::MEMBERSHIP_LEVEL_ACTIVE,
-                $predicate->lessThanOrEqualTo('a.expire', time())
+                $predicate->lessThanOrEqualTo('a.expire_date', time())
             ));
 
         $statement = $this->prepareStatementForSqlObject($select);

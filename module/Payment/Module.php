@@ -8,46 +8,58 @@ use Zend\ModuleManager\ModuleManager;
 use User\Model\Base as UserBaseModel;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface as Console;
+use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 
 class Module implements ConsoleUsageProviderInterface
 {
+    /**
+     * Service manager
+     * @var object
+     */
+    public $serviceManager;
+
     /**
      * Init
      *
      * @param object $moduleManager
      */
-    function init(ModuleManager $moduleManager)
+    public function init(ModuleManager $moduleManager)
     {
         // get service manager
         $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
+
+        $moduleManager->getEventManager()->
+            attach(ModuleEvent::EVENT_LOAD_MODULES_POST, array($this, 'initPaymentListeners'));
     }
 
     /**
-     * Bootstrap
+     * Init payment listeners
+     *
+     * @param object $e 
      */
-    public function onBootstrap(MvcEvent $mvcEvent)
-    {           
-        $model = $mvcEvent->getApplication()->getServiceManager()
-            ->get('Application\Model\ModelManager')
-            ->getInstance('Payment\Model\Base');
+    public function initPaymentListeners(ModuleEvent $e)
+    {
+       $model = $this->serviceManager
+        ->get('Application\Model\ModelManager')
+        ->getInstance('Payment\Model\Base');
 
         // update a user transactions info
         $eventManager = PaymentEvent::getEventManager();
-
+        
         //TODO: Here also need to attach modules change states events. And recalculate transactions amounts.
 
         // init edit and update events for payment modules
         foreach ($model->getPaymentModules() as $moduleInfo) {
             // get the payment handler
-            $paymentHandler = $mvcEvent->getApplication()->getServiceManager()
+            $paymentHandler = $this->serviceManager
                 ->get('Payment\Handler\HandlerManager')
                 ->getInstance($moduleInfo['handler']);
 
             // update items
-            $eventManager->attach($moduleInfo['update_event'],
-                    function ($e) use ($model, $moduleInfo, $paymentHandler) {
+            $eventManager->attach($moduleInfo['update_event'], function ($e) use ($model, $moduleInfo, $paymentHandler) {
+                if (true === ($result = 
+                        $model->updateItemsInfo($e->getParam('object_id'), $moduleInfo, $paymentHandler))) {
 
-                if (true === ($result = $model->updateItemsInfo($e->getParam('object_id'), $moduleInfo, $paymentHandler))) {
                     // fire edit items event
                     PaymentEvent::fireEditItemsEvent($e->getParam('object_id'), $moduleInfo['module']);
                 }
@@ -55,7 +67,9 @@ class Module implements ConsoleUsageProviderInterface
 
             // mark items as deleted
             $eventManager->attach($moduleInfo['delete_event'], function ($e) use ($model, $moduleInfo) {
-                if (true === ($result = $model->markItemsDeleted($e->getParam('object_id'), $moduleInfo['module']))) {
+                if (true === ($result = 
+                        $model->markItemsDeleted($e->getParam('object_id'), $moduleInfo['module']))) {
+
                     // fire the mark deleted items event
                     PaymentEvent::fireMarkDeletedItemsEvent($e->getParam('object_id'), $moduleInfo['module']);
                 }
@@ -126,8 +140,7 @@ class Module implements ConsoleUsageProviderInterface
                 'paymentItemExtraOptions' =>  function()
                 {
                     // get the payment handler manager
-                    $paymentHandlerManager = $this->serviceManager
-                        ->get('Payment\Handler\HandlerManager');
+                    $paymentHandlerManager = $this->serviceManager->get('Payment\Handler\HandlerManager');
 
                     return new \Payment\View\Helper\PaymentItemExtraOptions($paymentHandlerManager);
                 },

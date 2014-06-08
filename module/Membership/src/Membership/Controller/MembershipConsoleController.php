@@ -14,6 +14,8 @@ use Membership\Event\Event as MembershipEvent;
 use User\Event\Event as UserEvent;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
+use Application\Utility\EmailNotification;
+use Application\Utility\Locale as LocaleUtility;
 
 class MembershipConsoleController extends AbstractBaseConsoleController
 {
@@ -63,39 +65,85 @@ class MembershipConsoleController extends AbstractBaseConsoleController
     public function cleanExpiredMembershipsConnectionsAction()
     {
         $request = $this->getRequest();
+
+        $deletedConnections  = 0;
+        $notifiedConnections = 0;
+
         // get a list of expired memberships connections
-        $deletedConnections = 0;
         if (null != ($expiredConnections = $this->getModel()->getExpiredMembershipsConnections())) {
             // process expired memberships connections
             foreach ($expiredConnections as $connectionInfo) {
                 // delete the connection
-                if (true === ($deleteResult = $this->getModel()->deleteMembershipConnection($connectionInfo['id']))) {
-                    // fire the delete membership connection event
-                    MembershipEvent::fireDeleteMembershipConnectionEvent($connectionInfo['id']);
+                if (false === ($deleteResult = 
+                        $this->getModel()->deleteMembershipConnection($connectionInfo['id']))) {
 
-                    // get a next membership connection
-                    $nextMembershipConnection = $this->getModel()->getMembershipConnectionFromQueue($connectionInfo['user_id']);
-                    $nextRoleId = $nextMembershipConnection
-                        ? $nextMembershipConnection['role_id']
-                        : AclBaseModel::DEFAULT_ROLE_MEMBER;
+                    break;
+                }
 
-                    // change the user's role 
-                    if (true === ($result = 
-                            $this->getUserModel()->editUserRole($connectionInfo['user_id'], $nextRoleId))) {
+                // fire the delete membership connection event
+                MembershipEvent::fireDeleteMembershipConnectionEvent($connectionInfo['id']);
 
-                        // activate the next membership connection
-                        if ($nextMembershipConnection && true === ($activateResult = $this->getModel()->
-                                activateMembershipConnection($nextMembershipConnection['id'], $nextMembershipConnection['lifetime']))) {
+                // get a next membership connection
+                $nextConnection = $this->getModel()->getMembershipConnectionFromQueue($connectionInfo['user_id']);
+                $nextRoleId = $nextConnection
+                    ? $nextConnection['role_id']
+                    : AclBaseModel::DEFAULT_ROLE_MEMBER;
 
-                            // fire the activate membership connection event
-                            MembershipEvent::fireActivateMembershipConnectionEvent($nextMembershipConnection['id']);
-                        }
+                // change the user's role 
+                if (true === ($result = $this->getUserModel()->
+                        editUserRole($connectionInfo['user_id'], $nextRoleId))) {
 
-                        // fire the edit user role event
-                        UserEvent::fireEditRoleEvent($connectionInfo, UserService::getAclRoles()[$nextRoleId], true);
+                    // activate the next membership connection
+                    if ($nextConnection && true === ($activateResult = 
+                            $this->getModel()->activateMembershipConnection($nextConnection['id']))) {
+
+                        // fire the activate membership connection event
+                        MembershipEvent::fireActivateMembershipConnectionEvent($nextConnection['id']);
                     }
 
-                    $deletedConnections++;
+                    // fire the edit user role event
+                    UserEvent::fireEditRoleEvent($connectionInfo, UserService::getAclRoles()[$nextRoleId], true);
+                }
+
+                $deletedConnections++;
+            }
+        }
+
+        // get list of not notified memberships connections
+        if ((int) UserService::getSetting('membership_expiring_send')) {
+            if (null != ($notNotifiedConnections = $this->getModel()->getNotNotifiedMembershipsConnections())) {
+                // process not notified memberships connections
+                foreach ($notNotifiedConnections as $connectionInfo) {
+                    if (false === ($markResult = 
+                            $this->getModel()->markConnectionAsNotified($connectionInfo['id']))) {
+
+                        break;
+                    }
+
+                    // send a notification about membership expiring
+                    $notificationLanguage = $connectionInfo['language']
+                        ? $connectionInfo['language'] // we should use the user's language
+                        : UserService::getDefaultLocalization()['language'];
+
+                    EmailNotification::sendNotification($connectionInfo['email'],
+                            UserService::getSetting('membership_expiring_send_title', $notificationLanguage),
+                            UserService::getSetting('membership_expiring_send_message', $notificationLanguage), array(
+                                'find' => array(
+                                    'RealName',
+                                    'Role',
+                                    'ExpireDate'
+                                ),
+                                'replace' => array(
+                                    $connectionInfo['nick_name'],
+                                    UserService::getServiceManager()->get('Translator')->
+                                            translate($connectionInfo['role_name'], 'default', UserService::getLocalizations()[$notificationLanguage]['locale']),
+
+                                    UserService::getServiceManager()->
+                                            get('viewhelpermanager')->get('date')->__invoke($connectionInfo['expire_date'])
+                                )
+                            ));
+
+                    $notifiedConnections++;
                 }
             }
         }
@@ -106,6 +154,9 @@ class MembershipConsoleController extends AbstractBaseConsoleController
             return 'All expired  membership connections have been deleted.' . "\n";
         }
 
-        return $deletedConnections . ' membership connections  have been deleted.'. "\n";
+        $result  = $deletedConnections  . ' membership connections  have been deleted.'. "\n";
+        $result .= $notifiedConnections . ' membership connections  have been notified.'. "\n";
+
+        return $result;
     }
 }

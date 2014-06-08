@@ -7,6 +7,7 @@ use Exception;
 use Application\Model\AbstractBase;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Expression as Expression;
 
 class Base extends AbstractBase
 {
@@ -26,6 +27,16 @@ class Base extends AbstractBase
     const MEMBERSHIP_LEVEL_NOT_ACTIVE = 0;
 
     /**
+     * Membership level not notified
+     */
+    const MEMBERSHIP_LEVEL_NOT_NOTIFIED = 0;
+
+    /**
+     * Membership level notified
+     */
+    const MEMBERSHIP_LEVEL_NOTIFIED = 1;
+
+    /**
      * Images directory
      * @var string
      */
@@ -39,6 +50,81 @@ class Base extends AbstractBase
     public static function getImagesDir()
     {
         return self::$imagesDir;
+    }
+
+    /**
+     * Activate the membership connection
+     *
+     * @param integer $connectionId
+     * @return boolean
+     */
+    public function activateMembershipConnection($connectionId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $time = time();
+            $update = $this->update()
+                ->table('membership_level_connection')
+                ->set(array(
+                    'active' => self::MEMBERSHIP_LEVEL_ACTIVE,
+                    'expire_date' => new Expression('? + (expire_value * ?)', array($time, self::SECONDS_IN_DAY)),
+                    'notify_date' => new Expression('? + (notify_value * ?)', array($time, self::SECONDS_IN_DAY))
+                ))
+                ->where(array(
+                   'id' => $connectionId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $result = $statement->execute();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $result->count() ? true : false;
+    }
+
+    /**
+     * Get users membership level 
+     *
+     * @return object
+     */
+    public function getUsersMembershipLevels()
+    {
+        $select = $this->select();
+        $select->from(array('a' => 'user'))
+            ->columns(array(
+                'user_id',
+                'language',
+                'email',
+                'nick_name',
+            ))
+            ->join(
+                array('b' => 'membership_level_connection'),
+                'a.user_id = b.user_id',
+                array(
+                    'connection_id' => 'id',
+                    'active'
+                )
+            )
+            ->join(
+                array('c' => 'membership_level'),
+                'b.membership_id = c.id',
+                array(
+                    'role_id',
+                )
+            )
+            ->group('a.user_id')
+            ->where->IsNull('a.role');
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        return $resultSet->initialize($statement->execute());
     }
 
     /**
@@ -60,7 +146,8 @@ class Base extends AbstractBase
                 'a.membership_id = b.id',
                 array(
                     'role_id',
-                    'lifetime'
+                    'lifetime',
+                    'expiration_notification'
                 )
             )
             ->where(array(
@@ -167,6 +254,7 @@ class Base extends AbstractBase
                 'role_id',
                 'cost',
                 'lifetime',
+                'expiration_notification',
                 'description',
                 'language',
                 'image',

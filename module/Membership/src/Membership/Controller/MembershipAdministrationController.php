@@ -13,6 +13,8 @@ use Zend\View\Model\ViewModel;
 use Application\Controller\AbstractBaseController;
 use Membership\Event\Event as MembershipEvent;
 use User\Service\Service as UserService;
+use User\Event\Event as UserEvent;
+use Application\Model\Acl as AclBaseModel;
 
 class MembershipAdministrationController extends AbstractBaseController
 {
@@ -21,6 +23,12 @@ class MembershipAdministrationController extends AbstractBaseController
      * @var object  
      */
     protected $model;
+
+    /**
+     * User Model instance
+     * @var object  
+     */
+    protected $userModel;
 
     /**
      * Get model
@@ -34,6 +42,20 @@ class MembershipAdministrationController extends AbstractBaseController
         }
 
         return $this->model;
+    }
+
+    /**
+     * Get user model
+     */
+    protected function getUserModel()
+    {
+        if (!$this->userModel) {
+            $this->userModel = $this->getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('User\Model\Base');
+        }
+
+        return $this->userModel;
     }
 
     /**

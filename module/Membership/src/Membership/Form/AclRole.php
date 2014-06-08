@@ -53,6 +53,14 @@ class AclRole extends AbstractCustomForm
             'required' => true,
             'category' => 'General info',
         ),
+        'expiration_notification' => array(
+            'name' => 'expiration_notification',
+            'type' => CustomFormBuilder::FIELD_INTEGER,
+            'label' => 'Expiration notification reminder in days',
+            'description' => 'You can remind  users about the expiration after N days after the beginning',
+            'required' => true,
+            'category' => 'General info',
+        ),
         'description' => array(
             'name' => 'description',
             'type' => CustomFormBuilder::FIELD_TEXT_AREA,
@@ -121,6 +129,17 @@ class AclRole extends AbstractCustomForm
                         ApplicationService::getResourcesUrl() . MembershipAdministrationModel::getImagesDir() . $this->image;
             }
 
+            // add extra validators
+            $this->formElements['expiration_notification']['validators'] = array(
+                array (
+                    'name' => 'callback',
+                    'options' => array(
+                        'callback' => array($this, 'validateExpirationNotification'),
+                        'message' => 'The expiration notification value  must be less than role\'s lifetime'
+                    )
+                )
+            );
+
             $this->form = new CustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
@@ -138,5 +157,17 @@ class AclRole extends AbstractCustomForm
     {
         $this->image = $image;
         return $this;
+    }
+
+    /**
+     * Validate the expiration notification
+     *
+     * @param $value
+     * @param array $context
+     * @return boolean
+     */
+    public function validateExpirationNotification($value, array $context = array())
+    {
+        return (int) $value < $context['lifetime'];
     }
 }

@@ -207,7 +207,7 @@ class MembershipAdministration extends Base
             ->columns(array(
                 'id',
                 'cost',
-                'lifetime'
+                'lifetime',
             ))
             ->join(
                 array('b' => 'acl_role'),

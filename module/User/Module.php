@@ -4,19 +4,19 @@ namespace User;
 
 use User\Event\Event as UserEvent;
 use Application\Event\Event as ApplicationEvent;
-use Zend\Mvc\MvcEvent;
 use Application\Model\Acl as AclModel;
+use Zend\ModuleManager\ModuleManager;
 
 class Module
 {
     /**
-     * Bootstrap
+     * Init
      */
-    public function onBootstrap(MvcEvent $mvcEvent)
+    public function init(ModuleManager $moduleManager)
     {
         $eventManager = UserEvent::getEventManager();
-        $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($mvcEvent) {
-            $users = $model = $mvcEvent->getApplication()->getServiceManager()
+        $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($moduleManager) {
+            $users = $moduleManager->getEvent()->getParam('ServiceManager')
                 ->get('Application\Model\ModelManager')
                 ->getInstance('User\Model\Base');
 
@@ -24,15 +24,15 @@ class Module
             if (null != ($usersList = $users->getUsersWithEmptyRole())) {
                 // process users list
                 foreach ($usersList as $userInfo) {
-                    if (true === ($result = $users->
-                            editUserRole($userInfo['user_id'], AclModel::DEFAULT_ROLE_MEMBER))) {
+                    if (true === ($result = 
+                            $users->editUserRole($userInfo['user_id'], AclModel::DEFAULT_ROLE_MEMBER))) {
 
                         // fire the edit user role event
                         UserEvent::fireEditRoleEvent($userInfo, AclModel::DEFAULT_ROLE_MEMBER_NAME, true);
                     }
                 }
             }
-        });
+        }, -100);
     }
 
     /**
