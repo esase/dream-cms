@@ -90,12 +90,12 @@ class MembershipConsoleController extends AbstractBaseConsoleController
                     : AclBaseModel::DEFAULT_ROLE_MEMBER;
 
                 // change the user's role 
-                if (true === ($result = $this->getUserModel()->
-                        editUserRole($connectionInfo['user_id'], $nextRoleId))) {
+                if (true === ($result = $this->
+                        getUserModel()->editUserRole($connectionInfo['user_id'], $nextRoleId))) {
 
                     // activate the next membership connection
-                    if ($nextConnection && true === ($activateResult = 
-                            $this->getModel()->activateMembershipConnection($nextConnection['id']))) {
+                    if ($nextConnection && true === 
+                            ($activateResult = $this->getModel()->activateMembershipConnection($nextConnection['id']))) {
 
                         // fire the activate membership connection event
                         MembershipEvent::fireActivateMembershipConnectionEvent($nextConnection['id']);

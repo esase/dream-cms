@@ -80,11 +80,12 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     `description` text NOT NULL,
     `language` varchar(2) DEFAULT NULL,
     `image` varchar(100) NOT NULL,
+    `status` tinyint(1) unsigned NOT NULL,
     PRIMARY KEY (`id`),
     KEY `cost` (`cost`),
     KEY `lifetime` (`lifetime`),
-    KEY `expiration_notification` (`expiration_notification`),
     KEY `role` (`role_id`),
+    KEY `status` (`status`, `language`),
     FOREIGN KEY (`language`) REFERENCES `localization`(`language`)
         ON UPDATE CASCADE
         ON DELETE SET NULL

@@ -5,6 +5,7 @@ namespace Membership\Form;
 use Application\Form\CustomFormBuilder;
 use Application\Form\AbstractCustomForm;
 use Application\Service\Service as ApplicationService;
+use Membership\Model\Base as MembershipBaseModel;
 
 class MembershipFilter extends AbstractCustomForm 
 {
@@ -40,6 +41,15 @@ class MembershipFilter extends AbstractCustomForm
             'name' => 'lifetime',
             'type' => CustomFormBuilder::FIELD_INTEGER,
             'label' => 'Lifetime in days'
+        ),
+        'status' => array(
+            'name' => 'status',
+            'type' => CustomFormBuilder::FIELD_SELECT,
+            'label' => 'Status',
+            'values' => array(
+               MembershipBaseModel::MEMBERSHIP_LEVEL_STATUS_ACTIVE => 'approved',
+               MembershipBaseModel::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE => 'disapproved'
+            )
         ),
         'role' => array(
             'name' => 'role',

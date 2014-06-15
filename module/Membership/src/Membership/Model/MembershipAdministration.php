@@ -184,6 +184,7 @@ class MembershipAdministration extends Base
      *      float cost
      *      integer lifetime
      *      integer role
+     *      integer status
      * @return object
      */
     public function getMembershipLevels($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
@@ -191,7 +192,9 @@ class MembershipAdministration extends Base
         $orderFields = array(
             'id',
             'cost',
-            'lifetime'
+            'lifetime',
+            'status',
+            'subscribers'
         );
 
         $orderType = !$orderType || $orderType == 'desc'
@@ -208,21 +211,31 @@ class MembershipAdministration extends Base
                 'id',
                 'cost',
                 'lifetime',
+                'status'
             ))
             ->join(
-                array('b' => 'acl_role'),
-                'a.role_id = b.id',
+                array('b' => 'membership_level_connection'),
+                'b.membership_id = a.id',
+                array(
+                    'subscribers' => new Expression('count(b.id)'),
+                ),
+                'left'
+            )
+            ->join(
+                array('c' => 'acl_role'),
+                'a.role_id = c.id',
                 array(
                     'role' => 'name'
                 )
             )
             ->join(
-                array('c' => 'payment_currency'),
-                new Expression('c.primary_currency = ?', array(PaymentBaseModel::PRIMARY_CURRENCY)),
+                array('d' => 'payment_currency'),
+                new Expression('d.primary_currency = ?', array(PaymentBaseModel::PRIMARY_CURRENCY)),
                 array(
                     'currency' => 'code'
                 )
             )
+            ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
             ->where(array(
                 new Predicate\PredicateSet(array(
@@ -248,7 +261,14 @@ class MembershipAdministration extends Base
         // filter by a role
         if (!empty($filters['role'])) {
             $select->where(array(
-                'b.id' => $filters['role']
+                'c.id' => $filters['role']
+            ));
+        }
+
+        // filter by a status
+        if (isset($filters['status']) && $filters['status'] != null) {
+            $select->where(array(
+                'a.status' => ((int) $filters['status'] == self::MEMBERSHIP_LEVEL_STATUS_ACTIVE ? $filters['status'] : self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE)
             ));
         }
 

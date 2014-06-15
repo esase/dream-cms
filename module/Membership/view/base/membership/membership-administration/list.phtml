@@ -47,6 +47,14 @@
             'order_name' => 'lifetime'
         ),
         3 => array(
+            'title' => $this->translate('Status'),
+            'order_name' => 'status'
+        ),
+        4 => array(
+            'title' => $this->translate('Membership subscribers'),
+            'order_name' => 'subscribers'
+        ),
+        5 => array(
             'title' => $this->translate('Role')
         )
     ),
@@ -57,11 +65,16 @@
     'helpers' => array(
         'role' => 'translate',
         'cost' => 'costFormat',
+        'status' => 'booleanValue',
     ),
     'helpers_set_array' => array(
         'cost' => true
     ),
     'helpers_options' => array(
+        'status' => array(
+            'true_string' => $this->translate('approved'),
+            'false_string' => $this->translate('disapproved')
+        )
     ),
     'actions' => array(
         'regular_actions' => array(
@@ -99,5 +112,11 @@
         )
     ),
     'actions_extra_check' => array(
+        'multiple_actions' => array(
+            'subscribers' => array(
+                'param' => 'subscribers',
+                'condition' =>  'return (int) "__value__" ? false : true;'
+            )
+        ),
     )
 )) ?>

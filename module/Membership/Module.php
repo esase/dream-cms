@@ -10,6 +10,7 @@ use Membership\Model\Base as BaseMembershipModel;
 use User\Service\Service as UserService;
 use User\Event\Event as UserEvent;
 use Zend\ModuleManager\ModuleManager;
+use User\Model\Base as UserBaseModel;
 
 class Module implements ConsoleUsageProviderInterface
 {
@@ -19,6 +20,35 @@ class Module implements ConsoleUsageProviderInterface
     public function init(ModuleManager $moduleManager)
     {
         $eventManager = MembershipEvent::getEventManager();
+
+        // listen the edit user role event
+        $eventManager->attach(UserEvent::EDIT_ROLE, function ($e) use ($moduleManager) {
+            // someone forced set a user's role, and now we must clean all the user's membership queue
+            if ($e->getParam('user_id') != UserBaseModel::DEFAULT_SYSTEM_ID) {
+                // get the model manager instance
+                $model = $moduleManager->getEvent()
+                    ->getParam('ServiceManager')
+                    ->get('Application\Model\ModelManager')
+                    ->getInstance('Membership\Model\Base');
+
+                // delete all connections
+                if (null != ($connections = 
+                        $model->getAllUserMembershipConnections(($e->getParam('object_id'))))) {
+
+                    foreach ($connections as $connection) {
+                        // delete the connection
+                        if (false === ($deleteResult = $model->deleteMembershipConnection($connection->id))) {
+                            break;
+                        }
+
+                        // fire the delete membership connection event
+                        MembershipEvent::fireDeleteMembershipConnectionEvent($connection->id);
+                    }
+                }
+            }
+        });
+
+        // listen the delete acl event
         $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($moduleManager) {
             // get the model manager instance
             $modelManager = $moduleManager->getEvent()
@@ -43,7 +73,7 @@ class Module implements ConsoleUsageProviderInterface
                     // process membership levels
                     foreach ($membershipLevels as $levelInfo) {
                         // set the next membership level
-                        if ($levelInfo['active'] != BaseMembershipModel::MEMBERSHIP_LEVEL_ACTIVE) {
+                        if ($levelInfo['active'] != BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE) {
                             // change the user's role 
                             if (true === ($result = $userModel->editUserRole($levelInfo['user_id'], $levelInfo['role_id']))) {
                                 // activate the next membership connection
@@ -121,7 +151,7 @@ class Module implements ConsoleUsageProviderInterface
     {
         return array(
             // describe available commands
-            'membership clean expired memberships connections [--verbose|-v]' => 'Clean expired membership connections',
+            'membership clean expired connections [--verbose|-v]' => 'Clean expired membership connections',
             // describe expected parameters
             array('--verbose|-v', '(optional) turn on verbose mode'),
         );

@@ -17,24 +17,34 @@ class Base extends AbstractBase
     const SECONDS_IN_DAY = 86400;
 
     /**
-     * Membership level active flag
+     * Membership level active status flag
      */
-    const MEMBERSHIP_LEVEL_ACTIVE = 1;
+    const MEMBERSHIP_LEVEL_STATUS_ACTIVE = 1;
 
     /**
-     * Membership level not active flag
+     * Membership level not active status flag
      */
-    const MEMBERSHIP_LEVEL_NOT_ACTIVE = 0;
+    const MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE = 0;
 
     /**
-     * Membership level not notified
+     * Membership level connection active flag
      */
-    const MEMBERSHIP_LEVEL_NOT_NOTIFIED = 0;
+    const MEMBERSHIP_LEVEL_CONNECTION_ACTIVE = 1;
 
     /**
-     * Membership level notified
+     * Membership level connection not active flag
      */
-    const MEMBERSHIP_LEVEL_NOTIFIED = 1;
+    const MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE = 0;
+
+    /**
+     * Membership level connection not notified
+     */
+    const MEMBERSHIP_LEVEL_CONNECTION_NOT_NOTIFIED = 0;
+
+    /**
+     * Membership level connection notified
+     */
+    const MEMBERSHIP_LEVEL_CONNECTION_NOTIFIED = 1;
 
     /**
      * Images directory
@@ -67,7 +77,7 @@ class Base extends AbstractBase
             $update = $this->update()
                 ->table('membership_level_connection')
                 ->set(array(
-                    'active' => self::MEMBERSHIP_LEVEL_ACTIVE,
+                    'active' => self::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE,
                     'expire_date' => new Expression('? + (expire_value * ?)', array($time, self::SECONDS_IN_DAY)),
                     'notify_date' => new Expression('? + (notify_value * ?)', array($time, self::SECONDS_IN_DAY))
                 ))
@@ -128,6 +138,60 @@ class Base extends AbstractBase
     }
 
     /**
+     * Delete the membership connection
+     *
+     * @param integer $connectionId
+     * @return boolean|string
+     */
+    public function deleteMembershipConnection($connectionId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('membership_level_connection')
+                ->where(array(
+                    'id' => $connectionId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $result->count() ? true : false;
+    }
+
+    /**
+     * Get all user's membership connections
+     *
+     * @param integer $userId
+     * @return object
+     */
+    public function  getAllUserMembershipConnections($userId)
+    {
+        $select = $this->select();
+        $select->from('membership_level_connection')
+            ->columns(array(
+                'id',
+            ))
+            ->where(array(
+                'user_id' => $userId
+            ));
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        return $resultSet->initialize($statement->execute());
+    }
+
+    /**
      * Get a user's membership connection from a queue
      *
      * @param integer $userId
@@ -152,7 +216,7 @@ class Base extends AbstractBase
             )
             ->where(array(
                 'a.user_id' => $userId,
-                'a.active' => self::MEMBERSHIP_LEVEL_NOT_ACTIVE
+                'a.active' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE
             ))
             ->order('a.id')
             ->limit(1);
@@ -248,7 +312,7 @@ class Base extends AbstractBase
     public function getRoleInfo($id)
     {
         $select = $this->select();
-        $select->from('membership_level')
+        $select->from(array('a' => 'membership_level'))
             ->columns(array(
                 'id',
                 'role_id',
@@ -258,9 +322,18 @@ class Base extends AbstractBase
                 'description',
                 'language',
                 'image',
+                'status'
             ))
+            ->join(
+                array('b' => 'membership_level_connection'),
+                'b.membership_id = a.id',
+                array(
+                    'subscribers' => new Expression('count(b.id)'),
+                ),
+                'left'
+            )
             ->where(array(
-                'id' => $id
+                'a.id' => $id
             ));
 
         $statement = $this->prepareStatementForSqlObject($select);

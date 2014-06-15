@@ -2,109 +2,16 @@
 
 namespace Membership\Test\Event;
 
-use Membership\Test\MembershipBootstrap;
 use Membership\Model\Localization;
-use PHPUnit_Framework_TestCase;
 use Zend\Math\Rand;
 use Membership\Model\Base as BaseMembershipModel;
 use Application\Event\Event as ApplicationEvent;
 use Zend\Db\ResultSet\ResultSet;
 use Application\Model\Acl as AclModel;
+use Membership\Test\BaseTest;
 
-class DeleteRoleTest extends PHPUnit_Framework_TestCase
+class DeleteRoleTest extends BaseTest
 {
-    /**
-     * Service manager
-     * @var object
-     */
-    protected $serviceManager;
-
-    /**
-     * User model
-     * @var object
-     */
-    protected $userModel;
-
-    /**
-     * ACL roles ids
-     * @var array
-     */
-    protected $aclRolesIds = array();
-
-    /**
-     * Users ids
-     * @var array
-     */
-    protected $usersIds = array();
-
-    /**
-     * Membership levels ids
-     * @var array
-     */
-    protected $membershipLevelsIds = array();
-
-    /**
-     * Setup
-     */
-    protected function setUp()
-    {
-        // get service manager
-        $this->serviceManager = MembershipBootstrap::getServiceManager();
-
-        // get base user model instance
-        $this->userModel = $this->serviceManager
-            ->get('Application\Model\ModelManager')
-            ->getInstance('User\Model\Base');
-    }
-
-     /**
-     * Tear down
-     */
-    protected function tearDown()
-    {
-        // delete test users
-        if ($this->usersIds) {
-            foreach ($this->usersIds as $userId) {
-                $query = $this->userModel->delete()
-                    ->from('user')
-                    ->where(array('user_id' => $userId));
-
-                $statement = $this->userModel->prepareStatementForSqlObject($query);
-                $statement->execute();
-            }
-
-            $this->usersIds = array();
-        }
-
-        // delete test ACL roles
-        if ($this->aclRolesIds) {
-            foreach ($this->aclRolesIds as $roleId) {
-                $query = $this->userModel->delete()
-                    ->from('acl_role')
-                    ->where(array('id' => $roleId));
-
-                $statement = $this->userModel->prepareStatementForSqlObject($query);
-                $statement->execute();
-            }
-
-            $this->aclRolesIds = array();
-        }
-
-        // delete test membership levels
-        if ($this->membershipLevelsIds) {
-            foreach ($this->membershipLevelsIds as $levelId) {
-                $query = $this->userModel->delete()
-                    ->from('membership_level')
-                    ->where(array('id' => $levelId));
-
-                $statement = $this->userModel->prepareStatementForSqlObject($query);
-                $statement->execute();
-            }
-
-            $this->membershipLevelsIds = array();
-        }
-    }
-
     /**
      * Create test resources
      * 
@@ -203,13 +110,13 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         list($firstRoleId, $secondRoleId, $thirdRoleId) = $this->aclRolesIds;
         list($firstMembershipLevelId, $secondMembershipLevelId, $thirdMembershipLevelId) = $this->membershipLevelsIds;
 
-        // create a active test membership level connection
+        // create an active test membership level connection
         $query = $this->userModel->insert()
             ->into('membership_level_connection')
             ->values(array(
                 'user_id' => $testUserId,
                 'membership_id' => $firstMembershipLevelId,
-                'active' => BaseMembershipModel::MEMBERSHIP_LEVEL_ACTIVE
+                'active' => BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE
             ));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -252,7 +159,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         $resultSet = new ResultSet;
         $result = $resultSet->initialize($statement->execute());
 
-        $this->assertEquals($result->current()['active'], BaseMembershipModel::MEMBERSHIP_LEVEL_ACTIVE);
+        $this->assertEquals($result->current()['active'], BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE);
     }
 
     /**
@@ -272,7 +179,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
             ->values(array(
                 'user_id' => $testUserId,
                 'membership_id' => $firstMembershipLevelId,
-                'active' => BaseMembershipModel::MEMBERSHIP_LEVEL_ACTIVE
+                'active' => BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE
             ));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -341,7 +248,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
             ->values(array(
                 'user_id' => $testUserId,
                 'membership_id' => $firstMembershipLevelId,
-                'active' => BaseMembershipModel::MEMBERSHIP_LEVEL_ACTIVE
+                'active' => BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE
             ));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -385,6 +292,6 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         $resultSet = new ResultSet;
         $result = $resultSet->initialize($statement->execute());
 
-        $this->assertEquals($result->current()['active'], BaseMembershipModel::MEMBERSHIP_LEVEL_ACTIVE);
+        $this->assertEquals($result->current()['active'], BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE);
     }
 }

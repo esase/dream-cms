@@ -23,7 +23,7 @@ class MembershipConsole extends Base
             $update = $this->update()
                 ->table('membership_level_connection')
                 ->set(array(
-                    'notified' => self::MEMBERSHIP_LEVEL_NOTIFIED,
+                    'notified' => self::MEMBERSHIP_LEVEL_CONNECTION_NOTIFIED,
                 ))
                 ->where(array(
                    'id' => $connectionId
@@ -84,9 +84,9 @@ class MembershipConsole extends Base
                 )
             )
             ->where(array(
-                'a.active' => self::MEMBERSHIP_LEVEL_ACTIVE,
+                'a.active' => self::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE,
                 $predicate->lessThanOrEqualTo('a.notify_date', $time),
-                'a.notified' => self::MEMBERSHIP_LEVEL_NOT_NOTIFIED
+                'a.notified' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_NOTIFIED
             ));
 
         $statement = $this->prepareStatementForSqlObject($select);
@@ -125,44 +125,12 @@ class MembershipConsole extends Base
                 )
             )
             ->where(array(
-                'a.active' => self::MEMBERSHIP_LEVEL_ACTIVE,
+                'a.active' => self::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE,
                 $predicate->lessThanOrEqualTo('a.expire_date', time())
             ));
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
         return $resultSet->initialize($statement->execute());
-    }
-
-    /**
-     * Delete the membership connection
-     *
-     * @param integer $connectionId
-     * @return boolean|string
-     */
-    public function deleteMembershipConnection($connectionId)
-    {
-        try {
-            $this->adapter->getDriver()->getConnection()->beginTransaction();
-
-            $delete = $this->delete()
-                ->from('membership_level_connection')
-                ->where(array(
-                    'id' => $connectionId
-                ));
-
-            $statement = $this->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
-
-            $this->adapter->getDriver()->getConnection()->commit();
-        }
-        catch (Exception $e) {
-            $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
-
-            return $e->getMessage();
-        }
-
-        return $result->count() ? true : false;
     }
 }

@@ -28,6 +28,12 @@ class AclRole extends AbstractCustomForm
     protected $image;
 
     /**
+     * Edit mode
+     * @var boolean
+     */
+    protected $editMode = false;
+
+    /**
      * Form elements
      * @var array
      */
@@ -80,6 +86,13 @@ class AclRole extends AbstractCustomForm
             ),
             'category' => 'General info'
         ),
+        'status' => array(
+            'name' => 'status',
+            'type' => CustomFormBuilder::FIELD_CHECKBOX,
+            'label' => 'Active',
+            'required' => false,
+            'category' => 'General info'
+        ),
         'language' => array(
             'name' => 'language',
             'type' => CustomFormBuilder::FIELD_SELECT,
@@ -129,6 +142,11 @@ class AclRole extends AbstractCustomForm
                         ApplicationService::getResourcesUrl() . MembershipAdministrationModel::getImagesDir() . $this->image;
             }
 
+            // init edit mode
+            if ($this->editMode) {
+                unset($this->formElements['role_id']);
+            }
+
             // add extra validators
             $this->formElements['expiration_notification']['validators'] = array(
                 array (
@@ -156,6 +174,18 @@ class AclRole extends AbstractCustomForm
     public function setImage($image)
     {
         $this->image = $image;
+        return $this;
+    }
+
+    /**
+     * Set edit mode
+     *
+     * @param string $mode
+     * @return object fluent interface
+     */
+    public function setEditMode($mode)
+    {
+        $this->editMode = $mode;
         return $this;
     }
 

@@ -16,7 +16,7 @@ return array (
             'routes' => array(
                 'membership clean connections' => array(
                     'options' => array(
-                        'route'    => 'membership clean expired memberships connections [--verbose|-v]',
+                        'route'    => 'membership clean expired connections [--verbose|-v]',
                         'defaults' => array(
                             'controller' => 'memberships-console',
                             'action'     => 'cleanExpiredMembershipsConnections'

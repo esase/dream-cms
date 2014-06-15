@@ -186,6 +186,7 @@ class MembershipAdministrationController extends AbstractBaseController
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Membership\Form\AclRole')
+            ->setEditMode(true)
             ->setImage($role['image']);
 
         $aclRoleForm->getForm()->setData($role);
@@ -250,8 +251,10 @@ class MembershipAdministrationController extends AbstractBaseController
             if (null !== ($rolesIds = $request->getPost('roles', null))) {
                 // delete selected membership roles
                 foreach ($rolesIds as $roleId) {
-                    // get the role info
-                    if (null == ($roleInfo = $this->getModel()->getRoleInfo($roleId))) { 
+                    // get the role info, membership levels cannot be deleted  while they contain subscribers
+                    if (null == ($roleInfo = $this->getModel()->getRoleInfo($roleId)) 
+                            || $roleInfo['subscribers']) { 
+
                         continue;
                     }
 
