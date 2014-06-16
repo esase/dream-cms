@@ -304,7 +304,7 @@ class Payment extends Base
         if ($checkModuleState) {
             $select->join(
                 array('c' => 'module'),
-                new Expression('b.module = c.id and c.active = ?', array(self::MODULE_ACTIVE)),
+                new Expression('b.module = c.id and c.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array()
             );
         }
@@ -426,7 +426,7 @@ class Payment extends Base
             )
             ->where(array(
                 'name' => $moduleName,
-                'active' => self::MODULE_ACTIVE
+                'status' => self::MODULE_STATUS_ACTIVE
             ));
 
         $statement = $this->prepareStatementForSqlObject($select);
@@ -496,7 +496,7 @@ class Payment extends Base
                 array('c' => 'module'),
                 'b.module = c.id',
                 array(
-                    'module_state' => 'active'
+                    'module_state' => 'status'
                 )
             )
             ->order($orderBy . ' ' . $orderType)
@@ -564,11 +564,11 @@ class Payment extends Base
             ->join(
                 array('c' => 'payment_transaction_item'),
                 new Expression('a.id = c.transaction_id and c.active = ? and c.available = ? and c.deleted = ?
-                        and c.module = (select id from  module as d where d.id = c.module and d.active = ?)', array(
+                        and c.module = (select id from  module as d where d.id = c.module and d.status = ?)', array(
                             self::ITEM_ACTIVE,
                             self::ITEM_AVAILABLE,
                             self::ITEM_NOT_DELETED,
-                            self::MODULE_ACTIVE
+                            self::MODULE_STATUS_ACTIVE
                         )
                 ),
                 array(

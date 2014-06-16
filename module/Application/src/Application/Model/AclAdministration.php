@@ -401,14 +401,14 @@ class AclAdministration extends Acl
             ))
             ->join(
                 array('b' => 'module'),
-                new Expression('a.module = b.id and b.active = ' . (int) self::MODULE_ACTIVE),
+                new Expression('a.module = b.id and b.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'module' => 'name'
                 )
             )
             ->join(
                 array('c' => 'acl_resource_connection'),
-                new Expression('a.id = c.resource and c.role = ' . (int) $roleId),
+                new Expression('a.id = c.resource and c.role = ?', array($roleId)),
                 array(
                     'connection' => 'id'
                 ),

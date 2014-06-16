@@ -161,7 +161,7 @@
                 ),
                 3 => array(
                     'param' => 'module_state',
-                    'condition' =>  'return (int) "__value__" == "' . BaseModel::MODULE_ACTIVE . '";'
+                    'condition' =>  'return "__value__" == "' . BaseModel::MODULE_STATUS_ACTIVE . '";'
                 ),
                 4 => array(
                     'function' => function($data) use ($paymentHandlerManager) {

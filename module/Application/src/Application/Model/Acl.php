@@ -181,7 +181,7 @@ class Acl extends Base
                 $values = array(
                     'connection_id' => $resource['id'],
                     'actions' => $resetActions ? $resetValue : 1,
-                    'actions_last_reset' => new Expression('unix_timestamp()')
+                    'actions_last_reset' => time()
                 );
 
                 if ($userId != UserBaseModel::DEFAULT_GUEST_ID) {
@@ -204,7 +204,7 @@ class Acl extends Base
                         ->table('acl_resource_action_track')
                         ->set(array(
                             'actions' => $resetValue,
-                            'actions_last_reset' => new Expression('unix_timestamp()')
+                            'actions_last_reset' => time()
                         ))
                         ->where(array(
                             'connection_id' => $resource['id']

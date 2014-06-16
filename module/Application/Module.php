@@ -492,7 +492,7 @@ class Module
     
             // get default or user defined layouts
             $activeLayouts = !empty($this->userIdentity->layout)
-                ? $layout->getLayoutsByName($this->userIdentity->layout)
+                ? $layout->getLayoutsById($this->userIdentity->layout)
                 : $layout->getDefaultActiveLayouts();
     
             // add layouts paths for each module

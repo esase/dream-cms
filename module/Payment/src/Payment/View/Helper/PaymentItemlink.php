@@ -28,7 +28,7 @@ class PaymentItemLink extends AbstractHelper
      *      string handler
      *      integer object_id
      *      integer module_extra_options
-     *      integer module_state
+     *      string module_state
      * @return string
      */
    public function __invoke($info)
@@ -37,7 +37,7 @@ class PaymentItemLink extends AbstractHelper
 
         // check the item's status
         if ($info['deleted'] == BaseModel::ITEM_DELETED || $info['active'] ==
-                BaseModel::ITEM_NOT_ACTIVE || $info['module_state'] != BaseModel::MODULE_ACTIVE) {
+                BaseModel::ITEM_NOT_ACTIVE || $info['module_state'] != BaseModel::MODULE_STATUS_ACTIVE) {
 
             return $info['title'];
         }

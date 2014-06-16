@@ -19,9 +19,9 @@ class Layout extends Base
     const LAYOUT_TYPE_CUSTOM = 'custom';
 
     /**
-     * Layouts by name
+     * Layouts by id
      */
-    const CACHE_LAYOUTS_BY_NAME = 'Application_Layouts_By_Name_';
+    const CACHE_LAYOUTS_BY_ID = 'Application_Layouts_By_Id_';
  
     /**
      * Active layouts cache
@@ -31,18 +31,23 @@ class Layout extends Base
     /**
      * Active layout flag
      */ 
-    const LAYOUT_ACTIVE = 1;
+    const LAYOUT_STATUS_ACTIVE = 'active';
 
     /**
-     * Get layouts by name
+     * Not active layout flag
+     */ 
+    const LAYOUT_STATUS_NOT_ACTIVE = 'not_active';
+
+    /**
+     * Get layouts by id
      *
-     * @param string $layoutName
+     * @param integer $layoutId
      * @return array
      */
-    public function getLayoutsByName($layoutName)
+    public function getLayoutsById($layoutId)
     {
         // generate cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_LAYOUTS_BY_NAME . $layoutName);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_LAYOUTS_BY_ID . $layoutId);
 
         // check data in cache
         if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
@@ -53,11 +58,11 @@ class Layout extends Base
                 ))
                 ->order('type')
                 ->where(array(
-                    'name' => $layoutName
+                    'id' => $layoutId
                 ))
                 ->where
                     ->or->equalTo('type', self::LAYOUT_TYPE_SYSTEM)
-                    ->and->equalTo('active', self::LAYOUT_ACTIVE);
+                    ->and->equalTo('status', self::LAYOUT_STATUS_ACTIVE);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -94,7 +99,7 @@ class Layout extends Base
                 ))
                 ->where
                     ->or->equalTo('type', self::LAYOUT_TYPE_CUSTOM)
-                    ->and->equalTo('active', self::LAYOUT_ACTIVE);
+                    ->and->equalTo('status', self::LAYOUT_STATUS_ACTIVE);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;

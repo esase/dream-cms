@@ -205,7 +205,7 @@ class Base extends AbstractBase
             )
             ->join(
                 array('c' => 'module'),
-                new Expression('b.module = c.id and c.active = ?', array(self::MODULE_ACTIVE)),
+                new Expression('b.module = c.id and c.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array()
             )
             ->where(array(
@@ -402,6 +402,7 @@ class Base extends AbstractBase
      */
     public function getActiveCouponInfo($id, $field = 'slug')
     {
+        $time = time();
         $select = $this->select();
         $select->from('payment_discount_cupon')
             ->columns(array(
@@ -417,8 +418,8 @@ class Base extends AbstractBase
                 'used' => self::COUPON_NOT_USED
             ))
             ->where(array(
-                new LiteralPredicate('(date_start = 0 or
-                    (unix_timestamp() >= date_start)) and (date_end = 0 or (unix_timestamp() <= date_end))')
+                new LiteralPredicate('(date_start = 0 or 
+                        (' . $time . ' >= date_start)) and (date_end = 0 or (' . $time . ' <= date_end))')
             ));
 
         $statement = $this->prepareStatementForSqlObject($select);
@@ -528,7 +529,7 @@ class Base extends AbstractBase
             )
             ->join(
                 array('c' => 'module'),
-                new Expression('b.module = c.id and c.active = ?', array(self::MODULE_ACTIVE)),
+                new Expression('b.module = c.id and c.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array()
             )
             ->where(array(
@@ -1148,7 +1149,7 @@ class Base extends AbstractBase
                 array('c' => 'module'),
                 'b.module = c.id',
                 array(
-                    'module_state' => 'active'
+                    'module_state' => 'status'
                 )
             )
             ->where(array(

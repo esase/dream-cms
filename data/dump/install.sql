@@ -1,28 +1,28 @@
 CREATE TABLE IF NOT EXISTS `module` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(100) NOT NULL,
-    `type` enum('system','custom') NOT NULL,
-    `active` tinyint(1) unsigned NOT NULL,
-    `version` varchar(10) NOT NULL,
-    `vendor` varchar(100) NOT NULL,
-    `vendor_email` varchar(100) NOT NULL,
-    `description` text NOT NULL,
-    `dependences` varchar(255) NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `type` ENUM('system','custom') NOT NULL,
+    `status` ENUM('active','not_active') NOT NULL,
+    `version` VARCHAR(20) NOT NULL,
+    `vendor` VARCHAR(50) NOT NULL,
+    `vendor_email` VARCHAR(50) NOT NULL,
+    `description` VARCHAR(255) NOT NULL,
+    `dependences` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`),
-    KEY `type` (`type`, `active`),
+    KEY `type` (`type`, `status`),
     UNIQUE `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `module` (`id`, `name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(2, 'User', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(3, 'XmlRpc', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(4, 'FileManager', 'system', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', '');
+INSERT INTO `module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
+(1, 'Application', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(2, 'User', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(3, 'XmlRpc', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(4, 'FileManager', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', '');
 
 CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
-    `namespace` varchar(50) NOT NULL,
-    `path` varchar(100) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
+    `namespace` VARCHAR(50) NOT NULL,
+    `path` VARCHAR(100) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`namespace`, `path`, `module`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE
@@ -34,11 +34,11 @@ INSERT INTO `xmlrpc_class` (`namespace`, `path`, `module`) VALUES
 ('user', 'User\\XmlRpc\\Handler', 2);
 
 CREATE TABLE IF NOT EXISTS `localization` (
-    `language` varchar(2) NOT NULL,
-    `locale` varchar(5) NOT NULL,
-    `description` varchar(50) NOT NULL,
-    `default` tinyint(1) unsigned NOT NULL,
-    `direction` enum('rtl','ltr') NOT NULL,
+    `language` CHAR(2) NOT NULL,
+    `locale` CHAR(5) NOT NULL,
+    `description` VARCHAR(50) NOT NULL,
+    `default` TINYINT(1) UNSIGNED NOT NULL,
+    `direction` ENUM('rtl','ltr') NOT NULL,
     PRIMARY KEY (`language`),
     KEY `default` (`default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -48,25 +48,27 @@ INSERT INTO `localization` (`language`, `locale`, `description`, `default`, `dir
 ('ru', 'ru_RU', 'Русский', 0, 'ltr');
 
 CREATE TABLE IF NOT EXISTS `layout` (
-    `name` varchar(50) NOT NULL,
-    `type` enum('system','custom') NOT NULL,
-    `active` tinyint(1) unsigned NOT NULL,
-    `title` varchar(150) NOT NULL,
-    `description` text NOT NULL,
-    `version` varchar(100) NOT NULL,
-    `vendor` varchar(100) NOT NULL,
-    `vendor_email` varchar(1000) NOT NULL,
-    PRIMARY KEY (`name`),
-    KEY `type` (`type`, `active`)
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `type` ENUM('system','custom') NOT NULL,
+    `status` ENUM('active','not_active') NOT NULL,
+    `title` VARCHAR(50) NOT NULL,
+    `description` VARCHAR(255) NOT NULL,
+    `version` VARCHAR(20) NOT NULL,
+    `vendor` VARCHAR(50) NOT NULL,
+    `vendor_email` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`name`),
+    KEY `type` (`type`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `layout` (`name`, `type`, `active`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 1, 'Base layout', 'Default base layout', '1.0.0', 'eSASe', 'alexermashev@gmail.com');
+INSERT INTO `layout` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
+('base', 'system', 'active', 'Base layout', 'Default base layout', '1.0.0', 'eSASe', 'alexermashev@gmail.com');
 
 CREATE TABLE IF NOT EXISTS `acl_role` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL,
-    `type` enum('system','custom') NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `type` ENUM('system','custom') NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -76,10 +78,10 @@ INSERT INTO `acl_role` (`id`, `name`, `type`) VALUES
 (3, 'member', 'system');
 
 CREATE TABLE IF NOT EXISTS `acl_resource` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `resource` varchar(50) NOT NULL,
-    `description` varchar(150) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `resource` VARCHAR(50) NOT NULL,
+    `description` VARCHAR(150) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE(`resource`),
     FOREIGN KEY (module) REFERENCES module(id)
@@ -125,9 +127,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (38, 'files_manager_administration_edit', 'ACL - Editing files and dirs in admin area', 4);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `role` int(10) unsigned NOT NULL,
-    `resource` int(10) unsigned NOT NULL,
+    `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `role` SMALLINT(5) UNSIGNED NOT NULL,
+    `resource` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`role`, `resource`),
     FOREIGN KEY (role) REFERENCES acl_role(id)
@@ -139,26 +141,26 @@ CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `user` (
-    `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `nick_name` varchar(50) NOT NULL DEFAULT '',
-    `slug` varchar(100) NOT NULL DEFAULT '',
-    `status` enum('approved','disapproved') NOT NULL,
-    `email` varchar(255) NOT NULL DEFAULT '',
-    `phone` varchar(255) NOT NULL DEFAULT '',
-    `first_name` varchar(255) NOT NULL DEFAULT '',
-    `last_name` varchar(255) NOT NULL DEFAULT '',
-    `address` varchar(255) NOT NULL DEFAULT '',
-    `password` varchar(40) NOT NULL DEFAULT '',
-    `salt` varchar(10) NOT NULL DEFAULT '',
-    `role` int(10) unsigned DEFAULT NULL,
-    `language` varchar(2) DEFAULT NULL,
-    `time_zone` varchar(100) NOT NULL,
-    `layout` varchar(50) DEFAULT NULL,
-    `api_key` varchar(50) NOT NULL DEFAULT '',
-    `api_secret` varchar(50) NOT NULL DEFAULT '',
+    `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `nick_name` VARCHAR(50) NOT NULL DEFAULT '',
+    `slug` VARCHAR(100) NOT NULL DEFAULT '',
+    `status` ENUM('approved','disapproved') NOT NULL,
+    `email` VARCHAR(50) NOT NULL DEFAULT '',
+    `phone` VARCHAR(50) NOT NULL DEFAULT '',
+    `first_name` VARCHAR(100) NOT NULL DEFAULT '',
+    `last_name` VARCHAR(100) NOT NULL DEFAULT '',
+    `address` VARCHAR(100) NOT NULL DEFAULT '',
+    `password` VARCHAR(40) NOT NULL DEFAULT '',
+    `salt` VARCHAR(20) NOT NULL DEFAULT '',
+    `role` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `language` CHAR(2) DEFAULT NULL,
+    `time_zone` VARCHAR(100) NOT NULL,
+    `layout` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `api_key` VARCHAR(50) NOT NULL DEFAULT '',
+    `api_secret` VARCHAR(50) NOT NULL DEFAULT '',
     `registered` date NOT NULL,
-    `activation_code` varchar(20) NOT NULL,
-    `avatar` varchar(100) NOT NULL,
+    `activation_code` VARCHAR(20) NOT NULL,
+    `avatar` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `nick_name` (`nick_name`),
     UNIQUE KEY `email` (`email`),
@@ -171,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     FOREIGN KEY (language) REFERENCES localization(language)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
-    FOREIGN KEY (layout) REFERENCES layout(name)
+    FOREIGN KEY (layout) REFERENCES layout(id)
         ON UPDATE CASCADE
         ON DELETE SET NULL       
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -180,13 +182,13 @@ INSERT INTO `user` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password
 (1, 'esase', 'esase', 'approved', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
 
 CREATE TABLE IF NOT EXISTS `user_menu` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(150) NOT NULL,
-    `controller` varchar(255) NOT NULL,
-    `action` varchar(255) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `order` int(10) unsigned NOT NULL,
-    `check` text NOT NULL,
+    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(150) NOT NULL,
+    `controller` VARCHAR(255) NOT NULL,
+    `action` VARCHAR(255) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `order` INT(10) UNSIGNED NOT NULL,
+    `check` TEXT NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE
@@ -198,13 +200,13 @@ INSERT INTO `user_menu` (`id`, `name`, `controller`, `action`, `module`, `order`
 (2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::getCurrentUserIdentity()->user_id == User\\Model\\User::DEFAULT_USER_ID ? false : true;');
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `connection_id` int(10) unsigned NOT NULL,
-    `user_id` int(10) unsigned DEFAULT NULL,
-    `date_start` int(10) unsigned NOT NULL,
-    `date_end` int(10) unsigned NOT NULL,
-    `actions_limit` int(10) unsigned NOT NULL,
-    `actions_reset` int(10) unsigned NOT NULL,
+    `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+    `user_id` INT(10) UNSIGNED DEFAULT NULL,
+    `date_start` INT(10) UNSIGNED NOT NULL,
+    `date_end` INT(10) UNSIGNED NOT NULL,
+    `actions_limit` MEDIUMINT(5) UNSIGNED NOT NULL,
+    `actions_reset` MEDIUMINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `setting` (`connection_id`, `user_id`),
     FOREIGN KEY (connection_id) REFERENCES acl_resource_connection(id)
@@ -216,11 +218,11 @@ CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `acl_resource_action_track` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `connection_id` int(10) unsigned NOT NULL,
-    `user_id` int(10) unsigned DEFAULT NULL,
-    `actions` int(10) unsigned NOT NULL,
-    `actions_last_reset` int(10) unsigned NOT NULL,
+    `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+    `user_id` INT(10) UNSIGNED DEFAULT NULL,
+    `actions` INT(10) UNSIGNED NOT NULL,
+    `actions_last_reset` INT(10) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     KEY `actions_last_reset` (`actions_last_reset`),
     FOREIGN KEY (connection_id) REFERENCES acl_resource_connection(id)
@@ -232,9 +234,9 @@ CREATE TABLE IF NOT EXISTS `acl_resource_action_track` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `setting_category` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) NOT NULL DEFAULT '',
-    `module` int(10) unsigned NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL DEFAULT '',
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `category` (`name`, `module`),
     FOREIGN KEY (module) REFERENCES module(id)
@@ -261,20 +263,20 @@ INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
 (17,  'Localization', 1);
 
 CREATE TABLE IF NOT EXISTS `setting` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL,
-    `label` varchar(150) NOT NULL,
-    `description` varchar(255) NOT NULL,
-    `description_helper` text NOT NULL,
-    `type` enum('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
-    `required` tinyint(1) unsigned NOT NULL,
-    `order` smallint(5) unsigned NOT NULL,
-    `category` int(10) unsigned DEFAULT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `language_sensitive` tinyint(1) NOT NULL DEFAULT '1',
-    `values_provider` varchar(255) NOT NULL,
-    `check` text NOT NULL,
-    `check_message` varchar(150) NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `label` VARCHAR(150) NOT NULL,
+    `description` VARCHAR(255) NOT NULL,
+    `description_helper` TEXT NOT NULL,
+    `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
+    `required` TINYINT(1) UNSIGNED NOT NULL,
+    `order` SMALLINT(5) NOT NULL,
+    `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `language_sensitive` TINYINT(1) NOT NULL DEFAULT '1',
+    `values_provider` VARCHAR(255) NOT NULL,
+    `check` TEXT NOT NULL,
+    `check_message` VARCHAR(150) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
     FOREIGN KEY (category) REFERENCES setting_category(id)
@@ -362,10 +364,10 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (75, 'user_role_edited_message', 'User role edited message', '', 'notification_message', 1, 18, 9, 2, 1, '', '', '');
 
 CREATE TABLE IF NOT EXISTS `setting_value` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `setting_id` int(10) unsigned NOT NULL,
-    `value` text NOT NULL,
-    `language` varchar(2) DEFAULT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `value` TEXT NOT NULL,
+    `language` CHAR(2) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `setting` (`setting_id`, `language`),
     FOREIGN KEY (setting_id) REFERENCES setting(id)
@@ -465,8 +467,8 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru');
 
 CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
-    `setting_id` int(10) unsigned NOT NULL,
-    `value` varchar(255) NOT NULL,
+    `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `value` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`setting_id`, `value`),
     FOREIGN KEY (setting_id) REFERENCES setting(id)
         ON UPDATE CASCADE
@@ -484,10 +486,10 @@ INSERT INTO `setting_predefined_value` (`setting_id`, `value`) VALUES
 (24, 'wincache');
 
 CREATE TABLE IF NOT EXISTS `event` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(150) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `description` varchar(255) NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `description` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
     FOREIGN KEY (module) REFERENCES module(id)
@@ -527,10 +529,10 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (30, 'edit_directory', 4, 'Event - Editing directories');
 
 CREATE TABLE IF NOT EXISTS `admin_menu_part` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(150) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `icon` varchar(150) NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `icon` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
     FOREIGN KEY (module) REFERENCES module(id)
@@ -543,10 +545,10 @@ INSERT INTO `admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
 (2, 'Modules', 1, 'module_menu.png');
 
 CREATE TABLE IF NOT EXISTS `admin_menu_category` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(150) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `icon` varchar(150) NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `icon` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
     FOREIGN KEY (module) REFERENCES module(id)
@@ -561,15 +563,15 @@ INSERT INTO `admin_menu_category` (`id`, `name`, `module`, `icon`) VALUES
 (4, 'Files manager', 4, 'file_manager_menu_item.png');
 
 CREATE TABLE IF NOT EXISTS `admin_menu` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(150) NOT NULL,
-    `controller` varchar(255) NOT NULL,
-    `action` varchar(255) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `order` int(10) unsigned NOT NULL,
-    `category` int(10) unsigned NOT NULL,
-    `part` int(10) unsigned NOT NULL,
-    `icon` varchar(150) NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `controller` VARCHAR(50) NOT NULL,
+    `action` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `order` SMALLINT(5) NOT NULL,
+    `category` SMALLINT(5) UNSIGNED NOT NULL,
+    `part` SMALLINT(5) UNSIGNED NOT NULL,
+    `icon` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE
@@ -592,11 +594,11 @@ INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order
 (7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
 
 CREATE TABLE IF NOT EXISTS `injection` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `position` enum('head', 'body','footer', 'before-menu', 'after-menu') NOT NULL,
-    `patrial` varchar(255) NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `order` int(10) NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `position` ENUM('head', 'body','footer', 'before-menu', 'after-menu') NOT NULL,
+    `patrial` VARCHAR(150) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `order` SMALLINT(5) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE

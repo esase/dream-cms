@@ -37,7 +37,7 @@ class UserMenu extends Base
                 ))
             ->join(
                 array('b' => 'module'),
-                new Expression('a.module = b.id and b.active = ' . (int) self::MODULE_ACTIVE),
+                new Expression('a.module = b.id and b.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'module' => 'id'
                 )

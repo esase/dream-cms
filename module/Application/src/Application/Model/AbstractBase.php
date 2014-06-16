@@ -38,9 +38,14 @@ abstract class AbstractBase extends Sql
     const CACHE_MODULE_BY_NAME = 'Application_Module_By_Name_';
 
     /**
-     * Module action flag
+     * Module active status flag
      */
-    const MODULE_ACTIVE = 1;
+    const MODULE_STATUS_ACTIVE = 'active';
+
+    /**
+     * Module not active status flag
+     */
+    const MODULE_STATUS_NOT_ACTIVE = 'not_active';
 
     /**
      * Class constructor
@@ -124,7 +129,7 @@ abstract class AbstractBase extends Sql
                     'id',
                     'name',
                     'type',
-                    'active',
+                    'status',
                     'version',
                     'vendor',
                     'vendor_email',
@@ -161,7 +166,7 @@ abstract class AbstractBase extends Sql
                 'name'
             ))
         ->where(array(
-            'active' => self::MODULE_ACTIVE
+            'status' => self::MODULE_STATUS_ACTIVE
         ))
         ->order('id');
 

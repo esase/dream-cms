@@ -52,14 +52,14 @@ class AdminMenu extends Base
             )
             ->join(
                 array('d' => 'module'),
-                new Expression('c.module = d.id and d.active = ' . (int) self::MODULE_ACTIVE),
+                new Expression('c.module = d.id and d.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'part_module' => 'name'
                 )
             )
             ->join(
                 array('i' => 'module'),
-                new Expression('b.module = i.id and i.active = ' . (int) self::MODULE_ACTIVE),
+                new Expression('b.module = i.id and i.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'category_module' => 'name'
                 )
