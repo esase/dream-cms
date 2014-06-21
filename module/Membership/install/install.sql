@@ -30,14 +30,14 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('activate_membership_conection', @moduleId, 'Event - Activating membership connections');
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('membership_image_width', 'Image width', '', 'INTeger', 1, 1, 1, @moduleId, 0, '', '', '');
+('membership_image_width', 'Image width', '', 'integer', 1, 1, 1, @moduleId, 0, '', '', '');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '200', NULL);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('membership_image_height', 'Image height', '', 'INTeger', 1, 2, 1, @moduleId, 0, '', '', '');
+('membership_image_height', 'Image height', '', 'integer', 1, 2, 1, @moduleId, 0, '', '', '');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES

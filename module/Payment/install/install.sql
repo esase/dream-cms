@@ -50,7 +50,7 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('deactivate_discount_coupon', @moduleId, 'Event - Deactivating discount coupons'),
 ('add_item_to_shopping_cart', @moduleId, 'Event - Adding items to the shopping cart'),
 ('delete_item_from_shopping_cart', @moduleId, 'Event - Deleting items from the shopping cart'),
-('edit_item_INTo_shopping_cart', @moduleId, 'Event - Editing items INTo the shopping cart'),
+('edit_item_into_shopping_cart', @moduleId, 'Event - Editing items into the shopping cart'),
 ('add_payment_transaction', @moduleId, 'Event - Adding payment transactions'),
 ('delete_payment_transaction', @moduleId, 'Event - Deleting payment transactions'),
 ('activate_payment_transaction', @moduleId, 'Event - Activating payment transactions'),
@@ -66,14 +66,14 @@ INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
 ('before-menu', 'payment/patrial/shopping-cart', @moduleId, @maxOrder);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_shopping_cart_session_time', 'The shopping cart\'s ID lifetime in seconds', '', 'INTeger', 1, 1, 1, @moduleId, 0, '', 'return INTval(''__value__'') > 0;', 'Value should be greater than 0');
+('payment_shopping_cart_session_time', 'The shopping cart\'s ID lifetime in seconds', '', 'integer', 1, 1, 1, @moduleId, 0, '', 'return INTval(''__value__'') > 0;', 'Value should be greater than 0');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '7776000', NULL);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_clearing_time', 'Time of clearing shopping cart and not paid transactions in seconds', '', 'INTeger', 1, 2, 1, @moduleId, 0, '', 'return INTval(''__value__'') > 0;', 'Value should be greater than 0');
+('payment_clearing_time', 'Time of clearing shopping cart and not paid transactions in seconds', '', 'integer', 1, 2, 1, @moduleId, 0, '', 'return INTval(''__value__'') > 0;', 'Value should be greater than 0');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
@@ -237,7 +237,7 @@ INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  'Купить выбранные товары и услуги', 'ru');
 
 INSERT INTO `setting` (`name`, `label`, `description_helper`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_rbk_eshop_id', 'Shop ID', '$serviceManager = Application\\Service\\Service::getServiceManager();\r\n$url = $serviceManager->get(''viewhelpermanager'')->get(''url'');\r\n$translate = $serviceManager->get(''viewhelpermanager'')->get(''translate'');\r\n\r\n$label  = $translate(''Set these links INTo your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''Success URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''success''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Fail URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''error''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Callback URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''process'', ''slug'' => ''rbk-money''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Also set these options INTo your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''HTTP method'') . '': POST'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Control signature'') . '': MD5'';\r\n\r\nreturn $label;', 'text', 1, 20, @settingCategoryId, @moduleId, 0, '', '', '');
+('payment_rbk_eshop_id', 'Shop ID', '$serviceManager = Application\\Service\\Service::getServiceManager();\r\n$url = $serviceManager->get(''viewhelpermanager'')->get(''url'');\r\n$translate = $serviceManager->get(''viewhelpermanager'')->get(''translate'');\r\n\r\n$label  = $translate(''Set these links into your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''Success URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''success''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Fail URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''error''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Callback URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''process'', ''slug'' => ''rbk-money''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Also set these options into your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''HTTP method'') . '': POST'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Control signature'') . '': MD5'';\r\n\r\nreturn $label;', 'text', 1, 20, @settingCategoryId, @moduleId, 0, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
