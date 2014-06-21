@@ -403,7 +403,7 @@ class Base extends AbstractBase
                     'role' => AclModelBase::DEFAULT_ROLE_MEMBER,
                     'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED,
                     'language' => ApplicationService::getCurrentLocalization()['language'],
-                    'registered' => new Expression('now()'),
+                    'registered' => time(),
                     'salt' => $passwordSalt,
                     'password' => $this->generatePassword($formData['password'], $passwordSalt),
                     'api_secret' => $this->generateRandString(),
@@ -666,6 +666,14 @@ class Base extends AbstractBase
                     'a.role = b.id',
                     array(
                         'role_name' => 'name'
+                    ),
+                    'left'
+                )
+                ->join(
+                    array('c' => 'time_zone'),
+                    'a.time_zone = c.id',
+                    array(
+                        'time_zone_name' => 'name'
                     ),
                     'left'
                 )

@@ -184,7 +184,7 @@ class MembershipAdministration extends Base
      *      float cost
      *      integer lifetime
      *      integer role
-     *      integer status
+     *      integer active
      * @return object
      */
     public function getMembershipLevels($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
@@ -193,7 +193,7 @@ class MembershipAdministration extends Base
             'id',
             'cost',
             'lifetime',
-            'status',
+            'active',
             'subscribers'
         );
 
@@ -211,7 +211,7 @@ class MembershipAdministration extends Base
                 'id',
                 'cost',
                 'lifetime',
-                'status'
+                'active'
             ))
             ->join(
                 array('b' => 'membership_level_connection'),
@@ -265,10 +265,10 @@ class MembershipAdministration extends Base
             ));
         }
 
-        // filter by a status
-        if (isset($filters['status']) && $filters['status'] != null) {
+        // filter by a active
+        if (isset($filters['active']) && $filters['active'] != null) {
             $select->where(array(
-                'a.status' => ((int) $filters['status'] == self::MEMBERSHIP_LEVEL_STATUS_ACTIVE ? $filters['status'] : self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE)
+                'a.active' => ((int) $filters['active'] == self::MEMBERSHIP_LEVEL_STATUS_ACTIVE ? $filters['active'] : self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE)
             ));
         }
 

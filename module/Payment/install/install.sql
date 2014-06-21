@@ -1,6 +1,6 @@
 
-INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-('Payment', 'custom', 1, '0.9.0', 'eSASe', 'alexermashev@gmail.com', '', '');
+INSERT INTO `module` (`name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
+('Payment', 'custom', 'active', '0.9.0', 'eSASe', 'alexermashev@gmail.com', '', '');
 
 SET @moduleId = (SELECT LAST_INSERT_ID());
 SET @maxOrder = (SELECT `order` + 1 FROM `admin_menu` ORDER BY `order` DESC LIMIT 1);
@@ -50,7 +50,7 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('deactivate_discount_coupon', @moduleId, 'Event - Deactivating discount coupons'),
 ('add_item_to_shopping_cart', @moduleId, 'Event - Adding items to the shopping cart'),
 ('delete_item_from_shopping_cart', @moduleId, 'Event - Deleting items from the shopping cart'),
-('edit_item_into_shopping_cart', @moduleId, 'Event - Editing items into the shopping cart'),
+('edit_item_INTo_shopping_cart', @moduleId, 'Event - Editing items INTo the shopping cart'),
 ('add_payment_transaction', @moduleId, 'Event - Adding payment transactions'),
 ('delete_payment_transaction', @moduleId, 'Event - Deleting payment transactions'),
 ('activate_payment_transaction', @moduleId, 'Event - Activating payment transactions'),
@@ -66,14 +66,14 @@ INSERT INTO `injection` (`position`, `patrial`, `module`, `order`) VALUES
 ('before-menu', 'payment/patrial/shopping-cart', @moduleId, @maxOrder);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_shopping_cart_session_time', 'The shopping cart\'s ID lifetime in seconds', '', 'integer', 1, 1, 1, @moduleId, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
+('payment_shopping_cart_session_time', 'The shopping cart\'s ID lifetime in seconds', '', 'INTeger', 1, 1, 1, @moduleId, 0, '', 'return INTval(''__value__'') > 0;', 'Value should be greater than 0');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '7776000', NULL);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_clearing_time', 'Time of clearing shopping cart and not paid transactions in seconds', '', 'integer', 1, 2, 1, @moduleId, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
+('payment_clearing_time', 'Time of clearing shopping cart and not paid transactions in seconds', '', 'INTeger', 1, 2, 1, @moduleId, 0, '', 'return INTval(''__value__'') > 0;', 'Value should be greater than 0');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
@@ -237,7 +237,7 @@ INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  'Купить выбранные товары и услуги', 'ru');
 
 INSERT INTO `setting` (`name`, `label`, `description_helper`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('payment_rbk_eshop_id', 'Shop ID', '$serviceManager = Application\\Service\\Service::getServiceManager();\r\n$url = $serviceManager->get(''viewhelpermanager'')->get(''url'');\r\n$translate = $serviceManager->get(''viewhelpermanager'')->get(''translate'');\r\n\r\n$label  = $translate(''Set these links into your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''Success URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''success''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Fail URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''error''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Callback URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''process'', ''slug'' => ''rbk-money''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Also set these options into your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''HTTP method'') . '': POST'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Control signature'') . '': MD5'';\r\n\r\nreturn $label;', 'text', 1, 20, @settingCategoryId, @moduleId, 0, '', '', '');
+('payment_rbk_eshop_id', 'Shop ID', '$serviceManager = Application\\Service\\Service::getServiceManager();\r\n$url = $serviceManager->get(''viewhelpermanager'')->get(''url'');\r\n$translate = $serviceManager->get(''viewhelpermanager'')->get(''translate'');\r\n\r\n$label  = $translate(''Set these links INTo your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''Success URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''success''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Fail URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''error''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= $translate(''Callback URL'') . '': '' . $url(''application'', array(''controller'' => ''payments'', ''action'' => ''process'', ''slug'' => ''rbk-money''), array(''force_canonical'' => true));\r\n$label .= ''<br />'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Also set these options INTo your RBK Money account:'');\r\n$label .= ''<br />'';\r\n$label .= $translate(''HTTP method'') . '': POST'';\r\n$label .= ''<br />'';\r\n$label .= $translate(''Control signature'') . '': MD5'';\r\n\r\nreturn $label;', 'text', 1, 20, @settingCategoryId, @moduleId, 0, '', '', '');
 SET @settingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
@@ -258,16 +258,16 @@ INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  'xxxx', NULL);
 
 CREATE TABLE IF NOT EXISTS `payment_module` (
-    `module` int(10) unsigned NOT NULL,
-    `update_event` varchar(50) NOT NULL,
-    `delete_event` varchar(50) NOT NULL,
-    `view_controller` varchar(50) NOT NULL,
-    `view_action` varchar(50) NOT NULL,
-    `countable` tinyint(1) NOT NULL,
-    `multi_costs` tinyint(1) NOT NULL,
-    `extra_options` tinyint(1) NOT NULL,
-    `must_login` tinyint(1) unsigned NOT NULL,
-    `handler` varchar(100) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `update_event` VARCHAR(50) NOT NULL,
+    `delete_event` VARCHAR(50) NOT NULL,
+    `view_controller` VARCHAR(50) NOT NULL,
+    `view_action` VARCHAR(50) NOT NULL,
+    `countable` TINYINT(1) NOT NULL,
+    `multi_costs` TINYINT(1) NOT NULL,
+    `extra_options` TINYINT(1) NOT NULL,
+    `must_login` TINYINT(1) UNSIGNED NOT NULL,
+    `handler` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`module`),
     FOREIGN KEY (module) REFERENCES module(id)
         ON UPDATE CASCADE
@@ -275,10 +275,10 @@ CREATE TABLE IF NOT EXISTS `payment_module` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `payment_currency` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `code` varchar(3) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `primary_currency` tinyint(1) NOT NULL,
+    `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `code` CHAR(3) NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
+    `primary_currency` TINYINT(1) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `code` (`code`),
     KEY `primary_currency` (`primary_currency`)
@@ -290,8 +290,8 @@ INSERT INTO `payment_currency` (`id`, `code`, `name`, `primary_currency`) VALUES
 (3, 'EUR', 'Euro', 0);
 
 CREATE TABLE IF NOT EXISTS `payment_exchange_rate` (
-    `rate` float unsigned NOT NULL,
-    `currency` int(10) unsigned NOT NULL,
+    `rate` DECIMAL(10,2) UNSIGNED NOT NULL,
+    `currency` TINYINT(3) UNSIGNED NOT NULL,
     PRIMARY KEY (`rate`, `currency`),
     FOREIGN KEY (currency) REFERENCES payment_currency(id)
         ON UPDATE CASCADE
@@ -299,11 +299,11 @@ CREATE TABLE IF NOT EXISTS `payment_exchange_rate` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `payment_type` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `name` varchar(100) NOT NULL,
-    `description` varchar(50) NOT NULL,
-    `enable_option` varchar(255) NOT NULL,
-    `handler` varchar(100) NOT NULL,
+    `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(30) NOT NULL,
+    `description` VARCHAR(100) NOT NULL,
+    `enable_option` VARCHAR(50) NOT NULL,
+    `handler` VARCHAR(50) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -313,12 +313,12 @@ INSERT INTO `payment_type` (`id`, `name`, `description`, `enable_option`, `handl
 (2, 'rbk-money', 'RBK Money', 'payment_rbk_money_enable', 'Payment\\Type\\RBKMoney');
 
 CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `slug` varchar(50) NOT NULL DEFAULT '',
-    `discount` float unsigned NOT NULL DEFAULT 0,
-    `used` tinyint(1) NOT NULL,
-    `date_start` int(10) unsigned NOT NULL,
-    `date_end` int(10) unsigned NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `slug` VARCHAR(50) NOT NULL DEFAULT '',
+    `discount` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
+    `used` TINYINT(1) NOT NULL,
+    `date_start` INT(10) UNSIGNED NOT NULL,
+    `date_end` INT(10) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `slug` (`slug`),
     KEY `discount` (`discount`),
@@ -328,21 +328,21 @@ CREATE TABLE IF NOT EXISTS `payment_discount_cupon` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `payment_transaction` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `slug` varchar(50) NOT NULL DEFAULT '',
-    `user_id` int(10) unsigned DEFAULT NULL,
-    `first_name` varchar(255) NOT NULL DEFAULT '',
-    `last_name` varchar(255) NOT NULL DEFAULT '',
-    `email` varchar(255) NOT NULL DEFAULT '',
-    `phone` varchar(255) NOT NULL DEFAULT '',
-    `address` varchar(255) NOT NULL DEFAULT '',
-    `date` int(10) unsigned NOT NULL,
-    `paid` tinyint(1) NOT NULL,
-    `currency` int(10) unsigned NOT NULL,
-    `payment_type` int(10) unsigned DEFAULT NULL,
+    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `slug` VARCHAR(50) NOT NULL DEFAULT '',
+    `user_id` INT(10) UNSIGNED DEFAULT NULL,
+    `first_name` VARCHAR(100) NOT NULL DEFAULT '',
+    `last_name` VARCHAR(100) NOT NULL DEFAULT '',
+    `email` VARCHAR(50) NOT NULL DEFAULT '',
+    `phone` VARCHAR(50) NOT NULL DEFAULT '',
+    `address` VARCHAR(100) NOT NULL DEFAULT '',
+    `date` INT(10) UNSIGNED NOT NULL,
+    `paid` TINYINT(1) NOT NULL,
+    `currency` TINYINT(3) UNSIGNED NOT NULL,
+    `payment_type` TINYINT(3) UNSIGNED DEFAULT NULL,
     `comments` text NOT NULL DEFAULT '',
-    `discount_cupon` int(10) unsigned DEFAULT NULL,
-    `amount` float NOT NULL DEFAULT '0',
+    `discount_cupon` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `amount` DECIMAL(10,2) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     UNIQUE KEY `slug` (`slug`),
     KEY `paid` (`paid`),
@@ -363,17 +363,17 @@ CREATE TABLE IF NOT EXISTS `payment_transaction` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `payment_transaction_item` (
-    `transaction_id` int(10) unsigned NOT NULL,
-    `object_id` int(10) unsigned NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `title` varchar(100) NOT NULL,
-    `slug` varchar(100) NOT NULL,
-    `cost` float unsigned NOT NULL DEFAULT 0,
-    `discount` float unsigned NOT NULL DEFAULT 0,
-    `count` int(10) unsigned NOT NULL DEFAULT 0,
-    `deleted` tinyint(1) NOT NULL DEFAULT 0,
-    `active` tinyint(1) NOT NULL DEFAULT 1,
-    `available` tinyint(1) NOT NULL DEFAULT 1,
+    `transaction_id` INT(10) UNSIGNED NOT NULL,
+    `object_id` INT(10) UNSIGNED NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `title` VARCHAR(100) NOT NULL,
+    `slug` VARCHAR(100) NOT NULL,
+    `cost` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
+    `discount` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
+    `count` SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
+    `deleted` TINYINT(1) NOT NULL DEFAULT 0,
+    `active` TINYINT(1) NOT NULL DEFAULT 1,
+    `available` TINYINT(1) NOT NULL DEFAULT 1,
     `extra_options` text NOT NULL DEFAULT '',
     PRIMARY KEY (`object_id`, `module`, `transaction_id`),
     FOREIGN KEY (transaction_id) REFERENCES payment_transaction(id)
@@ -385,19 +385,19 @@ CREATE TABLE IF NOT EXISTS `payment_transaction_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `payment_shopping_cart` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `object_id` int(10) unsigned NOT NULL,
-    `module` int(10) unsigned NOT NULL,
-    `title` varchar(100) NOT NULL,
-    `slug` varchar(100) NOT NULL,
-    `cost` float unsigned NOT NULL DEFAULT 0,
-    `discount` float unsigned NOT NULL DEFAULT 0,
-    `count` int(10) unsigned NOT NULL DEFAULT 0,
-    `shopping_cart_id` varchar(32) NOT NULL,
-    `active` tinyint(1) NOT NULL DEFAULT 1,
-    `available` tinyint(1) NOT NULL DEFAULT 1,
-    `date` int(10) unsigned NOT NULL,
-    `deleted` tinyint(1) NOT NULL DEFAULT 0,
+    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `object_id` INT(10) UNSIGNED NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `title` VARCHAR(100) NOT NULL,
+    `slug` VARCHAR(100) NOT NULL,
+    `cost` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
+    `discount` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
+    `count` SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
+    `shopping_cart_id` CHAR(32) NOT NULL,
+    `active` TINYINT(1) NOT NULL DEFAULT 1,
+    `available` TINYINT(1) NOT NULL DEFAULT 1,
+    `date` INT(10) UNSIGNED NOT NULL,
+    `deleted` TINYINT(1) NOT NULL DEFAULT 0,
     `extra_options` text NOT NULL DEFAULT '',
     PRIMARY KEY (`id`),
     UNIQUE KEY (`object_id`, `module`, `shopping_cart_id`),

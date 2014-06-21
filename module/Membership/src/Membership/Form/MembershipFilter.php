@@ -42,8 +42,8 @@ class MembershipFilter extends AbstractCustomForm
             'type' => CustomFormBuilder::FIELD_INTEGER,
             'label' => 'Lifetime in days'
         ),
-        'status' => array(
-            'name' => 'status',
+        'active' => array(
+            'name' => 'active',
             'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
             'values' => array(

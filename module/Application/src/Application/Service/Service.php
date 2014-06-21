@@ -50,6 +50,12 @@ class Service
     protected static $currentLayouts;
 
     /**
+     * Time zones
+     * @var array
+     */
+    protected static $timeZones;
+
+    /**
      * List of all localizations
      * @var array
      */
@@ -370,5 +376,26 @@ class Service
     public static function getCurrentLayouts()
     {
         return self::$currentLayouts;
+    }
+
+    /**
+     * Set time zones
+     *
+     * @param array $timeZones
+     * @return void
+     */
+    public static function setTimeZones(array $timeZones)
+    {
+        self::$timeZones = $timeZones;
+    }
+
+    /**
+     * Get time zones
+     *
+     * @return array
+     */
+    public static function getTimeZones()
+    {
+        return self::$timeZones;
     }
 }

@@ -1,6 +1,6 @@
 
-INSERT INTO `module` (`name`, `type`, `active`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-('Membership', 'custom', 1, '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', 'Payment');
+INSERT INTO `module` (`name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
+('Membership', 'custom', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', 'Payment');
 
 SET @moduleId = (SELECT LAST_INSERT_ID());
 SET @maxOrder = (SELECT `order` + 1 FROM `admin_menu` ORDER BY `order` DESC LIMIT 1);
@@ -30,14 +30,14 @@ INSERT INTO `event` (`name`, `module`, `description`) VALUES
 ('activate_membership_conection', @moduleId, 'Event - Activating membership connections');
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('membership_image_width', 'Image width', '', 'integer', 1, 1, 1, @moduleId, 0, '', '', '');
+('membership_image_width', 'Image width', '', 'INTeger', 1, 1, 1, @moduleId, 0, '', '', '');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '200', NULL);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-('membership_image_height', 'Image height', '', 'integer', 1, 2, 1, @moduleId, 0, '', '', '');
+('membership_image_height', 'Image height', '', 'INTeger', 1, 2, 1, @moduleId, 0, '', '', '');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
@@ -72,35 +72,35 @@ INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 (@settingId,  '<p>Уважаемый(я) <b>__RealName__</b> ваш уровень членства - "__Role__" истекает __ExpireDate__, не забудьте продлить его или купить новый</p>', 'ru');
 
 CREATE TABLE IF NOT EXISTS `membership_level` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `role_id` int(10) unsigned NOT NULL,
-    `cost` float unsigned NOT NULL DEFAULT 0,
-    `lifetime` int(10) unsigned NOT NULL,
-    `expiration_notification` int(10) unsigned NOT NULL,
-    `description` text NOT NULL,
-    `language` varchar(2) DEFAULT NULL,
-    `image` varchar(100) NOT NULL,
-    `status` tinyint(1) unsigned NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `role_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `cost` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
+    `lifetime` SMALLINT(5) UNSIGNED NOT NULL,
+    `expiration_notification` SMALLINT(5) UNSIGNED NOT NULL,
+    `description` TEXT NOT NULL,
+    `language` CHAR(2) DEFAULT NULL,
+    `image` VARCHAR(100) NOT NULL,
+    `active` TINYINT(1) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     KEY `cost` (`cost`),
     KEY `lifetime` (`lifetime`),
     KEY `role` (`role_id`),
-    KEY `status` (`status`, `language`),
+    KEY `active` (`active`, `language`),
     FOREIGN KEY (`language`) REFERENCES `localization`(`language`)
         ON UPDATE CASCADE
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `membership_level_connection` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-    `user_id` int(10) unsigned NOT NULL,
-    `membership_id` int(10) unsigned NOT NULL,
-    `active` tinyint(1) unsigned NOT NULL,
-    `expire_date` int(10) unsigned NOT NULL,
-    `notify_date` int(10) unsigned NOT NULL,
-    `notified` tinyint(1) NOT NULL,
-    `expire_value` int(10) unsigned NOT NULL,
-    `notify_value` int(10) unsigned NOT NULL,
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_id` INT(10) UNSIGNED NOT NULL,
+    `membership_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `active` TINYINT(1) UNSIGNED NOT NULL,
+    `expire_date` INT(10) UNSIGNED NOT NULL,
+    `notify_date` INT(10) UNSIGNED NOT NULL,
+    `notified` TINYINT(1) NOT NULL,
+    `expire_value` SMALLINT(5) UNSIGNED NOT NULL,
+    `notify_value` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     KEY `expire_date` (`active`, `expire_date`),
     KEY `notify_date` (`active`, `notify_date`, `notified`),

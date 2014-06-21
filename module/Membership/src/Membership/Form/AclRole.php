@@ -86,8 +86,8 @@ class AclRole extends AbstractCustomForm
             ),
             'category' => 'General info'
         ),
-        'status' => array(
-            'name' => 'status',
+        'active' => array(
+            'name' => 'active',
             'type' => CustomFormBuilder::FIELD_CHECKBOX,
             'label' => 'Active',
             'required' => false,

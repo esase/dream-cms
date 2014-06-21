@@ -380,10 +380,23 @@ class Module
     protected function initTimeZone()
     {
         try {
-            $defaultTimeZone = !empty($this->userIdentity->time_zone)
-                ? $this->userIdentity->time_zone
+            // get list of all registered time zones
+            $timeZone  = $this->serviceManager
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Application\Model\TimeZone');
+
+            $registeredTimeZones = $timeZone->getTimeZones();
+
+            // what should we use here, user's or default time zone
+            $defaultTimeZone = !empty($this->userIdentity->time_zone_name)
+                ? $this->userIdentity->time_zone_name
                 : ApplicationService::getSetting('application_default_time_zone');
-    
+
+            // check default time zone existing
+            if (!in_array($defaultTimeZone, $registeredTimeZones)) {
+                $defaultTimeZone = current($registeredTimeZones);
+            }
+
             // change time zone settings
             if ($defaultTimeZone != date_default_timezone_get()) {
                 date_default_timezone_set($defaultTimeZone);
@@ -398,6 +411,8 @@ class Module
     
             // change time zone settings in model
             $applicationInit->initTimeZone($date->format('P'));
+
+            ApplicationService::setTimeZones($registeredTimeZones);
         }
         catch (Exception $e) {
             ErrorLogger::log($e);
@@ -478,30 +493,30 @@ class Module
         try {
             // get a custom template path resolver
             $templatePathResolver = $this->serviceManager->get('customTemplatePathStack');
-    
+
            // replace the default template path stack resolver with custom
            $aggregateResolver = $this->serviceManager->get('Zend\View\Resolver\AggregateResolver');
            $aggregateResolver
                 ->attach($templatePathResolver)
                 ->getIterator()
                 ->remove($this->serviceManager->get('Zend\View\Resolver\TemplatePathStack'));
-    
+
             $layout = $this->serviceManager
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Application\Model\Layout');
-    
+
             // get default or user defined layouts
             $activeLayouts = !empty($this->userIdentity->layout)
                 ? $layout->getLayoutsById($this->userIdentity->layout)
                 : $layout->getDefaultActiveLayouts();
-    
+
             // add layouts paths for each module
             foreach ($this->moduleManager->getModules() as $module) {
                 foreach ($activeLayouts as $layoutInfo) {
                     $templatePathResolver->addPath('module/' . $module . '/view/' . $layoutInfo['name']);    
                 }
             }
-    
+
             ApplicationService::setCurrentLayouts($activeLayouts);
         }
         catch (Exception $e) {

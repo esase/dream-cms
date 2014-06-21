@@ -322,7 +322,7 @@ class Base extends AbstractBase
                 'description',
                 'language',
                 'image',
-                'status'
+                'active'
             ))
             ->join(
                 array('b' => 'membership_level_connection'),

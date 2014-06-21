@@ -231,8 +231,7 @@ class User extends AbstractCustomForm
             );
 
             // fill the form with default values
-            $this->formElements['time_zone']['values'] =
-                    array_combine(DateTimeZone::listIdentifiers(), DateTimeZone::listIdentifiers());
+            $this->formElements['time_zone']['values'] = ApplicationService::getTimeZones();
 
             $this->form = new CustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    

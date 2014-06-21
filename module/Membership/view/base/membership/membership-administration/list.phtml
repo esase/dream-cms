@@ -48,7 +48,7 @@
         ),
         3 => array(
             'title' => $this->translate('Status'),
-            'order_name' => 'status'
+            'order_name' => 'active'
         ),
         4 => array(
             'title' => $this->translate('Membership subscribers'),
@@ -65,13 +65,13 @@
     'helpers' => array(
         'role' => 'translate',
         'cost' => 'costFormat',
-        'status' => 'booleanValue',
+        'active' => 'booleanValue',
     ),
     'helpers_set_array' => array(
         'cost' => true
     ),
     'helpers_options' => array(
-        'status' => array(
+        'active' => array(
             'true_string' => $this->translate('approved'),
             'false_string' => $this->translate('disapproved')
         )
