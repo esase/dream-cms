@@ -8,6 +8,11 @@ use Application\Form\AbstractCustomForm;
 class ExchnageRate extends AbstractCustomForm 
 {
     /**
+     * Rate max string length
+     */
+    const RATE_MAX_LENGTH = 11;
+
+    /**
      * Form name
      * @var string
      */
@@ -48,6 +53,7 @@ class ExchnageRate extends AbstractCustomForm
                     'label' => $rate['name'],
                     'value' => $rate['rate'],
                     'category' => 'General info',
+                    'max_length' => self::RATE_MAX_LENGTH
                 )), $this->formElements);
             }
 

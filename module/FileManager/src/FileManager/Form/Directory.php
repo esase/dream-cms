@@ -84,14 +84,11 @@ class Directory extends AbstractCustomForm
                         'callback' => array($this, 'validateExistingDirectory'),
                         'message' => 'Directory already exist'
                     )
-                ),
-                array(
-                    'name' => 'stringlength',
-                    'options' => array(
-                        'max' => (int) ApplicationService::getSetting('file_manager_file_name_length')
-                    )
                 )
             );
+
+            // add a directory name length limit
+            $this->formElements['name']['max_length'] = (int) ApplicationService::getSetting('file_manager_file_name_length');
 
             $this->form = new CustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    

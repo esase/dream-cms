@@ -8,6 +8,11 @@ use Application\Model\AclAdministration as AclAdministrationModel;
 class AclRole extends AbstractCustomForm 
 {
     /**
+     * ACL role name max string length
+     */
+    const ACL_NAME_MAX_LENGTH = 50;
+
+    /**
      * Form name
      * @var string
      */
@@ -36,11 +41,12 @@ class AclRole extends AbstractCustomForm
             'label' => 'Name',
             'required' => true,
             'category' => 'General info',
+            'max_length' => self::ACL_NAME_MAX_LENGTH
         ),
         'submit' => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
+            'label' => 'Submit'
         ),
     );
 

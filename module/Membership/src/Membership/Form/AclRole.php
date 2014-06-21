@@ -10,6 +10,26 @@ use Membership\Model\MembershipAdministration as MembershipAdministrationModel;
 class AclRole extends AbstractCustomForm 
 {
     /**
+     * Cost max string length
+     */
+    const COST_MAX_LENGTH = 11;
+
+    /**
+     * Lifetime string length
+     */
+    const LIFETIME_MAX_LENGTH = 4;
+
+    /**
+     * Expiration notification string length
+     */
+    const EXPIRATION_NOTIFICATION_MAX_LENGTH = 4;
+
+    /**
+     * Description string length
+     */
+    const DESCRIPTION_MAX_LENGTH = 65535;
+
+    /**
      * Form name
      * @var string
      */
@@ -51,6 +71,7 @@ class AclRole extends AbstractCustomForm
             'label' => 'Cost',
             'required' => true,
             'category' => 'General info',
+            'max_length' => self::COST_MAX_LENGTH
         ),
         'lifetime' => array(
             'name' => 'lifetime',
@@ -58,6 +79,7 @@ class AclRole extends AbstractCustomForm
             'label' => 'Lifetime in days',
             'required' => true,
             'category' => 'General info',
+            'max_length' => self::LIFETIME_MAX_LENGTH
         ),
         'expiration_notification' => array(
             'name' => 'expiration_notification',
@@ -66,6 +88,7 @@ class AclRole extends AbstractCustomForm
             'description' => 'You can remind  users about the expiration after N days after the beginning',
             'required' => true,
             'category' => 'General info',
+            'max_length' => self::EXPIRATION_NOTIFICATION_MAX_LENGTH
         ),
         'description' => array(
             'name' => 'description',
@@ -73,6 +96,7 @@ class AclRole extends AbstractCustomForm
             'label' => 'Description',
             'required' => true,
             'category' => 'General info',
+            'max_length' => self::DESCRIPTION_MAX_LENGTH
         ),
         'image' => array(
             'name' => 'image',

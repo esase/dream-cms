@@ -9,6 +9,36 @@ use Payment\Model\Payment as PaymentModel;
 class Checkout extends AbstractCustomForm 
 {
     /**
+     * Comments string length
+     */
+    const COMMENTS_MAX_LENGTH = 65535;
+
+    /**
+     * First name string length
+     */
+    const FIRST_NAME_MAX_LENGTH = 100;
+
+    /**
+     * Last name string length
+     */
+    const LAST_NAME_MAX_LENGTH = 100;
+
+    /**
+     * Email string length
+     */
+    const EMAIL_MAX_LENGTH = 50;
+
+    /**
+     * Phone string length
+     */
+    const PHONE_MAX_LENGTH = 50;
+
+    /**
+     * Address string length
+     */
+    const ADDRESS_MAX_LENGTH = 100;
+
+    /**
      * Form name
      * @var string
      */
@@ -44,6 +74,7 @@ class Checkout extends AbstractCustomForm
             'label' => 'Comments',
             'required' => false,
             'category' => 'Order information',
+            'max_length' => self::COMMENTS_MAX_LENGTH
         ),
         'first_name' => array(
             'name' => 'first_name',
@@ -51,6 +82,7 @@ class Checkout extends AbstractCustomForm
             'label' => 'First Name',
             'required' => true,
             'category' => 'Delivery details',
+            'max_length' => self::FIRST_NAME_MAX_LENGTH
         ),
         'last_name' => array(
             'name' => 'last_name',
@@ -58,6 +90,7 @@ class Checkout extends AbstractCustomForm
             'label' => 'Last Name',
             'required' => true,
             'category' => 'Delivery details',
+            'max_length' => self::LAST_NAME_MAX_LENGTH
         ),
         'email' => array(
             'name' => 'email',
@@ -65,6 +98,7 @@ class Checkout extends AbstractCustomForm
             'label' => 'Email',
             'required' => true,
             'category' => 'Delivery details',
+            'max_length' => self::EMAIL_MAX_LENGTH
         ),
         'phone' => array(
             'name' => 'phone',
@@ -72,6 +106,7 @@ class Checkout extends AbstractCustomForm
             'label' => 'Phone',
             'required' => true,
             'category' => 'Delivery details',
+            'max_length' => self::PHONE_MAX_LENGTH
         ),
         'address' => array(
             'name' => 'address',
@@ -79,6 +114,7 @@ class Checkout extends AbstractCustomForm
             'label' => 'Address',
             'required' => false,
             'category' => 'Delivery details',
+            'max_length' => self::ADDRESS_MAX_LENGTH
         ),
         'submit' => array(
             'name' => 'submit',

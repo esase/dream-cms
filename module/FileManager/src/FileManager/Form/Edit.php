@@ -129,12 +129,6 @@ class Edit extends AbstractCustomForm
                 )
             ),
             array(
-                'name' => 'stringlength',
-                'options' => array(
-                    'max' => $this->maxFileNameLength
-                )
-            ),
-            array(
                 'name' => 'callback',
                 'options' => array(
                     'callback' => array($this, 'validatePossibilityMovingDirectory'),
@@ -149,6 +143,8 @@ class Edit extends AbstractCustomForm
                 )
             ),
         );
+
+        $this->formElements['name']['max_length'] = (int) $this->maxFileNameLength;
     }
 
     /**
@@ -172,12 +168,6 @@ class Edit extends AbstractCustomForm
                 )
             ),
             array(
-                'name' => 'stringlength',
-                'options' => array(
-                    'max' => $this->maxFileNameLength
-                )
-            ),
-            array(
                 'name' => 'callback',
                 'options' => array(
                     'callback' => array($this, 'validateExistingFile'),
@@ -185,6 +175,8 @@ class Edit extends AbstractCustomForm
                 )
             ),
         );
+
+        $this->formElements['name']['max_length'] = (int) $this->maxFileNameLength;
     }
 
     /**

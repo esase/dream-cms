@@ -190,7 +190,9 @@ class CustomFormBuilder extends Form
      *      string label optional
      *      string description optional
      *      array description_params optional
-     *      string category label
+     *      string category label optional
+     *      integer max_length optional
+     *      integer min_length optional
      *      boolean|integer required optional
      *      string value optional
      *      array values required for radios, multicheckboxes and selects
@@ -251,6 +253,28 @@ class CustomFormBuilder extends Form
             // list of default element validators
             $elementValidators = array();
             $extraOptions = array();
+
+            // add a string max length validator
+            if (!empty($element['max_length'])) {
+                $elementValidators[] = array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'max' => (int) $element['max_length']
+                    )
+                );
+
+                $elementAttrs = array_merge(array('maxlength' => (int) $element['max_length']), $elementAttrs);
+            }
+
+            // add a string min length validator
+            if (!empty($element['min_length'])) {
+                $elementValidators[] = array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'min' => (int) $element['min_length']
+                    )
+                );
+            }
 
             switch ($elementType) {
                 case self::FIELD_NOTIFICATION_MESSAGE :
@@ -427,7 +451,7 @@ class CustomFormBuilder extends Form
                     $elementValidators[] = array(
                         'name' => 'float'
                     );
-
+                    
                     $elementType  = 'Text';
                     break;
                 case self::FIELD_URL :

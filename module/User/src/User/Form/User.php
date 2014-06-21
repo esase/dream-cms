@@ -11,6 +11,36 @@ use Application\Service\Service as ApplicationService;
 class User extends AbstractCustomForm 
 {
     /**
+     * Email max string length
+     */
+    const EMAIL_MAX_LENGTH = 50;
+
+    /**
+     * Password max string length
+     */
+    const PASSWORD_MAX_LENGTH = 50;
+
+    /**
+     * Phone max string length
+     */
+    const PHONE_MAX_LENGTH = 50;
+
+    /**
+     * First name max string length
+     */
+    const FIRST_NAME_MAX_LENGTH = 100;
+
+    /**
+     * Last name max string length
+     */
+    const LAST_NAME_MAX_LENGTH = 100;
+
+    /**
+     * Address max string length
+     */
+    const ADDRESS_MAX_LENGTH = 100;
+
+    /**
      * Form name
      * @var string
      */
@@ -58,28 +88,31 @@ class User extends AbstractCustomForm
             'required' => true,
             'category' => 'General info',
             'description' => 'Nickname description',
-            'description_params' => array(),
+            'description_params' => array()
         ),
         'email' => array(
             'name' => 'email',
             'type' => CustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email',
             'required' => true,
-            'category' => 'General info'
+            'category' => 'General info',
+            'max_length' => self::EMAIL_MAX_LENGTH
         ),
         'password' => array(
             'name' => 'password',
             'type' => CustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Password',
             'required' => true,
-            'category' => 'General info'
+            'category' => 'General info',
+            'max_length' => self::PASSWORD_MAX_LENGTH
         ),
         'confirm_password' => array(
             'name' => 'confirm_password',
             'type' => CustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Confirm password',
             'required' => true,
-            'category' => 'General info'
+            'category' => 'General info',
+            'max_length' => self::PASSWORD_MAX_LENGTH
         ),
         'captcha' => array(
             'name' => 'captcha',
@@ -91,7 +124,8 @@ class User extends AbstractCustomForm
             'type' => CustomFormBuilder::FIELD_TEXT,
             'label' => 'Phone',
             'required' => false,
-            'category' => 'Miscellaneous info'
+            'category' => 'Miscellaneous info',
+            'max_length' => self::PHONE_MAX_LENGTH
         ),
         'first_name' => array(
             'name' => 'first_name',
@@ -99,6 +133,7 @@ class User extends AbstractCustomForm
             'label' => 'First Name',
             'required' => false,
             'category' => 'Miscellaneous info',
+            'max_length' => self::FIRST_NAME_MAX_LENGTH
         ),
         'last_name' => array(
             'name' => 'last_name',
@@ -106,6 +141,7 @@ class User extends AbstractCustomForm
             'label' => 'Last Name',
             'required' => false,
             'category' => 'Miscellaneous info',
+            'max_length' => self::LAST_NAME_MAX_LENGTH
         ),
         'address' => array(
             'name' => 'address',
@@ -113,6 +149,7 @@ class User extends AbstractCustomForm
             'label' => 'Address',
             'required' => false,
             'category' => 'Miscellaneous info',
+            'max_length' => self::ADDRESS_MAX_LENGTH
         ),
         'time_zone' => array(
             'name' => 'time_zone',
@@ -215,13 +252,6 @@ class User extends AbstractCustomForm
             // validate nickname
             $this->formElements['nick_name']['validators'] = array(
                 array(
-                    'name' => 'StringLength',
-                    'options' => array(
-                        'min' => (int) ApplicationService::getSetting('user_nickname_min'),
-                        'max' => (int) ApplicationService::getSetting('user_nickname_max')
-                    )
-                ),
-                array(
                     'name' => 'callback',
                     'options' => array(
                         'callback' => array($this, 'validateNickname'),
@@ -230,6 +260,9 @@ class User extends AbstractCustomForm
                 )
             );
 
+            $this->formElements['nick_name']['max_length'] = (int) ApplicationService::getSetting('user_nickname_max');
+            $this->formElements['nick_name']['min_length'] = (int) ApplicationService::getSetting('user_nickname_min');
+            
             // fill the form with default values
             $this->formElements['time_zone']['values'] = ApplicationService::getTimeZones();
 

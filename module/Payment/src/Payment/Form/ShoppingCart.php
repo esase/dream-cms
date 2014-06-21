@@ -10,6 +10,11 @@ use Zend\Form\Exception\InvalidArgumentException;
 class ShoppingCart extends AbstractCustomForm 
 {
     /**
+     * Count string length
+     */
+    const COUNT_MAX_LENGTH = 4;
+
+    /**
      * Form name
      * @var string
      */
@@ -63,12 +68,13 @@ class ShoppingCart extends AbstractCustomForm
             'required' => true,
             'description' => '',
             'description_params' => array(),
+            'max_length' => self::COUNT_MAX_LENGTH
         ),
         'cost' => array(
             'name' => 'cost',
             'type' => CustomFormBuilder::FIELD_SELECT,
             'label' => 'Choose the tariff',
-            'required' => true
+            'required' => true,
         ),
         'discount' => array(
             'name' => 'discount',

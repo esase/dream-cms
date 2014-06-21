@@ -8,6 +8,16 @@ use Application\Form\CustomFormBuilder;
 class AclResourceSetting extends AbstractCustomForm 
 {
     /**
+     * Actions limit max string length
+     */
+    const ACTIONS_LIMIT_MAX_LENGTH = 7;
+
+    /**
+     * Actions reset max string length
+     */
+    const ACTIONS_RESET_MAX_LENGTH = 7;
+
+    /**
      * Form name
      * @var string
      */
@@ -60,6 +70,7 @@ class AclResourceSetting extends AbstractCustomForm
             'label' => 'Number of allowed actions',
             'required' => false,
             'category' => 'General info',
+            'max_length' => self::ACTIONS_LIMIT_MAX_LENGTH
         ),
         'actions_reset' => array(
             'name' => 'actions_reset',
@@ -67,6 +78,7 @@ class AclResourceSetting extends AbstractCustomForm
             'label' => 'Number of actions is reset every N seconds',
             'required' => false,
             'category' => 'General info',
+            'max_length' => self::ACTIONS_RESET_MAX_LENGTH
         ),
         'date_start' => array(
             'name' => 'date_start',

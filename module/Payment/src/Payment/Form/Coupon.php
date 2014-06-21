@@ -9,6 +9,11 @@ use Application\Utility\Locale as LocaleUtility;
 class Coupon extends AbstractCustomForm 
 {
     /**
+     * Discount max string length
+     */
+    const DISCOUNT_MAX_LENGTH = 11;
+
+    /**
      * Form name
      * @var string
      */
@@ -43,7 +48,8 @@ class Coupon extends AbstractCustomForm
             'label' => 'Discount',
             'required' => true,
             'category' => 'General info',
-            'description' => 'Percentage ratio'
+            'description' => 'Percentage ratio',
+            'max_length' => self::DISCOUNT_MAX_LENGTH
         ),
         'date_start' => array(
             'name' => 'date_start',

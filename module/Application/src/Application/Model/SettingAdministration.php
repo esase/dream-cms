@@ -10,6 +10,11 @@ use Application\Utility\ErrorLogger;
 class SettingAdministration extends Setting
 {
     /**
+     * Setting value max string length
+     */
+    const SETTING_VALUE_MAX_LENGTH = 65535;
+
+    /**
      * Save settings
      *
      * @param array $settingsList
@@ -152,7 +157,8 @@ class SettingAdministration extends Setting
                     'required' => $setting->required,
                     'language_sensitive'  => $setting->language_sensitive,
                     'value' => $settingValue,
-                    'values_provider' => $setting->values_provider
+                    'values_provider' => $setting->values_provider,
+                    'max_length' => self::SETTING_VALUE_MAX_LENGTH 
                 );
 
                 // add extra validators

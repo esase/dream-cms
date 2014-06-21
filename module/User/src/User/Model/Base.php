@@ -210,6 +210,10 @@ class Base extends AbstractBase
                 unset($formData['password']);
             }
 
+            if (!$formData['time_zone']) {
+                $formData['time_zone'] = null;
+            }
+
             $update = $this->update()
                 ->table('user')
                 ->set(array_merge($formData, $extraValues))
@@ -396,6 +400,10 @@ class Base extends AbstractBase
 
             // generate a password salt
             $passwordSalt = $this->generateRandString();
+
+            if (!$formData['time_zone']) {
+                $formData['time_zone'] = null;
+            }
 
             $insert = $this->insert()
                 ->into('user')

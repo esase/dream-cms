@@ -9,6 +9,16 @@ use Payment\Model\PaymentAdministration as PaymentModelAdministration;
 class Currency extends AbstractCustomForm 
 {
     /**
+     * Code max string length
+     */
+    const CODE_MAX_LENGTH = 3;
+
+    /**
+     * Name max string length
+     */
+    const NAME_MAX_LENGTH = 50;
+
+    /**
      * Form name
      * @var string
      */
@@ -43,6 +53,7 @@ class Currency extends AbstractCustomForm
             'label' => 'Currency code',
             'required' => true,
             'category' => 'General info',
+            'max_length' => self::CODE_MAX_LENGTH
         ),
         'name' => array(
             'name' => 'name',
@@ -50,6 +61,7 @@ class Currency extends AbstractCustomForm
             'label' => 'Currency name',
             'required' => true,
             'category' => 'General info',
+            'max_length' => self::NAME_MAX_LENGTH
         ),
         'primary_currency' => array(
             'name' => 'primary_currency',
