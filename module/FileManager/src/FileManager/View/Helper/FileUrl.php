@@ -54,8 +54,7 @@ class FileUrl extends AbstractHelper
         }
         else {
             // generate a file link
-            $fileUrl =  $this->getView()->
-                    serverUrl(FileManagerBaseModel::getUserBaseFilesUrl() . '/' . $currentPath);
+            $fileUrl = FileManagerBaseModel::getUserBaseFilesUrl() . '/' . $currentPath;
 
             // get the file's image url
             if (false === ($imageUrl = $this->getView()->
