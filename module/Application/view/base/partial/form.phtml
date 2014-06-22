@@ -6,7 +6,6 @@
 <?php if (!isset($this->notifications) || $this->notifications === true): ?>
     <?php echo $this->partial('partial/notification') ?>
 <?php endif; ?>
-
 <?php
     $this->declareVars('formOptions');
 
@@ -22,14 +21,12 @@
     }
 
     // init vars
-    $this->declareVars('category', 'formCategories',
-            'openCategories', 'language', 'initDateJs', 'initHtmlAreaJs', 'filePreview');
+    $this->declareVars('category', 'formCategories', 'openCategories', 'initCalendar', 'initWysiwyg', 'filePreview');
 
-    $this->language = $this->localization()->getCurrentLanguage();
     $this->formCategories = new ArrayObject();
     $this->openCategories = new ArrayObject();
-    $this->initDateJs = false;
-    $this->initHtmlAreaJs = false;
+    $this->initCalendar = false;
+    $this->initWysiwyg = false;
 ?>
 
 <?php
@@ -76,11 +73,11 @@
                     break;
                 case CustomFormBuilder::FIELD_DATE :
                 case CustomFormBuilder::FIELD_DATE_UNIXTIME :
-                    $this->initDateJs = true;
+                    $this->initCalendar = true;
                     break;
                 case CustomFormBuilder::FIELD_HTML_AREA :
                 case CustomFormBuilder::FIELD_NOTIFICATION_MESSAGE :
-                    $this->initHtmlAreaJs = true;
+                    $this->initWysiwyg = true;
                     break;
             }            
         }
@@ -111,48 +108,12 @@
     echo $this->form()->closeTag();
 ?>
 
-<?php if ($this->initHtmlAreaJs): ?>
-    <!-- init tinymce -->
-    <script type="text/javascript" src="<?php echo $this->asset('tinymce/jquery.tinymce.min.js') ?>"></script>
-    <script type="text/javascript">
-        $('.htmlarea').tinymce({
-            directionality : '<?php echo $this->localization()->getCurrentLanguageDirection() ?>',
-            script_url : '<?php echo $this->asset('tinymce/tinymce.min.js') ?>',
-            language : "<?php echo $this->language ?>",
-            plugins: [
-                "advlist autolink lists link image charmap print preview anchor",
-                "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table contextmenu paste"
-            ],
-            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-            convert_urls : false,
-            <?php if ($this->checkPermission('files_manager_embedded_list')): ?>
-                file_browser_callback: function(field_name, url, type, win) { 
-                    tinymce.activeEditor.windowManager.open({
-                        title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
-                        url: '<?php echo $this->url('application', array('controller' => 'files-manager-embedded', 'action' => 'list')) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
-                        width: <?php echo $this->getSetting('file_manager_window_width') ?>,
-                        height: <?php echo $this->getSetting('file_manager_window_height') ?>
-                    }, {
-                        oninsert: function(url) {
-                            win.document.getElementById(field_name).value = url;
-                        }
-                    });
-                }
-            <?php endif; ?>
-        });
-    </script>
+<?php if ($this->initWysiwyg): ?>
+    <?php echo $this->partial('partial/_init_wysiwyg', array(
+        'mode' => !empty($this->wysiwygMode) ? $this->wysiwygMode : null,
+    ));?>
 <?php endif; ?>
 
-<?php if ($this->initDateJs): ?>
-    <!-- init datepicker -->
-    <script type="text/javascript" src="<?php echo $this->asset('jquery_i18n/jquery.ui.datepicker-' . $this->language . '.js') ?>"></script>
-    <script type="text/javascript">
-        $(".date").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            regional: '<?php echo $this->language ?>',
-            yearRange: '<?php echo $this->getSetting('application_calendar_min_year') ?>:<?php echo $this->getSetting('application_calendar_max_year') ?>'
-        });
-    </script>
+<?php if ($this->initCalendar): ?>
+    <?php echo $this->partial('partial/_init_calendar') ?>
 <?php endif; ?>
