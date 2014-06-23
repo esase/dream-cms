@@ -15,6 +15,10 @@ INSERT INTO `admin_menu` (`name`, `controller`, `action`, `module`, `order`, `ca
 ('List of membership levels', 'memberships-administration', 'list', @moduleId, @maxOrder, @menuCategoryId, @menuPartId),
 ('Settings', 'memberships-administration', 'settings', @moduleId, @maxOrder + 1, @menuCategoryId, @menuPartId);
 
+SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `user_menu` ORDER BY `order` DESC LIMIT 1), 1);
+INSERT INTO `user_menu` (`name`, `controller`, `action`, `module`, `order`, `check`) VALUES
+('List of membership levels', 'memberships', 'list', @moduleId, @maxOrder, 'return User\\Service\\Service::isDefaultUser() ? false : true;');
+
 INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('memberships_administration_list', 'ACL - Viewing list of membership levels  in admin area', @moduleId),
 ('memberships_administration_add_role', 'ACL - Adding membership roles in admin area', @moduleId),
@@ -34,14 +38,14 @@ INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `orde
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
-(@settingId,  '200', NULL);
+(@settingId,  '240', NULL);
 
 INSERT INTO `setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
 ('membership_image_height', 'Image height', '', 'integer', 1, 2, 1, @moduleId, 0, '', '', '');
 
 SET @settingId = (SELECT LAST_INSERT_ID());
 INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
-(@settingId,  '200', NULL);
+(@settingId,  '180', NULL);
 
 INSERT INTO `setting_category` (`name`, `module`) VALUES
 ('Email notifications', @moduleId);
@@ -73,6 +77,7 @@ INSERT INTO `setting_value` (`setting_id`, `value`, `language`) VALUES
 
 CREATE TABLE IF NOT EXISTS `membership_level` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(50) NOT NULL,
     `role_id` SMALLINT(5) UNSIGNED NOT NULL,
     `cost` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
     `lifetime` SMALLINT(5) UNSIGNED NOT NULL,
@@ -82,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     `image` VARCHAR(100) NOT NULL,
     `active` TINYINT(1) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
+    KEY `title` (`title`),
     KEY `cost` (`cost`),
     KEY `lifetime` (`lifetime`),
     KEY `role` (`role_id`),

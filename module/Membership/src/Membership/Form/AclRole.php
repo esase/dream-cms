@@ -10,6 +10,11 @@ use Membership\Model\MembershipAdministration as MembershipAdministrationModel;
 class AclRole extends AbstractCustomForm 
 {
     /**
+     * Title max string length
+     */
+    const TITLE_MAX_LENGTH = 50;
+
+    /**
      * Cost max string length
      */
     const COST_MAX_LENGTH = 11;
@@ -58,6 +63,14 @@ class AclRole extends AbstractCustomForm
      * @var array
      */
     protected $formElements = array(
+        'title' => array(
+            'name' => 'title',
+            'type' => CustomFormBuilder::FIELD_TEXT,
+            'label' => 'Title',
+            'required' => true,
+            'category' => 'General info',
+            'max_length' => self::TITLE_MAX_LENGTH
+        ),
         'role_id' => array(
             'name' => 'role_id',
             'type' => CustomFormBuilder::FIELD_SELECT,

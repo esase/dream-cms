@@ -1,0 +1,144 @@
+<!-- include needed js and css files -->
+<?php $this->headLink()->appendStylesheet($this->asset('main.css', 'css', 'membership')) ?>
+
+<?php $this->declareVars('pageTitle') ?>
+<?php $this->pageTitle = $this->translate('List of membership levels') ?>
+
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
+
+<!-- render the user menu -->
+<?php echo $this->partial('partial/user-menu', array(
+    'menu' => $this->userMenu(),
+    'active_controller' => 'memberships',
+    'active_action' => 'list'
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'home' => array(
+            'name' => $this->translate('Home'),
+            'controller' => 'Home',
+            'action' => 'index',
+            'check_acl' => false
+        ),
+        'membership_list' => array(
+            'name' => $this->pageTitle,
+            'controller' => 'memberships',
+            'action' => 'list',
+            'check_acl' => false
+        )
+    )
+)) ?>
+
+<div class="row">
+    <div class="col-xs-6 col-sm-4 col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Active membership level</h4>
+            </div>
+            <div class="panel-body">
+                <div class="thumbnail">
+                    <img alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzEiIGhlaWdodD0iMTgwIj48cmVjdCB3aWR0aD0iMTcxIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijg1LjUiIHk9IjkwIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTcxeDE4MDwvdGV4dD48L3N2Zz4=">
+                    <div class="caption">
+                        <h3>Thumbnail label</h3>
+                        <div class="description">
+                            aas da dsas dasasasdas dsad sadsad sadas sad sad sadsadsa dsada d sadsaa asjsakld 
+                        </div>
+                        <br />
+                        <div class="date">
+                            <b>Expire date: 15.06.14</b>
+                        </div>
+                        <br />
+                        <a href="#" class="btn btn-default" role="button">Info</a>
+                        <a href="#" class="btn btn-default" role="button">Stop</a> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Your next membership levels</h4>
+            </div>
+            <div class="panel-body">
+                <div class="thumbnail">
+                    <img alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzEiIGhlaWdodD0iMTgwIj48cmVjdCB3aWR0aD0iMTcxIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijg1LjUiIHk9IjkwIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTcxeDE4MDwvdGV4dD48L3N2Zz4=">
+                    <div class="caption">
+                        <h3>Thumbnail label</h3>
+                        <div class="description">
+                            aas da dsas dasasasdas dsad sadsad sadas sad sad sadsadsa dsada d sadsaa asjsakld 
+                        </div>
+                        <br />
+                        <div class="date">
+                            <b>Activation date: 15.06.14</b>
+                        </div>
+                        <br />
+                        <a href="#" class="btn btn-default" role="button">Info</a>
+                        <a href="#" class="btn btn-default" role="button">Stop</a> 
+                    </div>
+                </div>
+                <div class="thumbnail">
+                    <img alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzEiIGhlaWdodD0iMTgwIj48cmVjdCB3aWR0aD0iMTcxIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijg1LjUiIHk9IjkwIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTcxeDE4MDwvdGV4dD48L3N2Zz4=">
+                    <div class="caption">
+                        <h3>Thumbnail label</h3>
+                        <div class="description">
+                            aas da dsas dasasasdas dsad sadsad sadas sad sad sadsadsa dsada d sadsaa asjsakld 
+                        </div>
+                        <br />
+                        <div class="date">
+                            <b>Activation date: 15.06.14</b>
+                        </div>
+                        <br />
+                        <a href="#" class="btn btn-default" role="button">Info</a>
+                        <a href="#" class="btn btn-default" role="button">Stop</a> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-8 col-md-9" id="memberships-wrapper">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"><?php echo $this->translate('List of avaiable membership levels') ?></h4>
+            </div>
+            <div class="panel-body">
+                    <?php if(!$this->paginator->count()): ?>
+                        <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
+                    <?php else: ?>
+                        <div class="row">
+                            <?php foreach ($this->paginator as $level) : ?>
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="thumbnail">
+                                        <img style="height: <?php echo (int) $this->getSetting('membership_image_height') ?>px;" alt="<?php echo $this->escapeHtmlAttr($level->title) ?>" src="<?php echo $this->escapeHtmlAttr($this->membershipImageUrl($level->image)) ?>" />
+                                        <div class="caption" >
+                                            <div class="description">
+                                                <h3><?php echo $this->escapeHtml($level->title) ?></h3>
+                                                <h4><?php echo $this->escapeHtml($this->costFormat($level)) ?> <?php echo $this->escapeHtml($level->lifetime) ?> <?php echo $this->translate('day(s)') ?></h4>
+                                                <?php echo $this->escapeHtml($level->description) ?> 
+                                            </div>
+                                            <br />
+                                            <a href="#" class="btn btn-primary" role="button">Buy</a> 
+                                            <a href="javascript:void(0)" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application', array('controller' => 'home', 'action' => 'get-acl-role-info', 'slug' => $level->role_id))) ?>', 'popup-acl-role-window')">Info</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <!-- a pagination -->
+                        <?php
+                            echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', array(
+                                'route' => 'application',
+                                'params' => array(
+                                    'controller' => $this->currentRoute()->getController(),
+                                    'action' => $this->currentRoute()->getAction(),
+                                )))
+                        ?>
+                    <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    uniformHeight('#memberships-wrapper .thumbnail .description', true);
+</script>

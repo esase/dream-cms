@@ -4,7 +4,7 @@
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
 <!-- render user menu -->
-<?php echo $this->partial('partial/user_menu', array(
+<?php echo $this->partial('partial/user-menu', array(
     'menu' => $this->userMenu(),
     'active_controller' => 'payments',
     'active_action' => 'list'
@@ -29,7 +29,7 @@
 )) ?>
 
 <!-- render a data grid -->
-<?php echo $this->partial('partial/data_grid', array(
+<?php echo $this->partial('partial/data-grid', array(
     'controller' => 'payments',
     'action' => 'list',
     'order_by' => $this->order_by,

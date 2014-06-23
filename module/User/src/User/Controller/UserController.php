@@ -315,9 +315,7 @@ class UserController extends AbstractBaseController
      */
     public function deleteAction()
     {
-        if ($this->isGuest() ||
-                    UserService::getCurrentUserIdentity()->user_id == UserModel::DEFAULT_USER_ID) {
-
+        if ($this->isGuest() || UserService::isDefaultUser()) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 

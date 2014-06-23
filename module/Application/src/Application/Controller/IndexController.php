@@ -17,4 +17,16 @@ class IndexController extends AbstractBaseController
     {
         //throw new \Exception('YoYo.');
     }
+
+    /**
+     * Get ACL role info
+     */
+    public function getAclRoleInfoAction()
+    {
+        $view = new ViewModel(array(
+        ));
+
+        $view->setTerminal(true);
+        return $view;
+    }
 }

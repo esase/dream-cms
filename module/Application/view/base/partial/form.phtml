@@ -59,8 +59,8 @@
                                 && !empty($element->getOption('extra_options')['file_url'])) {
 
                         $this->filePreview = $elementType == CustomFormBuilder::FIELD_IMAGE
-                            ? 'partial/_form_image_preview'
-                            : 'partial/_form_file_preview';
+                            ? 'partial/_form-image-preview'
+                            : 'partial/_form-file-preview';
 
                         $renderedElement .= $this->partial($this->filePreview, array(
                             'name' => $element->getName(),
@@ -109,11 +109,11 @@
 ?>
 
 <?php if ($this->initWysiwyg): ?>
-    <?php echo $this->partial('partial/_init_wysiwyg', array(
+    <?php echo $this->partial('partial/_init-wysiwyg', array(
         'mode' => !empty($this->wysiwygMode) ? $this->wysiwygMode : null,
     ));?>
 <?php endif; ?>
 
 <?php if ($this->initCalendar): ?>
-    <?php echo $this->partial('partial/_init_calendar') ?>
+    <?php echo $this->partial('partial/_init-calendar') ?>
 <?php endif; ?>

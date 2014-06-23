@@ -11,7 +11,7 @@ div.loading-ajax-wrapper {
     text-align: center;
     width: 89px;
     z-index: 10;
-    background-image: url("../image/loading_bg.png");
+    background-image: url("../image/loading-bg.png");
 }
 
 div.loading-ajax-wrapper div.loading-ajax {

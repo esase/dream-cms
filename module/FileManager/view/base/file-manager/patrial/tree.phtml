@@ -12,14 +12,17 @@
 <?php $this->directoriesTreeId = 'directories-tree' ?>
 
 <!-- files manager wrapper -->
-<div id="files-manager-wrapper">
-    <div class="col-md-3" id="directories-tree-wrapper">
-        <?php echo $this->filesManagerDirectoriesTree($this->userDirectories, $this->directoriesTreeId, $this->path, $this->filters) ?>
+<div class="row" id="files-manager-wrapper">
+    <div class="col-md-3">
+        <div id="directories-tree-wrapper">
+            <?php echo $this->filesManagerDirectoriesTree($this->userDirectories, $this->directoriesTreeId, $this->path, $this->filters) ?>
+        </div>
     </div>
-    <div class="col-md-9" id="action-wrapper">
-        <?php echo $this->action ?>
+    <div class="col-md-9">
+        <div id="action-wrapper">
+            <?php echo $this->action ?>
+        </div>
     </div>
-    <div class="clearfix"></div>
 </div>
 
 <?php $this->inlineScript()->captureStart() ?>

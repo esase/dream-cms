@@ -1,3 +1,28 @@
+
+/**
+ * Uniform height
+ *
+ * @param string elements
+ * @param boolean bindWindowResize
+ * @return void
+ */
+function uniformHeight(elements, bindWindowResize)
+{
+    var maxHeight = 0, max = Math.max;
+
+    $(elements).each(function() {
+        $(this).css('height', 'auto')
+        maxHeight = max(maxHeight, $(this).height());
+    }).height(maxHeight);
+
+    // change elements height if window's size will change
+    if (typeof bindWindowResize != 'undefined' && bindWindowResize == true) { 
+        $(window).resize(function(){
+            uniformHeight(elements);
+        });
+    }
+}
+
 /**
  * Show loading box
  * 
@@ -42,11 +67,11 @@ function showPopup(url, popupId)
     $('#' + popupId).remove();
 
     $.ajax({
-	'type'      : "get",
-	'url'       : url + '?_r=' + Math.random(),
-	'success'   : function(data) {
-	    $(document.body).append(data);
-	    $('#' + popupId).modal('show');
-	}
+    	'type'      : "get",
+    	'url'       : url + '?_r=' + Math.random(),
+    	'success'   : function(data) {
+    	    $(document.body).append(data);
+    	    $('#' + popupId).modal('show');
+    	}
     });
 }

@@ -8,6 +8,12 @@ use Application\Model\AbstractBase;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
+use Payment\Model\Base as PaymentBaseModel;
+use Zend\Db\Sql\Predicate;
+use Application\Service\Service as ApplicationService;
+use Application\Utility\Pagination as PaginationUtility;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 
 class Base extends AbstractBase
 {
@@ -315,6 +321,7 @@ class Base extends AbstractBase
         $select->from(array('a' => 'membership_level'))
             ->columns(array(
                 'id',
+                'title',
                 'role_id',
                 'cost',
                 'lifetime',
@@ -340,5 +347,125 @@ class Base extends AbstractBase
         $result = $statement->execute();
 
         return $result->current();
+    }
+
+    /**
+     * Get membership levels
+     *
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @param array $filters
+     *      string title
+     *      float cost
+     *      integer lifetime
+     *      integer role
+     *      integer active
+     * @return object
+     */
+    public function getMembershipLevels($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    {
+        $orderFields = array(
+            'id',
+            'title',
+            'cost',
+            'lifetime',
+            'active',
+            'subscribers'
+        );
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'id';
+
+        $select = $this->select();
+        $select->from(array('a' => 'membership_level'))
+            ->columns(array(
+                'id',
+                'title',
+                'cost',
+                'lifetime',
+                'active',
+                'description',
+                'image',
+                'role_id'
+            ))
+            ->join(
+                array('b' => 'membership_level_connection'),
+                'b.membership_id = a.id',
+                array(
+                    'subscribers' => new Expression('count(b.id)'),
+                ),
+                'left'
+            )
+            ->join(
+                array('c' => 'acl_role'),
+                'a.role_id = c.id',
+                array(
+                    'role' => 'name'
+                )
+            )
+            ->join(
+                array('d' => 'payment_currency'),
+                new Expression('d.primary_currency = ?', array(PaymentBaseModel::PRIMARY_CURRENCY)),
+                array(
+                    'currency' => 'code'
+                )
+            )
+            ->group('a.id')
+            ->order($orderBy . ' ' . $orderType)
+            ->where(array(
+                new Predicate\PredicateSet(array(
+                    new Predicate\isNull('a.language'),
+                    new Predicate\Operator('a.language', '=', ApplicationService::getCurrentLocalization()['language']),
+                ), Predicate\PredicateSet::COMBINED_BY_OR),
+            ));
+
+        // filter by a title
+        if (!empty($filters['title'])) {
+            $select->where(array(
+                'a.title' => $filters['title']
+            ));
+        }
+
+        // filter by a cost
+        if (!empty($filters['cost'])) {
+            $select->where(array(
+                'a.cost' => $filters['cost']
+            ));
+        }
+
+        // filter by a lifetime
+        if (!empty($filters['lifetime'])) {
+            $select->where(array(
+                'a.lifetime' => $filters['lifetime']
+            ));
+        }
+
+        // filter by a role
+        if (!empty($filters['role'])) {
+            $select->where(array(
+                'c.id' => $filters['role']
+            ));
+        }
+
+        // filter by a active
+        if (isset($filters['active']) && $filters['active'] != null) {
+            $select->where(array(
+                'a.active' => ((int) $filters['active'] == self::MEMBERSHIP_LEVEL_STATUS_ACTIVE ? $filters['active'] : self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE)
+            ));
+        }
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+
+        return $paginator;
     }
 }

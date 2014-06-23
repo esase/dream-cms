@@ -3,7 +3,7 @@
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
 <!-- render user menu -->
-<?php echo $this->partial('partial/user_menu', array(
+<?php echo $this->partial('partial/user-menu', array(
     'menu' => $this->userMenu(),
     'active_controller' => 'user',
     'active_action' => 'delete'

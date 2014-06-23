@@ -5,7 +5,7 @@
     </div>
 <?php else: ?>
     <!-- render a data grid -->
-    <?php echo $this->partial('partial/data_grid', array(
+    <?php echo $this->partial('partial/data-grid', array(
         'controller' => $this->currentRoute()->getController(),
         'action' => $this->currentRoute()->getAction(),
         'queries' => array(

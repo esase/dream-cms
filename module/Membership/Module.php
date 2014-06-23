@@ -128,6 +128,9 @@ class Module implements ConsoleUsageProviderInterface
     public function getViewHelperConfig()
     {
         return array(
+            'invokables' => array(
+                'membershipImageUrl' => 'Membership\View\Helper\MembershipImageUrl'
+            ),
         );
     }
 

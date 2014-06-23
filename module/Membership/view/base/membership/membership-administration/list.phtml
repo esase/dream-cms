@@ -24,7 +24,7 @@
 )) ?>
 
 <!-- render a data grid -->
-<?php echo $this->partial('partial/data_grid', array(
+<?php echo $this->partial('partial/data-grid', array(
     'controller' => 'memberships-administration',
     'action' => 'list',
     'order_by' => $this->order_by,
@@ -39,28 +39,35 @@
             'order_name' => 'id'
         ),
         1 => array(
+            'title' => $this->translate('Title'),
+            'order_name' => 'title'
+        ),
+        2 => array(
             'title' => $this->translate('Cost'),
             'order_name' => 'cost'
         ),
-        2 => array(
+        3 => array(
             'title' => $this->translate('Lifetime in days'),
             'order_name' => 'lifetime'
         ),
-        3 => array(
+        4 => array(
             'title' => $this->translate('Status'),
             'order_name' => 'active'
         ),
-        4 => array(
+        5 => array(
             'title' => $this->translate('Membership subscribers'),
             'order_name' => 'subscribers'
         ),
-        5 => array(
+        6 => array(
             'title' => $this->translate('Role')
         )
     ),
     'paginator' => $this->paginator,
     'skipped_fields' => array(
-        'currency'
+        'currency',
+        'description',
+        'image',
+        'role_id'
     ),
     'helpers' => array(
         'role' => 'translate',

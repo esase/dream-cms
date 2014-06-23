@@ -4,7 +4,8 @@ return array (
     'controllers' => array(
         'invokables' => array(
             'memberships-administration' => 'Membership\Controller\MembershipAdministrationController',
-            'memberships-console' => 'Membership\Controller\MembershipConsoleController'
+            'memberships-console' => 'Membership\Controller\MembershipConsoleController',
+            'memberships' => 'Membership\Controller\MembershipController'
         )
     ),
     'router' => array(

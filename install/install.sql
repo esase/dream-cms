@@ -624,7 +624,7 @@ CREATE TABLE IF NOT EXISTS `user_menu` (
 
 INSERT INTO `user_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `check`) VALUES
 (1, 'Edit account', 'user', 'edit', 2, 1, ''),
-(2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::getCurrentUserIdentity()->user_id == User\\Model\\User::DEFAULT_USER_ID ? false : true;');
+(2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::isDefaultUser() ? false : true;');
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

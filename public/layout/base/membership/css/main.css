@@ -1,0 +1,10 @@
+/* pagination */
+div#memberships-wrapper ul.pagination {
+    margin:0;
+}
+
+/* thumbnail images */
+div#memberships-wrapper div.thumbnail img {
+    width: 100%; 
+    display: block;
+}

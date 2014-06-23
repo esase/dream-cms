@@ -43,6 +43,16 @@ class Service extends ApplicationService
     }
 
     /**
+     * Check is default user or not
+     *
+     * @return boolean
+     */
+    public static function isDefaultUser()
+    {
+        return self::getCurrentUserIdentity()->user_id == UserBaseModel::DEFAULT_USER_ID;
+    }
+
+    /**
      * Check is guest or not
      *
      * @return boolean

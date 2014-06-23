@@ -32,6 +32,11 @@ class MembershipFilter extends AbstractCustomForm
      * @var array
      */
     protected $formElements = array(
+        'title' => array(
+            'name' => 'title',
+            'type' => CustomFormBuilder::FIELD_TEXT,
+            'label' => 'Title'
+        ),
         'cost' => array(
             'name' => 'cost',
             'type' => CustomFormBuilder::FIELD_FLOAT,
