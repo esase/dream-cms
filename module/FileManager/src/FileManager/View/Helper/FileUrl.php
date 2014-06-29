@@ -37,6 +37,8 @@ class FileUrl extends AbstractHelper
         $absolutePath = FileManagerBaseModel::getUserBaseFilesDir();
         $currentPath  = $options['path'] . '/' . $fileName;
 
+        //TODO: make a refactoring here, code is ugly
+        
         // generate a directory navigation link
         if (is_dir($absolutePath . '/'. $options['path'] . '/' . $fileName)) {
             $urlParams = array('path' => $currentPath) + $options['filters'];

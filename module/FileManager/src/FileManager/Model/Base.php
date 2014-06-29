@@ -1,5 +1,4 @@
 <?php
-
 namespace FileManager\Model;
 
 use Application\Model\AbstractBase;

@@ -1,9 +1,7 @@
 <?php
-
 namespace XmlRpc\Exception;
-use Exception;
 
-class XmlRpcActionDenied extends Exception
+class XmlRpcActionDenied extends XmlRpcException
 {
     /**
      * Error http code

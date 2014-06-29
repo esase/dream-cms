@@ -11,7 +11,7 @@ use User\Service\Service as UserService;
 class IsGuest extends AbstractPlugin
 {
     /**
-     * Is guest.
+     * Is guest or not?.
      *
      * @return boolean
      */

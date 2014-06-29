@@ -65,7 +65,8 @@ return array(
             'error' => 'Application\Controller\ErrorController',
             'modules-administration' => 'Application\Controller\ModuleAdministrationController',
             'settings-administration' => 'Application\Controller\SettingAdministrationController',
-            'acl-administration' => 'Application\Controller\AclAdministrationController'
+            'acl-administration' => 'Application\Controller\AclAdministrationController',
+            'acl' => 'Application\Controller\AclController'
         )
     ),
     'controller_plugins' => array(

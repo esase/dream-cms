@@ -1,8 +1,7 @@
 <?php
+namespace XmlRpc\Handler;
 
-namespace Application\XmlRpc;
-
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use User\Service\Service as UserService;
 
 abstract class AbstractHandler
@@ -44,7 +43,7 @@ abstract class AbstractHandler
      *
      * @param object $serviceManager
      */
-    public function __construct(ServiceManager $serviceManager)
+    public function __construct(ServiceLocatorInterface $serviceManager)
     {
         $this->serviceManager = $serviceManager;
         $this->userIdentity = UserService::getCurrentUserIdentity();

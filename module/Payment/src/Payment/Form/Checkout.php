@@ -1,10 +1,8 @@
 <?php
-
 namespace Payment\Form;
 
 use Application\Form\CustomFormBuilder;
 use Application\Form\AbstractCustomForm;
-use Payment\Model\Payment as PaymentModel;
 
 class Checkout extends AbstractCustomForm 
 {

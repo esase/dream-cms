@@ -1,9 +1,7 @@
 <?php
-
 namespace XmlRpc\Model;
 
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Expression as Expression;
 use Application\Utility\Cache as CacheUtility;
 
 class XmlRpc extends Base

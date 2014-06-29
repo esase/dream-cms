@@ -1,5 +1,4 @@
 <?php
-
 namespace Membership\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;

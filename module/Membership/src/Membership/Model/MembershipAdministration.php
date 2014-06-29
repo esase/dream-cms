@@ -1,10 +1,9 @@
 <?php
-
 namespace Membership\Model;
 
 use Exception;
+use Membership\Exception\MembershipException;
 use Application\Service\Service as ApplicationService;
-use Zend\Db\Sql\Expression;
 use Application\Utility\ErrorLogger;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Application\Utility\Image as ImageUtility;
@@ -115,6 +114,7 @@ class MembershipAdministration extends Base
      *      integer size
      * @param string $oldImage
      * @param boolean $deleteImage
+     * @throws Membership\Exception\MembershipException
      * @return void
      */
     protected function uploadImage($membershipId, array $image, $oldImage = null, $deleteImage = false)
@@ -124,7 +124,7 @@ class MembershipAdministration extends Base
             // delete old image
             if ($oldImage) {
                 if (true !== ($result = $this->deleteImage($oldImage))) {
-                    throw new Exception('Image deleting failed');
+                    throw new MembershipException('Image deleting failed');
                 }
             }
 
@@ -132,7 +132,7 @@ class MembershipAdministration extends Base
             if (false === ($imageName =
                     FileSystemUtility::uploadResourceFile($membershipId, $image, self::$imagesDir))) {
 
-                throw new Exception('Avatar uploading failed');
+                throw new MembershipException('Avatar uploading failed');
             }
 
             // resize the image
@@ -153,7 +153,7 @@ class MembershipAdministration extends Base
         elseif ($deleteImage && $oldImage) {
             // just delete the membership's image
             if (true !== ($result = $this->deleteImage($oldImage))) {
-                throw new Exception('Image deleting failed');
+                throw new MembershipException('Image deleting failed');
             }
 
             $update = $this->update()

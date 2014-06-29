@@ -1,5 +1,4 @@
 <?php
-
 namespace Membership\Event;
 
 use Application\Event\AbstractEvent as AbstractEvent;

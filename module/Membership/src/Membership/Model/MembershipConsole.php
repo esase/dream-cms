@@ -1,5 +1,4 @@
 <?php
-
 namespace Membership\Model;
 
 use Exception;

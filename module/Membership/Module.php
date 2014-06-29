@@ -9,15 +9,15 @@ use Zend\Console\Adapter\AdapterInterface as Console;
 use Membership\Model\Base as BaseMembershipModel;
 use User\Service\Service as UserService;
 use User\Event\Event as UserEvent;
-use Zend\ModuleManager\ModuleManager;
 use User\Model\Base as UserBaseModel;
+use Zend\ModuleManager\ModuleManagerInterface;
 
 class Module implements ConsoleUsageProviderInterface
 {
     /**
      * Init
      */
-    public function init(ModuleManager $moduleManager)
+    public function init(ModuleManagerInterface $moduleManager)
     {
         $eventManager = MembershipEvent::getEventManager();
 

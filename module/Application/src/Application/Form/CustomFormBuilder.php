@@ -204,6 +204,7 @@ class CustomFormBuilder extends Form
      * @param object $translator
      * @param string $method
      * @param array $ignoredElements
+     * @throws Zend\Form\Exception\InvalidArgumentException
      */
     public function __construct($formName, array $formElements,
         Translator $translator, array $ignoredElements = array(), array $notValidatedElements = array(), $method = 'post') 
@@ -548,8 +549,8 @@ class CustomFormBuilder extends Form
      *
      * @param boolean $localizeData
      * @param  int $flag
-     * @return array|object
      * @throws Exception\DomainException
+     * @return array|object
      */
     public function getData($localizeData = true, $flag = FormInterface::VALUES_NORMALIZED)
     {
@@ -580,7 +581,7 @@ class CustomFormBuilder extends Form
      * @param  array|\ArrayAccess|Traversable $data
      * @param boolean $convertValues
      * @return Form|FormInterface
-     * @throws Exception\InvalidArgumentException
+     * @throws Zend\Form\Exception\InvalidArgumentException
      */
     public function setData($data, $convertValues = true)
     {

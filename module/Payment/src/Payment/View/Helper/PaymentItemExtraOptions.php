@@ -1,10 +1,8 @@
 <?php
-
 namespace Payment\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
 use Application\Utility\Locale as LocaleUtility;
-use Application\Service\Service as ApplicationService;
 use Payment\Handler\HandlerManager;
 use Payment\Model\Base as BaseModel;
 

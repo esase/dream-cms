@@ -2,7 +2,7 @@
 
 namespace Application\Form;
 
-use Zend\Mvc\I18n\Translator;
+use Zend\I18n\Translator\TranslatorInterface as I18nTranslatorInterface;
 use Zend\Form\Exception\InvalidArgumentException;
 
 class FormManager
@@ -25,7 +25,7 @@ class FormManager
      * 
      * @param object $translator
      */
-    public function __construct(Translator $translator)
+    public function __construct(I18nTranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
@@ -34,8 +34,8 @@ class FormManager
      * Get instance of specified form
      *
      * @papam string $formName
+     * @throws Zend\Form\Exception\InvalidArgumentException
      * @return object|boolean
-     * @throws Exception\InvalidArgumentException
      */
     public function getInstance($formName)
     {

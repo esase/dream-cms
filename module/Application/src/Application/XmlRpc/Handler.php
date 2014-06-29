@@ -1,10 +1,11 @@
 <?php
-
 namespace Application\XmlRpc;
+
+use XmlRpc\Handler\AbstractHandler;
+use XmlRpc\Exception\XmlRpcActionDenied;
 
 use Application\Service\Service as ApplicationService;
 use User\Service\Service as UserService;
-use XmlRpc\Exception\XmlRpcActionDenied;
 use Application\Event\Event as ApplicationEvent;
 
 class Handler extends AbstractHandler
@@ -12,6 +13,7 @@ class Handler extends AbstractHandler
     /**
      * Get list of localizations
      *
+     * @throws XmlRpc\Exception\XmlRpcActionDenied
      * @return array
      */
     public function getLocalizations()

@@ -1,10 +1,9 @@
 <?php
-
 namespace Payment\Handler;
 
-use Zend\Mvc\Exception\InvalidArgumentException;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
+use Payment\Exception\PaymentException;
 
 class HandlerManager
 {
@@ -25,7 +24,7 @@ class HandlerManager
      * 
      * @param object $translator
      */
-    public function __construct(ServiceManager $serviceManager)
+    public function __construct(ServiceLocatorInterface $serviceManager)
     {
         $this->serviceManager = $serviceManager;
     }
@@ -34,8 +33,8 @@ class HandlerManager
      * Get an object instance
      *
      * @papam string $name
+     * @throws Payment\Exception\PaymentException
      * @return object|boolean
-     * @throws Exception\InvalidArgumentException
      */
     public function getInstance($name)
     {
@@ -50,7 +49,7 @@ class HandlerManager
         $handler = new $name($this->serviceManager);
 
         if (!$handler instanceof PaymentInterfaceHandler) {
-            throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Handler\InterfaceHandler', $name));
+            throw new PaymentException(sprintf('The file "%s" must be an object implementing Payment\Handler\InterfaceHandler', $name));
         }
 
         $this->instances[$name] = $handler;

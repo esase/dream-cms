@@ -1,5 +1,4 @@
 <?php
-
 namespace Membership\Form;
 
 use Application\Form\CustomFormBuilder;

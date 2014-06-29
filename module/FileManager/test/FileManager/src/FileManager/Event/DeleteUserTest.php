@@ -1,5 +1,4 @@
 <?php
-
 namespace FileManager\Test\Event;
 
 use FileManager\Test\FileManagerBootstrap;

@@ -1,5 +1,4 @@
 <?php
-
 namespace FileManager\Form;
 
 use Application\Form\CustomFormBuilder;

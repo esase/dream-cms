@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Test\Model;
 
 use Payment\Test\PaymentBootstrap;

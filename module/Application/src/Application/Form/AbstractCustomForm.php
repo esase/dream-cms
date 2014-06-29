@@ -2,9 +2,9 @@
 
 namespace Application\Form;
 
-use Zend\Mvc\I18n\Translator;
+use Zend\I18n\Translator\TranslatorInterface as I18nTranslatorInterface;
 
-class AbstractCustomForm implements CustomFormInterface 
+abstract class AbstractCustomForm implements CustomFormInterface 
 {
     /**
      * Form 
@@ -53,7 +53,7 @@ class AbstractCustomForm implements CustomFormInterface
      *
      * @param object $translator
      */
-    public function __construct(Translator $translator) 
+    public function __construct(I18nTranslatorInterface $translator) 
     {
         $this->translator  = $translator;
     }

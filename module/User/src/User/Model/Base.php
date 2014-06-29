@@ -1,11 +1,8 @@
 <?php
-
 namespace User\Model;
 
 use Application\Model\AbstractBase;
-use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Expression as Expression;
 use Application\Utility\Cache as CacheUtility;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Sql\Predicate\isNull as IsNullPredicate;
@@ -13,6 +10,7 @@ use Application\Service\Service as ApplicationService;
 use Application\Model\Acl as AclModelBase;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Exception;
+use User\Exception\UserException;
 use Application\Utility\Image as ImageUtility;
 use Application\Utility\ErrorLogger;
 
@@ -254,6 +252,7 @@ class Base extends AbstractBase
      *      integer size
      * @param string $oldAvatar
      * @param boolean $deleteAvatar
+     * @throws User\Exception\UserException
      * @return void
      */
     protected function uploadAvatar($userId, array $avatar, $oldAvatar = null, $deleteAvatar = false)
@@ -263,7 +262,7 @@ class Base extends AbstractBase
             // delete old avatar
             if ($oldAvatar) {
                 if (true !== ($result = $this->deleteUserAvatar($oldAvatar))) {
-                    throw new Exception('Avatar deleting failed');
+                    throw new UserException('Avatar deleting failed');
                 }
             }
 
@@ -271,7 +270,7 @@ class Base extends AbstractBase
             if (false === ($avatarName =
                     FileSystemUtility::uploadResourceFile($userId, $avatar, self::$avatarsDir))) {
 
-                throw new Exception('Avatar uploading failed');
+                throw new UserException('Avatar uploading failed');
             }
 
             // resize the avatar
@@ -296,7 +295,7 @@ class Base extends AbstractBase
         elseif ($deleteAvatar && $oldAvatar) {
             // just delete the user's avatar
             if (true !== ($result = $this->deleteUserAvatar($oldAvatar))) {
-                throw new Exception('Avatar deleting failed');
+                throw new UserException('Avatar deleting failed');
             }
 
             $update = $this->update()
@@ -338,6 +337,7 @@ class Base extends AbstractBase
      * Delete an user
      *
      * @param array $userInfo
+     * @throws User/Exception/UserException
      * @return boolean|string
      */
     public function deleteUser($userInfo)
@@ -360,7 +360,7 @@ class Base extends AbstractBase
             // delete an avatar
             if ($userInfo['avatar']) {
                 if (true !== ($avatarDeleteResult = $this->deleteUserAvatar($userInfo['avatar']))) {
-                    throw new Exception('Avatar deleting failed');
+                    throw new UserException('Avatar deleting failed');
                 }
             }
 

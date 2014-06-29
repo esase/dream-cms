@@ -1,5 +1,4 @@
 <?php
-
 namespace FileManager\Test;
 
 define('APPLICATION_ROOT', '../../../');

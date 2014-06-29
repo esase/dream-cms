@@ -4,15 +4,14 @@ namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use User\Service\Service as UserService;
-use Zend\Http\Response;
 
 /**
- * Controller plugin for checking the user permission.
+ * Controller plugin for checking a user permission.
  */
 class CheckPermission extends AbstractPlugin
 {
     /**
-     * Check current user permission.
+     * Check the current user permission.
      *
      * @param string $resource
      * @param boolean $increaseActions

@@ -4,9 +4,9 @@ namespace Application\View\Helper;
 
 use Application\Service\Service as ApplicationService;
 use Application\View\Helper\HeadResource as HeadResource;
-use StdClass;
+use Zend\View\Helper\HeadLink as BaseHeadLink;
 
-class HeadLink extends \Zend\View\Helper\HeadLink
+class HeadLink extends BaseHeadLink
 {
     use HeadResource;
 

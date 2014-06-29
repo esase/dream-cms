@@ -4,7 +4,6 @@ namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\Cache as CacheUtility;
-use Exception;
 
 class Layout extends Base
 {

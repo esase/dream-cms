@@ -2,7 +2,6 @@
 
 namespace Application\Form;
 
-use Application\Model\Acl as AclModel;
 use Application\Form\CustomFormBuilder;
 
 class AclResourceSetting extends AbstractCustomForm 

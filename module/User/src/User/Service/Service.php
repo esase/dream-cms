@@ -1,5 +1,4 @@
 <?php
-
 namespace User\Service;
 
 use Application\Service\Service as ApplicationService;

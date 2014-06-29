@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;

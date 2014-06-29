@@ -1,5 +1,4 @@
 <?php
-
 namespace User\Model;
 
 use Zend\Paginator\Paginator;
@@ -7,10 +6,6 @@ use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Application\Utility\Pagination as PaginationUtility;
 use Application\Service\Service as ApplicationService;
 use Zend\Db\Sql\Predicate\Like as LikePredicate;
-use Application\Model\Acl as AclModelBase;
-use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Exception;
-use Application\Utility\ErrorLogger;
 
 class UserAdministration extends Base
 {

@@ -107,7 +107,7 @@ class AclResourceFilter extends AbstractCustomForm
      * Hide status filter
      * @return object fluent interface
      */
-    public function  hideStatusFilter()
+    public function hideStatusFilter()
     {
         $this->hideStatusFilter = true;
         return $this;

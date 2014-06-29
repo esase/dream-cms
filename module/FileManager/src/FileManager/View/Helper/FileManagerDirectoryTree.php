@@ -1,5 +1,4 @@
 <?php
-
 namespace FileManager\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;

@@ -1,18 +1,17 @@
 <?php
-
 namespace User;
 
 use User\Event\Event as UserEvent;
 use Application\Event\Event as ApplicationEvent;
 use Application\Model\Acl as AclModel;
-use Zend\ModuleManager\ModuleManager;
+use Zend\ModuleManager\ModuleManagerInterface;
 
 class Module
 {
     /**
      * Init
      */
-    public function init(ModuleManager $moduleManager)
+    public function init(ModuleManagerInterface $moduleManager)
     {
         $eventManager = UserEvent::getEventManager();
         $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($moduleManager) {

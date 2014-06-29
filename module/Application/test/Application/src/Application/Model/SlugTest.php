@@ -3,7 +3,6 @@
 namespace Application\Test\Controller;
 
 use Application\Test\ApplicationBootstrap;
-use Application\Model\Localization;
 use PHPUnit_Framework_TestCase;
 use Zend\Math\Rand;
 use Application\Model\Acl as AclModel;

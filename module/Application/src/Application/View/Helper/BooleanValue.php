@@ -3,7 +3,7 @@
 namespace Application\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Zend\Mvc\I18n\Translator;
+use Zend\I18n\Translator\TranslatorInterface as I18nTranslatorInterface;
 
 class BooleanValue extends AbstractHelper
 {
@@ -18,7 +18,7 @@ class BooleanValue extends AbstractHelper
      *
      * @param object $translator
      */
-    public function __construct(Translator $translator)
+    public function __construct(I18nTranslatorInterface $translator)
     {
         $this->translator = $translator;
     }

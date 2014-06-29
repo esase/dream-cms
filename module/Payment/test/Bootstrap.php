@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Test;
 
 define('APPLICATION_ROOT', '../../../');

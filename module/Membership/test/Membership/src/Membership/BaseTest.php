@@ -1,5 +1,4 @@
 <?php
-
 namespace Membership\Test;
 
 use PHPUnit_Framework_TestCase;

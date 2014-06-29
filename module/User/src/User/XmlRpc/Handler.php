@@ -1,11 +1,10 @@
 <?php
-
 namespace User\XmlRpc;
 
-use Application\XmlRpc\AbstractHandler;
-use User\Service\Service as UserService;
+use XmlRpc\Handler\AbstractHandler;
 use XmlRpc\Exception\XmlRpcActionDenied;
-use DateTimeZone;
+
+use User\Service\Service as UserService;
 use User\Event\Event as UserEvent;
 
 class Handler extends AbstractHandler
@@ -19,7 +18,7 @@ class Handler extends AbstractHandler
     /**
      * Request is denied (wrong time zone)
      */
-    const REQUEST_DENIED_WRONG_TIME_ZONE = 'Time zone is wrong';
+    const REQUEST_DENIED_WRONG_TIME_ZONE = 'Time zone is wrong or not registered here';
 
     /**
      * Get model
@@ -49,20 +48,22 @@ class Handler extends AbstractHandler
             throw new XmlRpcActionDenied(self::REQUEST_UNAUTHORIZED);
         }
 
-        // check received time zone
-        if (!in_array($timeZone, DateTimeZone::listidentifiers())) {
-            throw new XmlRpcActionDenied(self::REQUEST_DENIED_WRONG_TIME_ZONE);
-        }
-
         // check an user's permission
         if (!UserService::checkPermission('xmlrpc_set_user_timezone')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
+        // check received time zone
+        if (false === ($timeZoneId = array_search($timeZone, 
+                UserService::getTimeZones()))) {
+
+            throw new XmlRpcActionDenied(self::REQUEST_DENIED_WRONG_TIME_ZONE);
+        }
+
         // update the user's time zone
         if (true == ($result = $this->getModel()->
-                setUserTimeZone($this->userIdentity->user_id, $timeZone))) {
-        
+                setUserTimeZone($this->userIdentity->user_id, $timeZoneId))) {
+
             // fire set user's time zone via XmlRpc event
             UserEvent::fireSetTimezoneViaXmlRpcEvent($this->
                     userIdentity->user_id, $this->userIdentity->nick_name);

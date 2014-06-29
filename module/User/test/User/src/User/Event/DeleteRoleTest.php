@@ -1,5 +1,4 @@
 <?php
-
 namespace User\Test\Event;
 
 use User\Test\UserBootstrap;

@@ -1,19 +1,17 @@
 <?php
-
 namespace FileManager;
 
 use User\Event\Event as UserEvent;
 use FileManager\Event\Event as FileManagerEvent;
 use Application\Utility\ErrorLogger;
-use User\Model\Base as UserBaseModel;
-use Zend\ModuleManager\ModuleManager;
+use Zend\ModuleManager\ModuleManagerInterface;
 
 class Module
 {
     /**
      * Init
      */
-    public function init(ModuleManager $moduleManager)
+    public function init(ModuleManagerInterface $moduleManager)
     {
         // delete the user's files and dirs
         $eventManager = FileManagerEvent::getEventManager();

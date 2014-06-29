@@ -1,5 +1,4 @@
 <?php
-
 namespace Membership\Test\Model;
 
 use Zend\Math\Rand;

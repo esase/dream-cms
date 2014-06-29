@@ -1,12 +1,9 @@
 <?php
-
 namespace User\Test\Service;
 
 use User\Test\UserBootstrap;
 use PHPUnit_Framework_TestCase;
-
-use \ArrayObject;
-use \stdClass;
+use stdClass;
 
 use Zend\Permissions\Acl\Acl as Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;

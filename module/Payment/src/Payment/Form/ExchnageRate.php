@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Form;
 
 use Application\Form\CustomFormBuilder;

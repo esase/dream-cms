@@ -2,9 +2,6 @@
 
 namespace Application\Model;
 
-use Zend\Db\Adapter\Adapter;
-use Exception;
-
 class Init extends Base
 {
     /**

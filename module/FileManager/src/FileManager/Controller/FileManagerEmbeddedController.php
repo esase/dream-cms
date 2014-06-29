@@ -1,12 +1,4 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace FileManager\Controller;
 
 use Zend\View\Model\ViewModel;
@@ -68,10 +60,7 @@ class FileManagerEmbeddedController extends FileManagerBaseController
     public function addDirectoryAction()
     {
         $result = $this->addDirectory();
-
-        return is_array($result)
-            ? new ViewModel($result)
-            : $result;
+        return is_array($result) ? new ViewModel($result) : $result;
     }
 
     /**
@@ -80,10 +69,7 @@ class FileManagerEmbeddedController extends FileManagerBaseController
     public function addFileAction()
     {
         $result = $this->addFile();
-
-        return is_array($result)
-            ? new ViewModel($result)
-            : $result;
+        return is_array($result) ? new ViewModel($result) : $result;
     }
 
     /**
@@ -92,9 +78,6 @@ class FileManagerEmbeddedController extends FileManagerBaseController
     public function editAction()
     {
         $result = $this->editFile();
-
-        return is_array($result)
-            ? new ViewModel($result)
-            : $result;
+        return is_array($result) ? new ViewModel($result) : $result;
     }
 }

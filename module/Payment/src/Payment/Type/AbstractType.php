@@ -1,15 +1,7 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Payment\Type;
 
-use Zend\Http\PhpEnvironment\Request as HttpRequest;
+use Zend\Stdlib\RequestInterface;
 use Application\Service\Service as ApplicationService;
 use Payment\Model\Base as BasePaymentModel;
 use Zend\View\Helper\Url as UrlViewHelper;
@@ -39,7 +31,7 @@ abstract class AbstractType implements PaymentTypeInterface
      *
      * @param object $serviceManager
      */
-    public function __construct(HttpRequest $request, BasePaymentModel $model, UrlViewHelper $urlViewHelper)
+    public function __construct(RequestInterface $request, BasePaymentModel $model, UrlViewHelper $urlViewHelper)
     {
         $this->request = $request;
         $this->model = $model;

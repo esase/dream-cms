@@ -308,7 +308,8 @@ class Acl extends Base
                 array('b' => 'acl_resource'),
                 'a.resource = b.id',
                 array(
-                    'resource'
+                    'resource',
+                    'description'
                 )
             )
             ->join(

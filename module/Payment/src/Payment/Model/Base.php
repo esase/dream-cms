@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Model;
 
 use Application\Utility\Pagination as PaginationUtility;
@@ -10,15 +9,12 @@ use Zend\Db\Sql\Predicate\Predicate as Predicate;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression;
 use Application\Utility\ErrorLogger;
-use User\Service\Service as UserService;
 use Zend\Http\Header\SetCookie;
 use Application\Service\Service as ApplicationService;
 use Exception;
 use Application\Utility\Cache as CacheUtility;
-use Payment\Handler\InterfaceHandler as PaymentInterfaceHandler;
 use Zend\Db\Sql\Predicate\Literal as LiteralPredicate;
 use Payment\Service\Service as PaymentService;
-use Payment\Type\PaymentTypeInterface as PaymentTypeInterface;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 

@@ -3,8 +3,8 @@
 namespace Application\Service;
 
 use stdClass;
-use Zend\Permissions\Acl\Acl;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Permissions\Acl\AclInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Service
 {
@@ -120,7 +120,7 @@ class Service
      * @param object $acl
      * @return void
      */
-    public static function setCurrentAcl(Acl $acl)
+    public static function setCurrentAcl(AclInterface $acl)
     {
         self::$currentAcl = $acl;
     }
@@ -159,7 +159,7 @@ class Service
      * @param object $serviceManager
      * @return void
      */
-    public static function setServiceManager(ServiceManager $serviceManager)
+    public static function setServiceManager(ServiceLocatorInterface $serviceManager)
     {
         self::$serviceManager = $serviceManager;
     }

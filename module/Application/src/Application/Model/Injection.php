@@ -4,8 +4,6 @@ namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\Cache as CacheUtility;
-use Exception;
-use Zend\Db\Sql\Expression as Expression;
 
 class Injection extends Base
 {

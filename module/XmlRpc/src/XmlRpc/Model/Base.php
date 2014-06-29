@@ -1,9 +1,7 @@
 <?php
-
 namespace XmlRpc\Model;
 
 use Application\Model\AbstractBase;
-use Zend\Db\Sql\Sql;
 
 class Base extends AbstractBase
 {

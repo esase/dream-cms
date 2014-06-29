@@ -1,5 +1,4 @@
 <?php
-
 namespace XmlRpc\Test;
 
 define('APPLICATION_ROOT', '../../../');

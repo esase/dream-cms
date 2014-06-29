@@ -6,7 +6,6 @@ use Application\Test\ApplicationBootstrap;
 use PHPUnit_Framework_TestCase;
 use Application\Form\CustomFormBuilder;
 use Locale;
-use IntlDateFormatter;
 use Application\Utility\Locale as LocaleUtility;
 
 class CustomFormBuilderTest extends PHPUnit_Framework_TestCase

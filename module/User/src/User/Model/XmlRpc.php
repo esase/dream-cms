@@ -1,5 +1,4 @@
 <?php
-
 namespace User\Model;
 
 use Exception;
@@ -32,10 +31,10 @@ class XmlRpc extends Base
      * Set user time zone
      *
      * @param integer $userId
-     * @param string $timeZone
+     * @param integer $timeZoneId
      * @return boolean|string
      */
-    public function setUserTimeZone($userId, $timeZone)
+    public function setUserTimeZone($userId, $timeZoneId)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -43,7 +42,7 @@ class XmlRpc extends Base
             $update = $this->update()
                 ->table('user')
                 ->set(array(
-                    'time_zone' => $timeZone
+                    'time_zone' => $timeZoneId
                 ))
                 ->where(array('user_id' => $userId));
 

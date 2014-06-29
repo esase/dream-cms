@@ -1,18 +1,9 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace FileManager\Controller;
 
 use Application\Controller\AbstractBaseController;
 use FileManager\Model\Base as FileManagerBaseModel;
 use FileManager\Event\Event as FileManagerEvent;
-use User\Service\Service as UserService;
 
 abstract class FileManagerBaseController extends AbstractBaseController
 {

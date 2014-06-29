@@ -1,5 +1,4 @@
 <?php
-
 namespace User\Form;
 
 use Application\Form\AbstractCustomForm;

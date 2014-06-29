@@ -5,8 +5,9 @@ namespace Application\View\Helper;
 use Application\Service\Service as ApplicationService;
 use Application\View\Helper\HeadResource as HeadResource;
 use StdClass;
+use Zend\View\Helper\HeadScript as BaseHeadScript;
 
-class HeadScript extends \Zend\View\Helper\HeadScript
+class HeadScript extends BaseHeadScript
 {
     use HeadResource;
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Model;
 
 use Application\Utility\ErrorLogger;
@@ -77,7 +76,7 @@ class Payment extends Base
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $basicData = array(
-                'date' => new Expression('UNIX_TIMESTAMP(CURDATE())'),
+                'date' => time(),
                 'currency' => PaymentService::getPrimaryCurrency()['id'],
                 'amount' => $amount
             );

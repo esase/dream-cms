@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Form;
 
 use Application\Form\CustomFormBuilder;
@@ -226,6 +225,7 @@ class ShoppingCart extends AbstractCustomForm
      * Set tariffs
      *
      * @param array $tariffs
+     * @throws Zend\Form\Exception\InvalidArgumentException
      * @return object fluent interface
      */
     public function setTariffs(array $tariffs)

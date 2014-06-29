@@ -1,8 +1,6 @@
 <?php
-
 namespace Membership\Test\Event;
 
-use Membership\Model\Localization;
 use Zend\Math\Rand;
 use Membership\Model\Base as BaseMembershipModel;
 use Application\Event\Event as ApplicationEvent;

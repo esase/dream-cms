@@ -1,12 +1,11 @@
 <?php
-
 namespace Payment\Type;
 
-use Zend\Mvc\Exception\InvalidArgumentException;
+use Zend\Stdlib\RequestInterface;
 use Payment\Model\Base as BasePaymentModel;
-use Zend\Http\PhpEnvironment\Request as HttpRequest;
 use Payment\Type\PaymentTypeInterface;
 use Zend\View\Helper\Url as UrlViewHelper;
+use Payment\Exception\PaymentException;
 
 class PaymentTypeManager
 {
@@ -39,7 +38,7 @@ class PaymentTypeManager
      * 
      * @param object $translator
      */
-    public function __construct(HttpRequest $request, BasePaymentModel $model, UrlViewHelper $urlViewHelper)
+    public function __construct(RequestInterface $request, BasePaymentModel $model, UrlViewHelper $urlViewHelper)
     {
         $this->request = $request;
         $this->model = $model;
@@ -50,8 +49,8 @@ class PaymentTypeManager
      * Get an object instance
      *
      * @papam string $name
+     * @throws Payment\Exception\PaymentException
      * @return object|boolean
-     * @throws Exception\InvalidArgumentException
      */
     public function getInstance($name)
     {
@@ -66,7 +65,7 @@ class PaymentTypeManager
         $paymentType = new $name($this->request, $this->model, $this->urlViewHelper);
 
         if (!$paymentType instanceof PaymentTypeInterface) {
-            throw new InvalidArgumentException(sprintf('The file "%s" must be an object implementing Payment\Type\PaymentTypeInterface', $name));
+            throw new PaymentException(sprintf('The file "%s" must be an object implementing Payment\Type\PaymentTypeInterface', $name));
         }
 
         $this->instances[$name] = $paymentType;

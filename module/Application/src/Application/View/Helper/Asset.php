@@ -4,7 +4,7 @@ namespace Application\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use Application\Service\Service as ApplicationService;
-use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
+use Zend\Cache\Storage\StorageInterface;
 use Application\Utility\Cache as CacheUtility;
 
 class Asset extends AbstractHelper
@@ -30,7 +30,7 @@ class Asset extends AbstractHelper
      *
      * @param object $dynamicCacheInstance
      */
-    public function __construct(CacheAdapter $dynamicCacheInstance)
+    public function __construct(StorageInterface $dynamicCacheInstance)
     {
         $this->dynamicCacheInstance = $dynamicCacheInstance;
     }

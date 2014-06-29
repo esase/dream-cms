@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Service;
 
 use Application\Service\Service as ApplicationService;

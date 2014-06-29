@@ -5,7 +5,7 @@ namespace Application\View\Resolver;
 use Zend\View\Resolver\TemplatePathStack as BaseTemplatePathStack;
 use Zend\View\Renderer\RendererInterface as Renderer;
 use Application\Utility\Cache as CacheUtility;
-use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
+use Zend\Cache\Storage\StorageInterface;
 
 /**
  * Resolves view scripts based on a stack of paths
@@ -28,7 +28,7 @@ class TemplatePathStack extends BaseTemplatePathStack
      *
      * @param  object $dynamicCache
      */
-    public function __construct(CacheAdapter $dynamicCache)
+    public function __construct(StorageInterface $dynamicCache)
     {
         $this->dynamicCacheInstance = $dynamicCache;
         parent::__construct();
@@ -39,8 +39,8 @@ class TemplatePathStack extends BaseTemplatePathStack
      *
      * @param  string $name
      * @param  null|Renderer $renderer
-     * @return string
      * @throws Exception\DomainException
+     * @return string
      */
     public function resolve($name, Renderer $renderer = null)
     {

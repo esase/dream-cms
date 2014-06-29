@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Event;
 
 use Application\Event\AbstractEvent as AbstractEvent;

@@ -3,7 +3,6 @@
 namespace Application\Test\Controller;
 
 use Application\Test\ApplicationBootstrap;
-use Application\Model\Localization;
 use PHPUnit_Framework_TestCase;
 
 class LocalizationTest extends PHPUnit_Framework_TestCase

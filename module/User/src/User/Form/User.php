@@ -1,10 +1,8 @@
 <?php
-
 namespace User\Form;
 
 use Application\Form\AbstractCustomForm;
 use Application\Form\CustomFormBuilder;
-use DateTimeZone;
 use User\Model\Base as UserBaseModel;
 use Application\Service\Service as ApplicationService;
 

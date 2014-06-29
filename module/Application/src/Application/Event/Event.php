@@ -2,7 +2,6 @@
 
 namespace Application\Event;
 
-use Zend\EventManager\EventManager as EventManager;
 use User\Service\Service as UserService;
 
 class Event extends AbstractEvent

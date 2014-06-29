@@ -1,9 +1,7 @@
 <?php
-
 namespace Payment\Type;
 
 use Application\Service\Service as ApplicationService;
-use Payment\Service\Service as PaymentService;
 
 class RBKMoney extends AbstractType
 {

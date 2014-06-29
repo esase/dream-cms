@@ -1,9 +1,9 @@
 <?php
-
 namespace Membership\Model;
 
 use Application\Utility\ErrorLogger;
 use Exception;
+use Membership\Exception\MembershipException;
 use Application\Model\AbstractBase;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Zend\Db\ResultSet\ResultSet;
@@ -240,6 +240,7 @@ class Base extends AbstractBase
      * @param array $roleInfo
      *      integer id required
      *      string image required
+     * @throws Membership\Exception\MembershipException
      * @return boolean|string
      */
     public function deleteRole($roleInfo)
@@ -259,7 +260,7 @@ class Base extends AbstractBase
             // delete the image
             if ($roleInfo['image']) {
                 if (true !== ($imageDeleteResult = $this->deleteImage($roleInfo['image']))) {
-                    throw new Exception('Image deleting failed');
+                    throw new MembershipException('Image deleting failed');
                 }
             }
 

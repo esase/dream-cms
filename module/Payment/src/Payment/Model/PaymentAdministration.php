@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Model;
 
 use Application\Utility\Pagination as PaginationUtility;
@@ -9,9 +8,7 @@ use Application\Service\Service as ApplicationService;
 use Application\Utility\ErrorLogger;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Sql\Expression;
-use Zend\Db\ResultSet\ResultSet;
 use Exception;
-use Application\Utility\Cache as CacheUtility;
 
 class PaymentAdministration extends Base
 {

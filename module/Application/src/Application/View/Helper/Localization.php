@@ -4,6 +4,7 @@ namespace Application\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use Application\Service\Service as ApplicationService;
+use Application\Model\Localization as BaseLocalizationModel;
 
 class Localization extends AbstractHelper
 {
@@ -51,7 +52,7 @@ class Localization extends AbstractHelper
      */
     public function isCurrentLanguageLtr()
     {
-        return $this->currentLocalization['direction'] == 'ltr';
+        return $this->currentLocalization['direction'] == BaseLocalizationModel::LTR_LANGUAGE;
     }
 
     /**

@@ -1,14 +1,12 @@
 <?php
-
 namespace Payment;
 
-use Zend\Mvc\MvcEvent;
 use Payment\Event\Event as PaymentEvent;
-use Zend\ModuleManager\ModuleManager;
-use User\Model\Base as UserBaseModel;
+use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
+use Zend\EventManager\EventInterface;
 
 class Module implements ConsoleUsageProviderInterface
 {
@@ -23,7 +21,7 @@ class Module implements ConsoleUsageProviderInterface
      *
      * @param object $moduleManager
      */
-    public function init(ModuleManager $moduleManager)
+    public function init(ModuleManagerInterface $moduleManager)
     {
         // get service manager
         $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
@@ -37,7 +35,7 @@ class Module implements ConsoleUsageProviderInterface
      *
      * @param object $e 
      */
-    public function initPaymentListeners(ModuleEvent $e)
+    public function initPaymentListeners(EventInterface $e)
     {
        $model = $this->serviceManager
         ->get('Application\Model\ModelManager')

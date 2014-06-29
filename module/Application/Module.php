@@ -1,5 +1,4 @@
 <?php
-
 namespace Application;
 
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
@@ -17,20 +16,17 @@ use DateTime;
 use Locale;
 use Exception;
 
-use Zend\Authentication\Result as AuthenticationResult;
-use Zend\Authentication\Storage;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 
 use Zend\Validator\AbstractValidator;
-use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
 use Zend\Log\Writer\FirePhp as FirePhp;
 use Zend\Log\Logger as Logger;
 
 use Zend\Cache\StorageFactory as CacheStorageFactory;
-use Zend\ModuleManager\ModuleManager;
+use Zend\ModuleManager\ModuleManagerInterface;
 
 use Zend\Session\Container as SessionContainer;
 use Zend\Session\SessionManager;
@@ -90,7 +86,7 @@ class Module
      *
      * @param object $moduleManager
      */
-    public function init(ModuleManager $moduleManager)
+    public function init(ModuleManagerInterface $moduleManager)
     {
         // get service manager
         $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');

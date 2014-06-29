@@ -1,8 +1,6 @@
 <?php
-
 namespace FileMangager\Test\Model;
 
-use FileMangager\Test\ApplicationBootstrap;
 use PHPUnit_Framework_TestCase;
 use FileManager\Model\Base as BaseFileManagerModel;
 

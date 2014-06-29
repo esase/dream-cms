@@ -3,14 +3,13 @@
 namespace Application\Model;
 
 use Zend\Db\Sql\Sql;
-use Zend\Db\Adapter\Adapter;
-use Zend\Cache\Storage\Adapter\AbstractAdapter as CacheAdapter;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Cache\Storage\StorageInterface;
 use Application\Utility\Slug as SlugUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Application\Utility\Cache as CacheUtility;
-use Exception;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 abstract class AbstractBase extends Sql
 {
@@ -53,7 +52,7 @@ abstract class AbstractBase extends Sql
      * @param object $adapter
      * @param object $staticCacheInstance
      */
-    public function __construct(Adapter $adapter, CacheAdapter $staticCacheInstance, ServiceManager $serviceManager)
+    public function __construct(AdapterInterface $adapter, StorageInterface $staticCacheInstance, ServiceLocatorInterface $serviceManager)
     {
         parent::__construct($adapter);
 

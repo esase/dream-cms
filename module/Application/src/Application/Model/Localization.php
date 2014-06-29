@@ -4,10 +4,19 @@ namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\Cache as CacheUtility;
-use Exception;
 
 class Localization extends Base
 {
+    /**
+     * LTR language direction
+     */
+    const LTR_LANGUAGE = 'ltr';
+
+    /**
+     * RTL language direction
+     */
+    const RTL_LANGUAGE = 'rtl';
+
     /**
      * Localization cache
      */

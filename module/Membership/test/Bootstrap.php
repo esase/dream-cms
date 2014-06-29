@@ -1,5 +1,4 @@
 <?php
-
 namespace Membership\Test;
 
 define('APPLICATION_ROOT', '../../../');

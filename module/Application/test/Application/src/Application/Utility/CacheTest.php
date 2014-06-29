@@ -2,7 +2,6 @@
 
 namespace Application\Test\Service;
 
-use Application\Test\ApplicationBootstrap;
 use PHPUnit_Framework_TestCase;
 use Application\Utility\Cache;
 

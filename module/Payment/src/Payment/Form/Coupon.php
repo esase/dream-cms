@@ -1,5 +1,4 @@
 <?php
-
 namespace Payment\Form;
 
 use Application\Form\CustomFormBuilder;
@@ -8,6 +7,16 @@ use Application\Utility\Locale as LocaleUtility;
 
 class Coupon extends AbstractCustomForm 
 {
+    /**
+     * Min discount
+     */
+    const MIN_DISCOUNT = 0;
+
+    /**
+     * Max discount
+     */
+    const MAX_DISCOUNT = 100;
+
     /**
      * Discount max string length
      */
@@ -164,7 +173,7 @@ class Coupon extends AbstractCustomForm
     public function validateDiscount($value, array $context = array())
     {
         $value = LocaleUtility::convertFromLocalizedValue($value, 'float');
-        return $value > 0 && $value <= 100;
+        return $value > self::MIN_DISCOUNT && $value <= self::MAX_DISCOUNT;
     }
 
     /**

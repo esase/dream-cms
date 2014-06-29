@@ -6,6 +6,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Application\Service\Service as ApplicationService;
 use Exception;
+use Application\Exception\ApplicationException;
 use SplFileInfo;
 use Application\Utility\Slug as SlugUtility;
 
@@ -49,12 +50,13 @@ class FileSystem
      *
      * @param string $path
      * @param integer $permission
+     * @throws Application\Exception\ApplicationException
      * @return void
      */
     public static function createDir($path, $permission = self::DEFAULT_PERMISSION)
     {
         if (true !== ($result = mkdir($path, $permission, true))) {
-            throw new Exception ('Failed to create directory - ' . $path);
+            throw new ApplicationException ('Failed to create directory - ' . $path);
         }
     }
 
