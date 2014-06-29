@@ -197,6 +197,7 @@ class Service extends ApplicationService
      */
     protected static function initAcl()
     {
+        // create a new ACL role
         $acl = new Acl();
         $acl->addRole(new Role(self::$currentUserIdentity->role));
 
@@ -211,10 +212,10 @@ class Service extends ApplicationService
             // process acl resources
             $resourcesInfo = array();
             foreach ($resources as $resource) {
-                // add new resource
+                // add a new resource
                 $acl->addResource(new Resource($resource['resource']));
 
-                // add resource's action
+                // add the resource's permission
                 $resource['permission'] == AclModelBase::ACTION_ALLOWED
                     ? $acl->allow(self::$currentUserIdentity->role, $resource['resource'])
                     : $acl->deny(self::$currentUserIdentity->role, $resource['resource']);

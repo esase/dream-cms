@@ -113,7 +113,7 @@
                                         <div class="caption" >
                                             <div class="description">
                                                 <h3><?php echo $this->escapeHtml($level->title) ?></h3>
-                                                <h4><?php echo $this->escapeHtml($this->costFormat($level)) ?> <?php echo $this->escapeHtml($level->lifetime) ?> <?php echo $this->translate('day(s)') ?></h4>
+                                                <h4><?php echo $this->escapeHtml($this->costFormat($level)) ?> <?php echo $this->escapeHtml($level->lifetime) ?> <?php echo $this->translatePlural('day', 'days', $level->lifetime) ?></h4>
                                                 <?php echo $this->escapeHtml($level->description) ?> 
                                             </div>
                                             <br />
