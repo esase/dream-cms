@@ -3,36 +3,19 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title"><?php echo $this->translate('Add the item to the shopping cart') ?></h4>
+                <h4 class="modal-title"><?php echo $this->translate('Permitted actions') ?></h4>
             </div>
             <div class="modal-body">
                 <?php if($this->resources): ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-striped">
-                            <thead>
-                                <tr>
-                                    <th><?php echo $this->translate('Description') ?></th>
-                                    <!-- <th><?php echo $this->translate('Number of allowed actions') ?></th>
-                                    <th><?php echo $this->translate('Number of actions is reset every N seconds') ?></th>
-                                    <th><?php echo $this->translate('This action is available since') ?></th>
-                                    <th><?php echo $this->translate('This action is available until') ?></th> -->
-                                    <th><?php echo $this->translate('Status') ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($this->resources as $resource) : ?>
-                                    <tr>
-                                        <td><?php echo $this->translate($resource['description']) ?></td>
-                                        <!-- <td><?php echo $resource['actions_limit'] ?></td>
-                                        <td><?php echo $resource['actions_reset'] ?></td>
-                                        <td><?php echo $resource['actions_reset'] ?></td>
-                                        <td><?php echo $resource['actions_reset'] ?></td> -->
-                                        <td><?php echo $resource['permission'] ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                    <?php echo $this->partial('partial/table', array(
+                        'headers' => array(
+                            'Description'
+                        ),
+                        'list' => $this->resources,
+                        'helpers' => array(
+                            'description' => 'translate'
+                        )
+                    )) ?>
                 <?php else: ?>
                     <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
                 <?php endif;?>

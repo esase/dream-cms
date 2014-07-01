@@ -40,67 +40,77 @@
     ),
     'list' => array(
         'name' => array(
-            $this->translate('First Name'),
-            $this->transaction['first_name']
+            'first_name' => 'First Name',
+            'name_value' => $this->transaction['first_name']
         ),
         'surname' => array(
-            $this->translate('Last Name'),
-            $this->transaction['last_name']
+            'surname' => 'Last Name',
+            'surname_value' => $this->transaction['last_name']
         ),
         'user_registered' => array(
-            $this->translate('User registered'),
-            $this->booleanValue($this->transaction['user_id'])
+            'user_registered' => 'User registered',
+            'user_registered_value' => $this->transaction['user_id']
         ),
         'email' => array(
-            $this->translate('Email'),
-            $this->transaction['email']
+            'email' => 'Email',
+            'email_value' => $this->transaction['email']
         ),
         'phone' => array(
-            $this->translate('Phone'),
-            $this->transaction['phone']
+            'phone' => 'Phone',
+            'phone_value' => $this->transaction['phone']
         ),
         'address' => array(
-            $this->translate('Address'),
-            $this->transaction['address']
+            'address' => 'Address',
+            'address_value' => $this->transaction['address']
         ),
         'date' => array(
-            $this->translate('Date'),
-            $this->date($this->transaction['date'])
+            'date' => 'Date',
+            'date_value' => $this->transaction['date']
         ),
         'paid' => array(
-            $this->translate('Paid'),
-            $this->booleanValue($this->transaction['paid'])
+            'paid' => 'Paid',
+            'paid_value' => $this->transaction['paid']
         ),
         'currency' => array(
-            $this->translate('Currency'),
-            $this->transaction['currency_code']
+            'currency' => 'Currency',
+            'currency_value' => $this->transaction['currency_code']
         ),
         'payment_type' => array(
-            $this->translate('Payment type'),
-            (
-                $this->transaction['payment_description']
-                    ? $this->translate($this->transaction['payment_description'])
-                    : ''
-            )
+            'payment_type' => 'Payment type',
+            'payment_type_value' => ($this->transaction['payment_description'] ? $this->translate($this->transaction['payment_description']) : '')
         ),
         'discount' => array(
-            $this->translate('Discount'),
-            (
-                $this->transaction['discount_cupon']
-                    ? $this->transaction['discount_cupon'] . '%'
-                    : ''
-            )
+            'discount' => 'Discount',
+            'discount_value' => ($this->transaction['discount_cupon'] ? $this->transaction['discount_cupon'] . '%' : '')
         ),
         'amount' => array(
-            $this->translate('Total amount'),
-            $this->costFormat(array(
+            'total_amount' => 'Total amount',
+            'total_amount_value' => $this->costFormat(array(
                 'cost' => $this->transaction['amount'],
                 'currency' => $this->transaction['currency_code']
             ))
         ),
         'comments' => array(
-            $this->translate('Comments'),
-            $this->transaction['comments']
+            'comments' => 'Comments',
+            'comments_value' => $this->transaction['comments']
         )
-    ) 
+    ),
+    'helpers' => array(
+        'first_name' => 'translate',
+        'surname' => 'translate',
+        'user_registered' => 'translate',
+        'user_registered_value' => 'booleanValue',
+        'email' => 'translate',
+        'phone' => 'translate',
+        'address' => 'translate',
+        'date' => 'translate',
+        'date_value' => 'date',
+        'paid' => 'translate',
+        'paid_value' => 'booleanValue',
+        'currency' => 'translate',
+        'payment_type' => 'translate',
+        'discount' => 'translate',
+        'total_amount' => 'translate',
+        'comments' => 'translate'
+    )    
 )) ?>

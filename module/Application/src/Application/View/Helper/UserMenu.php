@@ -32,7 +32,7 @@ class UserMenu extends AbstractHelper
     /**
      * User menu
      *
-     * @return object - fluent interface
+     * @return array
      */
     public function __invoke()
     {

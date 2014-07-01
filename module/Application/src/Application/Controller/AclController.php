@@ -33,7 +33,7 @@ class AclController extends AbstractBaseController
     {
         $view = new ViewModel(array(
             'resources' => $this->getModel()->
-                    getAclResources($this->getSlug(), UserService::getCurrentUserIdentity()->user_id)
+                getAllowedAclResources($this->getSlug(), UserService::getCurrentUserIdentity()->user_id)
         ));
 
         $view->setTerminal(true);

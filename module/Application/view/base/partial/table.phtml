@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <?php foreach ($this->headers as $header) : ?>
-                        <th><?php echo $header ?></th>
+                        <th><?php echo $this->translate($header) ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>
@@ -12,8 +12,14 @@
             <tbody>
                 <?php foreach ($this->list as $items) : ?>
                     <tr>
-                        <?php foreach ($items as $item) : ?>
-                            <td><?php echo $item ?></td>
+                        <?php foreach ($items as $itemName => $itemValue) : ?>
+                            <td>
+                                <?php if (!empty($this->helpers[$itemName])) : ?>
+                                    <?php echo $this->{$this->helpers[$itemName]}($itemValue) ?>
+                                <?php else: ?>
+                                    <?php echo $this->escapeHtml($itemValue) ?>
+                                <?php endif; ?>
+                            </td>
                         <?php endforeach; ?>
                     </tr>
                 <?php endforeach; ?>

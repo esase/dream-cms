@@ -272,7 +272,129 @@ class Acl extends Base
     }
 
     /**
-     * Get acl resources
+     * Get allowed ACL resources
+     *
+     * @param integer $roleId
+     * @param integer $userId
+     * @return array
+     */
+    public function getAllowedAclResources($roleId, $userId)
+    {
+        $allowedResources = array();
+
+        // process resources
+        if (null != ($resources = $this->getAclResources($roleId, $userId))) {
+            foreach ($resources as $resource) {
+                if ($resource['permission'] == self::ACTION_DISALLOWED) {
+                    // try to reset this resource
+                    if (true !== ($result = $this->
+                            resetAclResource($userId, $resource, self::ACTION_DISALLOWED, false, true))) {
+
+                        continue;
+                    }
+                }
+
+                $allowedResources[] = array(
+                    'description' => $resource['description']
+                );
+            }
+        }
+
+        return $allowedResources;
+    }
+
+    /**
+     * Check ACL resource's dates state
+     *
+     * @param array $resource
+     *      integer id
+     *      string resource
+     *      string permission
+     *      integer date_start
+     *      integer date_end
+     *      integer actions_limit
+     *      integer actions_reset
+     *      integer actions
+     *      integer actions_last_reset
+     * @return boolean
+     */
+    public function isAclResourceDatesActive($resource)
+    {
+        $currentTime = time();
+
+        // a date start still not active
+        if ($resource['date_start'] && $resource['date_start'] > $currentTime) {
+            return false;
+        }
+
+        // a date end still not active
+        if ($resource['date_end'] && $resource['date_end'] < $currentTime) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Reset ACL resource
+     *
+     * @param integer $userId
+     * @param array $resource
+     *      integer id
+     *      string resource
+     *      string permission
+     *      integer date_start
+     *      integer date_end
+     *      integer actions_limit
+     *      integer actions_reset
+     *      integer actions
+     *      integer actions_last_reset
+     * @param boolean $permissionResult
+     * @param boolean $increaseActions
+     * @param boolean $checkDates
+     * return boolean
+     */
+    public function resetAclResource($userId, array $resource, $permissionResult, $increaseActions = true, $checkDates = false)
+    {
+        // check the resource's dates states (the dates should be empty or active)
+        if ($checkDates && true !== ($result = $this->isAclResourceDatesActive($resource))) {
+            return false;
+        }
+
+        // check the resources actions counter
+        if ($resource['actions_limit']) {
+            $reseted = false;
+
+            // do we need reset all actions?
+            if ($resource['actions_reset'] && time() >= $resource['actions_last_reset'] + $resource['actions_reset']) {
+                // reset the resource's actions counter
+                if (true !== ($result = $this->
+                        increaseAclAction($userId, $resource, true, ($increaseActions ? 1 : 0)))) {
+
+                    return false;
+                }
+
+                $reseted = true;
+            }
+
+            // common increase actions
+            if ($increaseActions && !$reseted && $permissionResult === true) {
+                // increase the resource's actions
+                if (true !== ($result = $this->increaseAclAction($userId, $resource))) {
+                    return false;
+                }
+
+                $reseted = true;
+            }
+
+            return $reseted;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get ACL resources
      *
      * @param integer $roleId
      * @param integer $userId

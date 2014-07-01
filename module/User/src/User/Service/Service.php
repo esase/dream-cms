@@ -79,115 +79,50 @@ class Service extends ApplicationService
         $resource = str_replace(array(' ', '-'),
                 array(self::ACL_RESOURCE_SPACE_DEVIDER, self::ACL_RESOURCE_SPACE_DEVIDER), $resource);
 
-        // init a acl
+        // init an ACL
         if (!self::$currentAcl) {
             self::initAcl();
         }
 
+        $aclModel = self::$serviceManager
+            ->get('Application\Model\ModelManager')
+            ->getInstance('Application\Model\Acl');
+
         // check the resource existing
         if (self::$currentAclResources && array_key_exists($resource, self::$currentAclResources)) {
-            // check the permission
-            $permissionResult = self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource);
+            // check the resource's dates
+            if (true === ($result = $aclModel->isAclResourceDatesActive(self::$currentAclResources[$resource]))) {
+                // check the permission
+                $permissionResult = self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource);
 
-            // check the resource's actions limit
-            if (self::$currentAclResources[$resource]['actions_limit']) {
-                // check resource's dates states (the dates should be empty or active)
-                if (true !== ($result = self::isResourceDatesActive($resource))) {
-                    return $permissionResult;
-                }
+                // reset the current resource actions if it needs
+                if (true === ($result = $aclModel->resetAclResource(self::$currentUserIdentity->
+                        user_id, self::$currentAclResources[$resource], $permissionResult, $increaseActions))) {
 
-                $updateAclResources = false;
-
-                // do we need reset all actions?
-                if (self::$currentAclResources[$resource]['actions_reset'] && time() >=
-                        self::$currentAclResources[$resource]['actions_last_reset'] +
-                        self::$currentAclResources[$resource]['actions_reset']) {
-
-                    // reset the resource's actions
-                    $aclModel = self::$serviceManager
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Application\Model\Acl');
-
-                    $result = $aclModel->increaseAclAction(self::$currentUserIdentity->user_id,
-                            self::$currentAclResources[$resource], true, ($increaseActions ? 1 : 0));
-
-                    if (true !== $result) {
-                        return false;
-                    }
-
-                    $updateAclResources = true;
-                }
-
-                // increase actions
-                if ($increaseActions && !$updateAclResources && $permissionResult === true) {
-                    // increase the resource's actions
-                    $aclModel = self::$serviceManager
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Application\Model\Acl');
-
-                    $result = $aclModel->
-                            increaseAclAction(self::$currentUserIdentity->user_id, self::$currentAclResources[$resource]);
-
-                    if (true !== $result) {
-                        return false;
-                    }
-
-                    $updateAclResources = true;
-                }
-
-                // update all acl resources
-                if ($updateAclResources) {
+                    // update ACL resources again
                     self::initAcl();
 
-                    if (true !== ($permissionResult =
+                    // check the permission again
+                    if (true !== ($permissionResult = 
                             self::$currentAcl->isAllowed(self::$currentUserIdentity->role, $resource))) {
 
-                        // check resource's dates
-                        if (true === ($result = self::isResourceDatesActive($resource))) {
+                        // check the resource's dates
+                        if (true === ($result = $aclModel->isAclResourceDatesActive(self::$currentAclResources[$resource]))) {
                             // a previous action should be finished
-                            if ((int) self::$currentAclResources[$resource]['actions_limit'] ==
-                                        (int) self::$currentAclResources[$resource]['actions']) {
+                            if ((int) self::$currentAclResources[$resource]['actions_limit'] == (int) 
+                                    self::$currentAclResources[$resource]['actions']) {
 
                                 return true;
                             }
                         }
                     }
-
-                    return $permissionResult;
                 }
-            }
 
-            return $permissionResult;
+                return $permissionResult;
+            }
         }
 
         return false;
-    }
-
-    /**
-     * Check resource's dates state
-     *
-     * @param string $resource
-     * @return boolean
-     */
-    protected static function isResourceDatesActive($resource)
-    {
-        $currentTime = time();
-
-        // a date start still not active
-        if (self::$currentAclResources[$resource]['date_start'] &&
-                    self::$currentAclResources[$resource]['date_start'] > $currentTime) {
-
-            return false;
-        }
-
-        // a date end still not active
-        if (self::$currentAclResources[$resource]['date_end'] &&
-                    self::$currentAclResources[$resource]['date_end'] < $currentTime) {
-
-            return false;
-        }
-
-        return true;
     }
 
     /**
