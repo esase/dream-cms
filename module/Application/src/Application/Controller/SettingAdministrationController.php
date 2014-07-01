@@ -5,7 +5,7 @@ use Zend\View\Model\ViewModel;
 use Application\Utility\Cache as CacheUtility;
 use Application\Event\Event as ApplicationEvent;
 
-class SettingAdministrationController extends AbstractBaseController
+class SettingAdministrationController extends AbstractAdministrationController
 {
     /**
      * Administration

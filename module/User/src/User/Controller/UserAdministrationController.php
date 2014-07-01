@@ -2,14 +2,14 @@
 namespace User\Controller;
 
 use Zend\View\Model\ViewModel;
-use Application\Controller\AbstractBaseController;
+use Application\Controller\AbstractAdministrationController;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
 use User\Event\Event as UserEvent;
 use Application\Event\Event as ApplicationEvent;
 use User\Model\UserAdministration as UserAdministrationModel;
 
-class UserAdministrationController extends AbstractBaseController
+class UserAdministrationController extends AbstractAdministrationController
 {
     /**
      * Model instance

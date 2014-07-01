@@ -224,6 +224,54 @@ class Base extends AbstractBase
     }
 
     /**
+     * Activate transaction
+     *
+     * @param array $transactionInfo
+     *      integer id
+     *      string slug
+     *      integer user_id
+     *      string first_name
+     *      string last_name
+     *      string phone
+     *      string address
+     *      string email
+     *      integer currency
+     *      integer payment_type
+     *      integer discount_cupon
+     *      string currency_code
+     *      string payment_name
+     * @param integer $paymentTypeId
+     * @return boolean
+     */
+    public function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
+    {
+        if (true === ($result = $this->activateTransactionItem($transactionInfo['id'], 'id', $paymentTypeId))) {
+            // mark as paid all transaction's items
+            if (null != ($activeTransactionItems = $this->getAllTransactionItems($transactionInfo['id']))) {
+                // process transactions
+                foreach ($activeTransactionItems as $itemInfo) {
+                    // get the payment handler
+                    $handler = $this->serviceManager
+                        ->get('Payment\Handler\HandlerManager')
+                        ->getInstance($itemInfo['handler']);
+
+                    // set an item as paid
+                    $handler->setPaid($itemInfo['object_id'], $transactionInfo);
+
+                    // decrease the item's count
+                    if ($itemInfo['countable'] == self::MODULE_COUNTABLE) {
+                        $handler->decreaseCount($itemInfo['object_id'], $itemInfo['count']);
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Activate the transaction
      *
      * @param integer $transactionId
@@ -231,7 +279,7 @@ class Base extends AbstractBase
      * @param integer $paymentTypeId
      * @return boolean|string
      */
-    public function activateTransaction($transactionId, $field = 'id', $paymentTypeId = 0)
+    protected function activateTransactionItem($transactionId, $field = 'id', $paymentTypeId = 0)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();

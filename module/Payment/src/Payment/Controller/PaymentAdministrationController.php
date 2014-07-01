@@ -4,8 +4,9 @@ namespace Payment\Controller;
 use Zend\View\Model\ViewModel;
 use Payment\Event\Event as PaymentEvent;
 use Payment\Model\Base as PaymentBaseModel;
+use Application\Controller\AbstractAdministrationController;
 
-class PaymentAdministrationController extends PaymentBaseController
+class PaymentAdministrationController extends AbstractAdministrationController
 {
     /**
      * Model instance
@@ -203,7 +204,7 @@ class PaymentAdministrationController extends PaymentBaseController
                     }
 
                     // activate the transaction
-                    if(true !== ($activationResult = $this->activateTransaction($transactionInfo))) {
+                    if (true !== ($activationResult = $this->getModel()->activateTransaction($transactionInfo))) {
                         $this->flashMessenger()
                             ->setNamespace('error')
                             ->addMessage($this->getTranslator()->translate('Transaction activation error'));

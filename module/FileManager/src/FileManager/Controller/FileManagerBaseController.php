@@ -1,11 +1,11 @@
 <?php
 namespace FileManager\Controller;
 
-use Application\Controller\AbstractBaseController;
+use Application\Controller\AbstractAdministrationController;
 use FileManager\Model\Base as FileManagerBaseModel;
 use FileManager\Event\Event as FileManagerEvent;
 
-abstract class FileManagerBaseController extends AbstractBaseController
+abstract class FileManagerBaseController extends AbstractAdministrationController
 {
     /**
      * Model instance

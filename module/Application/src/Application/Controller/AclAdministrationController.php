@@ -5,7 +5,7 @@ use Zend\View\Model\ViewModel;
 use User\Service\Service as UserService;
 use Application\Event\Event as ApplicationEvent;
 
-class AclAdministrationController extends AbstractBaseController
+class AclAdministrationController extends AbstractAdministrationController
 {
     /**
      * Model instance

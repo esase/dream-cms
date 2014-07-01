@@ -8,26 +8,9 @@ use User\Service\Service as UserService;
 class FileManagerEmbeddedController extends FileManagerBaseController
 {
     /**
-     * Set event manager
+     * Layout name
      */
-    public function setEventManager(EventManagerInterface $events)
-    {
-        parent::setEventManager($events);
-        $controller = $this;
-
-        // execute before executing action logic
-        $events->attach('dispatch', function ($e) use ($controller) {
-            // check permission
-            if (!UserService::checkPermission($controller->
-                    params('controller') . ' ' . $controller->params('action'), false)) {
-
-                return $controller->showErrorPage();
-            }
-
-            // change layout
-            $controller->layout('layout/embed');
-        }, 100); 
-    }
+    protected $layout = 'layout/embed';
 
     /**
      * Default action

@@ -1,7 +1,7 @@
 <?php
 namespace Application\Controller;
 
-class ModuleAdministrationController extends AbstractBaseController
+class ModuleAdministrationController extends AbstractAdministrationController
 {
     /**
      * Administration

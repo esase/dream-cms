@@ -8,8 +8,9 @@ use User\Service\Service as UserService;
 use Payment\Service\Service as PaymentService;
 use Payment\Model\Payment as PaymentModel;
 use Application\Utility\EmailNotification;
+use Application\Controller\AbstractBaseController;
 
-class PaymentController extends PaymentBaseController
+class PaymentController extends AbstractBaseController
 {
     /**
      * Model instance
@@ -628,7 +629,7 @@ class PaymentController extends PaymentBaseController
                     }
                     else {
                         // activate the transaction and redirect to success page
-                        if(true == ($result = $this->activateTransaction($transactionInfo))) {
+                        if (true == ($result = $this->activateTransaction($transactionInfo))) {
                             return $this->redirectTo('payments', 'success');
                         }
 
@@ -760,7 +761,9 @@ class PaymentController extends PaymentBaseController
      */
     protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
     {
-        if (true === ($result = parent::activateTransaction($transactionInfo, $paymentTypeId))) {
+        if (true === ($result = $this->getModel()->
+                activateTransaction($transactionInfo, $paymentTypeId))) {
+
             // fire the activate payment transaction event
             PaymentEvent::fireActivatePaymentTransactionEvent($transactionInfo['id'], true, $transactionInfo);
         }

@@ -2,10 +2,10 @@
 namespace Membership\Controller;
 
 use Zend\View\Model\ViewModel;
-use Application\Controller\AbstractBaseController;
+use Application\Controller\AbstractAdministrationController;
 use Membership\Event\Event as MembershipEvent;
 
-class MembershipAdministrationController extends AbstractBaseController
+class MembershipAdministrationController extends AbstractAdministrationController
 {
     /**
      * Model instance

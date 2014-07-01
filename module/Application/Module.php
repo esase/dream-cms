@@ -36,12 +36,6 @@ use Application\Utility\ErrorLogger;
 class Module
 {
     /**
-     * Init admin layout
-     * @param boolean
-     */
-    protected $initAdminlayout = false;
-
-    /**
      * Service managerzend
      * @var object
      */
@@ -70,11 +64,6 @@ class Module
      * @var array
      */
     protected $defaultLocalization;
-
-    /**
-     * Administration area
-     */
-    const ADMINISTRATION_AREA = 'administration';
 
     /**
      * Localization cookie
@@ -117,84 +106,15 @@ class Module
             $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
                 $this, 'initUserLocalization'
             ), 100);
-    
-            // check administration privileges
-            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
-                $this, 'checkAdministrationPrivileges'
-            ), 2);
-    
-            // load admin layout
-            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
-                $this, 'loadAdministrationLayout'
-            ));
-    
+
             $config = $this->serviceManager->get('Config');
-    
+
             // init profiler
             if ($config['profiler']) {
                 $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, array(
                     $this, 'initProfiler'
                 ));
             }
-        }
-    }
-
-    /**
-     * Load administration layout
-     *
-     * @param object $e MvcEvent
-     */
-    public function loadAdministrationLayout(MvcEvent $e)
-    {
-        try {
-            if ($this->initAdminlayout &&
-                    false === $e->getTarget()->getEvent()->getViewModel()->terminate()) {
-
-                // set admin layout
-                $e->getTarget()->layout('layout/administration');
-            }
-        }
-        catch (Exception $e) {
-            ErrorLogger::log($e);
-        }
-    }
-
-    /**
-     * Check administration privileges
-     *
-     * @param object $e MvcEvent
-     */
-    public function checkAdministrationPrivileges(MvcEvent $e)
-    {
-        try {
-            $matches = $e->getRouteMatch();
-            $controller = $matches->getParam('controller');
-            $action = $matches->getParam('action');
-    
-            // check the controller's name
-            if (false !== ($result = stristr($controller, self::ADMINISTRATION_AREA))) {
-                if ($e->getResponse()->getStatusCode() != Response::STATUS_CODE_404) {
-                    // check the action's permission
-                    if (!UserService::checkPermission($controller . ' ' . $action, false)) {
-                        // redirect to the forbidden page
-                        $response = $e->getResponse();
-                        $router = $e->getRouter();
-                        $url = $router->assemble(array('controller' =>
-                            'error', 'action' => 'forbidden'), array('name' => 'application'));
-    
-                        // populate and return the response
-                        $response->setStatusCode(Response::STATUS_CODE_302);
-                        $response->getHeaders()->addHeaderLine('Location', $url);
-    
-                        return $response;
-                    }
-    
-                    $this->initAdminlayout = true;
-                }
-            }
-        }
-        catch (Exception $e) {
-            ErrorLogger::log($e);
         }
     }
 
