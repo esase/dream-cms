@@ -37,9 +37,7 @@ class XmlRpcController extends AbstractBaseController
     {
         // get user info by api key
         if (null != ($apiKey = $this->getRequest()->getQuery()->apiKey)) {
-            if (null != ($userInfo =
-                    UserService::getUserInfo($apiKey, UserModelBase::USER_INFO_BY_API_KEY))) {
-
+            if (null != ($userInfo = UserService::getUserInfo($apiKey, UserModelBase::USER_INFO_BY_API_KEY))) {
                 // fill the user's info
                 $userIdentity = new stdClass();
 

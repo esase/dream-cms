@@ -126,8 +126,6 @@ class PaymentController extends AbstractBaseController
 
             $refreshPage = false;
 
-
-
             // get a form instance
             $shoppingCartForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
