@@ -29,7 +29,9 @@ abstract class AbstractAdministrationController extends AbstractBaseController
             }
 
             // set an admin layout
-            $controller->layout($this->layout);
+            if (!$e->getRequest()->isXmlHttpRequest()) {
+                $controller->layout($this->layout);
+            }
         }, 100);
     }
 }

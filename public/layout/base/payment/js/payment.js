@@ -109,7 +109,7 @@ Payment = function()
             baseOptions = $.extend({}, baseOptions, extraOptions);
         }
 
-        _showPopupShoppingCart('add-to-shopping-cart', baseOptions);
+        _showPopupShoppingCart('ajax-add-to-shopping-cart', baseOptions);
     }
 
     /**
@@ -123,7 +123,7 @@ Payment = function()
 
         // remove previously loaded popup
         $popup.on('hidden.bs.modal', function (e) {
-            _showPopupShoppingCart('add-to-shopping-cart', $popup.find('form:first').serialize());
+            _showPopupShoppingCart('ajax-add-to-shopping-cart', $popup.find('form:first').serialize());
         }).modal('hide');
     }
 
@@ -137,7 +137,7 @@ Payment = function()
         showLoadingBox(shoppingCartWrapper);
 
         // update the shopping cart
-        $.get(serverUrl + '/update-shopping-cart?_r=' + Math.random(), function(data) {
+        $.get(serverUrl + '/ajax-update-shopping-cart?_r=' + Math.random(), function(data) {
             _updateShoppingCart(data);
         });
     }
@@ -152,7 +152,7 @@ Payment = function()
         showLoadingBox(shoppingCartWrapper);
 
         // update the shopping cart
-        $.post(serverUrl + '/change-currency', {'currency' : currency}, function(data) {
+        $.post(serverUrl + '/ajax-change-currency', {'currency' : currency}, function(data) {
             // refresh current page
             self.refreshPage();
         });
@@ -165,7 +165,7 @@ Payment = function()
      */
     this.getDiscountCouponForm = function()
     {
-        _showPopupShoppingCart('activate-discount-coupon', {}, 'get');
+        _showPopupShoppingCart('ajax-activate-discount-coupon', {}, 'get');
     }
 
     /**
@@ -179,7 +179,7 @@ Payment = function()
 
         // remove previously loaded popup
         $popup.on('hidden.bs.modal', function (e) {
-            _showPopupShoppingCart('activate-discount-coupon', $popup.find('form:first').serialize());
+            _showPopupShoppingCart('ajax-activate-discount-coupon', $popup.find('form:first').serialize());
         }).modal('hide');
     }
 
@@ -191,7 +191,7 @@ Payment = function()
      */
     this.getEditItemForm = function(itemId)
     {
-        _showPopupShoppingCart('editShoppingCartItem/' + parseInt(itemId), {}, 'get');
+        _showPopupShoppingCart('ajax-edit-shopping-cart-item/' + parseInt(itemId), {}, 'get');
     }
 
     /**
@@ -206,7 +206,7 @@ Payment = function()
 
         // remove previously loaded popup
         $popup.on('hidden.bs.modal', function (e) {
-            _showPopupShoppingCart('editShoppingCartItem/' + parseInt(itemId), $popup.find('form:first').serialize());
+            _showPopupShoppingCart('ajax-edit-shopping-cart-item/' + parseInt(itemId), $popup.find('form:first').serialize());
         }).modal('hide');
     }
 
@@ -217,7 +217,7 @@ Payment = function()
      */
     this.deactivateDiscountCoupon = function()
     {
-        $.post(serverUrl + '/deactivate-discount-coupon', function(data) {
+        $.post(serverUrl + '/ajax-deactivate-discount-coupon', function(data) {
             // refresh current page
             self.refreshPage();
         });
@@ -244,7 +244,7 @@ Payment = function()
         showLoadingBox(shoppingCartWrapper);
 
         // update the shopping cart
-        $.post(serverUrl + '/clean-shopping-cart', function(data) {
+        $.post(serverUrl + '/ajax-clean-shopping-cart', function(data) {
             typeof isShoppingCartPage != 'undefined' && true == isShoppingCartPage
                 ? self.refreshPage()
                 : _updateShoppingCart(data);

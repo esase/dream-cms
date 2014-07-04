@@ -4,6 +4,9 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use User\Service\Service as UserService;
 use Application\Event\Event as ApplicationEvent;
+use Zend\EventManager\EventManagerInterface;
+use Zend\View\Model\ViewModel;
+use Zend\Http\Response;
 
 abstract class AbstractBaseController extends AbstractActionController
 {
@@ -48,6 +51,34 @@ abstract class AbstractBaseController extends AbstractActionController
      * @var string
      */
     protected $extra = null;
+
+    /**
+     * Set event manager
+     */
+    public function setEventManager(EventManagerInterface $events)
+    {
+        parent::setEventManager($events);
+        $controller = $this;
+
+        // check only ajax based actions
+        $events->attach('dispatch', function ($e) use ($controller) {
+            if ($e->getResponse()->getStatusCode() == Response::STATUS_CODE_200 && 
+                    substr($controller->params('action'), 0, 4) == 'ajax' && !$e->getRequest()->isXmlHttpRequest()) {
+
+                $controller->notFoundAction();
+            }
+        }, 99);
+
+        // disable current layout if received request is an ajax request
+        $events->attach('dispatch', function ($e) use ($controller) {
+            $result = $e->getResult();
+            if ($result instanceof ViewModel && 
+                    $e->getResponse()->getStatusCode() == Response::STATUS_CODE_200) {
+
+                $result->setTerminal($e->getRequest()->isXmlHttpRequest());
+            }
+        });
+    }
 
     /**
      * Get slug

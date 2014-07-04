@@ -29,14 +29,13 @@ class AclController extends AbstractBaseController
     /**
      * Get resources
      */
-    public function getResourcesAction()
+    public function ajaxGetResourcesAction()
     {
         $view = new ViewModel(array(
             'resources' => $this->getModel()->
                 getAllowedAclResources($this->getSlug(), UserService::getCurrentUserIdentity()->user_id)
         ));
 
-        $view->setTerminal(true);
         return $view;
     }
 }

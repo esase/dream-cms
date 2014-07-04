@@ -77,7 +77,7 @@ class PaymentController extends AbstractBaseController
     /**
      * Deactivate current discount coupon
      */
-    public function deactivateDiscountCouponAction()
+    public function ajaxDeactivateDiscountCouponAction()
     {
         $request = $this->getRequest();
 
@@ -94,13 +94,13 @@ class PaymentController extends AbstractBaseController
             }
         }
 
-        return  $this->getResponse();
+        return $this->getResponse();
     }
 
     /**
      * Edit shopping cart's item
      */
-    public function editShoppingCartItemAction()
+    public function ajaxEditShoppingCartItemAction()
     {
         // get an item's info
         if (null == ($itemInfo =
@@ -212,7 +212,6 @@ class PaymentController extends AbstractBaseController
                 'shoppingCartForm' => $shoppingCartForm->getForm(),
             ));
 
-            $view->setTerminal(true);
             return $view;
         }
         else {
@@ -273,7 +272,7 @@ class PaymentController extends AbstractBaseController
     /**
      * Activate a discount coupon
      */
-    public function activateDiscountCouponAction()
+    public function ajaxActivateDiscountCouponAction()
     {
         $refreshPage = false;
 
@@ -298,8 +297,8 @@ class PaymentController extends AbstractBaseController
                 PaymentEvent::fireActivateDiscountCouponEvent($couponCode);
 
                 $this->flashMessenger()
-                        ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('The coupon code has been activated'));
+                    ->setNamespace('success')
+                    ->addMessage($this->getTranslator()->translate('The coupon code has been activated'));
 
                 $refreshPage = true;
             }
@@ -310,14 +309,13 @@ class PaymentController extends AbstractBaseController
             'refreshPage' => $refreshPage
         ));
 
-        $view->setTerminal(true);
         return $view;
     }
 
     /**
      * Add to shopping cart
      */
-    public function addToShoppingCartAction()
+    public function ajaxAddToShoppingCartAction()
     {
         $objectId = $this->params()->fromPost('object_id', -1);
         $module   = $this->params()->fromPost('module');
@@ -441,28 +439,24 @@ class PaymentController extends AbstractBaseController
             'message' => $message
         ));
 
-        $view->setTerminal(true);
         return $view;
     }
 
     /**
      * Change currency
      */
-    public function changeCurrencyAction()
+    public function ajaxChangeCurrencyAction()
     {
         $this->getModel()->setShoppingCartCurrency($this->params()->fromPost('currency'));
-        return  $this->getResponse();
+        return $this->getResponse();
     }
 
     /**
      * Update shopping cart
      */
-    public function updateShoppingCartAction()
+    public function ajaxUpdateShoppingCartAction()
     {
-        $view = new ViewModel(array());
-        $view->setTerminal(true);
-
-        return $view;
+        return new ViewModel(array());
     }
 
     /**
@@ -501,7 +495,7 @@ class PaymentController extends AbstractBaseController
     /**
      * Clean shopping cart
      */
-    public function cleanShoppingCartAction()
+    public function ajaxCleanShoppingCartAction()
     {
         $request = $this->getRequest();
 
@@ -509,10 +503,7 @@ class PaymentController extends AbstractBaseController
             $this->cleanShoppingCart();
         }
 
-        $view = new ViewModel(array());
-        $view->setTerminal(true);
-
-        return $view;
+        return new ViewModel(array());
     }
 
     /**
