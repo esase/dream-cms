@@ -57,11 +57,8 @@
                     </a>
                 </div>
                 <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">
-                        
-                    </ul>
                     <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
-                        <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
+                        <?php if ($this->languageSwitcher()): ?>
                             <!-- select language -->
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -69,16 +66,11 @@
                                     <?php echo $this->translate('Select language') ?><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <?php foreach ($this->localization()->getAllLocalizations() as $localization) : ?>
-                                        <li <?php if ($this->localization()->getCurrentLanguage() == $localization['language']): ?>class="disabled"<?php endif; ?>>
-                                            <a href="<?php echo  $this->url(null, array_merge(array(
-                                                    'languge' => $localization['language'],
-                                                    'controller' => $this->currentRoute()->getController(),
-                                                    'action' => $this->currentRoute()->getAction()
-                                                    ),  $this->currentRoute()->getExtraRouteParams()), array('query' => $this->currentRoute()->getQuery())) ?>">
-
-                                                <img src="<?php  echo $this->asset('icon/flag/' . $localization['language'] . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate($localization['description'])) ?>" />
-                                                <?php echo $localization['description'] ?>
+                                    <?php foreach ($this->languageSwitcher() as $language) : ?>
+                                        <li <?php if ($language['active']): ?>class="disabled"<?php endif; ?>>
+                                            <a href="<?php echo $language['url'] ?>">
+                                                <img src="<?php  echo $this->asset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
+                                                <?php echo $this->escapeHtml($language['description']) ?>
                                             </a>
                                         </li>
                                     <?php endforeach; ?>

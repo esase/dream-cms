@@ -26,14 +26,14 @@ return array(
                     'route'    => '/[:languge[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:slug][/:extra]]]][:trailing_slash]',
                     'constraints' => array(
                         'languge' => '[a-z]{2}',
-                        'controller' => '[a-zA-Z][a-zA-Z0-9-]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9-]*',
+                        'controller' => '[a-z][a-z0-9-]*',
+                        'action' => '[a-z][a-z0-9-]*',
                         'page' => '[0-9]+',
                         'per_page' => '[0-9]+',
-                        'order_by' => '[a-zA-Z][a-zA-Z0-9-]*',
+                        'order_by' => '[a-z][a-z0-9-]*',
                         'order_type' => 'asc|desc',
-                        'slug'     => '[0-9a-zA-Z-_]+',
-                        'extra'    => '[0-9a-zA-Z-_]+',
+                        'slug'     => '[0-9a-z-_]+',
+                        'extra'    => '[0-9a-z-_]+',
                         'trailing_slash' => '/'
                     ),
                     'defaults' => array(

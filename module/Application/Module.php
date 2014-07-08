@@ -662,7 +662,8 @@ class Module
                 'checkPermission' => 'Application\View\Helper\CheckPermission',
                 'routePermission' => 'Application\View\Helper\RoutePermission',
                 'localization' => 'Application\View\Helper\Localization',
-                'fileSize' => 'Application\View\Helper\FileSize'
+                'fileSize' => 'Application\View\Helper\FileSize',
+                'languageSwitcher' => 'Application\View\Helper\LanguageSwitcher'
             ),
             'factories' => array(
                 'asset' =>  function()

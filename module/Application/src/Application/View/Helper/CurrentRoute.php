@@ -27,7 +27,8 @@ class CurrentRoute extends AbstractHelper
     protected $defaultRouteParams = array(
         'controller',
         'action',
-        'languge'
+        'languge',
+        'trailing_slash'
     );
 
     /**
@@ -58,7 +59,7 @@ class CurrentRoute extends AbstractHelper
      */
     public function getController()
     {
-        return strtolower($this->routeMatch->getParam('controller'));
+        return $this->routeMatch->getParam('controller');
     }
 
     /**
@@ -68,7 +69,7 @@ class CurrentRoute extends AbstractHelper
      */
     public function getAction()
     {
-        return strtolower($this->routeMatch->getParam('action'));
+        return $this->routeMatch->getParam('action');
     }
 
     /**
