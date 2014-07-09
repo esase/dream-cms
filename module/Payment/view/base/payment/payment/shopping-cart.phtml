@@ -180,7 +180,7 @@
                         }
 
                         // check a discount params
-                        if ($data['discount'] || $paymentHandler->getDiscount($data['object_id'])) {
+                        if ((float) $data['discount'] || $paymentHandler->getDiscount($data['object_id'])) {
                             return true;
                         }
 

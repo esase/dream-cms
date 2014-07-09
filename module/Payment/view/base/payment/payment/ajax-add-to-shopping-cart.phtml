@@ -1,33 +1,23 @@
-<div class="modal fade" id="popup-shopping-cart-window">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title"><?php echo $this->translate('Add the item to the shopping cart') ?></h4>
-            </div>
-            <div class="modal-body">
-                <?php if ($this->shoppingCartForm) : ?>
-                    <!-- render a form -->
-                    <?php echo $this->partial('partial/form', array(
-                        'form' => $this->shoppingCartForm,
-                        'controller' => $this->currentRoute()->getController(),
-                        'action' => $this->currentRoute()->getAction()
-                    )); ?>
-                <?php endif; ?>
+<?php $this->placeholder('content')->captureStart() ?>
+    <?php if ($this->shoppingCartForm) : ?>
+        <!-- render a form -->
+        <?php echo $this->partial('partial/form', array(
+            'form' => $this->shoppingCartForm,
+            'controller' => $this->currentRoute()->getController(),
+            'action' => $this->currentRoute()->getAction()
+        )); ?>
+    <?php endif; ?>
 
-                <?php if ($this->message) : ?>
-                    <p><?php echo $this->message ?></p>
-                <?php endif; ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $this->translate('Close') ?></button>
+    <?php if ($this->message) : ?>
+        <p><?php echo $this->message ?></p>
+    <?php endif; ?>
+<?php $this->placeholder('content')->captureEnd() ?>
 
-                <?php if ($this->shoppingCartForm) : ?>
-                    <button type="button" onclick="payment.sendShoppingCartForm()" class="btn btn-primary"><?php echo $this->translate('Add') ?></button>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
+<?php $this->placeholder('contentFooter')->captureStart() ?>
+    <?php if ($this->shoppingCartForm) : ?>
+        <button type="button" onclick="payment.sendShoppingCartForm()" class="btn btn-primary"><?php echo $this->translate('Add') ?></button>
+    <?php endif; ?>
+
     <script type="text/javascript">
         $("#popup-shopping-cart-window").find("form:first").bind('submit', function() {
             payment.sendShoppingCartForm();
@@ -38,4 +28,13 @@
             payment.updateShoppingCart();
         <?php endif; ?>
     </script>
-</div>
+<?php $this->placeholder('contentFooter')->captureEnd() ?>
+
+<?php 
+    echo $this->partial('partial/popup', array(
+        'popup_id' => 'popup-shopping-cart-window',
+        'title' => 'Add the item to the shopping cart',
+        'body' => $this->placeholder('content'),
+        'footer' => $this->placeholder('contentFooter')
+    )) 
+?>

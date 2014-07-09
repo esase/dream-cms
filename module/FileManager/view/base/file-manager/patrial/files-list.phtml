@@ -132,21 +132,16 @@
     )) ?>    
 <?php endif; ?>
 
-<!-- preview images -->
-<div class="modal fade" id="preview-images" tabindex="-1" role="dialog" aria-labelledby="preview-images-label" aria-hidden="false">
-  <div class="modal-dialog" style="width:<?php echo (int) $this->getSetting('file_manager_window_image_width') ?>px;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="preview-images-label"><?php echo $this->translate('View image')?></h4>
-      </div>
-      <div class="modal-body" style="height: <?php echo (int) $this->getSetting('file_manager_window_image_height') ?>px"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $this->translate('Close')?></button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- preview images popup -->
+<?php 
+    echo $this->partial('partial/popup', array(
+        'popup_id' => 'preview-images',
+        'title' => 'View image',
+        'width' => $this->getSetting('file_manager_window_image_width'),
+        'height' => $this->getSetting('file_manager_window_image_height'),
+        'body' => '<div id="preview-image"></div>'
+    )) 
+?>
 
 <?php $this->inlineScript()->captureStart() ?>
     /**
@@ -160,7 +155,7 @@
         var baseUrl = "<?php echo $this->escapeJs($this->baseFileUrl($this->path)) ?>";
         var $modalWindow = $("#preview-images");
 
-        $modalWindow.find(".modal-body").css("background-image", "url(" + baseUrl + fileName + ")");
+        $modalWindow.find("#preview-image").css("background-image", "url(" + baseUrl + fileName + ")");
         $modalWindow.modal("show");
     }
 <?php $this->inlineScript()->captureEnd() ?>

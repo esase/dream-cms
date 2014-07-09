@@ -32,8 +32,8 @@ return array(
                         'per_page' => '[0-9]+',
                         'order_by' => '[a-z][a-z0-9-]*',
                         'order_type' => 'asc|desc',
-                        'slug'     => '[0-9a-z-_]+',
-                        'extra'    => '[0-9a-z-_]+',
+                        'slug'     => '[0-9a-zA-Z-_]+',
+                        'extra'    => '[0-9a-zA-Z-_]+',
                         'trailing_slash' => '/'
                     ),
                     'defaults' => array(

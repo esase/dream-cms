@@ -69,6 +69,47 @@ class Base extends AbstractBase
     }
 
     /**
+     * Add a new membership connection
+     *
+     * @param integer $userId
+     * @param integer $membershipId
+     * @param integer $expire
+     * @param integer $notify
+     * @return integer|string
+     */
+    public function addMembershipConnection($userId, $membershipId, $expire, $notify)
+    {
+        $insertId = 0;
+
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $insert = $this->insert()
+                ->into('membership_level_connection')
+                ->values(array(
+                    'user_id' => $userId,
+                    'membership_id' => $membershipId,
+                    'expire_value' => $expire,
+                    'notify_value' => $notify
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $insertId = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $insertId;
+    }
+
+    /**
      * Activate the membership connection
      *
      * @param integer $connectionId
@@ -181,7 +222,7 @@ class Base extends AbstractBase
      * @param integer $userId
      * @return object
      */
-    public function  getAllUserMembershipConnections($userId)
+    public function getAllUserMembershipConnections($userId)
     {
         $select = $this->select();
         $select->from('membership_level_connection')
@@ -314,9 +355,10 @@ class Base extends AbstractBase
      * Get the role info
      *
      * @param integer $id
+     * @param boolean $onlyActive
      * @return array
      */
-    public function getRoleInfo($id)
+    public function getRoleInfo($id, $onlyActive = false)
     {
         $select = $this->select();
         $select->from(array('a' => 'membership_level'))
@@ -342,7 +384,14 @@ class Base extends AbstractBase
             )
             ->where(array(
                 'a.id' => $id
+            ))
+            ->group('a.id');
+
+        if ($onlyActive) {
+            $select->where(array(
+                'a.active' => self::MEMBERSHIP_LEVEL_STATUS_ACTIVE
             ));
+        }
 
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();

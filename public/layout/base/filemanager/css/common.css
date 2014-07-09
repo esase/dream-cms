@@ -11,7 +11,10 @@ div#files-manager-wrapper div#action-wrapper {
 }
 
 /* preview images */
-div#preview-images div.modal-body {
+div#preview-images div#preview-image {
     background-position: center center;
     background-repeat:no-repeat;
+    display:block;
+    width:100%;
+    height:100%;
 }

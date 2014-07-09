@@ -5,6 +5,7 @@ use Application\Form\CustomFormBuilder;
 use Application\Form\AbstractCustomForm;
 use Application\Service\Service as ApplicationService;
 use Membership\Model\MembershipAdministration as MembershipAdministrationModel;
+use Application\Model\Acl as AclModel;
 
 class AclRole extends AbstractCustomForm 
 {
@@ -152,8 +153,20 @@ class AclRole extends AbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // get list of acl roles
-            $this->formElements['role_id']['values'] = ApplicationService::getAclRoles();
+            // get list of all ACL roles
+            $aclRoles = array();
+            foreach (ApplicationService::getAclRoles() as $roleId => $roleName) {
+                // skip all system ACL roles
+                if (in_array($roleId, array(AclModel::DEFAULT_ROLE_ADMIN, 
+                        AclModel::DEFAULT_ROLE_GUEST, AclModel::DEFAULT_ROLE_MEMBER))) {
+
+                    continue;
+                }
+
+                $aclRoles[$roleId] = $roleName;
+            }
+
+            $this->formElements['role_id']['values'] = $aclRoles;
 
             // init localizations
             $localizations = ApplicationService::getLocalizations();

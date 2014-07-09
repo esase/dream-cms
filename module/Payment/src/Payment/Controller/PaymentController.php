@@ -61,8 +61,8 @@ class PaymentController extends AbstractBaseController
 
         if (is_numeric($result)) {
             // clear the item's discount
-            if ($itemInfo['discount']) {
-                $paymentHandler->clearDiscount($itemInfo['object_id'], $itemInfo['discount']);
+            if ((float) $itemInfo['discount']) {
+                $paymentHandler->clearDiscount($itemInfo['object_id'], (float)$itemInfo['discount']);
             }
 
             // fire the add item to shopping cart event
@@ -121,7 +121,7 @@ class PaymentController extends AbstractBaseController
         if ($itemInfo['countable'] == PaymentModel::MODULE_COUNTABLE
                 || $itemInfo['multi_costs'] == PaymentModel::MODULE_MULTI_COSTS
                 || ($itemInfo['module_extra_options'] == PaymentModel::MODULE_EXTRA_OPTIONS && !empty($extraItemInfo['extra_options']))
-                || $itemInfo['discount']
+                || (float) $itemInfo['discount']
                 || $paymentHandler->getDiscount($itemInfo['object_id'])) {
 
             $refreshPage = false;
@@ -131,7 +131,7 @@ class PaymentController extends AbstractBaseController
                 ->get('Application\Form\FormManager')
                 ->getInstance('Payment\Form\ShoppingCart')
                 ->hideCountField($itemInfo['countable'] != PaymentModel::MODULE_COUNTABLE)
-                ->setDiscount(($itemInfo['discount'] ? $itemInfo['discount'] : $extraItemInfo['discount']))
+                ->setDiscount(((float) $itemInfo['discount'] ? (float) $itemInfo['discount'] : (float) $extraItemInfo['discount']))
                 ->setCountLimit((PaymentModel::MODULE_COUNTABLE == $itemInfo['countable'] ? $extraItemInfo['count'] : 0));
 
             if (PaymentModel::MODULE_MULTI_COSTS == $itemInfo['multi_costs']) {
@@ -140,7 +140,7 @@ class PaymentController extends AbstractBaseController
 
             // fill the form with default values
             $defaultFormValues = array_merge($itemInfo, array(
-                'discount' => $itemInfo['discount'] ? 1 : 0
+                'discount' => (float) $itemInfo['discount'] ? 1 : 0
             ));
 
             // add extra options in the form
@@ -173,7 +173,7 @@ class PaymentController extends AbstractBaseController
                         'cost' => !empty($formData['cost']) ? $formData['cost'] : $itemInfo['cost'],
                         'count' => PaymentModel::MODULE_COUNTABLE == $itemInfo['countable'] ? $formData['count'] : 1,
                         'discount'  => !empty($formData['discount'])
-                            ? ($itemInfo['discount'] ? $itemInfo['discount'] : $extraItemInfo['discount'])
+                            ? ((float) $itemInfo['discount'] ? (float) $itemInfo['discount'] : (float) $extraItemInfo['discount'])
                             : 0,
                         'extra_options' => $extraOptions ? serialize($extraOptions) : '',
                     );
@@ -183,12 +183,12 @@ class PaymentController extends AbstractBaseController
                         $refreshPage = true;
 
                         // return a discount back
-                        if ($itemInfo['discount'] && empty($formData['discount'])) {
+                        if ((float) $itemInfo['discount'] && empty($formData['discount'])) {
                             // get the payment handler
                             $this->getServiceLocator()
                                 ->get('Payment\Handler\HandlerManager')
                                 ->getInstance($itemInfo['handler'])
-                                ->returnBackDiscount($itemInfo['object_id'], $itemInfo['discount']);
+                                ->returnBackDiscount($itemInfo['object_id'], (float) $itemInfo['discount']);
                         }
 
                         // fire the edit item into shopping cart event
@@ -245,12 +245,12 @@ class PaymentController extends AbstractBaseController
                     }
 
                     // return a discount back
-                    if ($itemInfo['discount']) {
+                    if ((float) $itemInfo['discount']) {
                         // get the payment handler
                         $this->getServiceLocator()
                             ->get('Payment\Handler\HandlerManager')
                             ->getInstance($itemInfo['handler'])
-                            ->returnBackDiscount($itemId, $itemInfo['discount']);
+                            ->returnBackDiscount($itemId, (float) $itemInfo['discount']);
                     }
 
                     // fire the delete item from shopping cart event
@@ -351,7 +351,7 @@ class PaymentController extends AbstractBaseController
                     }
                     else {
                         // show an additional shopping cart form
-                        if ($objectInfo['discount']
+                        if ((float) $objectInfo['discount']
                                 ||  PaymentModel::MODULE_MULTI_COSTS == $moduleInfo['multi_costs']
                                 || (PaymentModel::MODULE_EXTRA_OPTIONS == $moduleInfo['extra_options'] && !empty($objectInfo['extra_options']))
                                 || (PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] && ($count <= 0 || $count > $objectInfo['count']))) {
@@ -361,7 +361,7 @@ class PaymentController extends AbstractBaseController
                                 ->get('Application\Form\FormManager')
                                 ->getInstance('Payment\Form\ShoppingCart')
                                 ->hideCountField($moduleInfo['countable'] != PaymentModel::MODULE_COUNTABLE)
-                                ->setDiscount($objectInfo['discount'])
+                                ->setDiscount((float) $objectInfo['discount'])
                                 ->setCountLimit((PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] ? $objectInfo['count'] : 0));
 
                             if (PaymentModel::MODULE_EXTRA_OPTIONS ==
@@ -391,7 +391,7 @@ class PaymentController extends AbstractBaseController
                                         'title'         => $objectInfo['title'],
                                         'slug'          => $objectInfo['slug'],
                                         'cost'          => !empty($formData['cost']) ? $formData['cost'] : $objectInfo['cost'],
-                                        'discount'      => !empty($formData['discount']) ? $objectInfo['discount'] : 0,
+                                        'discount'      => !empty($formData['discount']) ? (float) $objectInfo['discount'] : 0,
                                         'count'         => PaymentModel::MODULE_COUNTABLE == $moduleInfo['countable'] ? $count : 1,
                                         'extra_options' => $extraOptions ? serialize($extraOptions) : '',
                                     );
@@ -476,12 +476,12 @@ class PaymentController extends AbstractBaseController
                 }
 
                 // return a discount back
-                if ($returnDiscount && $itemInfo['discount']) {
+                if ($returnDiscount && (float) $itemInfo['discount']) {
                     // get the payment handler
                     $this->getServiceLocator()
                         ->get('Payment\Handler\HandlerManager')
                         ->getInstance($itemInfo['handler'])
-                        ->returnBackDiscount($itemInfo['id'], $itemInfo['discount']);
+                        ->returnBackDiscount($itemInfo['id'], (float) $itemInfo['discount']);
                 }
         
                 // fire the delete item from shopping cart event

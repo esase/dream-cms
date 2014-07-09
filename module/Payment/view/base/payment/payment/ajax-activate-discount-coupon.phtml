@@ -1,24 +1,13 @@
-<div class="modal fade" id="popup-shopping-cart-window">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title"><?php echo $this->translate('Enter a discount code') ?></h4>
-            </div>
-            <div class="modal-body">
-                <!-- render a form -->
-                <?php echo $this->partial('partial/form', array(
-                    'form' => $this->discountForm,
-                    'controller' => $this->currentRoute()->getController(),
-                    'action' => $this->currentRoute()->getAction()
-                )); ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $this->translate('Close') ?></button>
-                <button type="button" id="popup-shopping-cart-submit" onclick="payment.sendDiscountCouponForm()" class="btn btn-primary"><?php echo $this->translate('Submit') ?></button>
-            </div>
-        </div>
-    </div>
+<?php $this->declareVars('content') ?>
+
+<?php $this->content = $this->partial('partial/form', array(
+    'form' => $this->discountForm,
+    'controller' => $this->currentRoute()->getController(),
+    'action' => $this->currentRoute()->getAction()
+)); ?>
+
+<?php $this->placeholder('contentFooter')->captureStart() ?>
+    <button type="button" id="popup-shopping-cart-submit" onclick="payment.sendDiscountCouponForm()" class="btn btn-primary"><?php echo $this->translate('Submit') ?></button>
     <script type="text/javascript">
         $("#popup-shopping-cart-window").find("form:first").bind('submit', function() {
             payment.sendDiscountCouponForm();
@@ -30,4 +19,13 @@
             payment.refreshPage();
         <?php endif; ?>
     </script>
-</div>
+<?php $this->placeholder('contentFooter')->captureEnd() ?>
+
+<?php 
+    echo $this->partial('partial/popup', array(
+        'popup_id' => 'popup-shopping-cart-window',
+        'title' => 'Enter a discount code',
+        'body' => $this->content,
+        'footer' => $this->placeholder('contentFooter')
+    )) 
+?>
