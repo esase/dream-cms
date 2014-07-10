@@ -302,7 +302,7 @@ class Payment extends Base
 
         if ($checkModuleState) {
             $select->join(
-                array('c' => 'module'),
+                array('c' => 'application_module'),
                 new Expression('b.module = c.id and c.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array()
             );
@@ -407,7 +407,7 @@ class Payment extends Base
     public function getModuleInfo($moduleName)
     {
         $select = $this->select();
-        $select->from(array('a' => 'module'))
+        $select->from(array('a' => 'application_module'))
             ->columns(array(
                 'id',
                 'name'
@@ -492,7 +492,7 @@ class Payment extends Base
                 )
             )
             ->join(
-                array('c' => 'module'),
+                array('c' => 'application_module'),
                 'b.module = c.id',
                 array(
                     'module_state' => 'status'
@@ -563,7 +563,7 @@ class Payment extends Base
             ->join(
                 array('c' => 'payment_transaction_item'),
                 new Expression('a.id = c.transaction_id and c.active = ? and c.available = ? and c.deleted = ?
-                        and c.module = (select id from  module as d where d.id = c.module and d.status = ?)', array(
+                        and c.module = (select id from  application_module as d where d.id = c.module and d.status = ?)', array(
                             self::ITEM_ACTIVE,
                             self::ITEM_AVAILABLE,
                             self::ITEM_NOT_DELETED,
@@ -580,7 +580,7 @@ class Payment extends Base
             ))
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType);
-
+            
         // filter by a slug
         if (!empty($filters['slug'])) {
             $select->where(array(

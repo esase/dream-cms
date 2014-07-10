@@ -59,7 +59,7 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
 
         // create a test user
         $query = $this->userModel->insert()
-            ->into('user')
+            ->into('user_list')
             ->values($data);
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -77,7 +77,7 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
 
         // delete the created user
         $query = $this->userModel->delete()
-            ->from('user')
+            ->from('user_list')
             ->where(array('user_id' => $testUserId));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);

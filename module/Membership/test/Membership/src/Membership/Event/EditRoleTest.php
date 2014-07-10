@@ -21,7 +21,7 @@ class EditRoleTest extends BaseTest
     {
         // create a test ACL role
         $query = $this->userModel->insert()
-            ->into('acl_role')
+            ->into('application_acl_role')
             ->values(array(
                 'name' => 'test role 1'
             ));
@@ -50,7 +50,7 @@ class EditRoleTest extends BaseTest
         );
 
         $query = $this->userModel->insert()
-            ->into('user')
+            ->into('user_list')
             ->values($userData);
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);

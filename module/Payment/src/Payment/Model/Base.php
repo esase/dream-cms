@@ -200,7 +200,7 @@ class Base extends AbstractBase
                 )
             )
             ->join(
-                array('c' => 'module'),
+                array('c' => 'application_module'),
                 new Expression('b.module = c.id and c.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array()
             )
@@ -572,7 +572,7 @@ class Base extends AbstractBase
                 )
             )
             ->join(
-                array('c' => 'module'),
+                array('c' => 'application_module'),
                 new Expression('b.module = c.id and c.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array()
             )
@@ -1190,7 +1190,7 @@ class Base extends AbstractBase
                 )
             )
             ->join(
-                array('c' => 'module'),
+                array('c' => 'application_module'),
                 'b.module = c.id',
                 array(
                     'module_state' => 'status'

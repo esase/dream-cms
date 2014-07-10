@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\View\Helper;
+namespace User\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
 use User\Service\Service as UserService;

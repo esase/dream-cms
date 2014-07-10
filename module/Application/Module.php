@@ -633,7 +633,7 @@ class Module
                 },
                 'Application\AuthService' => function($serviceManager)
                 {
-                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'), 'user', 'nick_name',
+                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'), 'user_list', 'nick_name',
                             'password', 'SHA1(CONCAT(MD5(?), salt)) AND status = "' . UserBaseModel::STATUS_APPROVED . '"');
 
                     $authService = new AuthenticationService();
@@ -681,14 +681,6 @@ class Module
                         ->getInstance('Application\Model\AdminMenu');
 
                     return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
-                },
-                'userMenu' =>  function()
-                {
-                    $userMenu = $this->serviceManager
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Application\Model\UserMenu');
-
-                    return new \Application\View\Helper\UserMenu($userMenu->getMenu());
                 },
                 'injection' =>  function()
                 {

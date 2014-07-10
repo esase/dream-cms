@@ -51,7 +51,7 @@ class SlugTest extends PHPUnit_Framework_TestCase
         // delete a test user
         if ($this->userIds) {
             $query = $this->model->delete()
-                ->from('user')
+                ->from('user_list')
                 ->where(array(
                     new InPredicate('user_id', $this->userIds)
                 ));
@@ -81,7 +81,7 @@ class SlugTest extends PHPUnit_Framework_TestCase
         );
 
         $query = $this->model->insert()
-            ->into('user')
+            ->into('user_list')
             ->values($firstUserData);
 
         $statement = $this->model->prepareStatementForSqlObject($query);
@@ -102,7 +102,7 @@ class SlugTest extends PHPUnit_Framework_TestCase
         );
 
         $query = $this->model->insert()
-            ->into('user')
+            ->into('user_list')
             ->values($secondUserData);
 
         $statement = $this->model->prepareStatementForSqlObject($query);
@@ -112,7 +112,7 @@ class SlugTest extends PHPUnit_Framework_TestCase
         // generate slug for the third user
         $thirdUserId = 1002;
         $thirdUserSlug = 'terminator';
-        $thirdUserSlug = $this->model->generateSlug($thirdUserId, $thirdUserSlug, 'user', 'user_id');
+        $thirdUserSlug = $this->model->generateSlug($thirdUserId, $thirdUserSlug, 'user_list', 'user_id');
 
         $this->assertNotEquals($thirdUserSlug, $secondUserSlug);
     }
@@ -134,7 +134,7 @@ class SlugTest extends PHPUnit_Framework_TestCase
         );
 
         $query = $this->model->insert()
-            ->into('user')
+            ->into('user_list')
             ->values($firstUserData);
 
         $statement = $this->model->prepareStatementForSqlObject($query);
@@ -146,6 +146,6 @@ class SlugTest extends PHPUnit_Framework_TestCase
         $secondUserId   = $userId + 1;
 
         $this->assertEquals($this->model->generateSlug($secondUserId,
-                $secondUserSlug, 'user', 'user_id'), $secondUserId . '-' . $firstUserSlug);
+                $secondUserSlug, 'user_list', 'user_id'), $secondUserId . '-' . $firstUserSlug);
     }
 }

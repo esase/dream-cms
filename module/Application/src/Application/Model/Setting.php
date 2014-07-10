@@ -79,7 +79,7 @@ class Setting extends Base
         // check data in cache
         if (null === ($settings = $this->staticCacheInstance->getItem($cacheName))) {
             $subQuery= $this->select();
-            $subQuery->from(array('c' => 'setting_value'))
+            $subQuery->from(array('c' => 'application_setting_value'))
                 ->columns(array(
                     'id'
                 ))
@@ -92,13 +92,13 @@ class Setting extends Base
                     ->and->isNull('c.language');
     
             $mainSelect = $this->select();
-            $mainSelect->from(array('a' => 'setting'))
+            $mainSelect->from(array('a' => 'application_setting'))
                 ->columns(array(
                     'name',
                     'type'
                 ))
                 ->join(
-                    array('b' => 'setting_value'),
+                    array('b' => 'application_setting_value'),
                     new Expression('b.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
                     array(
                         'value'

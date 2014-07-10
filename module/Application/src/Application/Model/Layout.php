@@ -51,7 +51,7 @@ class Layout extends Base
         // check data in cache
         if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('layout')
+            $select->from('application_layout')
                 ->columns(array(
                     'name',
                 ))
@@ -88,7 +88,7 @@ class Layout extends Base
         // check data in cache
         if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('layout')
+            $select->from('application_layout')
                 ->columns(array(
                     'name'
                 ))

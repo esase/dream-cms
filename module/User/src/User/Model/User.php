@@ -22,7 +22,7 @@ class User extends Base
             $passwordSalt = $this->generateRandString();
  
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'salt' => $passwordSalt,
                     'password' => $this->generatePassword($newPassword, $passwordSalt),
@@ -65,7 +65,7 @@ class User extends Base
             $activationCode = $this->generateRandString();
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'activation_code' => $activationCode
                 ))
@@ -103,7 +103,7 @@ class User extends Base
     public function checkActivationCode($userId, $activationCode)
     {
         $select = $this->select();
-        $select->from('user')
+        $select->from('user_list')
             ->columns(array(
                 'user_id'
             ))

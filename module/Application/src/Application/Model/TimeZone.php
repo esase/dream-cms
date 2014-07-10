@@ -25,7 +25,7 @@ class TimeZone extends Base
         // check data in cache
         if (null === ($timeZones = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('time_zone')
+            $select->from('application_time_zone')
                 ->columns(array(
                     'id',
                     'name',

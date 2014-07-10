@@ -189,7 +189,9 @@ class Base extends AbstractBase
 
             // generate a new slug
             $extraValues = array(
-                'slug' => $this->generateSlug($userInfo['user_id'], $formData['nick_name'], 'user', 'user_id', self::USER_SLUG_LENGTH),
+                'slug' => $this->generateSlug($userInfo['user_id'], 
+                        $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH),
+
                 'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED
             );
 
@@ -213,7 +215,7 @@ class Base extends AbstractBase
             }
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array_merge($formData, $extraValues))
                 ->where(array(
                     'user_id' => $userInfo['user_id']
@@ -283,7 +285,7 @@ class Base extends AbstractBase
                     (int) ApplicationService::getSetting('user_avatar_height'));
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'avatar' => $avatarName
                 ))
@@ -299,7 +301,7 @@ class Base extends AbstractBase
             }
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'avatar' => ''
                 ))
@@ -346,7 +348,7 @@ class Base extends AbstractBase
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $delete = $this->delete()
-                ->from('user')
+                ->from('user_list')
                 ->where(array(
                     'user_id' => $userInfo['user_id']
                 ))
@@ -406,7 +408,7 @@ class Base extends AbstractBase
             }
 
             $insert = $this->insert()
-                ->into('user')
+                ->into('user_list')
                 ->values(array_merge($formData, array(
                     'role' => AclModelBase::DEFAULT_ROLE_MEMBER,
                     'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED,
@@ -426,10 +428,10 @@ class Base extends AbstractBase
 
             // update an api key and generate user's slug
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'api_key' => $insertId . '_' . $this->generateRandString(),
-                    'slug' => $this->generateSlug($insertId, $formData['nick_name'], 'user', 'user_id', self::USER_SLUG_LENGTH)
+                    'slug' => $this->generateSlug($insertId, $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH)
                 ))
                 ->where(array(
                     'user_id' => $insertId
@@ -475,7 +477,7 @@ class Base extends AbstractBase
     public function isEmailFree($email, $userId = 0)
     {
         $select = $this->select();
-        $select->from('user')
+        $select->from('user_list')
             ->columns(array(
                 'user_id'
             ))
@@ -502,7 +504,7 @@ class Base extends AbstractBase
     public function getUsersWithEmptyRole()
     {
         $select = $this->select();
-        $select->from('user')
+        $select->from('user_list')
             ->columns(array(
                 'user_id',
                 'nick_name',
@@ -531,7 +533,7 @@ class Base extends AbstractBase
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'role' => $roleId
                 ))
@@ -570,7 +572,7 @@ class Base extends AbstractBase
     public function isNickNameFree($nickName, $userId = 0)
     {
         $select = $this->select();
-        $select->from('user')
+        $select->from('user_list')
             ->columns(array(
                 'user_id'
             ))
@@ -602,7 +604,7 @@ class Base extends AbstractBase
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'language' => $language
                 ))
@@ -648,7 +650,7 @@ class Base extends AbstractBase
         // check data in cache
         if (null === ($userInfo = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from(array('a' =>'user'))
+            $select->from(array('a' =>'user_list'))
                 ->columns(array(
                     'user_id',
                     'nick_name',
@@ -670,7 +672,7 @@ class Base extends AbstractBase
                     'avatar'
                 ))
                 ->join(
-                    array('b' => 'acl_role'),
+                    array('b' => 'application_acl_role'),
                     'a.role = b.id',
                     array(
                         'role_name' => 'name'
@@ -678,7 +680,7 @@ class Base extends AbstractBase
                     'left'
                 )
                 ->join(
-                    array('c' => 'time_zone'),
+                    array('c' => 'application_time_zone'),
                     'a.time_zone = c.id',
                     array(
                         'time_zone_name' => 'name'

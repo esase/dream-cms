@@ -154,7 +154,7 @@ class Base extends AbstractBase
     public function getUsersMembershipLevels()
     {
         $select = $this->select();
-        $select->from(array('a' => 'user'))
+        $select->from(array('a' => 'user_list'))
             ->columns(array(
                 'user_id',
                 'language',
@@ -454,7 +454,7 @@ class Base extends AbstractBase
                 'left'
             )
             ->join(
-                array('c' => 'acl_role'),
+                array('c' => 'application_acl_role'),
                 'a.role_id = c.id',
                 array(
                     'role' => 'name'

@@ -25,7 +25,7 @@ class Injection extends Base
         // check data in cache
         if (null === ($injections = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('injection')
+            $select->from('application_injection')
                 ->columns(array(
                     'id',
                     'position',

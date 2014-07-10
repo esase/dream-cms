@@ -68,7 +68,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // delete test user
         if ($this->userId) {
             $query = $this->aclModel->delete()
-                ->from('user')
+                ->from('user_list')
                 ->where(array('user_id' => $this->userId));
 
             $statement = $this->aclModel->prepareStatementForSqlObject($query);
@@ -79,7 +79,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // delete acl test resources 
         if ($this->aclResourcesIds) {
             $query = $this->aclModel->delete()
-                ->from('acl_resource')
+                ->from('application_acl_resource')
                 ->where(array('id' => $this->aclResourcesIds));
 
             $statement = $this->aclModel->prepareStatementForSqlObject($query);
@@ -106,7 +106,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // add member
         $query = $this->aclModel->insert()
-            ->into('user')
+            ->into('user_list')
             ->values($userData);
 
         $statement = $this->aclModel->prepareStatementForSqlObject($query);
@@ -117,7 +117,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         foreach ($resources as $resource) {
             // add new test resource
             $query = $this->aclModel->insert()
-                ->into('acl_resource')
+                ->into('application_acl_resource')
                 ->values(array(
                     'resource' => $resource,
                     'module' => 1
@@ -130,7 +130,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
             if ($createConnections) {
                 $query = $this->aclModel->insert()
-                    ->into('acl_resource_connection')
+                    ->into('application_acl_resource_connection')
                     ->values(array(
                         'role' => $userRole,
                         'resource' => $resourceId
@@ -238,7 +238,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         foreach ($this->aclResourcesConnections as $connectId) {
             // add global settings
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => new Expression('null')
@@ -274,7 +274,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         foreach ($this->aclResourcesConnections as $connectId) {
             // add global settings
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => new Expression('null')
@@ -285,7 +285,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
             // add local settings
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,
@@ -323,7 +323,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         foreach ($this->aclResourcesConnections as $connectId) {
             // add global settings
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'actions_limit' => $globalActionsLimit
@@ -334,7 +334,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
             // add local settings
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'actions_limit' => $localActionsLimit,
@@ -374,7 +374,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,
@@ -429,7 +429,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,
@@ -475,7 +475,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
             $query = $this->aclModel->insert()
-                ->into('acl_resource_connection_setting')
+                ->into('application_acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,

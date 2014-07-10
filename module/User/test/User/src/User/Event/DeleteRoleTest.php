@@ -57,7 +57,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         if ($this->aclRolesIds) {
             foreach ($this->aclRolesIds as $roleId) {
                 $query = $this->model->delete()
-                    ->from('acl_role')
+                    ->from('application_acl_role')
                     ->where(array('id' => $roleId));
 
                 $statement = $this->model->prepareStatementForSqlObject($query);
@@ -71,7 +71,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         if ($this->usersIds) {
             foreach ($this->usersIds as $userId) {
                 $query = $this->model->delete()
-                    ->from('user')
+                    ->from('user_list')
                     ->where(array('user_id' => $userId));
 
                 $statement = $this->model->prepareStatementForSqlObject($query);
@@ -89,7 +89,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
     {
         // create a first test ACL role
         $query = $this->model->insert()
-            ->into('acl_role')
+            ->into('application_acl_role')
             ->values(array(
                 'name' => 'test role 1'
             ));
@@ -100,7 +100,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
 
         // create a test user
         $query = $this->model->insert()
-            ->into('user')
+            ->into('user_list')
             ->values(array(
                 'nick_name' => Rand::getString(32),
                 'email' => Rand::getString(32),
@@ -113,7 +113,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
 
         // delete the created ACL role
         $query = $this->model->delete()
-            ->from('acl_role')
+            ->from('application_acl_role')
             ->where(array('id' => $this->aclRolesIds[0]));
 
         $statement = $this->model->prepareStatementForSqlObject($query);
@@ -124,7 +124,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
 
         // check the created test user's role
         $select = $this->model->select();
-        $select->from('user')
+        $select->from('user_list')
             ->columns(array(
                 'role'
             ))

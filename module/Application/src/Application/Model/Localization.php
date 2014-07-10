@@ -35,7 +35,7 @@ class Localization extends Base
         // check data in cache
         if (null === ($localizations = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('localization')
+            $select->from('application_localization')
                 ->columns(array(
                     'language',
                     'locale',

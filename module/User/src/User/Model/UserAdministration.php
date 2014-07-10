@@ -42,7 +42,7 @@ class UserAdministration extends Base
             : 'id';
 
         $select = $this->select();
-        $select->from(array('a' => 'user'))
+        $select->from(array('a' => 'user_list'))
             ->columns(array(
                 'id' => 'user_id',
                 'nickname' => 'nick_name',
@@ -52,7 +52,7 @@ class UserAdministration extends Base
                 'role_id' => 'role'
             ))
             ->join(
-                array('b' => 'acl_role'),
+                array('b' => 'application_acl_role'),
                 'a.role = b.id',
                 array(
                     'role' => 'name'

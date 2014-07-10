@@ -59,7 +59,7 @@ abstract class BaseTest extends PHPUnit_Framework_TestCase
         if ($this->usersIds) {
             foreach ($this->usersIds as $userId) {
                 $query = $this->userModel->delete()
-                    ->from('user')
+                    ->from('user_list')
                     ->where(array('user_id' => $userId));
 
                 $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -73,7 +73,7 @@ abstract class BaseTest extends PHPUnit_Framework_TestCase
         if ($this->aclRolesIds) {
             foreach ($this->aclRolesIds as $roleId) {
                 $query = $this->userModel->delete()
-                    ->from('acl_role')
+                    ->from('application_acl_role')
                     ->where(array('id' => $roleId));
 
                 $statement = $this->userModel->prepareStatementForSqlObject($query);

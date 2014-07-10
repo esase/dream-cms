@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Model;
+namespace User\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\Cache as CacheUtility;
@@ -11,7 +11,7 @@ class UserMenu extends Base
     /**
      * User menu
      */
-    const CACHE_USER_MENU = 'Application_User_Menu';
+    const CACHE_USER_MENU = 'User_User_Menu';
 
     /**
      * Get menu
@@ -35,7 +35,7 @@ class UserMenu extends Base
                     
                 ))
             ->join(
-                array('b' => 'module'),
+                array('b' => 'application_module'),
                 new Expression('a.module = b.id and b.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'module' => 'id'

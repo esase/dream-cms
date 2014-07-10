@@ -40,7 +40,7 @@ class XmlRpc extends Base
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'time_zone' => $timeZoneId
                 ))

@@ -9,10 +9,19 @@ use Zend\ModuleManager\ModuleManagerInterface;
 class Module
 {
     /**
+     * Service managerzend
+     * @var object
+     */
+    protected $serviceManager;
+
+    /**
      * Init
      */
     public function init(ModuleManagerInterface $moduleManager)
     {
+        // get service manager
+        $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
+
         $eventManager = UserEvent::getEventManager();
         $eventManager->attach(ApplicationEvent::DELETE_ACL_ROLE, function ($e) use ($moduleManager) {
             $users = $moduleManager->getEvent()->getParam('ServiceManager')
@@ -73,6 +82,16 @@ class Module
             'invokables' => array(
                 'userAvatarUrl' => 'User\View\Helper\UserAvatarUrl'
             ),
+            'factories' => array (
+                'userMenu' =>  function()
+                {
+                    $userMenu = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('User\Model\UserMenu');
+
+                    return new \User\View\Helper\UserMenu($userMenu->getMenu());
+                }
+            )
         );
     }
 

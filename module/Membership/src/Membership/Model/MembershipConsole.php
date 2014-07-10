@@ -67,14 +67,14 @@ class MembershipConsole extends Base
                 )
             )
             ->join(
-                array('c' => 'acl_role'),
+                array('c' => 'application_acl_role'),
                 'b.role_id = c.id',
                 array(
                     'role_name' => 'name'
                 )
             )
             ->join(
-                array('d' => 'user'),
+                array('d' => 'user_list'),
                 'a.user_id = d.user_id',
                 array(
                     'nick_name',
@@ -115,7 +115,7 @@ class MembershipConsole extends Base
                 )
             )
             ->join(
-                array('c' => 'user'),
+                array('c' => 'user_list'),
                 'a.user_id = c.user_id',
                 array(
                     'nick_name',

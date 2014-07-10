@@ -1,10 +1,10 @@
-CREATE TABLE IF NOT EXISTS `time_zone` (
+CREATE TABLE IF NOT EXISTS `application_time_zone` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(150) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `time_zone` (`id`, `name`) VALUES
+INSERT INTO `application_time_zone` (`id`, `name`) VALUES
 (1, 'Africa/Abidjan'),
 (2, 'Africa/Accra'),
 (3, 'Africa/Addis_Ababa'),
@@ -422,7 +422,7 @@ INSERT INTO `time_zone` (`id`, `name`) VALUES
 (415, 'Pacific/Wallis'),
 (416, 'UTC');
 
-CREATE TABLE IF NOT EXISTS `module` (
+CREATE TABLE IF NOT EXISTS `application_module` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
@@ -437,7 +437,7 @@ CREATE TABLE IF NOT EXISTS `module` (
     UNIQUE `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
+INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
 (1, 'Application', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
 (2, 'User', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
 (3, 'XmlRpc', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
@@ -448,7 +448,7 @@ CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
     `path` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`namespace`, `path`, `module`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -457,7 +457,7 @@ INSERT INTO `xmlrpc_class` (`namespace`, `path`, `module`) VALUES
 ('application', 'Application\\XmlRpc\\Handler', 1),
 ('user', 'User\\XmlRpc\\Handler', 2);
 
-CREATE TABLE IF NOT EXISTS `localization` (
+CREATE TABLE IF NOT EXISTS `application_localization` (
     `language` CHAR(2) NOT NULL,
     `locale` CHAR(5) NOT NULL,
     `description` VARCHAR(50) NOT NULL,
@@ -467,11 +467,11 @@ CREATE TABLE IF NOT EXISTS `localization` (
     KEY `default` (`default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `localization` (`language`, `locale`, `description`, `default`, `direction`) VALUES
+INSERT INTO `application_localization` (`language`, `locale`, `description`, `default`, `direction`) VALUES
 ('en', 'en_US', 'English', 1, 'ltr'),
 ('ru', 'ru_RU', 'Русский', 0, 'ltr');
 
-CREATE TABLE IF NOT EXISTS `layout` (
+CREATE TABLE IF NOT EXISTS `application_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
@@ -486,34 +486,34 @@ CREATE TABLE IF NOT EXISTS `layout` (
     KEY `type` (`type`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `layout` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
+INSERT INTO `application_layout` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
 ('base', 'system', 'active', 'Base layout', 'Default base layout', '1.0.0', 'eSASe', 'alexermashev@gmail.com');
 
-CREATE TABLE IF NOT EXISTS `acl_role` (
+CREATE TABLE IF NOT EXISTS `application_acl_role` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `acl_role` (`id`, `name`, `type`) VALUES
+INSERT INTO `application_acl_role` (`id`, `name`, `type`) VALUES
 (1, 'admin', 'system'),
 (2, 'guest', 'system'),
 (3, 'member', 'system');
 
-CREATE TABLE IF NOT EXISTS `acl_resource` (
+CREATE TABLE IF NOT EXISTS `application_acl_resource` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `resource` VARCHAR(50) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE(`resource`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
+INSERT INTO `application_acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (1,  'xmlrpc_get_localizations', 'ACL - Getting site\'s localizations via XmlRpc', 1),
 (2,  'xmlrpc_view_user_info', 'ACL - Getting user\'s info via XmlRpc', 2),
 (3,  'xmlrpc_set_user_timezone', 'ACL - Editing user\'s timezone via XmlRpc', 2),
@@ -550,21 +550,21 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (37, 'files_manager_embedded_edit', 'ACL - Editing files and dirs in embedded mode', 4),
 (38, 'files_manager_administration_edit', 'ACL - Editing files and dirs in admin area', 4);
 
-CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
+CREATE TABLE IF NOT EXISTS `application_acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `role` SMALLINT(5) UNSIGNED NOT NULL,
     `resource` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`role`, `resource`),
-    FOREIGN KEY (role) REFERENCES acl_role(id)
+    FOREIGN KEY (`role`) REFERENCES `application_acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (resource) REFERENCES acl_resource(id)
+    FOREIGN KEY (`resource`) REFERENCES `application_acl_resource`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `user` (
+CREATE TABLE IF NOT EXISTS `user_list` (
     `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `nick_name` VARCHAR(50) NOT NULL DEFAULT '',
     `slug` VARCHAR(100) NOT NULL DEFAULT '',
@@ -591,21 +591,21 @@ CREATE TABLE IF NOT EXISTS `user` (
     UNIQUE KEY `api_key` (`api_key`),
     UNIQUE KEY `slug` (`slug`),
     KEY `status` (`status`),
-    FOREIGN KEY (role) REFERENCES acl_role(id)
+    FOREIGN KEY (`role`) REFERENCES `application_acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
-    FOREIGN KEY (language) REFERENCES localization(language)
+    FOREIGN KEY (`language`) REFERENCES `application_localization`(`language`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
-    FOREIGN KEY (time_zone) REFERENCES time_zone(id)
+    FOREIGN KEY (`time_zone`) REFERENCES `application_time_zone`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
-    FOREIGN KEY (layout) REFERENCES layout(id)
+    FOREIGN KEY (`layout`) REFERENCES `application_layout`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL       
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `user` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
+INSERT INTO `user_list` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
 (1, 'esase', 'esase', 'approved', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
 
 CREATE TABLE IF NOT EXISTS `user_menu` (
@@ -617,7 +617,7 @@ CREATE TABLE IF NOT EXISTS `user_menu` (
     `order` SMALLINT(5) NOT NULL,
     `check` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -626,7 +626,7 @@ INSERT INTO `user_menu` (`id`, `name`, `controller`, `action`, `module`, `order`
 (1, 'Edit account', 'user', 'edit', 2, 1, ''),
 (2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::isDefaultUser() ? false : true;');
 
-CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
+CREATE TABLE IF NOT EXISTS `application_acl_resource_connection_setting` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
     `user_id` INT(10) UNSIGNED DEFAULT NULL,
@@ -636,15 +636,15 @@ CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
     `actions_reset` MEDIUMINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `setting` (`connection_id`, `user_id`),
-    FOREIGN KEY (connection_id) REFERENCES acl_resource_connection(id)
+    FOREIGN KEY (`connection_id`) REFERENCES `application_acl_resource_connection`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
+    FOREIGN KEY (`user_id`) REFERENCES `user_list`(`user_id`)
       ON UPDATE CASCADE
       ON DELETE CASCADE  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `acl_resource_action_track` (
+CREATE TABLE IF NOT EXISTS `application_acl_resource_action_track` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
     `user_id` INT(10) UNSIGNED DEFAULT NULL,
@@ -652,26 +652,26 @@ CREATE TABLE IF NOT EXISTS `acl_resource_action_track` (
     `actions_last_reset` INT(10) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     KEY `actions_last_reset` (`actions_last_reset`),
-    FOREIGN KEY (connection_id) REFERENCES acl_resource_connection(id)
+    FOREIGN KEY (`connection_id`) REFERENCES `application_acl_resource_connection`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
+    FOREIGN KEY (`user_id`) REFERENCES `user_list`(`user_id`)
       ON UPDATE CASCADE
       ON DELETE CASCADE  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `setting_category` (
+CREATE TABLE IF NOT EXISTS `application_setting_category` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL DEFAULT '',
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `category` (`name`, `module`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
+INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (1,  'Main settings', 1),
 (2,  'Cache', 1),
 (3,  'Captcha', 1),
@@ -689,7 +689,7 @@ INSERT INTO `setting_category` (`id`, `name`, `module`) VALUES
 (16,  'View images', 4),
 (17,  'Localization', 1);
 
-CREATE TABLE IF NOT EXISTS `setting` (
+CREATE TABLE IF NOT EXISTS `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `label` VARCHAR(150) NOT NULL,
@@ -706,15 +706,15 @@ CREATE TABLE IF NOT EXISTS `setting` (
     `check_message` VARCHAR(150) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
-    FOREIGN KEY (category) REFERENCES setting_category(id)
+    FOREIGN KEY (`category`) REFERENCES `application_setting_category`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
+INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
 (1,  'application_generator', '', '', 'system', 0, 0, NULL, 1, 0, '', '', ''),
 (2,  'application_generator_version', '', '', 'system', 0, 0, NULL, 1, 0, '', '', ''),
 (3,  'application_site_name', 'Site name', 'This value will be visible in a browser title', 'text', 1, 1, 1, 1, 1, '', '', ''),
@@ -790,22 +790,22 @@ INSERT INTO `setting` (`id`, `name`, `label`, `description`, `type`, `required`,
 (74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, '', '', ''),
 (75, 'user_role_edited_message', 'User role edited message', '', 'notification_message', 1, 18, 9, 2, 1, '', '', '');
 
-CREATE TABLE IF NOT EXISTS `setting_value` (
+CREATE TABLE IF NOT EXISTS `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
     `value` TEXT NOT NULL,
     `language` CHAR(2) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `setting` (`setting_id`, `language`),
-    FOREIGN KEY (setting_id) REFERENCES setting(id)
+    FOREIGN KEY (`setting_id`) REFERENCES `application_setting`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (language) REFERENCES localization(language)
+    FOREIGN KEY (`language`) REFERENCES `application_localization`(`language`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
+INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (1,  1,  'Dream CMS', NULL),
 (2,  2,  '1.0.0', NULL),
 (3,  3,  'Dream CMS demo site', NULL),
@@ -893,16 +893,16 @@ INSERT INTO `setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (86, 75, '<p><b>Dear __RealName__</b>,</p>\r\n<p>Now your role on the site is: <b>__Role__</b></p>', NULL),
 (87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru');
 
-CREATE TABLE IF NOT EXISTS `setting_predefined_value` (
+CREATE TABLE IF NOT EXISTS `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
     `value` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`setting_id`, `value`),
-    FOREIGN KEY (setting_id) REFERENCES setting(id)
+    FOREIGN KEY (`setting_id`) REFERENCES `application_setting`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `setting_predefined_value` (`setting_id`, `value`) VALUES
+INSERT INTO `application_setting_predefined_value` (`setting_id`, `value`) VALUES
 (17, 'full'),
 (17, 'long'),
 (17, 'medium'),
@@ -912,19 +912,19 @@ INSERT INTO `setting_predefined_value` (`setting_id`, `value`) VALUES
 (24, 'xcache'),
 (24, 'wincache');
 
-CREATE TABLE IF NOT EXISTS `event` (
+CREATE TABLE IF NOT EXISTS `application_event` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `description` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
+INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (1,  'get_localizations_via_xmlrpc', 1, 'Event - Getting localizations via XmlRpc'),
 (2,  'login_user', 2, 'Event - Users sign in'),
 (3,  'login_user_failed', 2, 'Event - Users logins failed'),
@@ -955,41 +955,41 @@ INSERT INTO `event` (`id`, `name`, `module`, `description`) VALUES
 (29, 'edit_file', 4, 'Event - Editing files'),
 (30, 'edit_directory', 4, 'Event - Editing directories');
 
-CREATE TABLE IF NOT EXISTS `admin_menu_part` (
+CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `icon` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
+INSERT INTO `application_admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'System', 1, 'system_menu.png'),
 (2, 'Modules', 1, 'module_menu.png');
 
-CREATE TABLE IF NOT EXISTS `admin_menu_category` (
+CREATE TABLE IF NOT EXISTS `application_admin_menu_category` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `icon` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `admin_menu_category` (`id`, `name`, `module`, `icon`) VALUES
+INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'Site settings', 1, 'setting_menu_item.png'),
 (2, 'Access Control List', 1, 'acl_menu_item.png'),
 (3, 'Users', 2, 'user_group_menu_item.png'),
 (4, 'Files manager', 4, 'file_manager_menu_item.png');
 
-CREATE TABLE IF NOT EXISTS `admin_menu` (
+CREATE TABLE IF NOT EXISTS `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `controller` VARCHAR(50) NOT NULL,
@@ -1000,18 +1000,18 @@ CREATE TABLE IF NOT EXISTS `admin_menu` (
     `part` SMALLINT(5) UNSIGNED NOT NULL,
     `icon` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (category) REFERENCES admin_menu_category(id)
+    FOREIGN KEY (`category`) REFERENCES `application_admin_menu_category`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (part) REFERENCES admin_menu_part(id)
+    FOREIGN KEY (`part`) REFERENCES `application_admin_menu_part`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
+INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
 (1, 'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
 (2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
 (3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
@@ -1020,14 +1020,14 @@ INSERT INTO `admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
 (7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
 
-CREATE TABLE IF NOT EXISTS `injection` (
+CREATE TABLE IF NOT EXISTS `application_injection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `position` ENUM('head', 'body','footer', 'before-menu', 'after-menu') NOT NULL,
     `patrial` VARCHAR(150) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `order` SMALLINT(5) NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (module) REFERENCES module(id)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -19,7 +19,7 @@ class DeleteRoleTest extends BaseTest
     {
         // create a first test ACL role
         $query = $this->userModel->insert()
-            ->into('acl_role')
+            ->into('application_acl_role')
             ->values(array(
                 'name' => 'test role 1'
             ));
@@ -30,7 +30,7 @@ class DeleteRoleTest extends BaseTest
 
         // create a second test ACL role
         $query = $this->userModel->insert()
-            ->into('acl_role')
+            ->into('application_acl_role')
             ->values(array(
                 'name' => 'test role 2'
             ));
@@ -41,7 +41,7 @@ class DeleteRoleTest extends BaseTest
 
         // create a third test ACL role
         $query = $this->userModel->insert()
-            ->into('acl_role')
+            ->into('application_acl_role')
             ->values(array(
                 'name' => 'test role 3'
             ));
@@ -52,7 +52,7 @@ class DeleteRoleTest extends BaseTest
 
         // create a test user
         $query = $this->userModel->insert()
-            ->into('user')
+            ->into('user_list')
             ->values(array(
                 'nick_name' => Rand::getString(32),
                 'email' => Rand::getString(32),
@@ -123,7 +123,7 @@ class DeleteRoleTest extends BaseTest
 
         // delete the second created ACL role
         $query = $this->userModel->delete()
-            ->from('acl_role')
+            ->from('application_acl_role')
             ->where(array('id' => $secondRoleId));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -134,7 +134,7 @@ class DeleteRoleTest extends BaseTest
 
         // delete the third created ACL role
         $query = $this->userModel->delete()
-            ->from('acl_role')
+            ->from('application_acl_role')
             ->where(array('id' => $thirdRoleId));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -186,7 +186,7 @@ class DeleteRoleTest extends BaseTest
 
         // delete the first created ACL role
         $query = $this->userModel->delete()
-            ->from('acl_role')
+            ->from('application_acl_role')
             ->where(array('id' => $firstRoleId));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
@@ -213,7 +213,7 @@ class DeleteRoleTest extends BaseTest
 
         // check the created test user's role
         $select = $this->userModel->select();
-        $select->from('user')
+        $select->from('user_list')
             ->columns(array(
                 'role'
             ))
@@ -267,7 +267,7 @@ class DeleteRoleTest extends BaseTest
 
         // delete the first created ACL role
         $query = $this->userModel->delete()
-            ->from('acl_role')
+            ->from('application_acl_role')
             ->where(array('id' => $firstRoleId));
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);

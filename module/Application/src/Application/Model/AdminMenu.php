@@ -27,7 +27,7 @@ class AdminMenu extends Base
         // check data in cache
         if (null === ($menu = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from(array('a' => 'admin_menu'))
+            $select->from(array('a' => 'application_admin_menu'))
                 ->columns(array(
                     'name',
                     'controller',
@@ -35,7 +35,7 @@ class AdminMenu extends Base
                     
                 ))
             ->join(
-                array('b' => 'admin_menu_category'),
+                array('b' => 'application_admin_menu_category'),
                 'a.category = b.id',
                 array(
                     'category' => 'name',
@@ -43,7 +43,7 @@ class AdminMenu extends Base
                 )
             )
             ->join(
-                array('c' => 'admin_menu_part'),
+                array('c' => 'application_admin_menu_part'),
                 'a.part = c.id',
                 array(
                     'part' => 'name',
@@ -51,14 +51,14 @@ class AdminMenu extends Base
                 )
             )
             ->join(
-                array('d' => 'module'),
+                array('d' => 'application_module'),
                 new Expression('c.module = d.id and d.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'part_module' => 'name'
                 )
             )
             ->join(
-                array('i' => 'module'),
+                array('i' => 'application_module'),
                 new Expression('b.module = i.id and i.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'category_module' => 'name'

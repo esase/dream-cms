@@ -123,7 +123,7 @@ abstract class AbstractBase extends Sql
         // check data in cache
         if (null === ($module = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('module')
+            $select->from('application_module')
                 ->columns(array(
                     'id',
                     'name',
@@ -159,7 +159,7 @@ abstract class AbstractBase extends Sql
         $modulesList = array();
 
         $select = $this->select();
-        $select->from('module')
+        $select->from('application_module')
             ->columns(array(
                 'id',
                 'name'

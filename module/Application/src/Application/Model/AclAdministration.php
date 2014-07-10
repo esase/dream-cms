@@ -24,7 +24,7 @@ class AclAdministration extends Acl
     public function isRoleNameFree($roleName, $roleId = 0)
     {
         $select = $this->select();
-        $select->from('acl_role')
+        $select->from('application_acl_role')
             ->columns(array(
                 'id'
             ))
@@ -57,7 +57,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $update = $this->update()
-                ->table('acl_role')
+                ->table('application_acl_role')
                 ->set($roleInfo)
                 ->where(array(
                     'id' => $roleId
@@ -93,7 +93,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $insert = $this->insert()
-                ->into('acl_role')
+                ->into('application_acl_role')
                 ->values(array_merge($roleInfo, array(
                     'type' => self::ROLE_TYPE_CUSTOM
                 )));
@@ -134,7 +134,7 @@ class AclAdministration extends Acl
 
             // delete old settings
             $delete = $this->delete()
-                ->from('acl_resource_connection_setting')
+                ->from('application_acl_resource_connection_setting')
                 ->where(array(
                     'connection_id' => $connectionId
                 ));
@@ -164,9 +164,9 @@ class AclAdministration extends Acl
                 $extraValues = $userId
                     ? array('user_id' => $userId, 'connection_id' => $connectionId)
                     : array('connection_id' => $connectionId);
-    
+
                 $insert = $this->insert()
-                    ->into('acl_resource_connection_setting')
+                    ->into('application_acl_resource_connection_setting')
                     ->values(array_merge($settings, $extraValues));
     
                 $statement = $this->prepareStatementForSqlObject($insert);
@@ -176,7 +176,7 @@ class AclAdministration extends Acl
             // clean the action counter
             if ($cleanActionCounter && $userId) {
                 $delete = $this->delete()
-                    ->from('acl_resource_action_track')
+                    ->from('application_acl_resource_action_track')
                     ->where(array(
                         'connection_id' => $connectionId,
                         'user_id' => $userId
@@ -212,7 +212,7 @@ class AclAdministration extends Acl
 
             // check the existing connection
             $select = $this->select();
-            $select->from('acl_resource_connection')
+            $select->from('application_acl_resource_connection')
                 ->columns(array(
                     'resource'
                 ))
@@ -227,7 +227,7 @@ class AclAdministration extends Acl
             // add a new connection
             if (!$result->current()) {
                 $insert = $this->insert()
-                    ->into('acl_resource_connection')
+                    ->into('application_acl_resource_connection')
                     ->values(array(
                         'role' => $roleId,
                         'resource' => $resourceId
@@ -262,7 +262,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $delete = $this->delete()
-                ->from('acl_resource_connection')
+                ->from('application_acl_resource_connection')
                 ->where(array(
                     'role' => $roleId,
                     'resource' => $resourceId
@@ -295,7 +295,7 @@ class AclAdministration extends Acl
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $delete = $this->delete()
-                ->from('acl_role')
+                ->from('application_acl_role')
                 ->where(array(
                     'type' => self::ROLE_TYPE_CUSTOM,
                     'id' => $roleId
@@ -342,7 +342,7 @@ class AclAdministration extends Acl
             : 'id';
 
         $select = $this->select();
-        $select->from('acl_role')
+        $select->from('application_acl_role')
             ->columns(array(
                 'id',
                 'name',
@@ -394,20 +394,20 @@ class AclAdministration extends Acl
             : 'id';
 
         $select = $this->select();
-        $select->from(array('a' => 'acl_resource'))
+        $select->from(array('a' => 'application_acl_resource'))
             ->columns(array(
                 'id',
                 'description'
             ))
             ->join(
-                array('b' => 'module'),
+                array('b' => 'application_module'),
                 new Expression('a.module = b.id and b.status = ?', array(self::MODULE_STATUS_ACTIVE)),
                 array(
                     'module' => 'name'
                 )
             )
             ->join(
-                array('c' => 'acl_resource_connection'),
+                array('c' => 'application_acl_resource_connection'),
                 new Expression('a.id = c.resource and c.role = ?', array($roleId)),
                 array(
                     'connection' => 'id'
@@ -455,28 +455,28 @@ class AclAdministration extends Acl
             : 'd.user_id is null';
 
         $select = $this->select();
-        $select->from(array('a' => 'acl_resource_connection'))
+        $select->from(array('a' => 'application_acl_resource_connection'))
             ->columns(array(
                 'connection' => 'id',
                 'role',
                 'resource'
             ))
             ->join(
-                array('b' => 'acl_role'),
+                array('b' => 'application_acl_role'),
                 'b.id = a.role',
                 array(
                     'role_name' => 'name'
                 )
             )
             ->join(
-                array('c' => 'acl_resource'),
+                array('c' => 'application_acl_resource'),
                 'c.id = a.resource',
                 array(
                     'resource_description' => 'description'
                 )
             )
             ->join(
-                array('d' => 'acl_resource_connection_setting'),
+                array('d' => 'application_acl_resource_connection_setting'),
                 new Expression('a.id = d.connection_id and ' . $extraCondition),
                 array(
                     'date_start',
