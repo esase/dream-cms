@@ -1,0 +1,22 @@
+@import "common.css";
+@import "variables/administration.less";
+
+// nav bar
+div.navbar {
+    margin:0;
+    z-index: 50;
+
+    li.dropdown-header{
+        white-space:nowrap;
+    }
+
+    a.current-language{
+        text-transform:capitalize;
+    }
+}
+
+// page header
+div.page-header {
+    margin-bottom: @page-header-margin-bottom;
+    margin-top: @page-header-margin-top;
+}

@@ -125,12 +125,18 @@ abstract class AbstractBaseController extends AbstractActionController
     /**
      * Get order by value
      *
+     * @param string $default
      * @return string
      */
-    public function getOrderBy()
+    public function getOrderBy($default = '')
     {
         if ($this->orderBy === null) {
             $this->orderBy = $this->params()->fromRoute('order_by');
+
+            // set a default value
+            if (!$this->orderBy && $default) {
+                $this->orderBy = $default;
+            }
         }
 
         return $this->orderBy;
@@ -166,12 +172,18 @@ abstract class AbstractBaseController extends AbstractActionController
     /**
      * Get order type
      *
+     * @param string $default
      * @return string
      */
-    public function getOrderType()
+    public function getOrderType($default = '')
     {
         if ($this->orderType === null) {
             $this->orderType = $this->params()->fromRoute('order_type');
+
+            // set a default value
+            if (!$this->orderType && $default) {
+                $this->orderType = $default;
+            }
         }
 
         return $this->orderType;
@@ -184,6 +196,7 @@ abstract class AbstractBaseController extends AbstractActionController
      */
     public function getPerPage()
     {
+
         if ($this->perPage === null) {
             $this->perPage  = $this->params()->fromRoute('per_page');
         }

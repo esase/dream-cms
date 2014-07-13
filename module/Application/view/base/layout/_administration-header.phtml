@@ -14,14 +14,16 @@
 
         <!-- Le styles -->
         <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icon/favicon.ico', 'image')))
-            ->prependStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr() ? 'administration.css' : 'administration.rtl.css'), 'css')) 
+            ->prependStylesheet($this->asset('administration.css', 'css')) 
             ->prependStylesheet($this->asset('jquery-ui.css', 'css'))
             ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
             ->prependStylesheet($this->asset('bootstrap.css', 'css'))
         ?>
 
         <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
-            <?php $this->headLink()->appendStylesheet($this->asset('bootstrap.rtl.css', 'css')) ?>
+            <?php $this->headLink()
+                ->appendStylesheet($this->asset('bootstrap.rtl.css', 'css'))
+                ->appendStylesheet($this->asset('administration.rtl.css', 'css'))?>
         <?php endif; ?>
 
         <?php echo $this->headLink() ?>

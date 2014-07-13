@@ -1,13 +1,12 @@
-.treeview, .treeview ul { 
+.treeview,
+.treeview ul {
   padding: 0;
   margin: 0;
   list-style: none;
 }
-
 .treeview ul {
-    margin-top: 4px;
+  margin-top: 4px;
 }
-
 .treeview .hitarea {
   background: url("../image/tree/rtl-treeview-default-c.gif") 0 2px no-repeat;
   height: 16px;
@@ -19,51 +18,105 @@
 /* fix for IE6 */
 * html .hitarea {
   display: inline;
-  float:none;
+  float: none;
 }
-
-.treeview li { 
+.treeview li {
   margin: 0;
   padding: 0px 16px 2px 0px;
 }
-
 .treeview a.selected {
   background-color: #eee;
 }
-
-#treecontrol { margin: 1em 0; display: none; }
-
-.treeview .hover, .treeview .ken:hover { cursor: pointer; }
-
-.treeview li { background: url("../image/tree/rtl-treeview-default-line.gif") 100% -2px no-repeat; }
-.treeview li.collapsable, .treeview li.expandable { background-position: 100% -177px; }
-
-.treeview .expandable-hitarea { background: url("../image/tree/rtl-treeview-default-e.gif") 0 2px no-repeat; }
-.treeview li.last { background-position: 100% -1768px }
-.treeview li.lastCollapsable, .treeview li.lastExpandable { background: url(""); }
-.treeview div.lastCollapsable-hitarea { background: url("../image/tree/rtl-treeview-default-lc.gif") 0 0 no-repeat; }
-.treeview div.lastExpandable-hitarea { background: url("../image/tree/rtl-treeview-default-le.gif") 0 0 no-repeat; }
-
-.treeview-red li { background-image: url("../image/tree/rtl-treeview-red-line.gif"); }
-.treeview-red .hitarea { background-image: url("../image/tree/rtl-treeview-red-c.gif"); }
-.treeview-red .expandable-hitarea { background-image: url("../image/tree/rtl-treeview-red-e.gif"); }
-.treeview-red div.lastCollapsable-hitarea { background-image: url("../image/tree/rtl-treeview-red-lc.gif"); }
-.treeview-red div.lastExpandable-hitarea { background-image: url("../image/tree/rtl-treeview-red-le.gif"); } 
-
-.treeview-black li { background-image: url("../image/tree/rtl-treeview-black-line.gif"); }
-.treeview-black .hitarea { background-image: url("../image/tree/rtl-treeview-black-c.gif"); }
-.treeview-black .expandable-hitarea { background-image: url("../image/tree/rtl-treeview-black-e.gif"); }
-.treeview-black div.lastCollapsable-hitarea { background-image: url("../image/tree/rtl-treeview-black-lc.gif"); }
-.treeview-black div.lastExpandable-hitarea { background-image: url("../image/tree/rtl-treeview-black-le.gif"); } 
-
-.treeview-gray li { background-image: url("../image/tree/rtl-treeview-gray-line.gif"); }
-.treeview-gray .hitarea { background-image: url("../image/tree/rtl-treeview-gray-c.gif"); }
-.treeview-gray .expandable-hitarea { background-image: url("../image/tree/rtl-treeview-gray-e.gif"); }
-.treeview-gray div.lastCollapsable-hitarea { background-image: url("../image/tree/rtl-treeview-gray-lc.gif"); }
-.treeview-gray div.lastExpandable-hitarea { background-image: url("../image/tree/rtl-treeview-gray-le.gif"); } 
-
-.treeview li { padding: 0px 16px 2px 0; }
-.treeview span.folder, .treeview span.file { padding: 0px 20px 2px 0; display: block; }
-.treeview span.folder { background: url("../image/tree/rtl-folder.gif") 100% 0 no-repeat; }
-.treeview li.expandable span.folder { background: url("../image/tree/rtl-folder-closed.gif") 100% 0 no-repeat; }
-.treeview span.file { background: url("../image/tree/rtl-file.gif") 100% 0 no-repeat; }
+#treecontrol {
+  margin: 1em 0;
+  display: none;
+}
+.treeview .hover,
+.treeview .ken:hover {
+  cursor: pointer;
+}
+.treeview li {
+  background: url("../image/tree/rtl-treeview-default-line.gif") 100% -2px no-repeat;
+}
+.treeview li.collapsable,
+.treeview li.expandable {
+  background-position: 100% -177px;
+}
+.treeview .expandable-hitarea {
+  background: url("../image/tree/rtl-treeview-default-e.gif") 0 2px no-repeat;
+}
+.treeview li.last {
+  background-position: 100% -1768px;
+}
+.treeview li.lastCollapsable,
+.treeview li.lastExpandable {
+  background: url("");
+}
+.treeview div.lastCollapsable-hitarea {
+  background: url("../image/tree/rtl-treeview-default-lc.gif") 0 0 no-repeat;
+}
+.treeview div.lastExpandable-hitarea {
+  background: url("../image/tree/rtl-treeview-default-le.gif") 0 0 no-repeat;
+}
+.treeview-red li {
+  background-image: url("../image/tree/rtl-treeview-red-line.gif");
+}
+.treeview-red .hitarea {
+  background-image: url("../image/tree/rtl-treeview-red-c.gif");
+}
+.treeview-red .expandable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-red-e.gif");
+}
+.treeview-red div.lastCollapsable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-red-lc.gif");
+}
+.treeview-red div.lastExpandable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-red-le.gif");
+}
+.treeview-black li {
+  background-image: url("../image/tree/rtl-treeview-black-line.gif");
+}
+.treeview-black .hitarea {
+  background-image: url("../image/tree/rtl-treeview-black-c.gif");
+}
+.treeview-black .expandable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-black-e.gif");
+}
+.treeview-black div.lastCollapsable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-black-lc.gif");
+}
+.treeview-black div.lastExpandable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-black-le.gif");
+}
+.treeview-gray li {
+  background-image: url("../image/tree/rtl-treeview-gray-line.gif");
+}
+.treeview-gray .hitarea {
+  background-image: url("../image/tree/rtl-treeview-gray-c.gif");
+}
+.treeview-gray .expandable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-gray-e.gif");
+}
+.treeview-gray div.lastCollapsable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-gray-lc.gif");
+}
+.treeview-gray div.lastExpandable-hitarea {
+  background-image: url("../image/tree/rtl-treeview-gray-le.gif");
+}
+.treeview li {
+  padding: 0px 16px 2px 0;
+}
+.treeview span.folder,
+.treeview span.file {
+  padding: 0px 20px 2px 0;
+  display: block;
+}
+.treeview span.folder {
+  background: url("../image/tree/rtl-folder.gif") 100% 0 no-repeat;
+}
+.treeview li.expandable span.folder {
+  background: url("../image/tree/rtl-folder-closed.gif") 100% 0 no-repeat;
+}
+.treeview span.file {
+  background: url("../image/tree/rtl-file.gif") 100% 0 no-repeat;
+}

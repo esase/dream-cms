@@ -1,10 +1,17 @@
-/* pagination */
 div#memberships-wrapper ul.pagination {
-    margin:0;
+  margin: 0;
 }
-
-/* thumbnail images */
 div#memberships-wrapper div.thumbnail img {
-    width: 100%; 
-    display: block;
+  width: 100%;
+  display: block;
+}
+div#memberships-wrapper div.thumbnail .caption {
+  overflow: hidden;
+}
+div#memberships-wrapper div.thumbnail .buttons {
+  padding: 9px;
+}
+div#memberships-wrapper div.thumbnail .buttons a {
+  margin-top: 3px;
+  margin-bottom: 3px;
 }

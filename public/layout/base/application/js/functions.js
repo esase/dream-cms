@@ -24,6 +24,44 @@ function uniformHeight(elements, bindWindowResize)
 }
 
 /**
+ * Ajax query
+ *
+ * @param string container
+ * @param string url
+ * @param string successCallback
+ * @param string method
+ * @return void
+ */
+function ajaxQuery(container, url, successCallback, method)
+{
+    // show a loading box
+    showLoadingBox(container);
+
+    // define an ajax query method
+    method = typeof method != 'undefined' && method == 'post' ? method : 'get';
+
+    // add a hash to url
+    if (method == 'get') {
+        var _r =  Math.random();
+        url =  url + (url.match(/\?/) ? '&_r=' + _r : '?_r=' + _r);
+    }
+
+    $.ajax({
+        type: method,
+        url: url,
+        success: function(data){
+            // replace text into a container
+            $('#' + container).html(data);
+
+            // call a callback
+            if (typeof successCallback != 'undefined') {
+                successCallback.call();
+            }
+        }
+    });
+}
+
+/**
  * Show loading box
  * 
  * @param jquery object|string container

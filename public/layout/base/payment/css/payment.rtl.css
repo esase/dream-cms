@@ -1,24 +1,11 @@
-@import url("common.css");
-
 div#shopping-cart-wrapper {
-    float: left;
+  float: left;
 }
-
 div#shopping-cart-wrapper div#shopping-cart-info {
-    float:left;
-    margin-right: 50px;
+  float: left;
+  margin-left: 0;
+  margin-right: 50px;
 }
-
 div#shopping-cart-wrapper div#shopping-cart-currencies {
-    float:left;
+  float: left;
 }
-
-div#shopping-cart-price-wrapper {
-    text-align: left;
-}
-
-/* payment form wrapper */
-div#payment-form-wrapper div#payment-amount-wrapper {
-    float: left;
-}
-

@@ -37,12 +37,31 @@ class MembershipController extends AbstractBaseController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
+        // a paginator filters
+        $filters = array(
+            'active' => BaseMembershipModel::MEMBERSHIP_LEVEL_STATUS_ACTIVE
+        );
+
         // get list of active membership levels
         $paginator = $this->getModel()->getMembershipLevels($this->getPage(), 
-                null, 'title', 'asc', array('active' => BaseMembershipModel::MEMBERSHIP_LEVEL_STATUS_ACTIVE));
+                $this->getPerPage(), $this->getOrderBy('cost'), $this->getOrderType('asc'), $filters);
 
-        return new ViewModel(array(
+        $baseViewVariables = array(
             'paginator' => $paginator,
-        ));
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        );
+
+        $viewModel = new ViewModel();
+
+        // generate only the list of membership levels for ajax requests
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $viewModel->setVariables($baseViewVariables);
+            return $viewModel->setTemplate('membership/membership/units-list');
+        }
+
+        $viewModel->setVariables($baseViewVariables);
+        return $viewModel;
     }
 }

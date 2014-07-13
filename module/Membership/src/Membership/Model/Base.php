@@ -507,10 +507,12 @@ class Base extends AbstractBase
         // filter by a active
         if (isset($filters['active']) && $filters['active'] != null) {
             $select->where(array(
-                'a.active' => ((int) $filters['active'] == self::MEMBERSHIP_LEVEL_STATUS_ACTIVE ? $filters['active'] : self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE)
+                'a.active' => ((int) $filters['active'] == self::MEMBERSHIP_LEVEL_STATUS_ACTIVE 
+                    ? $filters['active'] 
+                    : self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE)
             ));
         }
-
+        
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));

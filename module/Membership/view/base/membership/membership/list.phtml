@@ -32,7 +32,7 @@
 )) ?>
 
 <div class="row">
-    <div class="col-xs-6 col-sm-4 col-md-3">
+    <div class="col-sm-6 col-md-3" id="active-memberships-wrapper">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">Active membership level</h4>
@@ -96,49 +96,12 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-6 col-sm-8 col-md-9" id="memberships-wrapper">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title"><?php echo $this->translate('List of avaiable membership levels') ?></h4>
-            </div>
-            <div class="panel-body">
-                    <?php if(!$this->paginator->count()): ?>
-                        <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
-                    <?php else: ?>
-                        <div class="row">
-                            <?php foreach ($this->paginator as $level) : ?>
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="thumbnail">
-                                        <img style="height: <?php echo (int) $this->getSetting('membership_image_height') ?>px;" alt="<?php echo $this->escapeHtmlAttr($level->title) ?>" src="<?php echo $this->escapeHtmlAttr($this->membershipImageUrl($level->image)) ?>" />
-                                        <div class="caption" >
-                                            <div class="description">
-                                                <h3><?php echo $this->escapeHtml($level->title) ?></h3>
-                                                <h4><?php echo $this->escapeHtml($this->costFormat($level)) ?> <?php echo $this->escapeHtml($level->lifetime) ?> <?php echo $this->translatePlural('day', 'days', $level->lifetime) ?></h4>
-                                                <?php echo $this->escapeHtml($level->description) ?> 
-                                            </div>
-                                            <br />
-                                            <a href="javascript:void(0)" rel="nofollow" onclick="payment.addToShoppingCart(<?php echo $level->id ?>, 'membership')" class="btn btn-primary" role="button"><?php echo $this->translate('Buy') ?></a> 
-                                            <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application', array('controller' => 'acl', 'action' => 'ajax-get-resources', 'slug' => $level->role_id))) ?>', 'popup-acl-resources-window')"><?php echo $this->translate('Membership info') ?></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <!-- a pagination -->
-                        <?php
-                            echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', array(
-                                'route' => 'application',
-                                'params' => array(
-                                    'controller' => $this->currentRoute()->getController(),
-                                    'action' => $this->currentRoute()->getAction(),
-                                )))
-                        ?>
-                    <?php endif; ?>
-            </div>
-        </div>
+    <div class="col-sm-6 col-md-9" id="memberships-wrapper">
+        <?php echo $this->partial('membership/membership/units-list', array(
+            'paginator' => $this->paginator,
+            'order_by' => $this->order_by,
+            'order_type' => $this->order_type,
+            'per_page' => $this->per_page,
+        )) ?>
     </div>
 </div>
-
-<script>
-    uniformHeight('#memberships-wrapper .thumbnail .description', true);
-</script>

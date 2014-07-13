@@ -1,7 +1,7 @@
 /*******************************************************************************
- *              bootstrap-rtl (Version 3.2.0-rc1)
+ *              bootstrap-rtl (Version 3.2.0-rc2)
  *      Author: Morteza Ansarinia <ansarinia@me.com> (http://github.com/morteza)
- *  Created on: June 13,2014
+ *  Created on: May 28,2014
  *     Project: bootstrap-rtl
  *   Copyright: See the file "LICENSE.md" for the full license governing this code.
  *******************************************************************************/
@@ -1147,13 +1147,6 @@ th {
     margin-left: -15px;
     margin-right: auto;
   }
-  .navbar-nav.navbar-right.flip {
-    float: left !important;
-  }
-  .navbar-nav.navbar-right .dropdown-menu {
-    left: 0;
-    right: auto;
-  }
 }
 @media (min-width: 768px) {
   .navbar-text {
@@ -1217,28 +1210,9 @@ th {
 .progress-bar {
   float: right;
 }
-.media,
-.media-body {
-  overflow: hidden;
-  zoom: 1;
-}
-.media > .pull-left {
-  margin-right: 10px;
-}
-.media > .pull-left.flip {
-  margin-right: 0;
-  margin-left: 10px;
-}
-.media > .pull-right {
-  margin-left: 10px;
-}
-.media > .pull-right.flip {
-  margin-left: 0;
-  margin-right: 10px;
-}
 .media-list {
   padding-right: 0;
-  padding-left: auto;
+  padding-left: none;
   list-style: none;
 }
 .list-group {
@@ -1533,4 +1507,3 @@ th {
 .has-error .form-control-feedback {
   color: #a94442;
 }
-/*# sourceMappingURL=bootstrap-rtl.css.map */

@@ -1,0 +1,33 @@
+@import "variables/main.less";
+
+// memberships wrapper
+div#memberships-wrapper {
+    // pagination
+    ul.pagination {
+        margin:0;
+    }
+
+    // thumbnail images
+    div.thumbnail {
+        // images
+        img {
+            width: 100%; 
+            display: block;
+        }
+
+        // caption
+        .caption {
+            overflow: hidden;
+        }
+
+        // buttons
+        .buttons {
+            padding:9px;
+
+            a {
+                margin-top: @memberships-wrapper-buttons-margin-top;
+                margin-bottom: @memberships-wrapper-buttons-margin-bottom;
+            }
+        }
+    }
+}

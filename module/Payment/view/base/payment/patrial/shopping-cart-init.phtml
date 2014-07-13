@@ -1,8 +1,7 @@
 <?php $this->headScript()->appendFile($this->asset('payment.js', 'js', 'payment')) ?>
+<?php $this->headLink()->appendStylesheet($this->asset('payment.css', 'css', 'payment')) ?>
 
-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>
-    <?php $this->headLink()->appendStylesheet($this->asset('payment.css', 'css', 'payment')) ?>
-<?php else: ?>
+<?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
     <?php $this->headLink()->appendStylesheet($this->asset('payment.rtl.css', 'css', 'payment')) ?>
 <?php endif; ?>
 
