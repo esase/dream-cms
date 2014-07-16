@@ -19,7 +19,6 @@ class MembershipAdministration extends Base
      *      integer cost - required
      *      integer lifetime - required
      *      string description - required
-     *      string language - optional
      *      string image - required
      * @param array $image
      * @return boolean|string
@@ -29,14 +28,11 @@ class MembershipAdministration extends Base
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            // check the language
-            if (isset($formData['language']) && !$formData['language']) {
-                $formData['language'] = null;
-            }
-
             $update = $this->update()
                 ->table('membership_level')
-                ->set($formData)
+                ->set(array_merge($formData, array(
+                    'language' => ApplicationService::getCurrentLocalization()['language']
+                )))
                 ->where(array(
                     'id' => $roleInfo['id']
                 ));
@@ -65,7 +61,6 @@ class MembershipAdministration extends Base
      *      integer cost - required
      *      integer lifetime - required
      *      string description - required
-     *      string language - optional
      * @param array $image
      * @return integer|string
      */
@@ -76,14 +71,11 @@ class MembershipAdministration extends Base
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            // check the language
-            if (isset($formData['language']) && !$formData['language']) {
-                unset($formData['language']);
-            }
-
             $insert = $this->insert()
                 ->into('membership_level')
-                ->values($formData);
+                ->values(array_merge($formData, array(
+                    'language' => ApplicationService::getCurrentLocalization()['language']
+                )));
 
             $statement = $this->prepareStatementForSqlObject($insert);
             $statement->execute();

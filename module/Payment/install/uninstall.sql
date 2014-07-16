@@ -1,4 +1,4 @@
-DELETE FROM `module` WHERE `name` = 'Payment';
+DELETE FROM `application_module` WHERE `name` = 'Payment';
 
 DROP TABLE IF EXISTS `payment_transaction_item`;
 DROP TABLE IF EXISTS `payment_shopping_cart`;

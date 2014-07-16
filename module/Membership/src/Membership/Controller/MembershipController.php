@@ -33,7 +33,12 @@ class MembershipController extends AbstractBaseController
      */
     public function listAction()
     {
-        if ($this->isGuest() || UserService::isDefaultUser()) {
+        if (true !== ($result = $this->isAutorized())) {
+            return $result;
+        }
+
+        // additional checking
+        if (UserService::isDefaultUser()) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 

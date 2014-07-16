@@ -21,6 +21,8 @@ class Module implements ConsoleUsageProviderInterface
     {
         $eventManager = MembershipEvent::getEventManager();
 
+        //TODO:  Also we need to implement delete languages event for deleting all membership levels with empty language 
+
         // listen the edit user role event
         $eventManager->attach(UserEvent::EDIT_ROLE, function ($e) use ($moduleManager) {
             // someone forced set a user's role, and now we must clean all the user's membership queue

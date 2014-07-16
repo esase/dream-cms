@@ -307,7 +307,12 @@ class UserController extends AbstractBaseController
      */
     public function deleteAction()
     {
-        if ($this->isGuest() || UserService::isDefaultUser()) {
+        if (true !== ($result = $this->isAutorized())) {
+            return $result;
+        }
+
+        // additional checking
+        if (UserService::isDefaultUser()) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
@@ -355,8 +360,8 @@ class UserController extends AbstractBaseController
      */
     public function editAction()
     {
-        if ($this->isGuest()) {
-            return $this->createHttpNotFoundModel($this->getResponse());
+        if (true !== ($result = $this->isAutorized())) {
+            return $result;
         }
 
         // get the user form

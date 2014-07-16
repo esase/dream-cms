@@ -53,6 +53,18 @@ abstract class AbstractBaseController extends AbstractActionController
     protected $extra = null;
 
     /**
+     * Controller
+     * @var string
+     */
+    protected $controller = null;
+
+    /**
+     * Action
+     * @var string
+     */
+    protected $action = null;
+
+    /**
      * Set event manager
      */
     public function setEventManager(EventManagerInterface $events)
@@ -81,14 +93,115 @@ abstract class AbstractBaseController extends AbstractActionController
     }
 
     /**
-     * Get slug
+     * Check the current user permission.
+     *
+     * @param string $resource
+     * @param boolean $increaseActions
+     * @param boolean $showAccessDenied
+     * @return boolean
+     */
+    public function checkPermission($resource = null, $increaseActions = true, $showAccessDenied = true)
+    {
+        // get ACL resource name
+        $resource = !$resource
+            ? $this->getController() . ' ' . $this->getAction()
+            : $resource;
+
+        // check the permission
+        if (false === ($result = 
+                UserService::checkPermission($resource, $increaseActions)) && $showAccessDenied) {
+
+            // redirect to a forbidden page
+            $this->showErrorPage();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check a user authorization
+     *
+     * @param string $explanation
+     * @return string|boolean
+     */
+    public function isAutorized($explanation = null)
+    {
+        if ($this->isGuest()) {
+            $this->flashMessenger()
+                ->setNamespace('error')
+                ->addMessage($this->getTranslator()->translate(($explanation ? $explanation : 'You must be logged before view this page')));
+
+            $backUrl = $this->url()->fromRoute('application', array(
+                'controller' => $this->getController(), 
+                'action' => $this->getAction(), 
+                'slug' => $this->getSlug(false)
+            ));
+
+            return $this->redirectTo('user', 'login', array(), false, array('back' => $backUrl));
+        }
+
+        return true;
+    }
+
+    /**
+     * Show an error page
+     *
+     * @param string $action
+     * @return string
+     */
+    public function showErrorPage($action = 'forbidden')
+    {
+        return $this->redirectTo('error', $action);
+    }
+
+    /**
+     * Is guest or not?.
+     *
+     * @return boolean
+     */
+    public function isGuest()
+    {
+        return UserService::isGuest();
+    }
+
+    /**
+     * Get controller
      *
      * @return string
      */
-    public function getSlug()
+    public function getController()
+    {
+        if ($this->controller === null) {
+            $this->controller = $this->params()->fromRoute('controller');
+        }
+
+        return $this->controller; 
+    }
+
+    /**
+     * Get action
+     *
+     * @return string
+     */
+    public function getAction()
+    {
+        if ($this->action === null) {
+            $this->action = $this->params()->fromRoute('action');
+        }
+
+        return $this->action; 
+    }
+
+    /**
+     * Get slug
+     *
+     * @param boolean $defaultValue
+     * @return string
+     */
+    public function getSlug($defaultValue = true)
     {
         if ($this->slug === null) {
-            $this->slug = $this->params()->fromRoute('slug', -1);
+            $this->slug = $this->params()->fromRoute('slug', ($defaultValue ? -1 : null));
         }
 
         return $this->slug; 
@@ -151,7 +264,7 @@ abstract class AbstractBaseController extends AbstractActionController
      * @param boolean $useReferer
      * @param array $queries
      * @param string $route
-     * @return object
+     * @return string
      */
     protected function redirectTo($controller = null, $action = null, array $params = array(), $useReferer = false, array $queries = array(), $route = 'application')
     {

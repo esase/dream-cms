@@ -9,7 +9,6 @@ use Application\Utility\FileSystem as FileSystemUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Payment\Model\Base as PaymentBaseModel;
-use Zend\Db\Sql\Predicate;
 use Application\Service\Service as ApplicationService;
 use Application\Utility\Pagination as PaginationUtility;
 use Zend\Paginator\Paginator;
@@ -470,10 +469,7 @@ class Base extends AbstractBase
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
             ->where(array(
-                new Predicate\PredicateSet(array(
-                    new Predicate\isNull('a.language'),
-                    new Predicate\Operator('a.language', '=', ApplicationService::getCurrentLocalization()['language']),
-                ), Predicate\PredicateSet::COMBINED_BY_OR),
+                'a.language' => ApplicationService::getCurrentLocalization()['language']
             ));
 
         // filter by a title

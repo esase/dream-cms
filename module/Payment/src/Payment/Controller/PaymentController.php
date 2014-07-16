@@ -541,16 +541,10 @@ class PaymentController extends AbstractBaseController
         }
 
         // check additional params
-        if (UserService::isGuest()) {
+        if ($this->isGuest()) {
             foreach ($shoppingCartItems as $item) {
                 if ($item['must_login'] == PaymentModel::MODULE_MUST_LOGIN) {
-                    $this->flashMessenger()
-                        ->setNamespace('error')
-                        ->addMessage($this->getTranslator()->
-                                translate('Some of the items in your shopping cart requires you to be logged in'));
-
-                    return $this->redirectTo('user', 'login',
-                        array(), false, array('back' => $this->url()->fromRoute('application', array('controller' => 'payments', 'action' => 'checkout'))));
+                    return $this->isAutorized('Some of the items in your shopping cart requires you to be logged in');
                 }
             }
         }
@@ -577,7 +571,7 @@ class PaymentController extends AbstractBaseController
             ->hidePaymentType(!$transactionPaid);
 
         // set default values
-        if (!UserService::isGuest()) {
+        if (!$this->isGuest()) {
             $checkoutForm->getForm()->setData(array(
                 'first_name' => UserService::getCurrentUserIdentity()->first_name,
                 'last_name' => UserService::getCurrentUserIdentity()->last_name,
@@ -817,8 +811,8 @@ class PaymentController extends AbstractBaseController
      */
     public function listAction()
     {
-        if ($this->isGuest()) {
-            return $this->createHttpNotFoundModel($this->getResponse());
+        if (true !== ($result = $this->isAutorized())) {
+            return $result;
         }
 
         $filters = array();
@@ -856,13 +850,13 @@ class PaymentController extends AbstractBaseController
      */
     public function viewTransactionItemsAction()
     {
-        if ($this->isGuest()) {
-            return $this->createHttpNotFoundModel($this->getResponse());
+        if (true !== ($result = $this->isAutorized())) {
+            return $result;
         }
 
         // get the transaction info
-        if (null == ($transactionInfo = $this->getModel()->getTransactionInfo($this->
-                getSlug(), false, 'id', false, UserService::getCurrentUserIdentity()->user_id))) {
+        if (null == ($transactionInfo = $this->getModel()->
+                getTransactionInfo($this->getSlug(), false, 'id', false, UserService::getCurrentUserIdentity()->user_id))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }

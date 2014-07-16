@@ -130,13 +130,6 @@ class AclRole extends AbstractCustomForm
             'required' => false,
             'category' => 'General info'
         ),
-        'language' => array(
-            'name' => 'language',
-            'type' => CustomFormBuilder::FIELD_SELECT,
-            'label' => 'Language',
-            'required' => false,
-            'category' => 'Localization',
-        ),
         'submit' => array(
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
@@ -167,21 +160,6 @@ class AclRole extends AbstractCustomForm
             }
 
             $this->formElements['role_id']['values'] = $aclRoles;
-
-            // init localizations
-            $localizations = ApplicationService::getLocalizations();
-            if (count($localizations) > 1) {
-                $languages = array();
-                foreach ($localizations as $localization) {
-                    $languages[$localization['language']] = $localization['description'];
-                }
-
-                $this->formElements['language']['values'] = $languages;
-                $this->formElements['language']['value']  = ApplicationService::getCurrentLocalization()['language'];
-            }
-            else {
-                unset($this->formElements['language']);
-            }
 
             // add preview for the image
             if ($this->image) {
