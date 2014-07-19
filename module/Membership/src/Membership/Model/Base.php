@@ -219,24 +219,47 @@ class Base extends AbstractBase
      * Get all user's membership connections
      *
      * @param integer $userId
+     * @param boolean $fullInfo 
      * @return object
      */
-    public function getAllUserMembershipConnections($userId)
+    public function getAllUserMembershipConnections($userId, $fullInfo = false)
     {
         $select = $this->select();
-        $select->from('membership_level_connection')
+        $select->from(array('a' => 'membership_level_connection'))
             ->columns(array(
                 'id',
-            ))
-            ->where(array(
-                'user_id' => $userId
+                'active',
+                'expire_date',
+                'expire_value'
             ));
+
+        if ($fullInfo) {
+            $select->join(
+                array('b' => 'membership_level'),
+                'a.membership_id = b.id',
+                array(
+                    'title',
+                    'role_id',
+                    'cost',
+                    'lifetime',
+                    'expiration_notification',
+                    'description',
+                    'language',
+                    'image'
+                )
+            );
+        }
+
+        $select->where(array(
+            'user_id' => $userId
+        ))
+        ->order('a.id');
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
         return $resultSet->initialize($statement->execute());
     }
-
+    
     /**
      * Get a user's membership connection from a queue
      *

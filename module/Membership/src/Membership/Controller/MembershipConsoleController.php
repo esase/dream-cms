@@ -101,7 +101,7 @@ class MembershipConsoleController extends AbstractBaseConsoleController
         }
 
         // get list of not notified memberships connections
-        if ((int) UserService::getSetting('membership_expiring_send')) {
+        if ((int) $this->getSetting('membership_expiring_send')) {
             if (null != ($notNotifiedConnections = $this->getModel()->getNotNotifiedMembershipsConnections())) {
                 // process not notified memberships connections
                 foreach ($notNotifiedConnections as $connectionInfo) {
@@ -117,8 +117,8 @@ class MembershipConsoleController extends AbstractBaseConsoleController
                         : UserService::getDefaultLocalization()['language'];
 
                     EmailNotification::sendNotification($connectionInfo['email'],
-                            UserService::getSetting('membership_expiring_send_title', $notificationLanguage),
-                            UserService::getSetting('membership_expiring_send_message', $notificationLanguage), array(
+                            $this->getSetting('membership_expiring_send_title', $notificationLanguage),
+                            $this->getSetting('membership_expiring_send_message', $notificationLanguage), array(
                                 'find' => array(
                                     'RealName',
                                     'Role',

@@ -52,13 +52,19 @@ class Event extends AbstractEvent
      * @param integer $connectionId
      * @return void
      */
-    public static function fireDeleteMembershipConnectionEvent($connectionId)
+    public static function fireDeleteMembershipConnectionEvent($connectionId, $isSystemEvent = true)
     {
         // event's description
-        $eventDesc = 'Event - Membership connection deleted by the system';
-        self::fireEvent(self::DELETE_MEMBERSHIP_CONNECTION, $connectionId, self::getUserId(true), $eventDesc, array(
-            $connectionId
-        ));
+        $eventDesc = $isSystemEvent
+            ? 'Event - Membership connection deleted by the system'
+            : 'Event - Membership connection deleted by user';
+
+        $eventDescParams = $isSystemEvent
+            ? array($connectionId)
+            : array(UserService::getCurrentUserIdentity()->nick_name, $connectionId);
+
+        self::fireEvent(self::DELETE_MEMBERSHIP_CONNECTION, 
+                $connectionId, self::getUserId($isSystemEvent), $eventDesc, $eventDescParams);
     }
 
     /**

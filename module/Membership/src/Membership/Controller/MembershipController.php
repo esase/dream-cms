@@ -5,6 +5,9 @@ use Zend\View\Model\ViewModel;
 use Application\Controller\AbstractBaseController;
 use User\Service\Service as UserService;
 use Membership\Model\Base as BaseMembershipModel;
+use Membership\Event\Event as MembershipEvent;
+use Application\Model\Acl as AclBaseModel;
+use User\Event\Event as UserEvent;
 
 class MembershipController extends AbstractBaseController
 {
@@ -13,6 +16,12 @@ class MembershipController extends AbstractBaseController
      * @var object  
      */
     protected $model;
+
+    /**
+     * User Model instance
+     * @var object  
+     */
+    protected $userModel;
 
     /**
      * Get model
@@ -26,6 +35,85 @@ class MembershipController extends AbstractBaseController
         }
 
         return $this->model;
+    }
+
+    /**
+     * Get user model
+     */
+    protected function getUserModel()
+    {
+        if (!$this->userModel) {
+            $this->userModel = $this->getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('User\Model\Base');
+        }
+
+        return $this->userModel;
+    }
+
+    /**
+     * Delete purchased membership level
+     */
+    public function ajaxDeletePurchasedMembershipAction()
+    {
+        if ($this->isGuest()) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        $request = $this->getRequest();
+
+        if ($request->isPost() 
+                && null !== ($membershipId = $request->getPost('id', null))) {
+
+            // get a membership level info
+            if (null !== ($connectionInfo = $this->getModel()->getMembershipConnectionInfo($membershipId, 
+                    UserService::getCurrentUserIdentity()->user_id))) {
+
+                // delete the membership level
+                if (false !== ($deleteResult = 
+                        $this->getModel()->deleteMembershipConnection($connectionInfo['id']))) {
+
+                    // fire the delete membership connection event
+                    MembershipEvent::fireDeleteMembershipConnectionEvent($connectionInfo['id'], false);
+
+                    if ($connectionInfo['active'] == 
+                            BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE) {
+
+                        // get a next membership connection
+                        $nextConnection = $this->getModel()->
+                                getMembershipConnectionFromQueue(UserService::getCurrentUserIdentity()->user_id);
+
+                        $nextRoleId = $nextConnection
+                            ? $nextConnection['role_id']
+                            : AclBaseModel::DEFAULT_ROLE_MEMBER;
+
+                        // change the user's role 
+                        if (true === ($result = $this->
+                                getUserModel()->editUserRole(UserService::getCurrentUserIdentity()->user_id, $nextRoleId))) {
+
+                            // activate the next membership connection
+                            if ($nextConnection && true === 
+                                    ($activateResult = $this->getModel()->activateMembershipConnection($nextConnection['id']))) {
+
+                                // fire the activate membership connection event
+                                MembershipEvent::fireActivateMembershipConnectionEvent($nextConnection['id']);
+                            }
+
+                            // fire the edit user role event
+                            UserEvent::fireEditRoleEvent($connectionInfo, UserService::getAclRoles()[$nextRoleId], true);
+                        }
+                    }
+                }
+            }
+        }
+
+        $viewModel = new ViewModel(array(
+            'user_levels' => $this->getModel()->
+                    getAllUserMembershipConnections(UserService::getCurrentUserIdentity()->user_id, true)
+        ));
+
+        $viewModel->setTemplate('membership/membership/purchased-units-list');
+        return $viewModel;
     }
 
     /**
@@ -66,7 +154,12 @@ class MembershipController extends AbstractBaseController
             return $viewModel->setTemplate('membership/membership/units-list');
         }
 
-        $viewModel->setVariables($baseViewVariables);
+        $extraViewVariables = array(
+            'user_levels' => $this->getModel()->
+                    getAllUserMembershipConnections(UserService::getCurrentUserIdentity()->user_id, true)
+        );
+
+        $viewModel->setVariables(array_merge($baseViewVariables, $extraViewVariables));
         return $viewModel;
     }
 }

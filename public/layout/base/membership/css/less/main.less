@@ -1,7 +1,8 @@
 @import "variables/main.less";
 
-// memberships wrapper
-div#memberships-wrapper {
+// memberships wrapper and purchased memberships wrapper
+div#memberships-wrapper,
+div#purchased-memberships-wrapper {
     // pagination
     ul.pagination {
         margin:0;
@@ -18,6 +19,12 @@ div#memberships-wrapper {
         // caption
         .caption {
             overflow: hidden;
+
+            // date
+            .date {
+                font-weight: bold;
+                margin-top: @memberships-wrapper-date-margin-top;
+            }
         }
 
         // buttons
@@ -29,5 +36,12 @@ div#memberships-wrapper {
                 margin-bottom: @memberships-wrapper-buttons-margin-bottom;
             }
         }
+    }
+}
+
+div#memberships-wrapper {
+    // pagination
+    ul.pagination {
+        margin:0;
     }
 }

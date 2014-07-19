@@ -1,17 +1,30 @@
-div#memberships-wrapper ul.pagination {
+div#memberships-wrapper ul.pagination,
+div#purchased-memberships-wrapper ul.pagination {
   margin: 0;
 }
-div#memberships-wrapper div.thumbnail img {
+div#memberships-wrapper div.thumbnail img,
+div#purchased-memberships-wrapper div.thumbnail img {
   width: 100%;
   display: block;
 }
-div#memberships-wrapper div.thumbnail .caption {
+div#memberships-wrapper div.thumbnail .caption,
+div#purchased-memberships-wrapper div.thumbnail .caption {
   overflow: hidden;
 }
-div#memberships-wrapper div.thumbnail .buttons {
+div#memberships-wrapper div.thumbnail .caption .date,
+div#purchased-memberships-wrapper div.thumbnail .caption .date {
+  font-weight: bold;
+  margin-top: 10px;
+}
+div#memberships-wrapper div.thumbnail .buttons,
+div#purchased-memberships-wrapper div.thumbnail .buttons {
   padding: 9px;
 }
-div#memberships-wrapper div.thumbnail .buttons a {
+div#memberships-wrapper div.thumbnail .buttons a,
+div#purchased-memberships-wrapper div.thumbnail .buttons a {
   margin-top: 3px;
   margin-bottom: 3px;
+}
+div#memberships-wrapper ul.pagination {
+  margin: 0;
 }

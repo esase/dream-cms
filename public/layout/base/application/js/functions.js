@@ -30,9 +30,10 @@ function uniformHeight(elements, bindWindowResize)
  * @param string url
  * @param string successCallback
  * @param string method
+ * @param object params
  * @return void
  */
-function ajaxQuery(container, url, successCallback, method)
+function ajaxQuery(container, url, successCallback, method, params)
 {
     // show a loading box
     showLoadingBox(container);
@@ -49,16 +50,56 @@ function ajaxQuery(container, url, successCallback, method)
     $.ajax({
         type: method,
         url: url,
+        data: params,
         success: function(data){
             // replace text into a container
             $('#' + container).html(data);
 
             // call a callback
-            if (typeof successCallback != 'undefined') {
+            if (typeof successCallback != 'undefined' && successCallback) {
                 successCallback.call();
             }
         }
     });
+}
+
+/**
+ * Show confirm popup
+ *
+ * @param string confirmTitle
+ * @param string cancelTitle
+ * @param object link
+ * @param function callback
+ */
+function showConfirmPopup(confirmTitle, cancelTitle, link, callback)
+{
+    var $link = $(link);
+
+    // confirm buttons
+    var $confirmButtons = $('<a action="confirm">' + confirmTitle + '</a>&nbsp;<a action="cancel">' + cancelTitle + '</a>')
+        .attr('class', 'btn btn-default')
+        .click(function(event){
+            event.preventDefault();
+
+            switch($(this).attr('action')) {
+                case 'confirm' :
+                    callback.call();
+                    break;
+            }
+
+            $link.popover("destroy");
+        });
+
+    // show confirm message
+    $link.popover({
+        trigger: "manual",
+        placement: "bottom",
+        html: true,
+        title : $link.attr('confirm'),
+        content: $confirmButtons
+    });
+
+    $link.popover("show");
 }
 
 /**

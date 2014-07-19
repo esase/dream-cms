@@ -1,0 +1,42 @@
+<?php use Membership\Model\Base as BaseMembershipModel ?>
+<?php $this->declareVars('membershipDate') ?>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title"><?php echo $this->translate('Purchased membership levels') ?></h4>
+    </div>
+    <div class="panel-body">
+        <?php if (!count($this->user_levels)) : ?>
+            <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
+        <?php else: ?>
+            <?php foreach ($this->user_levels as $data): ?>
+                <div class="thumbnail">
+                    <img style="height: <?php echo (int) $this->getSetting('membership_image_height') ?>px;" alt="<?php echo $this->escapeHtmlAttr($data->title) ?>" src="<?php echo $this->membershipImageUrl($data->image) ?>" />
+                    <div class="caption" >
+                        <div class="description">
+                            <h3><?php echo $this->escapeHtml($data->title) ?></h3>
+
+                            <div class="date">
+                                <?php if (BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE == $data->active): ?>
+                                    <?php $this->membershipDate = $data->expire_date ?>
+                                    <?php echo $this->translate('Membership expire date') ?>: <time><?php echo $this->date($this->membershipDate) ?></time>
+                                <?php else: ?>
+                                    <?php echo $this->translate('Membership start date') ?>: <time><?php echo $this->date($this->membershipDate) ?></time>
+                                    <?php $this->membershipDate = $this->membershipDate + ($data->expire_value * BaseMembershipModel::SECONDS_IN_DAY) ?>
+                                <?php endif ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <a href="javascript:void(0)" rel="nofollow" confirm="<?php echo $this->escapeHtmlAttr($this->translate('Are you sure?')) ?>" membership-id="<?php echo $this->escapeJs($data->id) ?>" onclick="membership.deletePurchasedMmembership(this)" class="btn btn-primary" role="button">
+                            <?php echo $this->translate('Delete') ?>
+                        </a> 
+                        <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application', array('controller' => 'acl', 'action' => 'ajax-get-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">
+                            <?php echo $this->translate('Membership info') ?>
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach ?>
+        <?php endif ?>
+    </div>
+</div>
