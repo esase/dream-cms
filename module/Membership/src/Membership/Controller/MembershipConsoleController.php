@@ -2,8 +2,6 @@
 namespace Membership\Controller;
 
 use Application\Controller\AbstractBaseConsoleController;
-use Membership\Event\Event as MembershipEvent;
-use User\Event\Event as UserEvent;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
 use Application\Utility\EmailNotification;
@@ -71,29 +69,24 @@ class MembershipConsoleController extends AbstractBaseConsoleController
                     break;
                 }
 
-                // fire the delete membership connection event
-                MembershipEvent::fireDeleteMembershipConnectionEvent($connectionInfo['id']);
-
                 // get a next membership connection
                 $nextConnection = $this->getModel()->getMembershipConnectionFromQueue($connectionInfo['user_id']);
                 $nextRoleId = $nextConnection
                     ? $nextConnection['role_id']
                     : AclBaseModel::DEFAULT_ROLE_MEMBER;
 
+                $nextRoleName = $nextConnection
+                    ? $nextConnection['role_name']
+                    : AclBaseModel::DEFAULT_ROLE_MEMBER_NAME;
+
                 // change the user's role 
-                if (true === ($result = $this->
-                        getUserModel()->editUserRole($connectionInfo['user_id'], $nextRoleId))) {
+                if (true === ($result = $this->getUserModel()->editUserRole($connectionInfo['user_id'], 
+                        $nextRoleId, $nextRoleName, $connectionInfo, true))) {
 
                     // activate the next membership connection
-                    if ($nextConnection && true === 
-                            ($activateResult = $this->getModel()->activateMembershipConnection($nextConnection['id']))) {
-
-                        // fire the activate membership connection event
-                        MembershipEvent::fireActivateMembershipConnectionEvent($nextConnection['id']);
+                    if ($nextConnection) {
+                        $this->getModel()->activateMembershipConnection($nextConnection['id']);
                     }
-
-                    // fire the edit user role event
-                    UserEvent::fireEditRoleEvent($connectionInfo, UserService::getAclRoles()[$nextRoleId], true);
                 }
 
                 $deletedConnections++;

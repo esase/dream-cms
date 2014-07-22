@@ -81,13 +81,9 @@ class EditRoleTest extends BaseTest
         $membershipConnectionId = $this->createTestResources();
 
         // change the user's role (now he is a member)
-        if (true === ($result = 
-                $this->userModel->editUserRole($this->usersIds[0], AclBaseModel::DEFAULT_ROLE_MEMBER))) {
-
-            // fire the edit user role event
-            UserEvent::fireEditRoleEvent(array_merge($this->testUsersData[$this->usersIds[0]], array('user_id' => 
-                    $this->usersIds[0])), AclBaseModel::DEFAULT_ROLE_MEMBER_NAME, true);
-        }
+        $this->userModel->editUserRole($this->usersIds[0], AclBaseModel::DEFAULT_ROLE_MEMBER, 
+                AclBaseModel::DEFAULT_ROLE_MEMBER_NAME,
+                array_merge($this->testUsersData[$this->usersIds[0]], array('user_id' => $this->usersIds[0])), true);
 
         // membership connection queue must not be empty for specific user
         $select = $this->userModel->select();
@@ -115,13 +111,9 @@ class EditRoleTest extends BaseTest
         $membershipConnectionId = $this->createTestResources();
 
         // change the user's role (now he is a member)
-        if (true === ($result = 
-                $this->userModel->editUserRole($this->usersIds[0], AclBaseModel::DEFAULT_ROLE_MEMBER))) {
-
-            // fire the edit user role event
-            UserEvent::fireEditRoleEvent(array_merge($this->testUsersData[$this->usersIds[0]], array('user_id' => 
-                    $this->usersIds[0])), AclBaseModel::DEFAULT_ROLE_MEMBER_NAME);
-        }
+        $this->userModel->editUserRole($this->usersIds[0], AclBaseModel::DEFAULT_ROLE_MEMBER, 
+                AclBaseModel::DEFAULT_ROLE_MEMBER_NAME,
+                array_merge($this->testUsersData[$this->usersIds[0]], array('user_id' => $this->usersIds[0])));
 
         // now all membership connection queue must be empty for specific user
         $select = $this->userModel->select();

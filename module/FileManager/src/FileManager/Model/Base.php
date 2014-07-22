@@ -14,6 +14,7 @@ use Application\Utility\Pagination as PaginationUtility;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
 use Application\Utility\ErrorLogger;
 use Application\Utility\Slug as SlugUtility;
+use FileManager\Event\Event as FileManagerEvent;
 
 class Base extends AbstractBase
 {
@@ -138,15 +139,23 @@ class Base extends AbstractBase
     {
         $result = true;
         $directoryPath = self::getUserBaseFilesDir($userId);
-
+        $directoryPath = file_exists($directoryPath) ? $directoryPath : null;
+        
         if (file_exists($directoryPath)) {
             $result =  FileSystemUtility::deleteFiles($directoryPath, array(), false, true);
         }
-        else {
-            $directoryPath = null;
+
+        if (true === $result) {
+            if ($result) {
+                // fire the delete directory event
+                FileManagerEvent::fireDeleteDirectoryEvent($directoryPath, true);
+            }
+
+            return $directoryPath;
         }
 
-        return $result ? $directoryPath : $result;
+        ErrorLogger::log('Cannot delete files and directories for user id: ' . $userId);
+        return false;
     }
 
     /**
@@ -192,9 +201,11 @@ class Base extends AbstractBase
             if (false !== ($fileName = FileSystemUtility::uploadResourceFile(self::slugifyFileName($fileInfo['name']),
                     $fileInfo, $userDirectory, false))) {
 
+                // fire the add file event
+                FileManagerEvent::fireAddFileEvent($this->getUserDirectory($path) . $fileName);
                 return $fileName;
             }
-    
+
             return false;
         }
 
@@ -246,6 +257,8 @@ class Base extends AbstractBase
                 return false;
             }
 
+            // fire the add directory event
+            FileManagerEvent::fireAddDirectoryEvent($userDirectory . $name);
             return true;
         }
 
@@ -277,6 +290,11 @@ class Base extends AbstractBase
             return false;
         }
 
+        // fire the event
+        $isDirectory
+            ? FileManagerEvent::fireEditDirectoryEvent($oldFullPath, $newFullPath . $fileName)
+            : FileManagerEvent::fireEditFileEvent($oldFullPath, $newFullPath . $fileName);
+
         return $fileName;
     }
 
@@ -294,8 +312,18 @@ class Base extends AbstractBase
             return false;
         }
 
-        return FileSystemUtility::deleteFiles(self::
-                getUserBaseFilesDir() . '/' . $path . '/' . $fileName, array(), false, true);
+        $fullPath = self::getUserBaseFilesDir() . '/' . $path . '/' . $fileName;
+        $isDirectory = is_dir($fullPath);
+        $result = FileSystemUtility::deleteFiles($fullPath, array(), false, true);
+
+        // fire the event
+        if ($result) {
+            $isDirectory
+                ? FileManagerEvent::fireDeleteDirectoryEvent($fullPath)
+                : FileManagerEvent::fireDeleteFileEvent($fullPath);
+        }
+
+        return $result;
     }
 
     /**

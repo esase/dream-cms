@@ -6,6 +6,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Exception;
 use Application\Utility\ErrorLogger;
+use Application\Event\Event as ApplicationEvent;
 
 class SettingAdministration extends Setting
 {
@@ -20,9 +21,10 @@ class SettingAdministration extends Setting
      * @param array $settingsList
      * @param array $settingsValues
      * @param string $currentlanguage
+     * @param string $module
      * @return boolean|string
      */
-    public function saveSettings(array $settingsList, array $settingsValues, $currentlanguage)
+    public function saveSettings(array $settingsList, array $settingsValues, $currentlanguage, $module)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -63,6 +65,7 @@ class SettingAdministration extends Setting
             // clear cache
             $this->removeSettingsCache($currentlanguage);
             self::$settings = null;
+
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -71,7 +74,9 @@ class SettingAdministration extends Setting
 
             return $e->getMessage();
         }
-
+        
+        // fire the change settings event
+        ApplicationEvent::fireChangeSettingsEvent($module);
         return true;
     }
 

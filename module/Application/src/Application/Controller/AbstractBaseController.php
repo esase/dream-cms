@@ -3,7 +3,6 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use User\Service\Service as UserService;
-use Application\Event\Event as ApplicationEvent;
 use Zend\EventManager\EventManagerInterface;
 use Zend\View\Model\ViewModel;
 use Zend\Http\Response;
@@ -340,7 +339,7 @@ abstract class AbstractBaseController extends AbstractActionController
     protected function settingsForm($module, $controller, $action)
     {
         $currentlanguage = UserService::getCurrentLocalization()['language'];
-
+        
         // get settings form
         $settingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
@@ -368,10 +367,7 @@ abstract class AbstractBaseController extends AbstractActionController
                     }
 
                     if (true === ($result = $settings->
-                            saveSettings($settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
-
-                        // fire the change settings event
-                        ApplicationEvent::fireChangeSettingsEvent($module);
+                            saveSettings($settingsList, $settingsForm->getForm()->getData(), $currentlanguage, $module))) {
 
                         $this->flashMessenger()
                             ->setNamespace('success')

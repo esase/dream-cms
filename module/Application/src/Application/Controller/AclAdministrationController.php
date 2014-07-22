@@ -2,8 +2,6 @@
 namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
-use User\Service\Service as UserService;
-use Application\Event\Event as ApplicationEvent;
 
 class AclAdministrationController extends AbstractAdministrationController
 {
@@ -42,8 +40,8 @@ class AclAdministrationController extends AbstractAdministrationController
     public function allowResourcesAction()
     {
         // get the role info
-        if (null == ($role = $this->getModel()->getRoleInfo($this->getSlug(), 
-                false, true))) {
+        if (null == ($role = 
+                $this->getModel()->getRoleInfo($this->getSlug(), false, true))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }
@@ -60,7 +58,7 @@ class AclAdministrationController extends AbstractAdministrationController
                     }
 
                     // allow the resource
-                    if (true !== ($allowResult = $this->getModel()->allowResource($role['id'],
+                    if (true !== ($allowResult = $this->getModel()->allowResource($role['id'], 
                             $resourceId))) {
 
                         $this->flashMessenger()
@@ -69,9 +67,6 @@ class AclAdministrationController extends AbstractAdministrationController
 
                         break;
                     }
-
-                    // fire the allow acl resource event
-                    ApplicationEvent::fireAllowAclResourceEvent($resourceId, $role['id']);
                 }
 
                 if (true === $allowResult) {
@@ -94,8 +89,8 @@ class AclAdministrationController extends AbstractAdministrationController
     public function disallowResourcesAction()
     {
         // get the role info
-        if (null == ($role = $this->
-                getModel()->getRoleInfo($this->getSlug(), false, true))) {
+        if (null == ($role = 
+                $this->getModel()->getRoleInfo($this->getSlug(), false, true))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }
@@ -112,8 +107,8 @@ class AclAdministrationController extends AbstractAdministrationController
                     }
 
                     // disallow the resource
-                    if (true !== ($disallowResult = $this->getModel()->disallowResource($role['id'],
-                            $resourceId))) {
+                    if (true !== ($disallowResult = 
+                            $this->getModel()->disallowResource($role['id'], $resourceId))) {
 
                         $this->flashMessenger()
                             ->setNamespace('error')
@@ -121,9 +116,6 @@ class AclAdministrationController extends AbstractAdministrationController
 
                         break;
                     }
-
-                    // fire the disallow acl resource event
-                    ApplicationEvent::fireDisallowAclResourceEvent($resourceId, $role['id']);
                 }
 
                 if (true === $disallowResult) {
@@ -165,9 +157,6 @@ class AclAdministrationController extends AbstractAdministrationController
 
                         break;
                     }
-
-                    // fire the delete acl role event
-                    ApplicationEvent::fireDeleteAclRoleEvent($roleId);
                 }
 
                 if (true === $deleteResult) {
@@ -188,8 +177,8 @@ class AclAdministrationController extends AbstractAdministrationController
     public function editRoleAction()
     {
         // get the role info
-        if (null == ($role = $this->
-                getModel()->getRoleInfo($this->getSlug()))) {
+        if (null == ($role = 
+                $this->getModel()->getRoleInfo($this->getSlug()))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }
@@ -220,9 +209,6 @@ class AclAdministrationController extends AbstractAdministrationController
                 // edit the role
                 if (true == ($result = $this->
                         getModel()->editRole($role['id'], $aclRoleForm->getForm()->getData()))) {
-
-                    // fire the edit acl role event
-                    ApplicationEvent::fireEditAclRoleEvent($role['id']);
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -275,9 +261,6 @@ class AclAdministrationController extends AbstractAdministrationController
                 $result = $this->getModel()->addRole($aclRoleForm->getForm()->getData());
 
                 if (is_numeric($result)) {
-                    // fire the add acl role event
-                    ApplicationEvent::fireAddAclRoleEvent($result);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Role has been added'));
@@ -390,7 +373,7 @@ class AclAdministrationController extends AbstractAdministrationController
     public function resourceSettingsAction()
     {
         // get resource's settings info
-        if (null == ($resourceSettings =
+        if (null == ($settings =
                 $this->getModel()->getResourceSettings($this->getSlug()))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
@@ -402,10 +385,10 @@ class AclAdministrationController extends AbstractAdministrationController
             ->getInstance('Application\Form\AclResourceSetting');
 
         // fill the form with default values
-        $aclResourceSettingsForm->setActionsLimit($resourceSettings['actions_limit'])
-            ->setActionsReset($resourceSettings['actions_reset'])
-            ->setDateStart($resourceSettings['date_start'])
-            ->setDateEnd($resourceSettings['date_end']);
+        $aclResourceSettingsForm->setActionsLimit($settings['actions_limit'])
+            ->setActionsReset($settings['actions_reset'])
+            ->setDateStart($settings['date_start'])
+            ->setDateEnd($settings['date_end']);
 
         $request = $this->getRequest();
 
@@ -422,12 +405,8 @@ class AclAdministrationController extends AbstractAdministrationController
                 }
 
                 // edit settings
-                if (true == ($result = $this->getModel()->
-                        editResourceSettings($resourceSettings['connection'], $aclResourceSettingsForm->getForm()->getData()))) {
-
-                    // fire the edit acl resource settings event
-                    ApplicationEvent::fireEditAclResourceSettingsEvent($resourceSettings['connection'], 
-                            $resourceSettings['resource'], $resourceSettings['role']);
+                if (true == ($result = $this->getModel()->editResourceSettings($settings['connection'], 
+                        $settings['resource'], $settings['role'], $aclResourceSettingsForm->getForm()->getData()))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -440,13 +419,13 @@ class AclAdministrationController extends AbstractAdministrationController
                 }
 
                 return $this->redirectTo('acl-administration', 'resource-settings', array(
-                    'slug' => $resourceSettings['connection']
+                    'slug' => $settings['connection']
                 ));
             }
         }
 
         return new ViewModel(array(
-            'resourceSettings' => $resourceSettings,
+            'resourceSettings' => $settings,
             'aclResourceSettingsForm' => $aclResourceSettingsForm->getForm()
         ));
     }

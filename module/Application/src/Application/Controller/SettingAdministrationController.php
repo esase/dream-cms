@@ -2,49 +2,79 @@
 namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
-use Application\Utility\Cache as CacheUtility;
 use Application\Event\Event as ApplicationEvent;
+use Application\Model\CacheAdministration as CacheAdministrationModel;
 
 class SettingAdministrationController extends AbstractAdministrationController
 {
+    /**
+     * Cache model instance
+     * @var object  
+     */
+    protected $cacheModel;
+
+    /**
+     * Get cache model
+     */
+    protected function getCacheModel()
+    {
+        if (!$this->cacheModel) {
+            $this->cacheModel = $this->getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Application\Model\CacheAdministration');
+        }
+
+        return $this->cacheModel;
+    }
+
     /**
      * Administration
      */
     public function indexAction()
     {
-        // remember some settings before change 
+        $this->clearJsCssCache();
+
+        return new ViewModel(array(
+            'settingsForm' => parent::settingsForm('application', 'settings-administration', 'index')
+        ));
+    }
+
+    /**
+     * Clear css and js caches
+     * 
+     * @return void
+     */
+    protected function clearJsCssCache()
+    {
+        // remember settings before changes 
         $jsCache = $this->getSetting('application_js_cache');
         $jsCacheGzip = $this->getSetting('application_js_cache_gzip');
 
         $cssCache = $this->getSetting('application_css_cache');
         $cssCacheGzip = $this->getSetting('application_css_cache_gzip');
 
-        // clear js and css cache
+        // clear js and css cache if needed
         $eventManager = ApplicationEvent::getEventManager();
-        $eventManager->attach(ApplicationEvent::CHANGE_SETTINGS, function ($e)
-                use ($jsCache, $jsCacheGzip, $cssCache, $cssCacheGzip) {
+        $eventManager->attach(ApplicationEvent::CHANGE_SETTINGS, 
+                function ($e) use ($jsCache, $jsCacheGzip, $cssCache, $cssCacheGzip) {
 
             // get post values
             $post = $this->getRequest()->getPost();
 
             // clear js cache
-            if ($jsCache <> $post['application_js_cache'] ||
-                    $jsCacheGzip <> $post['application_js_cache_gzip']) {
+            if ($jsCache <> $post['application_js_cache'] 
+                    || $jsCacheGzip <> $post['application_js_cache_gzip']) {
 
-                CacheUtility::clearJsCache();
+                $this->getCacheModel()->clearCache(CacheAdministrationModel::CACHE_JS);
             }
 
             // clear css cache
-            if ($cssCache <> $post['application_css_cache'] ||
-                    $cssCacheGzip <> $post['application_css_cache_gzip']) {
+            if ($cssCache <> $post['application_css_cache'] 
+                    || $cssCacheGzip <> $post['application_css_cache_gzip']) {
 
-                CacheUtility::clearCssCache();
+                $this->getCacheModel()->clearCache(CacheAdministrationModel::CACHE_CSS);
             }
         });
-
-        return new ViewModel(array(
-            'settingsForm' => parent::settingsForm('application', 'settings-administration', 'index')
-        ));
     }
 
     /**
@@ -67,30 +97,15 @@ class SettingAdministrationController extends AbstractAdministrationController
             // check the form validation
             if ($cacheForm->getForm()->isValid()) {
                 if (null != ($caches = $cacheForm->getForm()->getData()['cache'])) {
-                    // clear caches
+                    // clear selected caches
                     foreach ($caches as $cache) {
                         // check the permission and increase permission's actions track
                         if (true !== ($result = $this->checkPermission())) {
                             return $result;
                         }
 
-                        switch ($cache) {
-                            case 'static' :
-                                $clearResult = CacheUtility::clearStaticCache();
-                                break;
-                            case 'dynamic' :
-                                $clearResult =  CacheUtility::clearDynamicCache();
-                                break;
-                            case 'config' :
-                                $clearResult =  CacheUtility::clearConfigCache();
-                                break;
-                            case 'js' :
-                                $clearResult = CacheUtility::clearJsCache();
-                                break;
-                            case 'css' :
-                                $clearResult = CacheUtility::clearCssCache();
-                                break;
-                        }
+                        // clearing specific cache 
+                        $clearResult = $this->getCacheModel()->clearCache($cache);
 
                         if (false === $clearResult) {
                             $this->flashMessenger()
@@ -99,9 +114,6 @@ class SettingAdministrationController extends AbstractAdministrationController
 
                             break;
                         }
-
-                        // fire the clear cache event
-                        ApplicationEvent::fireClearCacheEvent($cache);
                     }
 
                     if (true === $clearResult) {

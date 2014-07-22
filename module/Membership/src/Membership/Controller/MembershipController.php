@@ -5,9 +5,7 @@ use Zend\View\Model\ViewModel;
 use Application\Controller\AbstractBaseController;
 use User\Service\Service as UserService;
 use Membership\Model\Base as BaseMembershipModel;
-use Membership\Event\Event as MembershipEvent;
 use Application\Model\Acl as AclBaseModel;
-use User\Event\Event as UserEvent;
 
 class MembershipController extends AbstractBaseController
 {
@@ -71,10 +69,7 @@ class MembershipController extends AbstractBaseController
 
                 // delete the membership level
                 if (false !== ($deleteResult = 
-                        $this->getModel()->deleteMembershipConnection($connectionInfo['id']))) {
-
-                    // fire the delete membership connection event
-                    MembershipEvent::fireDeleteMembershipConnectionEvent($connectionInfo['id'], false);
+                        $this->getModel()->deleteMembershipConnection($connectionInfo['id'], false))) {
 
                     if ($connectionInfo['active'] == 
                             BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE) {
@@ -87,20 +82,18 @@ class MembershipController extends AbstractBaseController
                             ? $nextConnection['role_id']
                             : AclBaseModel::DEFAULT_ROLE_MEMBER;
 
+                        $nextRoleName = $nextConnection
+                            ? $nextConnection['role_name']
+                            : AclBaseModel::DEFAULT_ROLE_MEMBER_NAME;
+
                         // change the user's role 
-                        if (true === ($result = $this->
-                                getUserModel()->editUserRole(UserService::getCurrentUserIdentity()->user_id, $nextRoleId))) {
+                        if (true === ($result = $this->getUserModel()->editUserRole(UserService::
+                                getCurrentUserIdentity()->user_id, $nextRoleId, $nextRoleName, $connectionInfo, true))) {
 
                             // activate the next membership connection
-                            if ($nextConnection && true === 
-                                    ($activateResult = $this->getModel()->activateMembershipConnection($nextConnection['id']))) {
-
-                                // fire the activate membership connection event
-                                MembershipEvent::fireActivateMembershipConnectionEvent($nextConnection['id']);
+                            if ($nextConnection) {
+                                $this->getModel()->activateMembershipConnection($nextConnection['id']);
                             }
-
-                            // fire the edit user role event
-                            UserEvent::fireEditRoleEvent($connectionInfo, UserService::getAclRoles()[$nextRoleId], true);
                         }
                     }
                 }

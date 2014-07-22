@@ -168,20 +168,19 @@ class Handler extends AbstractHandler
         // activate the membership connection
         if (is_numeric($connectionId) && $activateConnection) {
             // change the user's role 
+            $userInfo = UserService::getUserInfo($transactionInfo['user_id']);
+            $userInfo = array(
+                'language' => $userInfo->language,
+                'email' => $userInfo->email,
+                'nick_name' => $userInfo->nick_name,
+                'user_id' => $userInfo->user_id
+            );
+
             if (true === ($result = $this->getUserModel()->
-                    editUserRole($transactionInfo['user_id'], $roleInfo['role_id']))) {
+                    editUserRole($transactionInfo['user_id'], $roleInfo['role_id'], $roleInfo['role_name'], $userInfo, true))) {
 
                 // activate the membership connection
-                if (true === ($activateResult = 
-                        $this->getModel()->activateMembershipConnection($connectionId))) {
-
-                    // fire the activate membership connection event
-                    MembershipEvent::fireActivateMembershipConnectionEvent($connectionId);
-                }
-
-                // fire the edit user role event
-                UserEvent::fireEditRoleEvent(UserService::
-                        getUserInfo($transactionInfo['user_id']), UserService::getAclRoles()[$roleInfo['role_id']], true);
+                $this->getModel()->activateMembershipConnection($connectionId);
             }
         }
     }

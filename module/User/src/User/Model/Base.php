@@ -13,6 +13,8 @@ use Exception;
 use User\Exception\UserException;
 use Application\Utility\Image as ImageUtility;
 use Application\Utility\ErrorLogger;
+use User\Event\Event as UserEvent;
+use User\Service\Service as UserService;
 
 class Base extends AbstractBase
 {
@@ -499,7 +501,7 @@ class Base extends AbstractBase
     /**
      * Get users with empty role
      *
-     * @return object
+     * @return array
      */
     public function getUsersWithEmptyRole()
     {
@@ -517,7 +519,9 @@ class Base extends AbstractBase
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
-        return $resultSet->initialize($statement->execute());
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
     }
 
     /**
@@ -525,9 +529,16 @@ class Base extends AbstractBase
      *
      * @param integer $userId
      * @param integer $roleId
+     * @param string $roleName
+     * @param array $userInfo
+     *      string language
+     *      string email
+     *      string nick_name
+     *      integer user_id
+     * @param boolean $isSystem
      * @return boolean|string
      */
-    public function editUserRole($userId, $roleId)
+    public function editUserRole($userId, $roleId, $roleName, array $userInfo, $isSystem = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -555,10 +566,11 @@ class Base extends AbstractBase
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
             ErrorLogger::log($e);
-
             return $e->getMessage();
         }
 
+        // fire the edit user role event
+        UserEvent::fireEditRoleEvent($userInfo, $roleName, $isSystem);
         return true;
     }
 

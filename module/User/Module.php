@@ -32,12 +32,8 @@ class Module
             if (null != ($usersList = $users->getUsersWithEmptyRole())) {
                 // process users list
                 foreach ($usersList as $userInfo) {
-                    if (true === ($result = 
-                            $users->editUserRole($userInfo['user_id'], AclModel::DEFAULT_ROLE_MEMBER))) {
-
-                        // fire the edit user role event
-                        UserEvent::fireEditRoleEvent($userInfo, AclModel::DEFAULT_ROLE_MEMBER_NAME, true);
-                    }
+                    $users->editUserRole($userInfo['user_id'], 
+                            AclModel::DEFAULT_ROLE_MEMBER, AclModel::DEFAULT_ROLE_MEMBER_NAME, $userInfo, true);
                 }
             }
         }, -100);

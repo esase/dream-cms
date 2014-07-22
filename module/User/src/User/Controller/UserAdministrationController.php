@@ -6,7 +6,6 @@ use Application\Controller\AbstractAdministrationController;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
 use User\Event\Event as UserEvent;
-use Application\Event\Event as ApplicationEvent;
 use User\Model\UserAdministration as UserAdministrationModel;
 
 class UserAdministrationController extends AbstractAdministrationController
@@ -66,6 +65,16 @@ class UserAdministrationController extends AbstractAdministrationController
      */
     public function aclResourceSettingsAction()
     {
+        
+            
+         $eventManager = \Application\Event\Event::getEventManager();
+        $eventManager->attach(\Application\Event\Event::EDIT_ACL_RESOURCE_SETTINGS, function ($e) {
+            
+            echo vsprintf($this->getServiceLocator()->get('Translator')->translate($e->getParam('description')), $e->getParam('description_params'));
+            exit;
+        });
+        
+        
         // get the user info
         if (null == ($user = $this->getModel()->getUserInfo($this->params()->
                 fromQuery('user', -1))) || $user['role'] == AclBaseModel::DEFAULT_ROLE_ADMIN) {
@@ -74,7 +83,7 @@ class UserAdministrationController extends AbstractAdministrationController
         }
 
         // get resource's settings info
-        if (null == ($resourceSettings =
+        if (null == ($settings =
                 $this->getAclModel()->getResourceSettings($this->getSlug(), $user['user_id']))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
@@ -84,10 +93,10 @@ class UserAdministrationController extends AbstractAdministrationController
         $aclResourceSettingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Application\Form\AclResourceSetting')
-            ->setActionsLimit($resourceSettings['actions_limit'])
-            ->setActionsReset($resourceSettings['actions_reset'])
-            ->setDateStart($resourceSettings['date_start'])
-            ->setDateEnd($resourceSettings['date_end'])
+            ->setActionsLimit($settings['actions_limit'])
+            ->setActionsReset($settings['actions_reset'])
+            ->setDateStart($settings['date_start'])
+            ->setDateEnd($settings['date_end'])
             ->showActionCleanCounter();
 
         $request = $this->getRequest();
@@ -106,12 +115,8 @@ class UserAdministrationController extends AbstractAdministrationController
 
                 // edit settings
                 $cleanCounter = $this->params()->fromPost('clean_counter') ? true : false;
-                if (true == ($result = $this->getAclModel()->editResourceSettings(
-                        $resourceSettings['connection'], $aclResourceSettingsForm->getForm()->getData(), $user['user_id'], $cleanCounter))) {
-
-                    // fire the edit acl resource settings event
-                    ApplicationEvent::fireEditAclResourceSettingsEvent($resourceSettings['connection'], $resourceSettings['resource'], 
-                            $resourceSettings['role'], $user['user_id']);
+                if (true == ($result = $this->getAclModel()->editResourceSettings($settings['connection'], 
+                        $settings['resource'], $settings['role'], $aclResourceSettingsForm->getForm()->getData(), $user['user_id'], $cleanCounter))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -124,14 +129,14 @@ class UserAdministrationController extends AbstractAdministrationController
                 }
 
                 return $this->redirectTo('users-administration', 'acl-resource-settings', array(
-                    'slug' => $resourceSettings['connection']
+                    'slug' => $settings['connection']
                 ), false, array('user' => $user['user_id']));
             }
         }
 
         return new ViewModel(array(
             'user' => $user,
-            'resourceSettings' => $resourceSettings,
+            'resourceSettings' => $settings,
             'aclResourceSettingsForm' => $aclResourceSettingsForm->getForm()
         ));
     }
@@ -221,8 +226,11 @@ class UserAdministrationController extends AbstractAdministrationController
                     return $result;
                 }
 
+                // get the role name
+                $roleName = UserService::getAclRoles()[$roleForm->getForm()->getData()['role']];
+
                 if (true === ($result = $this->getModel()->
-                        editUserRole($user['user_id'], $roleForm->getForm()->getData()['role']))) {
+                        editUserRole($user['user_id'], $roleForm->getForm()->getData()['role'], $roleName, $user->getArrayCopy()))) {
 
                     // fire the edit user role event
                     UserEvent::fireEditRoleEvent($user, UserService::getAclRoles()[$roleForm->getForm()->getData()['role']]);

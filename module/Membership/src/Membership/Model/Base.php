@@ -13,6 +13,7 @@ use Application\Service\Service as ApplicationService;
 use Application\Utility\Pagination as PaginationUtility;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
+use Membership\Event\Event as MembershipEvent;
 
 class Base extends AbstractBase
 {
@@ -141,14 +142,16 @@ class Base extends AbstractBase
 
             return $e->getMessage();
         }
-
+        
+        // fire the activate membership connection event
+        MembershipEvent::fireActivateMembershipConnectionEvent($connectionId);
         return $result->count() ? true : false;
     }
 
     /**
      * Get users membership level 
      *
-     * @return object
+     * @return array
      */
     public function getUsersMembershipLevels()
     {
@@ -175,21 +178,31 @@ class Base extends AbstractBase
                     'role_id',
                 )
             )
+            ->join(
+                array('d' => 'application_acl_role'),
+                'd.id = c.role_id',
+                array(
+                    'role_name' => 'name',
+                )
+            )
             ->group('a.user_id')
             ->where->IsNull('a.role');
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
-        return $resultSet->initialize($statement->execute());
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
     }
 
     /**
      * Delete the membership connection
      *
      * @param integer $connectionId
+     * @param boolean $isSystem
      * @return boolean|string
      */
-    public function deleteMembershipConnection($connectionId)
+    public function deleteMembershipConnection($connectionId, $isSystem = true)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -212,6 +225,8 @@ class Base extends AbstractBase
             return $e->getMessage();
         }
 
+        // fire the delete membership connection event
+        MembershipEvent::fireDeleteMembershipConnectionEvent($connectionId, $isSystem);
         return $result->count() ? true : false;
     }
 
@@ -283,6 +298,13 @@ class Base extends AbstractBase
                     'expiration_notification'
                 )
             )
+            ->join(
+                array('c' => 'application_acl_role'),
+                'c.id = b.role_id',
+                array(
+                    'role_name' => 'name'
+                )
+            )
             ->where(array(
                 'a.user_id' => $userId,
                 'a.active' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE
@@ -303,10 +325,11 @@ class Base extends AbstractBase
      * @param array $roleInfo
      *      integer id required
      *      string image required
+     *      param boolean $isSystem
      * @throws Membership\Exception\MembershipException
      * @return boolean|string
      */
-    public function deleteRole($roleInfo)
+    public function deleteRole($roleInfo, $isSystem = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -336,6 +359,8 @@ class Base extends AbstractBase
             return $e->getMessage();
         }
 
+        // fire the delete membership role event
+        MembershipEvent::fireDeleteMembershipRoleEvent($roleInfo['id'], $isSystem);
         return $result->count() ? true : false;
     }
 
@@ -354,7 +379,7 @@ class Base extends AbstractBase
      * Get all memberhip levels
      *
      * @param integer $roleId
-     * @return object
+     * @return array
      */
     public function getAllMembershipLevels($roleId)
     {
@@ -370,7 +395,9 @@ class Base extends AbstractBase
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
-        return $resultSet->initialize($statement->execute());
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
     }
 
     /**
@@ -403,6 +430,13 @@ class Base extends AbstractBase
                     'subscribers' => new Expression('count(b.id)'),
                 ),
                 'left'
+            )
+            ->join(
+                array('c' => 'application_acl_role'),
+                'c.id = a.role_id',
+                array(
+                    'role_name' => 'name'
+                )
             )
             ->where(array(
                 'a.id' => $id

@@ -3,7 +3,6 @@ namespace FileManager\Controller;
 
 use Application\Controller\AbstractAdministrationController;
 use FileManager\Model\Base as FileManagerBaseModel;
-use FileManager\Event\Event as FileManagerEvent;
 
 abstract class FileManagerBaseController extends AbstractAdministrationController
 {
@@ -47,7 +46,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
     protected function addFile()
     {
         $fileForm = null;
-
+        
         // get a path
         $userPath = $this->getUserPath();
 
@@ -82,17 +81,14 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                     }
 
                     // add a new file
-                    if (false === ($fileName =
-                            $this->getModel()->addUserFile($this->params()->fromFiles('file'), $userPath))) {
+                    if (false === ($fileName = $this->getModel()->addUserFile($this->params()->
+                            fromFiles('file'), $userPath))) {
 
                         $this->flashMessenger()
                             ->setNamespace('error')
                             ->addMessage($this->getTranslator()->translate('Impossible add a new file. Check the received path permission'));
                     }
                     else {
-                        // fire the add file event
-                        FileManagerEvent::fireAddFileEvent($this->getModel()->getUserDirectory($userPath) . $fileName);
-
                         $this->flashMessenger()
                             ->setNamespace('success')
                             ->addMessage($this->getTranslator()->translate('File has been added'));
@@ -152,13 +148,6 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                     // add a new directory
                     if (true === ($result = $this->getModel()->
                             addUserDirectory($directoryForm->getForm()->getData()['name'], $userPath))) {
-
-                        // get a full path
-                        $fullPath = $this->getModel()->
-                                getUserDirectory($userPath) . $directoryForm->getForm()->getData()['name'];
-
-                        // fire the add directory event
-                        FileManagerEvent::fireAddDirectoryEvent($fullPath);
 
                         $this->flashMessenger()
                             ->setNamespace('success')
@@ -243,11 +232,6 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                                         translate((!$isDirectory ? 'Impossible edit selected file' : 'Impossible edit selected directory')));
                         }
                         else {
-                            // fire the event
-                            $isDirectory
-                                ? FileManagerEvent::fireEditDirectoryEvent($fullFilePath, $userDirectory . $newFileName)
-                                : FileManagerEvent::fireEditFileEvent($fullFilePath, $userDirectory . $newFileName);
-
                             $this->flashMessenger()
                                 ->setNamespace('success')
                                 ->addMessage($this->getTranslator()->
@@ -292,10 +276,6 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                         return $result;
                     }
 
-                    // get a full path
-                    $fullPath = $this->getModel()->getUserDirectory($userPath) . $file;
-                    $isDirectory = is_dir($fullPath);
-
                     // delete the file or directory with nested files and dirs
                     if (true !== ($deleteResult = $this->getModel()->deleteUserFile($file, $userPath))) {
                         $this->flashMessenger()
@@ -305,11 +285,6 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
 
                         break;
                     }
-        
-                    // fire the event
-                    $isDirectory
-                        ? FileManagerEvent::fireDeleteDirectoryEvent($fullPath)
-                        : FileManagerEvent::fireDeleteFileEvent($fullPath);
                 }
 
                 if (true === $deleteResult) {

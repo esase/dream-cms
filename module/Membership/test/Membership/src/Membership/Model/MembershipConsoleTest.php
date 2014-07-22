@@ -85,8 +85,8 @@ class MembershipConsoleTest extends BaseTest
         $expiredConnectionId = 0;
         $data = $membershipModel->getExpiredMembershipsConnections();
 
-        if ($data->count()) {
-            $expiredConnectionId = $data->current()->id;
+        if (count($data)) {
+            $expiredConnectionId = current($data)['id'];
         }
 
         $this->assertEquals($connectionId, $expiredConnectionId);

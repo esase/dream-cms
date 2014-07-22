@@ -11,6 +11,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Exception;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Application\Utility\ErrorLogger;
+use Application\Event\Event as ApplicationEvent;
 
 class AclAdministration extends Acl
 {
@@ -74,7 +75,9 @@ class AclAdministration extends Acl
 
             return $e->getMessage();
         }
-
+        
+        // fire the edit acl role event
+        ApplicationEvent::fireEditAclRoleEvent($roleId);
         return true;
     }
 
@@ -111,6 +114,8 @@ class AclAdministration extends Acl
             return $e->getMessage();
         }
 
+        // fire the add acl role event
+        ApplicationEvent::fireAddAclRoleEvent($insertId);
         return $insertId;
     }
 
@@ -118,6 +123,8 @@ class AclAdministration extends Acl
      * Edit resource's settings
      *
      * @param integer $connectionId
+     * @param integer $resourceId
+     * @param integer $roleId
      * @param array $settings
      *      integer actions_limit
      *      integer actions_reset
@@ -127,7 +134,7 @@ class AclAdministration extends Acl
      * @param boolean $cleanActionCounter
      * @return integer|string
      */
-    public function editResourceSettings($connectionId, array $settings = array(), $userId = 0, $cleanActionCounter = false)
+    public function editResourceSettings($connectionId, $resourceId, $roleId, array $settings = array(), $userId = 0, $cleanActionCounter = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -195,6 +202,8 @@ class AclAdministration extends Acl
             return $e->getMessage();
         }
 
+        // fire the edit acl resource settings event
+        ApplicationEvent::fireEditAclResourceSettingsEvent($connectionId, $resourceId, $roleId, $userId);
         return true;
     }
 
@@ -246,6 +255,8 @@ class AclAdministration extends Acl
             return $e->getMessage();
         }
 
+        // fire the allow acl resource event
+        ApplicationEvent::fireAllowAclResourceEvent($resourceId, $roleId);
         return true;
     }
 
@@ -280,6 +291,8 @@ class AclAdministration extends Acl
             return $e->getMessage();
         }
 
+        // fire the disallow acl resource event
+        ApplicationEvent::fireDisallowAclResourceEvent($resourceId, $roleId);
         return true;
     }
 
@@ -312,7 +325,9 @@ class AclAdministration extends Acl
 
             return $e->getMessage();
         }
-
+        
+        // fire the delete acl role event
+        ApplicationEvent::fireDeleteAclRoleEvent($roleId);
         return $result->count() ? true : false;
     }
 

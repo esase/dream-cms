@@ -3,7 +3,6 @@ namespace Membership\Controller;
 
 use Zend\View\Model\ViewModel;
 use Application\Controller\AbstractAdministrationController;
-use Membership\Event\Event as MembershipEvent;
 
 class MembershipAdministrationController extends AbstractAdministrationController
 {
@@ -139,9 +138,6 @@ class MembershipAdministrationController extends AbstractAdministrationControlle
                         getForm()->getData(), $this->params()->fromFiles('image'));
 
                 if (is_numeric($result)) {
-                    // fire the add membership role event
-                    MembershipEvent::fireAddMembershipRoleEvent($result);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Role has been added'));
@@ -204,9 +200,6 @@ class MembershipAdministrationController extends AbstractAdministrationControlle
                 if (true == ($result = $this->getModel()->editRole($role, 
                         $aclRoleForm->getForm()->getData(), $this->params()->fromFiles('image')))) {
 
-                    // fire the edit membership role event
-                    MembershipEvent::fireEditMembershipRoleEvent($role['id']);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Role has been edited'));
@@ -261,9 +254,6 @@ class MembershipAdministrationController extends AbstractAdministrationControlle
 
                         break;
                     }
-
-                    // fire the delete membership role event
-                    MembershipEvent::fireDeleteMembershipRoleEvent($roleId);
                 }
             }
         }

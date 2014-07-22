@@ -2,8 +2,6 @@
 namespace FileManager;
 
 use User\Event\Event as UserEvent;
-use FileManager\Event\Event as FileManagerEvent;
-use Application\Utility\ErrorLogger;
 use Zend\ModuleManager\ModuleManagerInterface;
 
 class Module
@@ -14,20 +12,13 @@ class Module
     public function init(ModuleManagerInterface $moduleManager)
     {
         // delete the user's files and dirs
-        $eventManager = FileManagerEvent::getEventManager();
+        $eventManager = UserEvent::getEventManager();
         $eventManager->attach(UserEvent::DELETE, function ($e) use ($moduleManager) {
             // get a model instance
             $model = $moduleManager->getEvent()->getParam('ServiceManager')
                 ->get('Application\Model\ModelManager')
-                ->getInstance('FileManager\Model\Base');
-
-            if (false === ($fullPath = $model->deleteUserHomeDirectory($e->getParam('object_id')))) {
-                ErrorLogger::log('Cannot delete files and directories for user id: ' . $e->getParam('object_id'));
-            }
-            else if (null != $fullPath) {
-                // fire the delete directory event
-                FileManagerEvent::fireDeleteDirectoryEvent($fullPath, true);
-            }
+                ->getInstance('FileManager\Model\Base')
+                ->deleteUserHomeDirectory($e->getParam('object_id'));
         });
     }
 

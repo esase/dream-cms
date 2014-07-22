@@ -96,7 +96,7 @@ class MembershipConsole extends Base
     /**
      * Get all expired memberships connections
      *
-     * @return object
+     * @return array
      */
     public function getExpiredMembershipsConnections()
     {
@@ -123,6 +123,13 @@ class MembershipConsole extends Base
                     'language',
                 )
             )
+            ->join(
+                array('d' => 'application_acl_role'),
+                'd.id = b.role_id',
+                array(
+                    'role_name' => 'name',
+                )
+            )
             ->where(array(
                 'a.active' => self::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE,
                 $predicate->lessThanOrEqualTo('a.expire_date', time())
@@ -130,6 +137,8 @@ class MembershipConsole extends Base
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
-        return $resultSet->initialize($statement->execute());
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
     }
 }

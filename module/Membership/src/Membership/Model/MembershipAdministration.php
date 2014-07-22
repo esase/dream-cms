@@ -7,6 +7,7 @@ use Application\Service\Service as ApplicationService;
 use Application\Utility\ErrorLogger;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Application\Utility\Image as ImageUtility;
+use Membership\Event\Event as MembershipEvent;
 
 class MembershipAdministration extends Base
 {
@@ -50,6 +51,8 @@ class MembershipAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the edit membership role event
+        MembershipEvent::fireEditMembershipRoleEvent($roleInfo['id']);
         return true;
     }
 
@@ -91,6 +94,8 @@ class MembershipAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the add membership role event
+        MembershipEvent::fireAddMembershipRoleEvent($insertId);
         return $insertId;
     }
 

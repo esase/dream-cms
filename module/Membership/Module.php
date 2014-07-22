@@ -34,17 +34,12 @@ class Module implements ConsoleUsageProviderInterface
                     ->getInstance('Membership\Model\Base');
 
                 // delete all connections
-                if (null != ($connections = 
-                        $model->getAllUserMembershipConnections(($e->getParam('object_id'))))) {
-
+                if (null != ($connections = $model->getAllUserMembershipConnections(($e->getParam('object_id'))))) {
                     foreach ($connections as $connection) {
                         // delete the connection
                         if (false === ($deleteResult = $model->deleteMembershipConnection($connection->id))) {
                             break;
                         }
-
-                        // fire the delete membership connection event
-                        MembershipEvent::fireDeleteMembershipConnectionEvent($connection->id);
                     }
                 }
             }
@@ -62,10 +57,7 @@ class Module implements ConsoleUsageProviderInterface
             // delete connected membership levels
             if (null != ($membershipLevels = $model->getAllMembershipLevels($e->getParam('object_id')))) {
                 foreach ($membershipLevels as $levelInfo) {
-                    if (true === ($result = $model->deleteRole($levelInfo))) {
-                        // fire the delete membership role event
-                        MembershipEvent::fireDeleteMembershipRoleEvent($e->getParam('object_id'), true);
-                    }
+                    $model->deleteRole($levelInfo, true);
                 }
 
                 // synchronize users membership levels
@@ -77,16 +69,11 @@ class Module implements ConsoleUsageProviderInterface
                         // set the next membership level
                         if ($levelInfo['active'] != BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE) {
                             // change the user's role 
-                            if (true === ($result = $userModel->editUserRole($levelInfo['user_id'], $levelInfo['role_id']))) {
-                                // activate the next membership connection
-                                if (true === ($activateResult = $model->activateMembershipConnection($levelInfo['connection_id']))) {
-                                    // fire the activate membership connection event
-                                    MembershipEvent::fireActivateMembershipConnectionEvent($levelInfo['connection_id']);
-                                }
+                            $userModel->editUserRole($levelInfo['user_id'], 
+                                    $levelInfo['role_id'], $levelInfo['role_name'], $levelInfo, true);
 
-                                // fire the edit user role event
-                                UserEvent::fireEditRoleEvent($levelInfo, UserService::getAclRoles()[$levelInfo['role_id']], true);
-                            }
+                            // activate the next membership connection
+                            $model->activateMembershipConnection($levelInfo['connection_id']);
                         }
                     }
                 }
