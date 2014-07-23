@@ -2,7 +2,6 @@
 namespace Payment\Controller;
 
 use Application\Controller\AbstractBaseConsoleController;
-use Payment\Event\Event as PaymentEvent;
 
 class PaymentConsoleController extends AbstractBaseConsoleController
 {
@@ -38,13 +37,10 @@ class PaymentConsoleController extends AbstractBaseConsoleController
         if (null != ($items = $this->getModel()->getExpiredShoppingCartItems())) {
             foreach ($items as $item) {
                 // delete the item
-                if (true === ($deleteResult =
-                        $this->getModel()->deleteFromShoppingCart($item['id'], false))) {
+                if (true === ($deleteResult = 
+                        $this->getModel()->deleteFromShoppingCart($item['id'], false, true))) {
 
                     $deletedShoppingCartItems++;
-
-                    // fire the delete item from shopping cart event
-                    PaymentEvent::fireDeleteItemFromShoppingCartEvent($item['id'], true);
                 }
             }
         }
@@ -55,13 +51,10 @@ class PaymentConsoleController extends AbstractBaseConsoleController
             // process list of transactions
             foreach ($transactions as $transaction) {
                 // delete the transaction
-                if (true === ($deleteResult =
-                        $this->getModel()->deleteTransaction($transaction['id'], false))) {
+                if (true === ($deleteResult = 
+                        $this->getModel()->deleteTransaction($transaction['id'], 0, 'system'))) {
 
                     $deletedTransactions++;
-
-                    // fire the delete payment transaction event
-                    PaymentEvent::fireDeletePaymentTransactionEvent($transaction['id'], 'system');
                 }
             }
         }

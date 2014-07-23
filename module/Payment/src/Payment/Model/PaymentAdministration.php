@@ -9,6 +9,7 @@ use Application\Utility\ErrorLogger;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Sql\Expression;
 use Exception;
+use Payment\Event\Event as PaymentEvent;
 
 class PaymentAdministration extends Base
 {
@@ -61,9 +62,10 @@ class PaymentAdministration extends Base
      *      float rate
      * @param array $exchangeRates
      *      float rate
+     * @param integer $currencyId
      * @return boolean|string
      */
-    public function editExchangeRates(array $exchangeRatesInfo, array $exchangeRates)
+    public function editExchangeRates(array $exchangeRatesInfo, array $exchangeRates, $currencyId)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -97,6 +99,8 @@ class PaymentAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the edit exchange rates event
+        PaymentEvent::fireEditExchangeRatesEvent($currencyId);
         return true;
     }
 
@@ -146,6 +150,8 @@ class PaymentAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the edit payment currency event
+        PaymentEvent::fireEditPaymentCurrencyEvent($oldCurrencyInfo['id']);
         return true;
     }
 
@@ -197,6 +203,8 @@ class PaymentAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the edit discount coupon event
+        PaymentEvent::fireEditDiscountCouponEvent($id);
         return true;
     }
 
@@ -247,6 +255,8 @@ class PaymentAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the add discount coupon event
+        PaymentEvent::fireAddDiscountCouponEvent($insertId);
         return $insertId;
     }
 
@@ -290,6 +300,8 @@ class PaymentAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the add payment currency event
+        PaymentEvent::fireAddPaymentCurrencyEvent($insertId);
         return $insertId;
     }
 
@@ -322,6 +334,8 @@ class PaymentAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the  delete discount coupon event
+        PaymentEvent::fireDeleteDiscountCouponEvent($couponId);
         return $result->count() ? true : false;
     }
 
@@ -357,6 +371,8 @@ class PaymentAdministration extends Base
             return $e->getMessage();
         }
 
+        // fire the delete payment currency event
+        PaymentEvent::fireDeletePaymentCurrencyEvent($currencyId);
         return $result->count() ? true : false;
     }
 

@@ -2,7 +2,6 @@
 namespace Payment\Controller;
 
 use Zend\View\Model\ViewModel;
-use Payment\Event\Event as PaymentEvent;
 use Payment\Model\Base as PaymentBaseModel;
 use Application\Controller\AbstractAdministrationController;
 
@@ -143,7 +142,7 @@ class PaymentAdministrationController extends AbstractAdministrationController
     public function deleteCurrenciesAction()
     {
         $request = $this->getRequest();
-
+        
         if ($request->isPost()) {
             if (null !== ($currenciesIds = $request->getPost('currencies', null))) {
                 // delete selected currencies
@@ -162,9 +161,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
 
                         break;
                     }
-
-                    // fire the delete payment currency event
-                    PaymentEvent::fireDeletePaymentCurrencyEvent($currencyId);
                 }
 
                 if (true === $deleteResult) {
@@ -211,9 +207,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
 
                         break;
                     }
-
-                    // fire the activate payment transaction event
-                    PaymentEvent::fireActivatePaymentTransactionEvent($transactionId);
                 }
 
                 if (true === $activationResult) {
@@ -253,9 +246,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
 
                         break;
                     }
-
-                    // fire the delete payment transaction event
-                    PaymentEvent::fireDeletePaymentTransactionEvent($transactionId);
                 }
 
                 if (true === $deleteResult) {
@@ -303,10 +293,7 @@ class PaymentAdministrationController extends AbstractAdministrationController
 
                 // edit the exchange rates
                 if (true == ($result = $this->
-                        getModel()->editExchangeRates($exchangeRates, $exchangeRatesForm->getForm()->getData()))) {
-
-                    // fire the edit exchange rates event
-                    PaymentEvent::fireEditExchangeRatesEvent($currency['id']);
+                        getModel()->editExchangeRates($exchangeRates, $exchangeRatesForm->getForm()->getData(), $currency['id']))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -370,9 +357,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
                 if (true == ($result = $this->
                         getModel()->editCurrency($currency, $currencyForm->getForm()->getData()))) {
 
-                    // fire the edit payment currency event
-                    PaymentEvent::fireEditPaymentCurrencyEvent($currency['id']);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Currency has been edited'));
@@ -423,9 +407,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
                 $result = $this->getModel()->addCurrency($currencyForm->getForm()->getData());
 
                 if (is_numeric($result)) {
-                    // fire the add payment currency event
-                    PaymentEvent::fireAddPaymentCurrencyEvent($result);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Currency has been added'));
@@ -481,9 +462,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
                 if (true == ($result = $this->
                         getModel()->editCoupon($coupon['id'], $couponForm->getForm()->getData()))) {
 
-                    // fire the edit discount coupon event
-                    PaymentEvent::fireEditDiscountCouponEvent($coupon['id']);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Coupon has been edited'));
@@ -534,9 +512,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
                 $result = $this->getModel()->addCoupon($couponForm->getForm()->getData());
 
                 if (is_numeric($result)) {
-                    // fire the add discount coupon event
-                    PaymentEvent::fireAddDiscountCouponEvent($result);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Coupon has been added'));
@@ -603,9 +578,6 @@ class PaymentAdministrationController extends AbstractAdministrationController
 
                         break;
                     }
-
-                    // fire the  delete discount coupon event
-                    PaymentEvent::fireDeleteDiscountCouponEvent($couponId);
                 }
 
                 if (true === $deleteResult) {

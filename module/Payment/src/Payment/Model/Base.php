@@ -17,6 +17,7 @@ use Zend\Db\Sql\Predicate\Literal as LiteralPredicate;
 use Payment\Service\Service as PaymentService;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
+use Payment\Event\Event as PaymentEvent;
 
 class Base extends AbstractBase
 {
@@ -140,9 +141,10 @@ class Base extends AbstractBase
      *
      * @param integer $transactionId
      * @param integer $userId
+     * @param string $type
      * @return boolean|string
      */
-    public function deleteTransaction($transactionId, $userId = 0)
+    public function deleteTransaction($transactionId, $userId = 0, $type = null)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -171,7 +173,13 @@ class Base extends AbstractBase
             return $e->getMessage();
         }
 
-        return $result->count() ? true : false;
+        if ($result->count()) {
+            // fire the delete payment transaction event
+            PaymentEvent::fireDeletePaymentTransactionEvent($transactionId, $type);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -241,9 +249,11 @@ class Base extends AbstractBase
      *      string currency_code
      *      string payment_name
      * @param integer $paymentTypeId
+     * @param boolean $isSystem
+     * @param boolean $sendMessage
      * @return boolean
      */
-    public function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
+    public function activateTransaction(array $transactionInfo, $paymentTypeId = 0, $isSystem = false, $sendMessage = false)
     {
         if (true === ($result = $this->activateTransactionItem($transactionInfo['id'], 'id', $paymentTypeId))) {
             // mark as paid all transaction's items
@@ -264,6 +274,10 @@ class Base extends AbstractBase
                     }
                 }
             }
+
+            // fire the activate payment transaction event
+            PaymentEvent::fireActivatePaymentTransactionEvent($transactionInfo['id'], $isSystem, 
+                    ($sendMessage ? $transactionInfo : array()));
 
             return true;
         }
@@ -507,9 +521,10 @@ class Base extends AbstractBase
      *
      * @param integer $itemId
      * @param boolean $useShoppingCartId
+     * @param boolean $isSystem
      * @return boolean|string
      */
-    public function deleteFromShoppingCart($itemId, $useShoppingCartId = true)
+    public function deleteFromShoppingCart($itemId, $useShoppingCartId = true, $isSystem = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -538,7 +553,13 @@ class Base extends AbstractBase
             return $e->getMessage();
         }
 
-        return $result->count() ? true : false;
+        if ($result->count()) {
+            // fire the delete item from shopping cart event
+            PaymentEvent::fireDeleteItemFromShoppingCartEvent($itemId, $isSystem);
+            return true;
+        }
+
+        return false;
     }
 
     /**

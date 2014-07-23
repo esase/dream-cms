@@ -11,6 +11,7 @@ use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
 use Payment\Service\Service as PaymentService;
 use User\Model\Base as UserBaseModel;
+use Payment\Event\Event as PaymentEvent;
 
 class Payment extends Base
 {
@@ -157,6 +158,8 @@ class Payment extends Base
             return $e->getMessage();
         }
 
+        // fire the add payment transaction event
+        PaymentEvent::fireAddPaymentTransactionEvent($transactionId, $transactionInfo);
         return $transactionId;
     }
 
@@ -229,6 +232,8 @@ class Payment extends Base
             return $e->getMessage();
         }
 
+        // fire the edit item into shopping cart event
+        PaymentEvent::fireEditItemIntoShoppingCartEvent($id);
         return true;
     }
 
@@ -395,6 +400,8 @@ class Payment extends Base
             return $e->getMessage();
         }
 
+        // fire the add item to shopping cart event
+        PaymentEvent::fireAddItemToShoppingCartEvent($insertId);
         return $insertId;
     }
 

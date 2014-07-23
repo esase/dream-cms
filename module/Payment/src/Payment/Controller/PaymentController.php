@@ -65,9 +65,6 @@ class PaymentController extends AbstractBaseController
                 $paymentHandler->clearDiscount($itemInfo['object_id'], (float)$itemInfo['discount']);
             }
 
-            // fire the add item to shopping cart event
-            PaymentEvent::fireAddItemToShoppingCartEvent($result);
-
             return true;
         }
 
@@ -191,9 +188,6 @@ class PaymentController extends AbstractBaseController
                                 ->returnBackDiscount($itemInfo['object_id'], (float) $itemInfo['discount']);
                         }
 
-                        // fire the edit item into shopping cart event
-                        PaymentEvent::fireEditItemIntoShoppingCartEvent($itemInfo['id']);
-
                         $this->flashMessenger()
                             ->setNamespace('success')
                             ->addMessage($this->getTranslator()->translate('Item has been edited'));
@@ -252,9 +246,6 @@ class PaymentController extends AbstractBaseController
                             ->getInstance($itemInfo['handler'])
                             ->returnBackDiscount($itemId, (float) $itemInfo['discount']);
                     }
-
-                    // fire the delete item from shopping cart event
-                    PaymentEvent::fireDeleteItemFromShoppingCartEvent($itemId);
                 }
 
                 if (true === $deleteResult) {
@@ -483,9 +474,6 @@ class PaymentController extends AbstractBaseController
                         ->getInstance($itemInfo['handler'])
                         ->returnBackDiscount($itemInfo['id'], (float) $itemInfo['discount']);
                 }
-        
-                // fire the delete item from shopping cart event
-                PaymentEvent::fireDeleteItemFromShoppingCartEvent($itemInfo['id']);
             }
         }
 
@@ -594,9 +582,6 @@ class PaymentController extends AbstractBaseController
                         user_id, $formData, $shoppingCartItems, $amount);
 
                 if (is_numeric($result)) {
-                    // fire the add payment transaction event
-                    PaymentEvent::fireAddPaymentTransactionEvent($result, $formData);
-
                     // clean the shopping cart
                     $this->cleanShoppingCart(false);
 
@@ -744,14 +729,7 @@ class PaymentController extends AbstractBaseController
      */
     protected function activateTransaction(array $transactionInfo, $paymentTypeId = 0)
     {
-        if (true === ($result = $this->getModel()->
-                activateTransaction($transactionInfo, $paymentTypeId))) {
-
-            // fire the activate payment transaction event
-            PaymentEvent::fireActivatePaymentTransactionEvent($transactionInfo['id'], true, $transactionInfo);
-        }
-
-        return $result;
+        return $this->getModel()->activateTransaction($transactionInfo, $paymentTypeId, true, true);
     }
 
     /**
@@ -891,7 +869,7 @@ class PaymentController extends AbstractBaseController
                 foreach ($transactionsIds as $transactionId) {
                     // delete the transaction
                     if (true !== ($deleteResult = $this->getModel()->
-                            deleteTransaction($transactionId, UserService::getCurrentUserIdentity()->user_id))) {
+                            deleteTransaction($transactionId, UserService::getCurrentUserIdentity()->user_id, 'user'))) {
 
                         $this->flashMessenger()
                             ->setNamespace('error')
@@ -900,9 +878,6 @@ class PaymentController extends AbstractBaseController
 
                         break;
                     }
-
-                    // fire the delete payment transaction event
-                    PaymentEvent::fireDeletePaymentTransactionEvent($transactionId, 'user');
                 }
 
                 if (true === $deleteResult) {
