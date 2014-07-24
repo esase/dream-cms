@@ -4,16 +4,17 @@ namespace User\Model;
 use Zend\Db\ResultSet\ResultSet;
 use Exception;
 use Application\Utility\ErrorLogger;
+use User\Event\Event as UserEvent;
 
 class User extends Base
 {
     /**
      * Reset an user's password
      *
-     * @param integer $userId
-     * @return array|string
+     * @param array $userInfo
+     * @return boolean|string
      */
-    public function resetUserPassword($userId)
+    public function resetUserPassword(array $userInfo)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -29,14 +30,14 @@ class User extends Base
                     'activation_code' => ''
                 ))
                 ->where(array(
-                    'user_id' => $userId
+                    'user_id' => $userInfo['user_id']
                 ));
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
 
             // clear a cache
-            $this->removeUserCache($userId);
+            $this->removeUserCache($userInfo['user_id']);
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -47,18 +48,18 @@ class User extends Base
             return $e->getMessage();
         }
 
-        return array(
-            'password' => $newPassword
-        );
+        // fire the user password reset event
+        UserEvent::fireUserPasswordResetEvent($userInfo['user_id'], $userInfo, $newPassword);
+        return true;
     }
 
     /**
      * Generate a new activation code
      *
-     * @param integer $userId
-     * @return array|string
+     * @param array $userInfo
+     * @return boolean|string
      */
-    public function generateActivationCode($userId)
+    public function generateActivationCode(array $userInfo)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -70,14 +71,14 @@ class User extends Base
                     'activation_code' => $activationCode
                 ))
                 ->where(array(
-                    'user_id' => $userId
+                    'user_id' => $userInfo['user_id']
                 ));
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
 
             // clear a cache
-            $this->removeUserCache($userId);
+            $this->removeUserCache($userInfo['user_id']);
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -88,9 +89,9 @@ class User extends Base
             return $e->getMessage();
         }
 
-        return array(
-            'activation_code' => $activationCode
-        );
+        // fire the user password reset request event
+        UserEvent::fireUserPasswordResetRequestEvent($userInfo['user_id'], $userInfo, $activationCode);
+        return false;
     }
 
     /**

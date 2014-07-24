@@ -5,7 +5,6 @@ use Zend\View\Model\ViewModel;
 use Application\Controller\AbstractAdministrationController;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
-use User\Event\Event as UserEvent;
 use User\Model\UserAdministration as UserAdministrationModel;
 
 class UserAdministrationController extends AbstractAdministrationController
@@ -65,16 +64,6 @@ class UserAdministrationController extends AbstractAdministrationController
      */
     public function aclResourceSettingsAction()
     {
-        
-            
-         $eventManager = \Application\Event\Event::getEventManager();
-        $eventManager->attach(\Application\Event\Event::EDIT_ACL_RESOURCE_SETTINGS, function ($e) {
-            
-            echo vsprintf($this->getServiceLocator()->get('Translator')->translate($e->getParam('description')), $e->getParam('description_params'));
-            exit;
-        });
-        
-        
         // get the user info
         if (null == ($user = $this->getModel()->getUserInfo($this->params()->
                 fromQuery('user', -1))) || $user['role'] == AclBaseModel::DEFAULT_ROLE_ADMIN) {
@@ -230,10 +219,7 @@ class UserAdministrationController extends AbstractAdministrationController
                 $roleName = UserService::getAclRoles()[$roleForm->getForm()->getData()['role']];
 
                 if (true === ($result = $this->getModel()->
-                        editUserRole($user['user_id'], $roleForm->getForm()->getData()['role'], $roleName, $user->getArrayCopy()))) {
-
-                    // fire the edit user role event
-                    UserEvent::fireEditRoleEvent($user, UserService::getAclRoles()[$roleForm->getForm()->getData()['role']]);
+                        editUserRole($user['user_id'], $roleForm->getForm()->getData()['role'], $roleName, (array) $user))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -306,9 +292,6 @@ class UserAdministrationController extends AbstractAdministrationController
                 if (true === ($result = $this->getModel()->editUser($user, $userForm->
                         getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
 
-                    // fire the edit user event
-                    UserEvent::fireUserEditEvent($user['user_id']);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('User has been edited'));
@@ -367,9 +350,6 @@ class UserAdministrationController extends AbstractAdministrationController
                         addUser($userForm->getForm()->getData(), true, $this->params()->fromFiles('avatar'));
 
                 if (is_numeric($result)) {
-                    // fire the add user event
-                    UserEvent::fireUserAddEvent($result);
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('User has been added'));
@@ -421,9 +401,6 @@ class UserAdministrationController extends AbstractAdministrationController
                         return $result;
                     }
 
-                    // fire the delete user event
-                    UserEvent::fireUserDeleteEvent($userId, $userInfo);
-
                     // delete the user
                     if (true !== ($deleteResult = $this->getModel()->deleteUser($userInfo))) {
                         $this->flashMessenger()
@@ -472,16 +449,15 @@ class UserAdministrationController extends AbstractAdministrationController
                     }
 
                     // approve the user
-                    if (true !== ($approveResult = $this->getModel()->setUserStatus($userId))) {
+                    if (true !== ($approveResult = 
+                            $this->getModel()->setUserStatus($userId, true, (array) $userInfo))) {
+
                         $this->flashMessenger()
                             ->setNamespace('error')
                             ->addMessage($this->getTranslator()->translate($approveResult));
 
                         break;
                     }
-
-                    // fire the approve user event
-                    UserEvent::fireUserApproveEvent($userId, $userInfo);
                 }
 
                 if (true === $approveResult) {
@@ -519,16 +495,15 @@ class UserAdministrationController extends AbstractAdministrationController
                     }
 
                     // disapprove the user
-                    if (true !== ($disapproveResult = $this->getModel()->setUserStatus($userId, false))) {
+                    if (true !== ($disapproveResult = 
+                            $this->getModel()->setUserStatus($userId, false, (array) $userInfo))) {
+
                         $this->flashMessenger()
                             ->setNamespace('error')
                             ->addMessage($this->getTranslator()->translate($disapproveResult));
 
                         break;
                     }
-
-                    // fire the disapprove user event
-                    UserEvent::fireUserDisapproveEvent($userId, $userInfo);
                 }
 
                 if (true === $disapproveResult) {

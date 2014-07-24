@@ -132,15 +132,17 @@ class Base extends AbstractBase
      *
      * @param integer $userId
      * @param boolean $approved
+     * @param array $userInfo
+     * @param string $selfUserName
      * @return boolean|string
      */
-    public function setUserStatus($userId, $approved = true)
+    public function setUserStatus($userId, $approved = true, array $userInfo, $selfUserName = null)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $update = $this->update()
-                ->table('user')
+                ->table('user_list')
                 ->set(array(
                     'status' => ($approved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED),
                     'activation_code' => ''
@@ -167,6 +169,10 @@ class Base extends AbstractBase
             return $e->getMessage();
         }
 
+        true === $approved
+            ? UserEvent::fireUserApproveEvent($userId, $userInfo, $selfUserName)
+            : UserEvent::fireUserDisapproveEvent($userId, $userInfo);
+
         return true;
     }
 
@@ -182,9 +188,10 @@ class Base extends AbstractBase
      * @param boolean $statusApproved
      * @param array $avatar
      * @param boolean $deleteAvatar
+     * @param boolean $selfEdit
      * @return boolean|string
      */
-    public function editUser($userInfo, array $formData, $statusApproved = true, array $avatar = array(), $deleteAvatar = false)
+    public function editUser($userInfo, array $formData, $statusApproved = true, array $avatar = array(), $deleteAvatar = false, $selfEdit = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -241,6 +248,8 @@ class Base extends AbstractBase
             return $e->getMessage();
         }
 
+        // fire the edit user event
+        UserEvent::fireUserEditEvent($userInfo['user_id'], $selfEdit);
         return true;
     }
 
@@ -341,11 +350,15 @@ class Base extends AbstractBase
      * Delete an user
      *
      * @param array $userInfo
+     * @param boolean $sendMessage
      * @throws User/Exception/UserException
      * @return boolean|string
      */
-    public function deleteUser($userInfo)
+    public function deleteUser($userInfo, $sendMessage = true)
     {
+        // fire the delete user event
+        UserEvent::fireUserDeleteEvent($userInfo['user_id'], ($sendMessage ? $userInfo : array()));
+
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
@@ -393,9 +406,10 @@ class Base extends AbstractBase
      *      string time_zone optional
      * @param boolean $statusApproved
      * @param array $avatar
-     * @return integer|string
+     * @param boolean $retArray
+     * @return array|integer|string
      */
-    public function addUser(array $formData, $statusApproved = true, array $avatar = array())
+    public function addUser(array $formData, $statusApproved = true, array $avatar = array(), $retArray = false)
     {
         $insertId = 0;
 
@@ -454,6 +468,16 @@ class Base extends AbstractBase
             return $e->getMessage();
         }
 
+        if ($retArray) {
+            $userInfo = $this->getUserInfo($insertId);
+
+            // fire the add user event
+            UserEvent::fireUserAddEvent($insertId, $userInfo);
+            return (array) $userInfo;
+        }
+
+        // fire the add user event
+        UserEvent::fireUserAddEvent($insertId);
         return $insertId;
     }
 

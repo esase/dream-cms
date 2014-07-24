@@ -3,6 +3,7 @@ namespace User\Model;
 
 use Exception;
 use Application\Utility\ErrorLogger;
+use User\Event\Event as UserEvent;
 
 class XmlRpc extends Base
 {
@@ -10,12 +11,13 @@ class XmlRpc extends Base
      * Get user info
      *
      * @param integer $userId
-     * @param string $field
+     * @param integer $viewerId
+     * @param string $viewerNickName
      * @return array
      */
-    public function getUserInfo($userId, $field = null)
+    public function getXmlRpcUserInfo($userId, $viewerId, $viewerNickName)
     {
-        if (null != ($userInfo = parent::getUserInfo($userId, $field))) {
+        if (null != ($userInfo = parent::getUserInfo($userId))) {
             // remove all private fields
             foreach ($this->privateFields as $privateField) {
                 if (isset($userInfo[$privateField])) {
@@ -24,17 +26,20 @@ class XmlRpc extends Base
             }
         }
 
-        return $userInfo;
+        // fire the get user info via XmlRpc event
+        UserEvent::fireGetUserInfoViaXmlRpcEvent($userInfo->user_id, $userInfo->nick_name, $viewerId, $viewerNickName);
+        return (array) $userInfo;
     }
 
     /**
      * Set user time zone
      *
      * @param integer $userId
+     * @param string $userName
      * @param integer $timeZoneId
      * @return boolean|string
      */
-    public function setUserTimeZone($userId, $timeZoneId)
+    public function setUserTimeZone($userId, $userName, $timeZoneId)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -61,6 +66,14 @@ class XmlRpc extends Base
             return $e->getMessage();
         }
 
+        $eventManager = \User\Event\Event::getEventManager();
+$eventManager->attach(\User\Event\Event::SET_TIMEZONE_XMLRPC, function ($e)  {
+    echo vsprintf($this->serviceManager->get('Translator')->translate($e->getParam('description')), $e->getParam('description_params'));
+    exit;
+});
+
+        // fire set user's time zone via XmlRpc event
+        UserEvent::fireSetTimezoneViaXmlRpcEvent($userId, $userName);
         return true;
     }
 }

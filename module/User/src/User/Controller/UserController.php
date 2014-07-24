@@ -139,16 +139,15 @@ class UserController extends AbstractBaseController
             // activate the users's status
             if ($activateForm->getForm()->isValid()) {
                 // approve the user
-                if (true !== ($approveResult = $this->getModel()->setUserStatus($userInfo['user_id']))) {
+                if (true !== ($approveResult = $this->getModel()->
+                        setUserStatus($userInfo['user_id'], true, (array) $userInfo, $userInfo['nick_name']))) {
+
                     $this->flashMessenger()
                         ->setNamespace('error')
                         ->addMessage($this->getTranslator()->translate('Error occurred'));
 
                     return $this->redirectTo('user', 'activate', array('slug' => $this->getSlug()));
                 }
-
-                // fire the approve user event
-                UserEvent::fireUserApproveEvent($userInfo['user_id'], $userInfo, $userInfo['nick_name']);
 
                 // login and redirect the user
                 return $this->loginUser($userInfo['user_id'], $userInfo['nick_name']);
@@ -189,12 +188,7 @@ class UserController extends AbstractBaseController
 
             // reset the users's password
             if ($resetForm->getForm()->isValid()) {
-                $resetedPassword = $this->getModel()->resetUserPassword($userInfo['user_id']);
-
-                if (is_array($resetedPassword)) {
-                    // fire the user password reset event
-                    UserEvent::fireUserPasswordResetEvent($userInfo['user_id'], $userInfo, $resetedPassword['password']);
-
+                if (true === ($result = $this->getModel()->resetUserPassword((array) $userInfo))) {
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('We have sent a new password to your email'));
@@ -330,10 +324,9 @@ class UserController extends AbstractBaseController
 
             // delete the user's account
             if ($deleteForm->getForm()->isValid()) {
-                // fire the delete user event
-                UserEvent::fireUserDeleteEvent(UserService::getCurrentUserIdentity()->user_id);
+                if (true !== ($deleteResult = 
+                        $this->getModel()->deleteUser((array) UserService::getCurrentUserIdentity(), false))) {
 
-                if (true !== ($deleteResult = $this->getModel()->deleteUser((array) UserService::getCurrentUserIdentity()))) {
                     $this->flashMessenger()
                         ->setNamespace('error')
                         ->addMessage($this->getTranslator()->translate('Error occurred'));
@@ -397,11 +390,8 @@ class UserController extends AbstractBaseController
                     ? true
                     : false;
 
-                if (true == ($result = $this->getModel()->editUser((array) UserService::getCurrentUserIdentity(),
-                        $userForm->getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
-
-                    // fire the edit user event
-                    UserEvent::fireUserEditEvent(UserService::getCurrentUserIdentity()->user_id, true);
+                if (true == ($result = $this->getModel()->editUser((array) UserService::getCurrentUserIdentity(), 
+                        $userForm->getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar, true))) {
 
                     if ($status) {
                         $this->flashMessenger()
@@ -462,12 +452,7 @@ class UserController extends AbstractBaseController
                         getUserInfo($forgotForm->getForm()->getData()['email'], UserModel::USER_INFO_BY_EMAIL);
 
                 // genereate a new activation code
-                $activationCode = $this->getModel()->generateActivationCode($userInfo['user_id']);
-
-                if (is_array($activationCode)) {
-                    // fire the user password reset request event
-                    UserEvent::fireUserPasswordResetRequestEvent($userInfo['user_id'], $userInfo, $activationCode['activation_code']);
-
+                if (true === ($result = $this->getModel()->generateActivationCode((array) $userInfo))) {
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('We sent a message with a confirmation code. You should confirm the password reset'));
@@ -524,17 +509,11 @@ class UserController extends AbstractBaseController
                 // add a new user with a particular status
                 $status = (int) $this->getSetting('user_auto_confirm') ? true : false;
 
-                $result = $this->getModel()->
-                        addUser($userForm->getForm()->getData(), $status, $this->params()->fromFiles('avatar'));
+               $userInfo = $this->getModel()->addUser($userForm->
+                    getForm()->getData(), $status, $this->params()->fromFiles('avatar'), true);
 
                 // the user has been added
-                if (is_numeric($result)) {
-                    // get the user info
-                    $userInfo = $this->getModel()->getUserInfo($result);
-
-                    // fire the add user event
-                    UserEvent::fireUserAddEvent($result, $userInfo);
-
+                if (is_array($userInfo)) {
                     // check the user status
                     if (!$status) {
                         // send an email activate notification
@@ -564,7 +543,7 @@ class UserController extends AbstractBaseController
                     }
                     else {
                         // login and redirect the registered user
-                        return $this->loginUser($result, $userInfo['nick_name'], false, $request->getQuery('back'));
+                        return $this->loginUser($userInfo['user_id'], $userInfo['nick_name'], false, $request->getQuery('back'));
                     }
                 }
                 else {

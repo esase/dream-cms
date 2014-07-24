@@ -61,12 +61,8 @@ class Handler extends AbstractHandler
         }
 
         // update the user's time zone
-        if (true == ($result = $this->getModel()->
-                setUserTimeZone($this->userIdentity->user_id, $timeZoneId))) {
-
-            // fire set user's time zone via XmlRpc event
-            UserEvent::fireSetTimezoneViaXmlRpcEvent($this->
-                    userIdentity->user_id, $this->userIdentity->nick_name);
+        if (true == ($result = $this->getModel()->setUserTimeZone($this->
+                userIdentity->user_id, $this->userIdentity->nick_name, $timeZoneId))) {
 
             return self::SUCCESSFULLY_RESPONSE;
         }
@@ -87,15 +83,13 @@ class Handler extends AbstractHandler
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
-        // get user info
-        if (false !== ($userInfo = $this->getModel()->getUserInfo($userId))) {
-            $viewerNickName = !UserService::isGuest()
-                ? $this->userIdentity->nick_name
-                : '';
+        $viewerNickName = !UserService::isGuest()
+            ? $this->userIdentity->nick_name
+            : '';
 
-            // fire the get user info via XmlRpc event
-            UserEvent::fireGetUserInfoViaXmlRpcEvent($userInfo->user_id, 
-                    $userInfo->nick_name, $this->userIdentity->user_id, $viewerNickName);
+        // get user info
+        if (false !== ($userInfo = $this->getModel()->getXmlRpcUserInfo($userId, $this->
+                userIdentity->user_id, $viewerNickName))) {
 
             return $userInfo;
         }
