@@ -66,12 +66,6 @@ class XmlRpc extends Base
             return $e->getMessage();
         }
 
-        $eventManager = \User\Event\Event::getEventManager();
-$eventManager->attach(\User\Event\Event::SET_TIMEZONE_XMLRPC, function ($e)  {
-    echo vsprintf($this->serviceManager->get('Translator')->translate($e->getParam('description')), $e->getParam('description_params'));
-    exit;
-});
-
         // fire set user's time zone via XmlRpc event
         UserEvent::fireSetTimezoneViaXmlRpcEvent($userId, $userName);
         return true;
