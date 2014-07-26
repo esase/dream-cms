@@ -21,6 +21,7 @@ class PaymentItemLink extends AbstractHelper
      *      string slug
      *      string view_controller
      *      string view_action
+     *      string view_check
      *      integer countable
      *      integer must_login
      *      string extra_options
@@ -32,6 +33,11 @@ class PaymentItemLink extends AbstractHelper
      */
    public function __invoke($info)
    {
+        // custom check
+        if (!empty($info['view_check']) && false === eval($info['view_check'])) {
+            return $info['title'];
+        }
+
         // check the item's status
         if ($info['deleted'] == BaseModel::ITEM_DELETED || $info['active'] ==
                 BaseModel::ITEM_NOT_ACTIVE || $info['module_state'] != BaseModel::MODULE_STATUS_ACTIVE) {

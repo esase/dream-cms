@@ -865,11 +865,11 @@ class PaymentController extends AbstractBaseController
 
         if ($request->isPost()) {
             if (null !== ($transactionsIds = $request->getPost('transactions', null))) {
-                // delete selected transactions
+                // hide selected transactions
                 foreach ($transactionsIds as $transactionId) {
-                    // delete the transaction
+                    // hide the transaction
                     if (true !== ($deleteResult = $this->getModel()->
-                            deleteTransaction($transactionId, UserService::getCurrentUserIdentity()->user_id, 'user'))) {
+                            hideUserTransaction($transactionId, UserService::getCurrentUserIdentity()->user_id))) {
 
                         $this->flashMessenger()
                             ->setNamespace('error')

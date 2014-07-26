@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-06-30 12:46+0600\n"
+"PO-Revision-Date: 2014-07-26 15:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -430,6 +430,12 @@ msgstr "Payment"
 
 msgid "Payments"
 msgstr "Payments"
+
+msgid "Event - Hiding payment transactions"
+msgstr "Hiding payment transactions"
+
+msgid "Event - Payment transaction hide by user"
+msgstr "\"%s\" hide the payment transaction with id - \"%d\""
 
 msgid "Event - Deleting payment transactions"
 msgstr "Deleting payment transactions"

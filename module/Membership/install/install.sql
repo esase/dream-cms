@@ -5,8 +5,8 @@ INSERT INTO `application_module` (`name`, `type`, `status`, `version`, `vendor`,
 SET @moduleId = (SELECT LAST_INSERT_ID());
 SET @maxOrder = (SELECT `order` + 1 FROM `application_admin_menu` ORDER BY `order` DESC LIMIT 1);
 
-INSERT INTO `payment_module` (`module`, `update_event`, `delete_event`, `view_controller`, `view_action`, `must_login`, `handler`) VALUES
-(@moduleId, 'edit_membership_role', 'delete_membership_role', 'memberships', 'list', 1, '\\Membership\\PaymentHandler\\Handler');
+INSERT INTO `payment_module` (`module`, `update_event`, `delete_event`, `view_controller`, `view_action`, `view_check`, `must_login`, `handler`) VALUES
+(@moduleId, 'edit_membership_role', 'delete_membership_role', 'memberships', 'list', 'return User\\Service\\Service::isDefaultUser() ? false : true;', 1, '\\Membership\\PaymentHandler\\Handler');
 
 INSERT INTO `application_admin_menu_category` (`name`, `module`, `icon`) VALUES
 ('Membership Levels', @moduleId, 'membership_menu_item.png');

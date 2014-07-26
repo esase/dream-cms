@@ -93,6 +93,11 @@ class Event extends AbstractEvent
     const EDIT_ITEMS = 'edit_payment_items';
 
     /**
+     * Hide payment transaction event
+     */
+    const HIDE_PAYMENT_TRANSACTION = 'hide_payment_transaction';
+
+    /**
      * Fire edit items event
      *
      * @param integer $objectId
@@ -173,6 +178,22 @@ class Event extends AbstractEvent
                     )
                 ));
         }
+    }
+
+    /**
+     * Fire hide payment transaction event
+     *
+     * @param integer $transactionId
+     * @return void
+     */
+    public static function fireHidePaymentTransactionEvent($transactionId)
+    {
+        // event's description
+        $eventDesc = 'Event - Payment transaction hide by user';
+        $eventDescParams = array(UserService::getCurrentUserIdentity()->nick_name, $transactionId);
+
+        self::fireEvent(self::HIDE_PAYMENT_TRANSACTION, 
+                $transactionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
     }
 
     /**

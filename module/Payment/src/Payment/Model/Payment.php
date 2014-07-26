@@ -519,6 +519,45 @@ class Payment extends Base
     }
 
     /**
+     * Hide user transaction
+     *
+     * @param integer $transactionId
+     * @param integer $userId
+     * @return boolean|string
+     */
+    public function hideUserTransaction($transactionId, $userId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('payment_transaction')
+                ->set(array(
+                    'user_hidden' => self::TRANSACTION_USER_HIDDEN
+                ))
+                ->where(array(
+                    'id' => $transactionId,
+                    'user_id' => $userId
+                ));
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire hide payment transaction event
+        PaymentEvent::fireHidePaymentTransactionEvent($transactionId);
+        return true;
+    }
+
+    /**
      * Get user transactions
      *
      * @param integer $userId
@@ -583,7 +622,8 @@ class Payment extends Base
                 'left'
             )
             ->where(array(
-                'a.user_id' => $userId
+                'a.user_id' => $userId,
+                'a.user_hidden' => self::TRANSACTION_USER_NOT_HIDDEN
             ))
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType);

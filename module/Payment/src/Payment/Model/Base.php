@@ -137,6 +137,16 @@ class Base extends AbstractBase
     const ALLOWED_SLUG_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
     /**
+     * Transaction user hidden
+     */ 
+    const TRANSACTION_USER_HIDDEN = 1;
+
+    /**
+     * Transaction user not hidden
+     */ 
+    const TRANSACTION_USER_NOT_HIDDEN = 0;
+
+    /**
      * Delete transaction
      *
      * @param integer $transactionId
@@ -1205,6 +1215,7 @@ class Base extends AbstractBase
                 array(
                     'view_controller',
                     'view_action',
+                    'view_check',
                     'countable',
                     'module_extra_options' => 'extra_options',
                     'handler'

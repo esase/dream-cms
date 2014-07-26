@@ -55,7 +55,8 @@ INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('delete_payment_transaction', @moduleId, 'Event - Deleting payment transactions'),
 ('activate_payment_transaction', @moduleId, 'Event - Activating payment transactions'),
 ('mark_deleted_payment_items', @moduleId, 'Event - Marking as deleted shopping cart and transactions items'),
-('edit_payment_items', @moduleId, 'Event - Editing shopping cart and transactions items');
+('edit_payment_items', @moduleId, 'Event - Editing shopping cart and transactions items'),
+('hide_payment_transaction', @moduleId, 'Event - Hiding payment transactions');
 
 SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `application_injection` where `position` = 'head' ORDER BY `order` DESC LIMIT 1), 1);
 INSERT INTO `application_injection` (`position`, `patrial`, `module`, `order`) VALUES
@@ -263,6 +264,7 @@ CREATE TABLE IF NOT EXISTS `payment_module` (
     `delete_event` VARCHAR(50) NOT NULL,
     `view_controller` VARCHAR(50) NOT NULL,
     `view_action` VARCHAR(50) NOT NULL,
+    `view_check` VARCHAR(255) NOT NULL,
     `countable` TINYINT(1) NOT NULL,
     `multi_costs` TINYINT(1) NOT NULL,
     `extra_options` TINYINT(1) NOT NULL,
@@ -343,11 +345,13 @@ CREATE TABLE IF NOT EXISTS `payment_transaction` (
     `comments` text NOT NULL DEFAULT '',
     `discount_cupon` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `amount` DECIMAL(10,2) NOT NULL DEFAULT '0',
+    `user_hidden` TINYINT(1) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `slug` (`slug`),
     KEY `paid` (`paid`),
     KEY `email` (`email`),
     KEY `date` (`date`),
+    KEY `user_hidden` (`user_id`, `user_hidden`),
     FOREIGN KEY (`user_id`) REFERENCES `user_list`(`user_id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
