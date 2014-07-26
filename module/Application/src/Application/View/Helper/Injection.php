@@ -15,7 +15,10 @@ class Injection extends AbstractHelper
     /**
      * Class constructor
      *
-     * @param array $menu
+     * @param array $injections
+     *      string position
+     *          string patrial
+     *          string module
      */
     public function __construct(array $injections = array())
     {
