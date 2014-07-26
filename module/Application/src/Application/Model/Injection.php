@@ -25,24 +25,37 @@ class Injection extends Base
         // check data in cache
         if (null === ($injections = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('application_injection')
+            $select->from(array('a' => 'application_injection_connection'))
                 ->columns(array(
-                    'id',
-                    'position',
-                    'patrial',
-                    'module',
-                    'order'
+                    'design_box'
                 ))
-            ->order('order');
+            ->join(
+                array('b' => 'application_injection_widget'),
+                'a.widget_id = b.id',
+                array(
+                    'widget_name' => 'name',
+                    'widget_title' => 'title',
+                )
+            )
+            ->join(
+                array('c' => 'application_injection_position'),
+                'a.position_id = c.id',
+                array(
+                    'widget_position' => 'name'
+                )
+            )
+            ->order('a.order');
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
 
             foreach ($resultSet as $injection) {
-                $injections[$injection->position][] = array(
-                    'patrial' => $injection->patrial,
-                    'module'  => $injection->module
+                $injections[$injection->widget_position][] = array(
+                    'design_box' => $injection->design_box,
+                    'widget_name' => $injection->widget_name,
+                    'widget_title' => $injection->widget_title,
+                    'widget_title' => $injection->widget_title,
                 );
             }
 

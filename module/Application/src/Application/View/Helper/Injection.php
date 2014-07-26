@@ -37,7 +37,18 @@ class Injection extends AbstractHelper
 
         if (!empty($this->injections[$position])) {
             foreach ($this->injections[$position] as $injection) {
-                $content .= $this->getView()->partial($injection['patrial']);
+                $widget = $injection['widget_name'];
+                $result = $this->getView()->$widget();
+
+                // wrap content into the design box
+                if ($injection['design_box']) {
+                    $result = $this->getView()->partial('partial/panel', array(
+                        'title' => $this->getView()->translate($injection['widget_title']),
+                        'body' => $result
+                    ));
+                }
+
+                $content .= $result;
             }
         }
 

@@ -1020,14 +1020,48 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
 (7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
 
-CREATE TABLE IF NOT EXISTS `application_injection` (
+CREATE TABLE IF NOT EXISTS `application_injection_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `position` ENUM('head', 'body','footer', 'before-menu', 'after-menu') NOT NULL,
-    `patrial` VARCHAR(150) NOT NULL,
+    `name` VARCHAR(150) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`name`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `application_injection_position` (`id`, `name`, `module`) VALUES
+(1, 'application_head', 1),
+(2, 'application_body', 1),
+(3, 'application_before_menu', 1),
+(4, 'application_after_menu', 1),
+(5, 'application_footer', 1);
+
+CREATE TABLE IF NOT EXISTS `application_injection_widget` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(150) NOT NULL,
+    `title` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`name`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `application_injection_connection` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `position_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `design_box` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
     `order` SMALLINT(5) NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+    UNIQUE (`position_id`, `widget_id`),
+    FOREIGN KEY (`position_id`) REFERENCES `application_injection_position`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `application_injection_widget`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

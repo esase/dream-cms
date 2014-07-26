@@ -127,6 +127,8 @@ class Module implements ConsoleUsageProviderInterface
     {
         return array(
             'invokables' => array(
+                'paymentInitWidget' => 'Payment\View\Helper\PaymentInitWidget',
+                'paymentShoppingCartWidget' => 'Payment\View\Helper\PaymentShoppingCartWidget',
                 'costFormat' => 'Payment\View\Helper\CostFormat',
                 'processCost' => 'Payment\View\Helper\ProcessCost',
                 'currency' => 'Payment\View\Helper\Currency',

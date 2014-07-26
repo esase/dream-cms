@@ -3,8 +3,28 @@ INSERT INTO `application_module` (`name`, `type`, `status`, `version`, `vendor`,
 ('Payment', 'custom', 'active', '0.9.0', 'eSASe', 'alexermashev@gmail.com', '', '');
 
 SET @moduleId = (SELECT LAST_INSERT_ID());
-SET @maxOrder = (SELECT `order` + 1 FROM `application_admin_menu` ORDER BY `order` DESC LIMIT 1);
 
+INSERT INTO `application_injection_widget` (`name`, `title`, `module`) VALUES
+('paymentInitWidget', 'Payment init widget', @moduleId);
+
+SET @injectionWidgetId = (SELECT LAST_INSERT_ID());
+SET @injectionPositionId = (SELECT `id` FROM `application_injection_position` WHERE `name` = 'application_head');
+SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `application_injection_connection` WHERE `position_id` = @injectionPositionId AND `widget_id` = @injectionWidgetId ORDER BY `order` DESC LIMIT 1), 1);
+
+INSERT INTO `application_injection_connection` (`position_id`, `widget_id`, `design_box`, `order`) VALUES
+(@injectionPositionId, @injectionWidgetId, 0, @maxOrder);
+
+INSERT INTO `application_injection_widget` (`name`, `title`, `module`) VALUES
+('paymentShoppingCartWidget', 'Payment shopping cart widget', @moduleId);
+
+SET @injectionWidgetId = (SELECT LAST_INSERT_ID());
+SET @injectionPositionId = (SELECT `id` FROM `application_injection_position` WHERE `name` = 'application_before_menu');
+SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `application_injection_connection` WHERE `position_id` = @injectionPositionId AND `widget_id` = @injectionWidgetId ORDER BY `order` DESC LIMIT 1), 1);
+
+INSERT INTO `application_injection_connection` (`position_id`, `widget_id`, `design_box`, `order`) VALUES
+(@injectionPositionId, @injectionWidgetId, 0, @maxOrder);
+
+SET @maxOrder = (SELECT `order` + 1 FROM `application_admin_menu` ORDER BY `order` DESC LIMIT 1);
 INSERT INTO `application_admin_menu_category` (`name`, `module`, `icon`) VALUES
 ('Payments', @moduleId, 'payment_menu_item.png');
 
@@ -57,14 +77,6 @@ INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('mark_deleted_payment_items', @moduleId, 'Event - Marking as deleted shopping cart and transactions items'),
 ('edit_payment_items', @moduleId, 'Event - Editing shopping cart and transactions items'),
 ('hide_payment_transaction', @moduleId, 'Event - Hiding payment transactions');
-
-SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `application_injection` where `position` = 'head' ORDER BY `order` DESC LIMIT 1), 1);
-INSERT INTO `application_injection` (`position`, `patrial`, `module`, `order`) VALUES
-('head', 'payment/patrial/shopping-cart-init', @moduleId, @maxOrder);
-
-SET @maxOrder = IFNULL((SELECT `order` + 1 FROM `application_injection` where `position` = 'body' ORDER BY `order` DESC LIMIT 1), 1);
-INSERT INTO `application_injection` (`position`, `patrial`, `module`, `order`) VALUES
-('before-menu', 'payment/patrial/shopping-cart', @moduleId, @maxOrder);
 
 INSERT INTO `application_setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
 ('payment_shopping_cart_session_time', 'The shopping cart\'s ID lifetime in seconds', '', 'integer', 1, 1, 1, @moduleId, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0');

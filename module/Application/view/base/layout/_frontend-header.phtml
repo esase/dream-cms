@@ -1,7 +1,7 @@
 <?php echo $this->doctype(); ?>
 <html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
     <head>
-        <?php echo $this->injection('head') ?>
+        <?php echo $this->injection('application_head') ?>
 
         <meta charset="utf-8">
         <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -42,7 +42,7 @@
         ?>
     </head>
     <body>
-        <?php echo $this->injection('before-menu') ?>
+        <?php echo $this->injection('application_before_menu') ?>
 
         <!-- nav bar -->
         <div class="navbar navbar-default navbar-static-top" role="navigation">
@@ -123,8 +123,8 @@
             </div>
         </div>
 
-        <?php echo $this->injection('after-menu') ?>
+        <?php echo $this->injection('application_after_menu') ?>
 
         <!-- container -->
         <div class="container" id="container">
-        <?php echo $this->injection('body') ?>
+        <?php echo $this->injection('application_body') ?>

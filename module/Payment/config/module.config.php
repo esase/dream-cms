@@ -5,6 +5,7 @@ return array(
         'invokables' => array(
             'payments-administration' => 'Payment\Controller\PaymentAdministrationController',
             'payments' => 'Payment\Controller\PaymentController',
+            'payments-widgets' => 'Payment\Controller\PaymentWidgetController',
             'payments-console' => 'Payment\Controller\PaymentConsoleController'
         )
     ),
