@@ -40,10 +40,22 @@ abstract class AbstractBaseController extends AbstractActionController
     protected $page = null;
 
     /**
+     * Page name
+     * @var string
+     */
+    protected $pageName = null;
+
+    /**
      * Slug
      * @var string
      */
     protected $slug = null;
+
+    /**
+     * Language
+     * @var string
+     */
+    protected $language = null;
 
     /**
      * Extra
@@ -130,7 +142,7 @@ abstract class AbstractBaseController extends AbstractActionController
                 ->setNamespace('error')
                 ->addMessage($this->getTranslator()->translate(($explanation ? $explanation : 'You must be logged before view this page')));
 
-            $backUrl = $this->url()->fromRoute('application', array(
+            $backUrl = $this->url()->fromRoute('administration', array(
                 'controller' => $this->getController(), 
                 'action' => $this->getAction(), 
                 'slug' => $this->getSlug(false)
@@ -192,6 +204,21 @@ abstract class AbstractBaseController extends AbstractActionController
     }
 
     /**
+     * Get page name
+     *
+     * @param boolean $defaultValue
+     * @return string
+     */
+    public function getPageName($defaultValue = true)
+    {
+        if ($this->pageName === null) {
+            $this->pageName = $this->params()->fromRoute('page_name', ($defaultValue ? 'home' : null));
+        }
+
+        return $this->pageName; 
+    }
+
+    /**
      * Get slug
      *
      * @param boolean $defaultValue
@@ -204,6 +231,20 @@ abstract class AbstractBaseController extends AbstractActionController
         }
 
         return $this->slug; 
+    }
+
+    /**
+     * Get language
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        if ($this->language === null) {
+            $this->language = $this->params()->fromRoute('language');
+        }
+
+        return $this->language; 
     }
 
     /**
@@ -265,7 +306,7 @@ abstract class AbstractBaseController extends AbstractActionController
      * @param string $route
      * @return string
      */
-    protected function redirectTo($controller = null, $action = null, array $params = array(), $useReferer = false, array $queries = array(), $route = 'application')
+    protected function redirectTo($controller = null, $action = null, array $params = array(), $useReferer = false, array $queries = array(), $route = 'administration')
     {
         $request = $this->getRequest();
 

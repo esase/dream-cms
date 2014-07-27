@@ -31,7 +31,7 @@
                         <a href="javascript:void(0)" rel="nofollow" confirm="<?php echo $this->escapeHtmlAttr($this->translate('Are you sure?')) ?>" membership-id="<?php echo $this->escapeJs($data->id) ?>" onclick="membership.deletePurchasedMmembership(this)" class="btn btn-primary" role="button">
                             <?php echo $this->translate('Delete') ?>
                         </a> 
-                        <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application', array('controller' => 'acl', 'action' => 'ajax-get-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">
+                        <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('administration', array('controller' => 'acl', 'action' => 'ajax-get-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">
                             <?php echo $this->translate('Membership info') ?>
                         </a>
                     </div>

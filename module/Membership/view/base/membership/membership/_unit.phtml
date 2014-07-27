@@ -12,7 +12,7 @@
             <a href="javascript:void(0)" rel="nofollow" onclick="payment.addToShoppingCart(<?php echo $data->id ?>, 'membership')" class="btn btn-primary" role="button">
                 <?php echo $this->translate('Buy') ?>
             </a> 
-            <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application', array('controller' => 'acl', 'action' => 'ajax-get-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">
+            <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('administration', array('controller' => 'acl', 'action' => 'ajax-get-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">
                 <?php echo $this->translate('Membership info') ?>
             </a>
         </div>

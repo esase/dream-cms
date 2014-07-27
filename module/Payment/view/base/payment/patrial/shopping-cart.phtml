@@ -8,7 +8,7 @@
         <div class="span2" id="shopping-cart-info">
             <h5><b><?php echo $this->translate('Shopping cart') ?></b><?php if ($this->shoppingCart()->getItemsCount()) : ?> - <?php echo sprintf($this->translate('Shopping cart info'), $this->shoppingCart()->getItemsCount(), $this->processCost($this->shoppingCart()->getItemsDiscountedAmount(), true)) ?><?php if ($this->shoppingCart()->getCurrentDiscount()) : ?> - <?php echo $this->translate('discount') ?>: <?php echo $this->escapeHtml($this->shoppingCart()->getCurrentDiscount()) ?>%<?php endif; ?><?php endif; ?></h5>
             <?php if ($this->shoppingCart()->getItemsCount()) : ?>
-                <a href="<?php echo $this->url('application', array('controller' => 'payments', 'action' => 'shopping-cart')) ?>">
+                <a href="<?php echo $this->url('administration', array('controller' => 'payments', 'action' => 'shopping-cart')) ?>">
                     <?php echo $this->translate('View the shopping cart') ?>
                 </a> |
                 <a rel="nofollow" href="javascript:void(0)" onclick="payment.cleanShoppingCart(<?php echo $this->currentRoute()->getController() == 'payments' && (in_array($this->currentRoute()->getAction(), array('shopping-cart', 'checkout'))) ? 'true' : 'false' ?>)">

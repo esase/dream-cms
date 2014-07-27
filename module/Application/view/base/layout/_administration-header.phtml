@@ -91,7 +91,7 @@
                             <?php endforeach; ?>
                         <?php endif; ?>
                         <li>
-                            <a title="<?php echo $this->escapeHtmlAttr($this->translate('Back to site')) ?>" href="<?php echo  $this->url('application') ?>">
+                            <a title="<?php echo $this->escapeHtmlAttr($this->translate('Back to site')) ?>" href="<?php echo  $this->url('administration') ?>">
                                 <img src="<?php  echo $this->asset('icon/home_menu.png', 'image') ?>" />
                             </a>
                         </li>
@@ -126,14 +126,14 @@
                                 <ul class="dropdown-menu">
                                     <?php if ($this->checkPermission('users_administration_edit_user')): ?>
                                         <li>
-                                            <a href="<?php echo  $this->url('application', array('controller' => 'users-administration', 'action' => 'edit-user', 'slug' => $this->userIdentity()->user_id)) ?>">
+                                            <a href="<?php echo  $this->url('administration', array('controller' => 'users-administration', 'action' => 'edit-user', 'slug' => $this->userIdentity()->user_id)) ?>">
                                                 <img src="<?php  echo $this->asset('icon/edit_menu.png', 'image', 'user') ?>" />
                                                 <?php echo $this->translate('Edit account') ?>
                                             </a>
                                         </li>
                                     <?php endif; ?>
                                     <li>
-                                        <a href="<?php echo  $this->url('application', array('controller' => 'user', 'action' => 'logout')) ?>">
+                                        <a href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'logout')) ?>">
                                             <img src="<?php  echo $this->asset('icon/logout-menu.png', 'image', 'user') ?>" />
                                             <?php echo $this->translate('Logout') ?>
                                         </a>

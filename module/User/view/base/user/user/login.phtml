@@ -30,9 +30,9 @@
 )); ?>
 <br />
 <br />
-<a href="<?php echo  $this->url('application', array('controller' => 'user', 'action' => 'forgot')) ?>"><?php echo $this->escapeHtml($this->translate('Can\'t access your account?')) ?></a>
+<a href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'forgot')) ?>"><?php echo $this->escapeHtml($this->translate('Can\'t access your account?')) ?></a>
 
 <?php if ((int) $this->getSetting('user_allow_register')): ?>
     <br />
-    <a href="<?php echo  $this->url('application', array('controller' => 'user', 'action' => 'register')) ?>"><?php echo $this->escapeHtml($this->translate('Create a new account')) ?></a>
+    <a href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'register')) ?>"><?php echo $this->escapeHtml($this->translate('Create a new account')) ?></a>
 <?php endif; ?>

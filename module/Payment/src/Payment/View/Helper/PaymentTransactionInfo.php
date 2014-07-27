@@ -24,7 +24,7 @@ class PaymentTransactionInfo extends AbstractHelper
                return $transactionInfo['slug'];
             }
 
-            $pageUrl = $this->getView()->url('application', array('controller' =>
+            $pageUrl = $this->getView()->url('administration', array('controller' =>
                     $options['controller'], 'action' => $options['action'], 'slug' => $transactionInfo['slug']));
 
             return '<a href="javascript:void(0)" onclick="showPopup(\'' .

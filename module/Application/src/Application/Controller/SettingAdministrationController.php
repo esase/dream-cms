@@ -35,7 +35,7 @@ class SettingAdministrationController extends AbstractAdministrationController
         $this->clearJsCssCache();
 
         return new ViewModel(array(
-            'settingsForm' => parent::settingsForm('application', 'settings-administration', 'index')
+            'settingsForm' => parent::settingsForm('administration', 'settings-administration', 'index')
         ));
     }
 

@@ -167,7 +167,7 @@
                                 }
                             ?>
                             <li>
-                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('application', $this->multipleActionParams, array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
+                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('administration', $this->multipleActionParams, array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
                                     <?php echo $action['name'] ?>
                                 </a>
                             </li>
@@ -181,7 +181,7 @@
                         <?php foreach ($this->regularActions as $action) : ?>
                             <li>
                                 <?php if (empty($action['js'])) : ?>
-                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="<?php echo $this->url('application', array('controller' => $action['controller'], 'action' => $action['action']), array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="<?php echo $this->url('administration', array('controller' => $action['controller'], 'action' => $action['action']), array('query' => (!empty($action['queries']) ? $action['queries'] : null))) ?>">
                                         <?php echo $action['name'] ?>
                                     </a>
                                 <?php else: ?>
@@ -205,7 +205,7 @@
                 <ul class="dropdown-menu">
                     <?php foreach ($this->perPageRanges as $perPage) : ?>
                         <li <?php if ($this->per_page == $perPage) : ?>class="disabled"<?php endif; ?>>
-                            <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array('per_page' => $perPage)), array('query' => $this->filterParams)) ?>"><?php echo $perPage ?></a>
+                            <a href="<?php echo $this->url('administration', array_merge($this->baseUrlParams, array('per_page' => $perPage)), array('query' => $this->filterParams)) ?>"><?php echo $perPage ?></a>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -250,7 +250,7 @@
                     <?php if (empty($header['order_name'])) : ?>
                         <?php echo $header['title'] ?>
                     <?php else: ?>
-                        <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array(
+                        <a href="<?php echo $this->url('administration', array_merge($this->baseUrlParams, array(
                             'per_page' => $this->per_page,
                             'order_type' => ($this->order_type == 'asc' ? 'desc' : 'asc'),
                             'order_by' => $header['order_name']
@@ -365,7 +365,7 @@
                                         }
                                     ?>
     
-                                    <a class="single-actions" href="<?php echo $this->url('application', array(
+                                    <a class="single-actions" href="<?php echo $this->url('administration', array(
                                             'controller' => $action['controller'],
                                             'action' => $action['action'],
                                             'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
@@ -399,7 +399,7 @@
     <!-- a pagination -->
     <?php
         echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', array(
-            'route' => 'application',
+            'route' => 'administration',
             'params' => array_merge($this->baseUrlParams, array('per_page' => $this->per_page)),
             'queries' => $this->filterParams
         ))

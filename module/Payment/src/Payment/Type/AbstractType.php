@@ -45,7 +45,7 @@ abstract class AbstractType implements PaymentTypeInterface
      */
     public function getSuccessUrl()
     {
-        return $this->urlViewHelper->__invoke('application', array(
+        return $this->urlViewHelper->__invoke('administration', array(
             'controller' => 'payments',
             'action' => 'success'
         ), array('force_canonical' => true));
@@ -58,7 +58,7 @@ abstract class AbstractType implements PaymentTypeInterface
      */
     public function getErrorUrl()
     {
-        return $this->urlViewHelper->__invoke('application', array(
+        return $this->urlViewHelper->__invoke('administration', array(
             'controller' => 'payments',
             'action' => 'error'
         ), array('force_canonical' => true));

@@ -35,7 +35,7 @@
                     <ul class="dropdown-menu">
                         <?php foreach ($this->perPageRanges as $perPage) : ?>
                             <li <?php if ($this->per_page == $perPage) : ?>class="disabled"<?php endif; ?>>
-                                <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array('per_page' => $perPage)), array('query' => $this->filterParams)) ?>"><?php echo $perPage ?></a>
+                                <a href="<?php echo $this->url('administration', array_merge($this->baseUrlParams, array('per_page' => $perPage)), array('query' => $this->filterParams)) ?>"><?php echo $perPage ?></a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -51,19 +51,19 @@
                     <ul class="dropdown-menu">
                         <?php foreach ($this->orderList as $order => $orderTitle) : ?>
                             <li <?php if ($this->order_by == $order) : ?>class="disabled"<?php endif; ?>>
-                                <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array('order_by' => $order))) ?>">
+                                <a href="<?php echo $this->url('administration', array_merge($this->baseUrlParams, array('order_by' => $order))) ?>">
                                     <?php echo $orderTitle ?>
                                 </a>
                             </li>
                         <?php endforeach; ?>
                         <li class="divider"></li>
                         <li <?php if ($this->order_type == 'asc') : ?>class="disabled"<?php endif; ?>>
-                            <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array('order_type' => 'asc'))) ?>">
+                            <a href="<?php echo $this->url('administration', array_merge($this->baseUrlParams, array('order_type' => 'asc'))) ?>">
                                 <?php echo $this->translate('Ascending') ?>
                             </a>
                         </li>
                         <li <?php if ($this->order_type == 'desc') : ?>class="disabled"<?php endif; ?>>
-                            <a href="<?php echo $this->url('application', array_merge($this->baseUrlParams, array('order_type' => 'desc'))) ?>">
+                            <a href="<?php echo $this->url('administration', array_merge($this->baseUrlParams, array('order_type' => 'desc'))) ?>">
                                 <?php echo $this->translate('Descending') ?>
                             </a>
                         </li>
@@ -85,7 +85,7 @@
         <!-- pagination -->
         <?php
             echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', array(
-                'route' => 'application',
+                'route' => 'administration',
                 'params' => array_merge($this->baseUrlParams, array(
                     'controller' => $this->controller, 
                     'action' => $this->action

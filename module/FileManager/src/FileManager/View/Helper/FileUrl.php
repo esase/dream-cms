@@ -44,7 +44,7 @@ class FileUrl extends AbstractHelper
             $urlParams = array('path' => $currentPath) + $options['filters'];
 
             // get the directory url
-            $directoryUrl = $this->getView()->url('application', array(
+            $directoryUrl = $this->getView()->url('administration', array(
                 'controller' => $this->getView()->currentRoute()->getController(),
                 'action' => $this->getView()->currentRoute()->getAction()), array('query' => $urlParams));
 

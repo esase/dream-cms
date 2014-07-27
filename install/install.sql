@@ -1065,3 +1065,22 @@ CREATE TABLE IF NOT EXISTS `application_injection_connection` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_structure` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(150) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `left_key` INT(10) NOT NULL DEFAULT 0,
+    `right_key` INT(10) NOT NULL DEFAULT 0,
+    `level` INT(10) NOT NULL DEFAULT 0,
+    `type` ENUM('system','custom') NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`name`),
+    INDEX `left_key` (`left_key`, `right_key`, `level`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_structure` (`id`, `name`, `module`, `left_key`, `right_key`, `level`, `type`) VALUES
+(1, 'home', 1, 1, 1, 1, 'system');

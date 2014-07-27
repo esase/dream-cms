@@ -100,7 +100,7 @@ class Event extends AbstractEvent
                 ),
                 'replace' => array(
                     $userInfo['nick_name'],
-                    UserService::getServiceManager()->get('viewhelpermanager')->get('url')->__invoke('application', 
+                    UserService::getServiceManager()->get('viewhelpermanager')->get('url')->__invoke('administration', 
                             array('controller' => 'user', 'action' => 'password-reset', 'slug' => $userInfo['slug']), array('force_canonical' => true)),
 
                     $activateCode

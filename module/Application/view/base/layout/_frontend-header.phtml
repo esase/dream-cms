@@ -97,7 +97,7 @@
                                         <li role="presentation" class="divider"></li>
                                     <?php endif; ?>
                                     <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('application', array('controller' => 'user', 'action' => 'logout')) ?>">
+                                        <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'logout')) ?>">
                                             <span class="glyphicon glyphicon-off"></span>
                                             <?php echo $this->translate('Logout') ?>
                                         </a>
@@ -106,13 +106,13 @@
                             </li>
                         <?php else: ?>
                             <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('application', array('controller' => 'user', 'action' => 'login')) ?>">
+                                <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'login')) ?>">
                                     <span class="glyphicon glyphicon-user"></span>
                                     <?php echo $this->translate('Login') ?>
                                 </a>
                             </li>
                             <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('application', array('controller' => 'user', 'action' => 'register')) ?>">
+                                <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'register')) ?>">
                                     <span class="glyphicon glyphicon-pencil"></span>
                                     <?php echo $this->translate('Register') ?>
                                 </a>

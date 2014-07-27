@@ -25,7 +25,7 @@
             file_browser_callback: function(field_name, url, type, win) { 
                 tinymce.activeEditor.windowManager.open({
                     title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
-                    url: '<?php echo $this->escapeJs($this->url('application', array('controller' => 'files-manager-embedded', 'action' => 'list'))) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
+                    url: '<?php echo $this->escapeJs($this->url('administration', array('controller' => 'files-manager-embedded', 'action' => 'list'))) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
                     width: <?php echo (int) $this->getSetting('file_manager_window_width') ?>,
                     height: <?php echo (int) $this->getSetting('file_manager_window_height') ?>
                 }, {

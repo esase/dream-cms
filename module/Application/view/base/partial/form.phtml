@@ -31,7 +31,7 @@
 
 <?php
     // group the form elements by categories
-    $this->form->setAttribute('action', $this->url('application', $this->formOptions, array('query' => !empty($this->queries) && is_array($this->queries) ? $this->queries : null)));
+    $this->form->setAttribute('action', $this->url('administration', $this->formOptions, array('query' => !empty($this->queries) && is_array($this->queries) ? $this->queries : null)));
     $this->form->prepare();
 
     // process the form elements

@@ -3,7 +3,7 @@
 return array(
     'Application',
     'User',
-    'Page',
     'XmlRpc',
-    'FileManager'
+    'FileManager',
+    'Page'
 );

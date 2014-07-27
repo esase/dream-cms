@@ -45,7 +45,7 @@ class PaymentItemLink extends AbstractHelper
             return $info['title'];
         }
 
-        return '<a target="_blank" href="' . $this->getView()->url('application', array('controller' =>
+        return '<a target="_blank" href="' . $this->getView()->url('administration', array('controller' =>
                 $info['view_controller'], 'action' => $info['view_action'], 'slug' => $info['slug'])) . '">' . $info['title'] . '</a>';
    }
 }

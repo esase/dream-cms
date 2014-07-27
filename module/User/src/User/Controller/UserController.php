@@ -529,7 +529,7 @@ class UserController extends AbstractBaseController
                                 'replace' => array(
                                     $userInfo['nick_name'],
                                     $this->getSetting('application_site_name'),
-                                    $this->url()->fromRoute('application', array('controller' => 'user',
+                                    $this->url()->fromRoute('administration', array('controller' => 'user',
                                             'action' => 'activate', 'slug' => $userInfo['slug']), array('force_canonical' => true)),
 
                                     $userInfo['activation_code']

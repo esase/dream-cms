@@ -48,7 +48,7 @@ class FileManagerDirectoryTree extends AbstractHelper
             $path = $parentDirectory ? $parentDirectory . '/' . $directoryName : $directoryName;
             $urlParams = array('path' => $path) + $filters;
 
-            $url = $this->getView()->url('application', array(
+            $url = $this->getView()->url('administration', array(
                 'controller' => $this->getView()->currentRoute()->getController(),
                 'action' => $this->getView()->currentRoute()->getAction()), array('query' => $urlParams));
 
