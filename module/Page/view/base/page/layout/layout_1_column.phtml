@@ -1,1 +1,10 @@
-<?php print_r($this->page) ?>
+<?php echo $this->partial('page/layout/_header', array(
+    'breadcrumb' => $this->breadcrumb, 
+    'page' => $this->page)) 
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        this->injectWidgest()
+    </div>
+</div>

@@ -1,17 +1,13 @@
 <?php echo $this->doctype(); ?>
 <html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
     <head>
-        <?php echo $this->injection('application_head') ?>
-
         <meta charset="utf-8">
-        <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false)->setTranslatorEnabled(false) ?>
 
         <?php echo $this->headMeta()
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
             ->appendName('viewport', 'width=device-width, initial-scale=1')
             ->appendName('generator', $this->getSetting('application_generator') . ' ' . $this->getSetting('application_generator_version'))
-            ->appendName('description', $this->getSetting('application_meta_description'))
-            ->appendName('keywords', $this->getSetting('application_meta_keywords'));
         ?>
 
         <!-- Le styles -->
@@ -42,89 +38,5 @@
         ?>
     </head>
     <body>
-        <?php echo $this->injection('application_before_menu') ?>
-
-        <!-- nav bar -->
-        <div class="navbar navbar-default navbar-static-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<?php echo  $this->url(null, array('controller' => 'Home')) ?>">
-                        <?php echo $this->getSetting('application_site_name') ?>
-                    </a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
-                        <?php if ($this->languageSwitcher()): ?>
-                            <!-- select language -->
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="glyphicon glyphicon-globe"></span>
-                                    <?php echo $this->translate('Select language') ?><b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <?php foreach ($this->languageSwitcher() as $language) : ?>
-                                        <li <?php if ($language['active']): ?>class="disabled"<?php endif; ?>>
-                                            <a href="<?php echo $language['url'] ?>">
-                                                <img src="<?php  echo $this->asset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
-                                                <?php echo $this->escapeHtml($language['description']) ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                        <?php endif; ?>
-                        <?php if (!$this->isGuest()): ?>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    <?php echo sprintf($this->translate('Welcome'), $this->userIdentity()->nick_name) ?><b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <?php if (!$this->isGuest()): ?>
-                                        <?php foreach ($this->userMenu() as $menuItem) : ?>
-                                            <li role="presentation">
-                                                <a role="menuitem" tabindex="-1" href="<?php echo  $this->url(null, array('controller' => $menuItem['controller'], 'action' => $menuItem['action'])) ?>">
-                                                    <?php echo $this->translate($menuItem['name']) ?>
-                                                </a>
-                                            </li>
-                                        <?php endforeach; ?>
-                                        <li role="presentation" class="divider"></li>
-                                    <?php endif; ?>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'logout')) ?>">
-                                            <span class="glyphicon glyphicon-off"></span>
-                                            <?php echo $this->translate('Logout') ?>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        <?php else: ?>
-                            <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'login')) ?>">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    <?php echo $this->translate('Login') ?>
-                                </a>
-                            </li>
-                            <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'register')) ?>">
-                                    <span class="glyphicon glyphicon-pencil"></span>
-                                    <?php echo $this->translate('Register') ?>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            </div>
-        </div>
-
-        <?php echo $this->injection('application_after_menu') ?>
-
         <!-- container -->
         <div class="container" id="container">
-        <?php echo $this->injection('application_body') ?>

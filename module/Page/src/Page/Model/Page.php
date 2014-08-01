@@ -16,6 +16,16 @@ class Page extends AbstractNestedSet
      */
     const PAGE_STATUS_ACTIVE = 1;
 
+    /**
+     * Page type system
+     */
+    const PAGE_TYPE_SYSTEM = 'system';
+
+    /**
+     * Page type custom
+     */
+    const PAGE_TYPE_CUSTOM = 'custom';
+
     public function __construct(TableGateway $tableGateway)
     {
         parent::__construct($tableGateway);

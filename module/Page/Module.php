@@ -47,6 +47,9 @@ class Module
     public function getViewHelperConfig()
     {
         return array(
+            'invokables' => array(
+                'pageTitle' => 'Page\View\Helper\PageTitle'
+            )
         );
     }
 

@@ -20,11 +20,6 @@ class PageController extends AbstractActionController
     protected $receivedPath = null;
 
     /**
-     * Default page name
-     */
-    const DEFAULT_PAGE_NAME = 'home';
-
-    /**
      * Defaut layout
      */
     const DEFAULT_LAYOUT = 'layout_1_column';
@@ -61,16 +56,18 @@ class PageController extends AbstractActionController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
-        // get the page parents
-        $pageParents = $this->getModel()->
+
+        // get the page breadcrumb
+        $breadcrumb = $this->getModel()->
                 getPageParents($pageInfo['left_key'], $pageInfo['right_key'], $userRole, $language);
 
-        if (!$this->compareReceivedPath($pageParents)) {
+        if (!$this->compareReceivedPath($breadcrumb)) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
         $viewModel = new ViewModel(array(
-            'page' => $pageInfo
+            'page' => $pageInfo,
+            'breadcrumb' => $breadcrumb
         ));
 
         // set a custom page layout
@@ -112,14 +109,12 @@ class PageController extends AbstractActionController
     /**
      * Get received path
      *
-     * @param boolean $defaultValue
      * @return array
      */
-    protected function getReceivedPath($defaultValue = true)
+    protected function getReceivedPath()
     {
         if ($this->receivedPath === null) {
-            $this->receivedPath = explode('/', $this->params()->
-                    fromRoute('page_name', ($defaultValue ? self::DEFAULT_PAGE_NAME : null)));
+            $this->receivedPath = explode('/', $this->params()->fromRoute('page_name'));
         }
 
         return $this->receivedPath; 
