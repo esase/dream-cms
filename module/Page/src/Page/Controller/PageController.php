@@ -1,36 +1,127 @@
 <?php
 namespace Page\Controller;
 
-use Application\Controller\AbstractBaseController;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
+use Application\Service\Service as ApplicationService;
 
-class PageController extends AbstractBaseController
+class PageController extends AbstractActionController
 {
+    /**
+     * Model instance
+     * @var object  
+     */
+    protected $model;
+
+    /**
+     * Received path
+     * @var array
+     */
+    protected $receivedPath = null;
+
+    /**
+     * Default page name
+     */
+    const DEFAULT_PAGE_NAME = 'home';
+
+    /**
+     * Defaut layout
+     */
+    const DEFAULT_LAYOUT = 'layout_1_column';
+
+    /**
+     * Get model
+     */
+    protected function getModel()
+    {
+        if (!$this->model) {
+            $this->model = $this->getServiceLocator()->get('Page\Model\Page');
+        }
+
+        return $this->model;
+    }
+
     /**
      * Index page
      */
     public function indexAction()
     {
-    echo __METHOD__ , '<br>';
-    print_r(explode('/', $this->getPageName()));
-        // check received page
-        /*$currentPage = array_filter(explode('/', $this->getPageName()));
-        //print_r(array_filter($currentPage));
-        $currentPage = end($currentPage);
-        
-        echo $currentPage , '<br>';;
-        echo $this->getPage('page'), '<br>';
-        echo $this->getSlug('page'), '<br>';
-        return false;
-        // Запрашиваю только конец, затем с нестед сета поднимаю текущую страницу и ивсех предков
-        // срванива. путь если совпал то все ok если не совпал 404, если запрашиваемой страницы нет 404
-        */
-       // echo $this->request->getUri();;
-        echo '<br>'.$this->params()->fromRoute('page_name') , '<br>';
-        echo $this->getPage(), '<br>';
-        echo $this->getPerPage(), '<br>';
-        echo $this->getOrderBy(), '<br>';
-        echo $this->getSlug(), '<br>';
-        echo $this->getExtra(), '<br>';
-        return false;
+        // get the last page name
+        $pageName = array_filter($this->getReceivedPath());
+        $pageName = end($pageName);
+
+        // get current user's role and current site's language
+        $userRole = ApplicationService::getCurrentUserIdentity()->role;
+        $language = ApplicationService::getCurrentLocalization()['language'];
+
+        // get the page info
+        if (!$pageName || false == 
+                ($pageInfo = $this->getModel()->getPageInfo($pageName, $userRole, $language))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get the page parents
+        $pageParents = $this->getModel()->
+                getPageParents($pageInfo['left_key'], $pageInfo['right_key'], $userRole, $language);
+
+        if (!$this->compareReceivedPath($pageParents)) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        $viewModel = new ViewModel(array(
+            'page' => $pageInfo
+        ));
+
+        // set a custom page layout
+        $viewModel->setTemplate('page/layout/' . (
+            $pageInfo['layout'] ? $pageInfo['layout'] : self::DEFAULT_LAYOUT
+        ));
+
+        return $viewModel;
+    }
+
+    /**
+     * Compare received path
+     *
+     * @param array $pages
+     * @return boolean
+     */
+    protected function compareReceivedPath(array $pages)
+    {
+        $index = 0;
+        $receivedPathCount = count($this->getReceivedPath());
+        $pagesCount = count($pages);
+
+        // compare the length of both array considering trailing slash
+        if ($receivedPathCount != $pagesCount && $receivedPathCount - 1 != $pagesCount) {
+            return false;
+        }
+
+        foreach ($pages as $page) {
+            if ($this->getReceivedPath()[$index] != $page['slug']) {
+                return false;
+            }
+
+            $index++;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get received path
+     *
+     * @param boolean $defaultValue
+     * @return array
+     */
+    protected function getReceivedPath($defaultValue = true)
+    {
+        if ($this->receivedPath === null) {
+            $this->receivedPath = explode('/', $this->params()->
+                    fromRoute('page_name', ($defaultValue ? self::DEFAULT_PAGE_NAME : null)));
+        }
+
+        return $this->receivedPath; 
     }
 }

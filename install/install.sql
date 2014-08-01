@@ -1066,21 +1066,92 @@ CREATE TABLE IF NOT EXISTS `application_injection_connection` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- pages
+
+CREATE TABLE IF NOT EXISTS `page_layout` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `title` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `default` (`default`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_layout` (`id`, `name`, `title`) VALUES
+(1, 'layout_1_column', '1 column');
+
+CREATE TABLE IF NOT EXISTS `page_system` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `slug` VARCHAR(100) NOT NULL,
+    `title` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `allowed_role` SMALLINT(5) UNSIGNED NULL,
+    `user_menu` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+    `menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
+    `disable_menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
+    `parent` SMALLINT(5) UNSIGNED NULL, 
+    `layout` SMALLINT(5) UNSIGNED NULL,
+    `order` SMALLINT(5) NOT NULL,    
+    PRIMARY KEY (`id`),
+    UNIQUE (`slug`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`allowed_role`) REFERENCES `application_acl_role`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    FOREIGN KEY (`parent`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `allowed_role`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`) VALUES
+(1, 'home', 'Home', 1, NULL, 0, 1, NULL, 1, 0, 1),
+(2, 'login', 'Login', 2, 2, 0, 0, 1, 1, 0, 1),
+(3, 'register', 'Register', 2, 2, 0, 0, 1, 2, 0, 1);
+
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(150) NOT NULL,
+    `slug` VARCHAR(100) NOT NULL,
+    `title` VARCHAR(50) NOT NULL,
+    `meta_description` VARCHAR(150) NOT NULL,
+    `meta_keywords` VARCHAR(150) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `left_key` INT(10) NOT NULL DEFAULT 0,
-    `right_key` INT(10) NOT NULL DEFAULT 0,
-    `level` INT(10) NOT NULL DEFAULT 0,
+    `user_menu` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+    `menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
+    `disable_menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
+    `active` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '1',
     `type` ENUM('system','custom') NOT NULL,
+    `language` CHAR(2) NOT NULL,
+    `layout` SMALLINT(5) UNSIGNED NULL,
+    `left_key` INT(10) NOT NULL DEFAULT '0',
+    `right_key` INT(10) NOT NULL DEFAULT '0',
+    `level` INT(10) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
-    UNIQUE (`name`),
-    INDEX `left_key` (`left_key`, `right_key`, `level`),
+    UNIQUE `slug` (`slug`, `language`),
+    KEY `node` (`left_key`, `right_key`, `language`, `active`, `level`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    FOREIGN KEY (`language`) REFERENCES `application_localization`(`language`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_permission` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `disallowed_role` SMALLINT(5) UNSIGNED NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`disallowed_role`) REFERENCES `application_acl_role`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `page_structure` (`id`, `name`, `module`, `left_key`, `right_key`, `level`, `type`) VALUES
-(1, 'home', 1, 1, 1, 1, 'system');

@@ -1,6 +1,8 @@
 <?php
 namespace Page;
 
+use Zend\Db\TableGateway\TableGateway;
+
 class Module
 {
     /**
@@ -30,6 +32,12 @@ class Module
     public function getServiceConfig()
     {
         return array(
+            'factories' => array(
+                'Page\Model\Page' => function($serviceManager)
+                {
+                    return new Model\Page(new TableGateway('page_structure', $serviceManager->get('Zend\Db\Adapter\Adapter')));
+                }
+            )
         );
     }
 
