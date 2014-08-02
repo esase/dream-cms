@@ -38,13 +38,21 @@ class Page extends AbstractNestedSet
      * @param integer $rightKey
      * @param integer $userRole
      * @param string $language
+     * @param boolean $excludeHome
      * @return array|false
      */
-    public function getPageParents($leftKey, $rightKey, $userRole, $language)
+    public function getPageParents($leftKey, $rightKey, $userRole, $language, $excludeHome = true)
     {
         // TODO: do we need cache here?
-        return $this->getParentNodes($leftKey, $rightKey, function (Select $select) use ($userRole, $language) {
+        return $this->getParentNodes($leftKey, 
+                $rightKey, function (Select $select) use ($userRole, $language, $excludeHome) {
+
+            $select->columns(['slug', 'title', 'type']);
             $select = $this->getPageFilter($select, $userRole, $language, false);
+
+            if ($excludeHome) {
+                $select->where->notEqualTo('level', 1);
+            }
         });
     }
 

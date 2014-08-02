@@ -1,10 +1,12 @@
-<?php $this->pageTitle($this->breadcrumb) ?>
+<?php $this->headMeta()->appendName('description', $this->page['meta_description'] 
+        ? $this->page['meta_description'] 
+        : $this->getSetting('application_meta_description')) ?>
 
-<?php $this->headMeta()
-    ->appendName('description', $this->page['meta_description'] 
-            ? $this->page['meta_description'] : $this->getSetting('application_meta_description'))
-    ->appendName('keywords', $this->page['meta_keywords'] 
-            ? $this->page['meta_keywords'] : $this->getSetting('application_meta_keywords'));
-?>
+<?php $this->headMeta()->appendName('keywords', $this->page['meta_keywords'] 
+        ? $this->page['meta_keywords'] 
+        : $this->getSetting('application_meta_keywords')) ?>
 
-<?php echo $this->partial('partial/breadcrumb', array('breadcrumb' => $this->breadcrumb, 'page' => $this->page)) ?>
+<?php if ($this->page['level'] > 1): ?>
+    <?php $this->pageTitle($this->breadcrumb) ?>
+    <?php echo $this->partial('page/partial/breadcrumb', ['breadcrumb' => $this->breadcrumb, 'page' => $this->page]) ?>
+<?php endif ?>

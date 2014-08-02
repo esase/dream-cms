@@ -84,7 +84,7 @@ class Module
         $this->moduleManager = $moduleManager;
 
         $moduleManager->getEventManager()->
-            attach(ModuleEvent::EVENT_LOAD_MODULES_POST, array($this, 'initApplication'));
+            attach(ModuleEvent::EVENT_LOAD_MODULES_POST, [$this, 'initApplication']);
     }
 
     /**
@@ -103,17 +103,17 @@ class Module
 
         if (!$request instanceof ConsoleRequest) {
             // init user localization
-            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, array(
+            $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, [
                 $this, 'initUserLocalization'
-            ), 100);
+            ], 100);
 
             $config = $this->serviceManager->get('Config');
 
             // init profiler
             if ($config['profiler']) {
-                $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, array(
+                $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, [
                     $this, 'initProfiler'
-                ));
+                ]);
             }
         }
     }
@@ -127,35 +127,35 @@ class Module
             $writer = new FirePhp();
             $logger = new Logger();
             $logger->addWriter($writer);
-    
+
             $logger->info('memory usage: ' . memory_get_usage(true) / 1024 / 1024 . 'Mb');
             $logger->info('page execution time: ' . (microtime(true) - APPLICATION_START));
-    
+
             // get sql profiler
             if (null !== ($sqlProfiler = $this->
                     serviceManager->get('Zend\Db\Adapter\Adapter')->getProfiler())) {
-    
+
                 $queriesTotalTime = 0;    
                 foreach($sqlProfiler->getProfiles() as $query) {
-                    $base = array(
+                    $base = [
                         'time' => $query['elapse'],
                         'query' => $query['sql']
-                    );
-    
+                    ];
+
                     $queriesTotalTime += $query['elapse'];
-    
+
                     if(!empty($query['parameters'])) {
-                        $params = array();
+                        $params = [];
                         foreach($query['parameters'] as $key => $value) {
                             $params[$key] = $value;
                         }
-    
+
                         $base['params'] = $params;
                     }
-    
+
                     $logger->info('', $base);
                 }
-    
+
                 $logger->info('sql queries total execution time: '. $queriesTotalTime);
             }
         }
@@ -317,16 +317,6 @@ class Module
             if ($defaultTimeZone != date_default_timezone_get()) {
                 date_default_timezone_set($defaultTimeZone);
             }
-    
-            // get difference to greenwich time (GMT) with colon between hours and minutes
-            $date = new DateTime();
-    
-            $applicationInit = $this->serviceManager
-                ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\Init');
-    
-            // change time zone settings in model
-            $applicationInit->initTimeZone($date->format('P'));
 
             ApplicationService::setTimeZones($registeredTimeZones);
         }
@@ -451,31 +441,35 @@ class Module
             // get a router
             $router = $this->serviceManager->get('router');
             $matches = $e->getRouteMatch();
-    
-            // get languge param from the route
-            if (!$matches->getParam('languge') ||
-                        !array_key_exists($matches->getParam('languge'), $this->localizations)) {
-    
-                // set default language
-                $router->setDefaultParam('languge', $this->defaultLocalization['language']);
-    
-                // remember user's choose language
-                $this->setUserLanguage($this->defaultLocalization['language']);
-                return;
+
+            if (!$matches->getParam('languge') 
+                    || !array_key_exists($matches->getParam('languge'), $this->localizations)) {
+
+                if (!$matches->getParam('languge')) {
+                    // set default language
+                    $router->setDefaultParam('languge', $this->defaultLocalization['language']);
+
+                    // remember user's choose language
+                    $this->setUserLanguage($this->defaultLocalization['language']);
+                    return;
+                }
+
+                // show a 404 page
+                return $matches->setParam('action', 'not-found');
             }
-    
+
             // init an user localization
             if ($this->defaultLocalization['language'] != $matches->getParam('languge')) {
                 $this->serviceManager
                     ->get('translator')
                     ->setLocale($this->localizations[$matches->getParam('languge')]['locale']);
-    
+
                 ApplicationService::setCurrentLocalization($this->localizations[$matches->getParam('languge')]);    
             }
-    
+
             Locale::setDefault($this->localizations[$matches->getParam('languge')]['locale']);
             $router->setDefaultParam('languge', $matches->getParam('languge'));
-    
+
             // remember user's choose language
             $this->setUserLanguage($matches->getParam('languge'));
         }
@@ -526,8 +520,8 @@ class Module
      */
     public function getServiceConfig()
     {
-        return array(
-            'factories' => array(
+        return [
+            'factories' => [
                 'Zend\Session\SessionManager' => function ($serviceManager)
                 {
                     $config = $serviceManager->get('config');
@@ -553,9 +547,9 @@ class Module
 
                     if (!empty($config['session']['validators'])) {
                         $chain = $sessionManager->getValidatorChain();
-    
+
                         foreach ($config['session']['validators'] as $validator) {
-                            $chain->attach('session.validate', array(new $validator(), 'isValid'));
+                            $chain->attach('session.validate', [new $validator(), 'isValid']);
                         }
                     }
 
@@ -564,18 +558,18 @@ class Module
                 },
                 'Cache\Static' => function ($serviceManager)
                 {
-                    $cache = CacheStorageFactory::factory(array(
-                        'adapter' => array(
+                    $cache = CacheStorageFactory::factory([
+                        'adapter' => [
                             'name' => 'filesystem'
-                        ),
-                        'plugins' => array(
+                        ],
+                        'plugins' => [
                             // Don't throw exceptions on cache errors
-                            'exception_handler' => array(
+                            'exception_handler' => [
                                 'throw_exceptions' => false
-                            ),
+                            ],
                             'Serializer'
-                        )
-                    ));
+                        ]
+                    ]);
     
                     $cache->setOptions($serviceManager->get('Config')['static_cache']);
                     return $cache;
@@ -585,32 +579,32 @@ class Module
                     // get an active cache engine
                     $cacheEngine = ApplicationService::getSetting('application_dynamic_cache');
 
-                    $cache = CacheStorageFactory::factory(array(
-                        'adapter' => array(
+                    $cache = CacheStorageFactory::factory([
+                        'adapter' => [
                             'name' => $cacheEngine
-                        ),
-                        'plugins' => array(
+                        ],
+                        'plugins' => [
                             // Don't throw exceptions on cache errors
-                            'exception_handler' => array(
+                            'exception_handler' => [
                                 'throw_exceptions' => false
-                            ),
+                            ],
                             'Serializer'
-                        )
-                    ));
+                        ]
+                    ]);
 
-                    $cacheOptions = array_merge($serviceManager->get('Config')['dynamic_cache'], array(
+                    $cacheOptions = array_merge($serviceManager->get('Config')['dynamic_cache'], [
                         'ttl' => ApplicationService::getSetting('application_dynamic_cache_life_time')
-                    ));
+                    ]);
 
                     // add extra options
                     switch ($cacheEngine) {
                         case 'memcached' :
-                            $cacheOptions = array_merge($cacheOptions, array(
-                                'servers' => array(
+                            $cacheOptions = array_merge($cacheOptions, [
+                                'servers' => [
                                     ApplicationService::getSetting('application_memcache_host'),
                                     ApplicationService::getSetting('application_memcache_port')
-                                )
-                            ));
+                                ]
+                            ]);
                             break;
                         default :
                     }
@@ -641,8 +635,8 @@ class Module
 
                     return $authService;
                 }
-            )
-        );
+            ]
+        ];
     }
 
     /** 
@@ -650,8 +644,8 @@ class Module
      */
     public function getViewHelperConfig()
     {
-        return array(
-            'invokables' => array(
+        return [
+            'invokables' => [
                 'floatValue' => 'Application\View\Helper\FloatValue',
                 'date' => 'Application\View\Helper\Date',
                 'getSetting' => 'Application\View\Helper\Setting',
@@ -664,8 +658,8 @@ class Module
                 'localization' => 'Application\View\Helper\Localization',
                 'fileSize' => 'Application\View\Helper\FileSize',
                 'languageSwitcher' => 'Application\View\Helper\LanguageSwitcher'
-            ),
-            'factories' => array(
+            ],
+            'factories' => [
                 'asset' =>  function()
                 {
                     return new \Application\View\Helper\Asset($this->serviceManager->get('Cache\Dynamic'));
@@ -709,8 +703,8 @@ class Module
  
                     return $messages;
                 }
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -718,15 +712,15 @@ class Module
      */
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
+        return [
+            'Zend\Loader\ClassMapAutoloader' => [
                 __DIR__ . '/autoload_classmap.php'
-            ),
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+            ],
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                )
-            )
-        );
+                ]
+            ]
+        ];
     }
 }
