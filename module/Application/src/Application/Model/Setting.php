@@ -21,14 +21,14 @@ class Setting extends Base
     protected $arrayFields = array('multiselect', 'multicheckbox');
 
     /**
-     * Cache settings by language
+     * Application settings data cache
      */
     const CACHE_SETTINGS_BY_LANGUAGE = 'Application_Settings_By_Language_';
 
     /**
-     * Cache application settings tag
+     * Application settings data cache tag
      */
-    const CACHE_TAG_SETTINGS = 'Tag_Application_Settings';
+    const CACHE_SETTINGS_DATA_TAG = 'Application_Settings_Data_Tag';
 
     /**
      * System settings flag
@@ -49,7 +49,7 @@ class Setting extends Base
     public function removeSettingsCache($language)
     {
         $this->staticCacheInstance->clearByTags(array(
-            self::CACHE_TAG_SETTINGS
+            self::CACHE_SETTINGS_DATA_TAG
         ));
     }
 
@@ -119,7 +119,7 @@ class Setting extends Base
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $settings);
             $this->staticCacheInstance->setTags($cacheName, array(
-                self::CACHE_TAG_SETTINGS
+                self::CACHE_SETTINGS_DATA_TAG
             ));
         }
 

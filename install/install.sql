@@ -441,7 +441,8 @@ INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `ve
 (1, 'Application', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
 (2, 'User', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
 (3, 'XmlRpc', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(4, 'FileManager', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', '');
+(4, 'FileManager', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
+(5, 'Page', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', '');
 
 CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
     `namespace` VARCHAR(20) NOT NULL,
@@ -1072,12 +1073,15 @@ CREATE TABLE IF NOT EXISTS `page_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
-    KEY `default` (`default`)
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_layout` (`id`, `name`, `title`) VALUES
-(1, 'layout_1_column', '1 column');
+INSERT INTO `page_layout` (`id`, `name`, `title`, `module`) VALUES
+(1, 'layout_1_column', '1 column', 5);
 
 CREATE TABLE IF NOT EXISTS `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1152,6 +1156,64 @@ CREATE TABLE IF NOT EXISTS `page_permission` (
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_widget` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `depend_page` SMALLINT(5) UNSIGNED NULL,
+    `type` ENUM('system','public') NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_page`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget` (`id`, `name`, `module`, `depend_page`, `type`) VALUES
+(1, 'loginWidget', 2, NULL, 'public'),
+(2, 'htmlWidget', 5, NULL, 'public');
+
+CREATE TABLE IF NOT EXISTS `page_widget_position` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `name` (`name`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_position` (`id`, `name`, `module`) VALUES
+(1, 'head', 5),
+(2, 'before-menu', 5),
+(3, 'after-menu', 5),
+(4, 'body', 5),
+(5, 'footer', 5),
+(6, 'content-left', 5),
+(7, 'content-right', 5),
+(8, 'content-top', 5),
+(9, 'content-bottom', 5);
+
+CREATE TABLE IF NOT EXISTS `page_widget_connection` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `position_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`position_id`) REFERENCES `page_widget_position`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

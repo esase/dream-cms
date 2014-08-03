@@ -28,6 +28,11 @@ class Layout extends Base
     const CACHE_LAYOUTS_ACTIVE = 'Application_Layouts_Active';
 
     /**
+     * Layouts data cache tag
+     */
+    const CACHE_LAYOUTS_DATA_TAG = 'Application_Layouts_Data_Tag';
+
+    /**
      * Active layout flag
      */ 
     const LAYOUT_STATUS_ACTIVE = 'active';
@@ -70,6 +75,7 @@ class Layout extends Base
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $layouts);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_LAYOUTS_DATA_TAG));
         }
 
         return $layouts;
@@ -107,6 +113,7 @@ class Layout extends Base
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $layouts);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_LAYOUTS_DATA_TAG));
         }
 
         return $layouts;

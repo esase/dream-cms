@@ -23,6 +23,11 @@ class Localization extends Base
     const CACHE_LOCALIZATIONS = 'Application_Localizations';
 
     /**
+     * Localization data cache tag
+     */
+    const CACHE_LOCALIZATIONS_DATA_TAG = 'Application_Localizations_Data_Tag';
+
+    /**
      * Get all localizations
      *
      * @return array
@@ -64,6 +69,7 @@ class Localization extends Base
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $localizations);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_LOCALIZATIONS_DATA_TAG));
         }
 
         return $localizations;

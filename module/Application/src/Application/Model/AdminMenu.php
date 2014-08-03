@@ -15,6 +15,11 @@ class AdminMenu extends Base
     const CACHE_ADMIN_MENU = 'Application_Admin_Menu';
 
     /**
+     * Admin menu data cache tag
+     */
+    const CACHE_ADMIN_MENU_DATA_TAG = 'Application_Admin_Menu_Data_Tag';
+
+    /**
      * Get menu
      *
      * @return array
@@ -103,6 +108,7 @@ class AdminMenu extends Base
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $menu);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_ADMIN_MENU_DATA_TAG));
         }
 
         return $menu;

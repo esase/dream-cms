@@ -50,6 +50,7 @@ class UserMenu extends Base
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $menu);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_USER_TAG));
         }
 
         return $menu;

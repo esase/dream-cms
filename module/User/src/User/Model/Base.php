@@ -39,6 +39,11 @@ class Base extends AbstractBase
     const CACHE_USER_INFO = 'User_Info_';
 
     /**
+     * User cache data tag
+     */
+    const CACHE_USER_DATA_TAG = 'User_Data_Tag';
+
+    /**
      * Approved status
      */
     const STATUS_APPROVED = 'approved';
@@ -734,6 +739,7 @@ class Base extends AbstractBase
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $userInfo);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_USER_DATA_TAG));
         }
 
         return $userInfo;

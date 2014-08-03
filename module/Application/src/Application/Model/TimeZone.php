@@ -13,6 +13,11 @@ class TimeZone extends Base
     const CACHE_TIME_ZONES  = 'Application_Time_Zones';
 
     /**
+     * Time zones data cache tag
+     */
+    const CACHE_TIME_ZONES_DATA_TAG = 'Application_Time_Zones_Data_Tag';
+
+    /**
      * Get time zones
      *
      * @return array
@@ -42,6 +47,7 @@ class TimeZone extends Base
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $timeZones);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_TIME_ZONES_DATA_TAG));
         }
 
         return $timeZones;

@@ -33,6 +33,7 @@ class XmlRpc extends Base
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $classes);
+            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_XMLRPC_DATA_TAG));
         }
 
         return $classes;
