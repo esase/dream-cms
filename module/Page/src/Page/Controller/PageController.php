@@ -3,7 +3,8 @@ namespace Page\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Service\Service as ApplicationService;
+use User\Service\UserIdentity as UserIdentityService;
+use Localization\Service\Localization as LocalizationService;
 
 class PageController extends AbstractActionController
 {
@@ -48,10 +49,10 @@ class PageController extends AbstractActionController
     {
         $receivedPath = $this->getReceivedPath();
         $pageName = end($receivedPath);
-        
+
         // get current user's role and current site's language
-        $userRole = ApplicationService::getCurrentUserIdentity()->role;
-        $language = ApplicationService::getCurrentLocalization()['language'];
+        $userRole = UserIdentityService::getCurrentUserIdentity()->role;
+        $language = LocalizationService::getCurrentLocalization()['language'];
 
         // get a page info
         if (!$pageName || false == ($pageInfo = $this->

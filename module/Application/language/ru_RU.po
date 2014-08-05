@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-07-19 14:05+0600\n"
+"PO-Revision-Date: 2014-08-05 21:27+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -31,9 +31,6 @@ msgstr "По возрастанию"
 msgid "Order"
 msgstr "Сортировка"
 
-msgid "Permitted actions"
-msgstr "Разрешенные действия"
-
 msgid "day"
 msgid_plural "days"
 msgstr[0] "день"
@@ -45,9 +42,6 @@ msgstr "Число не меньше и не равно чем '%max%'"
 
 msgid "A 403 error occurred"
 msgstr "Произошла 403 ошибка"
-
-msgid "Your request is forbidden"
-msgstr "Ваш запрос запрещен"
 
 msgid "Image width"
 msgstr "Ширина изображения"
@@ -103,15 +97,6 @@ msgstr "Дата активации"
 msgid "Deactivation date"
 msgstr "Дата дезактивации"
 
-msgid "Localization"
-msgstr "Локализация"
-
-msgid "The storage time of the selected language"
-msgstr "Время хранения выбранного языка"
-
-msgid "Localization's cookie time"
-msgstr "Время куки локализации"
-
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -148,12 +133,6 @@ msgstr "E-mail для уведомлений об ошибках"
 
 msgid "Errors logging"
 msgstr "Протоколирование ошибок"
-
-msgid "Clean the action counter"
-msgstr "Очистить счетчик действий"
-
-msgid "Role already used"
-msgstr "Роль уже используется"
 
 msgid "Cache types"
 msgstr "Типы кэша"
@@ -234,9 +213,6 @@ msgstr "Активировать выбранное"
 msgid "Disapprove selected"
 msgstr "Дезактивировать выбранное"
 
-msgid "Role"
-msgstr "Роль"
-
 msgid "Select a needed cache"
 msgstr "Выберите нужный кэш"
 
@@ -291,30 +267,6 @@ msgstr "Время жизни динамического кэша"
 msgid "Dynamic cache engine"
 msgstr "Динамический кэш"
 
-msgid "Resource's settings have been edited"
-msgstr "Настройки ресурса были отредактированы"
-
-msgid "Number of allowed actions"
-msgstr "Количество разрешенных действий"
-
-msgid "Number of actions is reset every N seconds"
-msgstr "Количество действий сбрасывается каждые N секунд"
-
-msgid "This action is available since"
-msgstr "Действие доступно начиная с"
-
-msgid "This action is available until"
-msgstr "Действие доступно по"
-
-msgid "Resource's settings"
-msgstr "Настройки ресурса"
-
-msgid "Selected resources have been disallowed"
-msgstr "Выбранные ресурсы были запрещены"
-
-msgid "Selected resources have been allowed"
-msgstr "Выбранные ресурсы были разрешены"
-
 msgid "Disallowed"
 msgstr "Запрещен"
 
@@ -330,29 +282,8 @@ msgstr "Приложение"
 msgid "Module"
 msgstr "Модуль"
 
-msgid "Disallow selected"
-msgstr "Запретить выбранное"
-
-msgid "Allow selected"
-msgstr "Разрешить выбранное"
-
 msgid "Description"
 msgstr "Описание"
-
-msgid "Browse resources"
-msgstr "Обзор ресурсов"
-
-msgid "Edit the role"
-msgstr "Редактировать роль"
-
-msgid "Role has been edited"
-msgstr "Роль была отредактирована"
-
-msgid "Role has been added"
-msgstr "Роль была добавлена"
-
-msgid "Selected roles will be deleted. Are you sure?"
-msgstr "Выбранные роли будут удалены. Вы уверены?"
 
 msgid "No"
 msgstr "Нет"
@@ -363,17 +294,11 @@ msgstr "Да"
 msgid "Delete selected"
 msgstr "Удалить выбранное"
 
-msgid "Add a role"
-msgstr "Добавить роль"
-
 msgid "Actions"
 msgstr "Действия"
 
 msgid "Error occurred"
 msgstr "Произошла ошибка"
-
-msgid "Selected roles have been deleted"
-msgstr "Выбранные роли были удалены"
 
 msgid "You need select some of checkboxes below"
 msgstr "Вам необходимо выбрать один из флажков ниже"
@@ -434,9 +359,6 @@ msgstr "Ничего не найдено"
 
 msgid "The input does not appear to be a valid datetime"
 msgstr "Неправильный формат даты"
-
-msgid "List of roles"
-msgstr "Список ролей"
 
 msgid "Type"
 msgstr "Тип"
@@ -633,23 +555,11 @@ msgstr "Список настроек"
 msgid "List of modules"
 msgstr "Список модулей"
 
-msgid "Access Control List"
-msgstr "Контроль доступа"
-
-msgid "Layouts"
-msgstr "Макеты сайта"
-
-msgid "Localizations"
-msgstr "Локализации"
-
 msgid "Site settings"
 msgstr "Настройки сайта"
 
 msgid "Modules"
 msgstr "Модули"
-
-msgid "Select language"
-msgstr "Выбор языка"
 
 msgid "Welcome"
 msgstr "Добро пожаловать, %s"
@@ -687,81 +597,6 @@ msgstr "Гость изменил настройки для модуля \"%s\""
 msgid "Event - Settings were changed by user"
 msgstr "\"%s\" изменил(а) настройки для модуля \"%s\""
 
-msgid "Event - Getting localizations via XmlRpc"
-msgstr "Получение локализаций через XmlRpc"
-
-msgid "Event - Localizations were got by guest via XmlRpc"
-msgstr "Гость получил локализации через XmlRpc"
-
-msgid "Event - Localizations were got by user via XmlRpc"
-msgstr "\"%s\" получил(а) локализации через XmlRpc"
-
-msgid "Event - Deleting ACL roles"
-msgstr "Удаленение ACL ролей"
-
-msgid "Event - ACL role deleted by guest"
-msgstr "Гость удалил роль ACL с идентификатором - \"%d\""
-
-msgid "Event - ACL role deleteted by user"
-msgstr "\"%s\" удалил(а) роль ACL с идентификатором - \"%d\""
-
-msgid "Event - Adding ACL roles"
-msgstr "Добавление ACL ролей"
-
-msgid "Event - ACL role added by guest"
-msgstr "Гость добавил роль ACL с идентификатором - \"%d\""
-
-msgid "Event - ACL role added by user"
-msgstr "\"%s\" добавил(а) роль ACL с идентификатором - \"%d\""
-
-msgid "Event - Editing ACL roles"
-msgstr "Редактирование ACL ролей"
-
-msgid "Event - ACL role edited by guest"
-msgstr "Гость отредактировал роль ACL с идентификатором - \"%d\""
-
-msgid "Event - ACL role edited by user"
-msgstr "\"%s\" отредактировал(а) роль ACL с идентификатором - \"%d\""
-
-msgid "Event - Allowing ACL resources"
-msgstr "Разрешение ACL ресурсов"
-
-msgid "Event - ACL resource allowed by guest"
-msgstr ""
-"Гость разрешил ресурс ACL с идентификатором - \"%d\" для роли с "
-"идентификатором - \"%d\""
-
-msgid "Event - ACL resource allowed by user"
-msgstr ""
-"\"%s\" разрешил(а) ресурс ACL с идентификатором - \"%d\" для роли с "
-"идентификатором - \"%d\""
-
-msgid "Event - Disallowing ACL resources"
-msgstr "Запрет ACL ресурсов"
-
-msgid "Event - ACL resource disallowed by guest"
-msgstr ""
-"Гость запретил ресурс ACL с идентификатором - \"%d\" для роли с "
-"идентификатором - \"%d\""
-
-msgid "Event - ACL resource disallowed by user"
-msgstr ""
-"\"%s\" запретил(а) ресурс ACL с идентификатором - \"%d\" для роли с "
-"идентификатором - \"%d\""
-
-msgid "Event - Editing ACL resources settings"
-msgstr "Изменение настроек ACL ресурсов"
-
-msgid "Event - ACL resource settings edited by guest"
-msgstr ""
-"Гость отредактировал настройки ACL ресурса с идентификатором роли - \"%d\" и "
-"идентификатором ресурса - \"%d\""
-
-msgid "Event - ACL resource settings edited by user"
-msgstr ""
-"\"%s\" отредактировал(а) настройки ACL ресурса с идентификатором роли - \"%d"
-"\" и идентификатором ресурса - \"%d\""
-
 msgid "Event - Sending email notifications"
 msgstr "Отправка уведомлений по электронной почте"
 
@@ -779,35 +614,8 @@ msgstr "Гость очистил кэш - \"%s\""
 msgid "Event - Cache cleared by user"
 msgstr "\"%s\" очистил(а) кэш - \"%s\""
 
-msgid "ACL - Getting site's localizations via XmlRpc"
-msgstr "Получение локализации сайта через XMLRPC"
-
 msgid "ACL - Editing site's settings in admin area"
 msgstr "Изменение настроек сайта в админке"
-
-msgid "ACL - Viewing ACL roles in admin area"
-msgstr "Просмотр ACL ролей в админке"
-
-msgid "ACL - Adding ACL roles in admin area"
-msgstr "Добавление ACL ролей в админке"
-
-msgid "ACL - Deleting ACL roles in admin area"
-msgstr "Удаление ACL ролей в админке"
-
-msgid "ACL - Editing ACL roles in admin area"
-msgstr "Редактирование ACL ролей в админке"
-
-msgid "ACL - Browsing ACL resources in admin area"
-msgstr "Обзор ACL ресурсов в админке"
-
-msgid "ACL - Allowing ACL resources in admin area"
-msgstr "Разрешение ACL ресурсов в админке"
-
-msgid "ACL - Disallowing ACL resources in admin area"
-msgstr "Запрет ACL ресурсов в админке"
-
-msgid "ACL - Editing ACL resources settings in admin area"
-msgstr "Редактирование настроек ACL ресурсов в админке"
 
 msgid "ACL - Clearing site's cache in admin area"
 msgstr "Очистка кэша сайта в админке"

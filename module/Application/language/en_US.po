@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-07-19 14:06+0600\n"
+"PO-Revision-Date: 2014-08-05 21:27+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -30,9 +30,6 @@ msgstr "Ascending"
 msgid "Order"
 msgstr "Order"
 
-msgid "Permitted actions"
-msgstr "Permitted actions"
-
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
@@ -42,9 +39,6 @@ msgstr "The input is not less or equal than '%max%'"
 
 msgid "A 403 error occurred"
 msgstr "A 403 error occurred"
-
-msgid "Your request is forbidden"
-msgstr "Your request is forbidden"
 
 msgid "Image width"
 msgstr "Image width"
@@ -100,15 +94,6 @@ msgstr "Activation date"
 msgid "Deactivation date"
 msgstr "Deactivation date"
 
-msgid "Localization"
-msgstr "Localization"
-
-msgid "The storage time of the selected language"
-msgstr "The storage time of the selected language"
-
-msgid "Localization's cookie time"
-msgstr "Localization's cookie time"
-
 msgid "Edit"
 msgstr "Edit"
 
@@ -144,12 +129,6 @@ msgstr "Errors notification email"
 
 msgid "Errors logging"
 msgstr "Errors logging"
-
-msgid "Clean the action counter"
-msgstr "Clean the action counter"
-
-msgid "Role already used"
-msgstr "Role already used"
 
 msgid "Cache types"
 msgstr "Cache types"
@@ -229,9 +208,6 @@ msgstr "Approve selected"
 msgid "Disapprove selected"
 msgstr "Disapprove selected"
 
-msgid "Role"
-msgstr "Role"
-
 msgid "Select a needed cache"
 msgstr "Select a needed cache"
 
@@ -286,30 +262,6 @@ msgstr "Dynamic cache life time"
 msgid "Dynamic cache engine"
 msgstr "Dynamic cache engine"
 
-msgid "Resource's settings have been edited"
-msgstr "Resource's settings have been edited"
-
-msgid "Number of allowed actions"
-msgstr "Number of allowed actions"
-
-msgid "Number of actions is reset every N seconds"
-msgstr "Number of actions is reset every N seconds"
-
-msgid "This action is available since"
-msgstr "This action is available since"
-
-msgid "This action is available until"
-msgstr "This action is available until"
-
-msgid "Resource's settings"
-msgstr "Resource's settings"
-
-msgid "Selected resources have been disallowed"
-msgstr "Selected resources have been disallowed"
-
-msgid "Selected resources have been allowed"
-msgstr "Selected resources have been allowed"
-
 msgid "Disallowed"
 msgstr "Disallowed"
 
@@ -325,29 +277,8 @@ msgstr "Application"
 msgid "Module"
 msgstr "Module"
 
-msgid "Disallow selected"
-msgstr "Disallow selected"
-
-msgid "Allow selected"
-msgstr "Allow selected"
-
 msgid "Description"
 msgstr "Description"
-
-msgid "Browse resources"
-msgstr "Browse resources"
-
-msgid "Edit the role"
-msgstr "Edit the role"
-
-msgid "Role has been edited"
-msgstr "Role has been edited"
-
-msgid "Role has been added"
-msgstr "Role has been added"
-
-msgid "Selected roles will be deleted. Are you sure?"
-msgstr "Selected roles will be deleted. Are you sure?"
 
 msgid "No"
 msgstr "No"
@@ -358,17 +289,11 @@ msgstr "Yes"
 msgid "Delete selected"
 msgstr "Delete selected"
 
-msgid "Add a role"
-msgstr "Add a role"
-
 msgid "Actions"
 msgstr "Actions"
 
 msgid "Error occurred"
 msgstr "Error occurred"
-
-msgid "Selected roles have been deleted"
-msgstr "Selected roles have been deleted"
 
 msgid "You need select some of checkboxes below"
 msgstr "You need select some of checkboxes below"
@@ -429,9 +354,6 @@ msgstr "Nothing found"
 
 msgid "The input does not appear to be a valid datetime"
 msgstr "The input does not appear to be a valid datetime"
-
-msgid "List of roles"
-msgstr "List of roles"
 
 msgid "Type"
 msgstr "Type"
@@ -637,23 +559,11 @@ msgstr "List of settings"
 msgid "List of modules"
 msgstr "List of modules"
 
-msgid "Access Control List"
-msgstr "Access Control List"
-
-msgid "Layouts"
-msgstr "Layouts"
-
-msgid "Localizations"
-msgstr "Localizations"
-
 msgid "Site settings"
 msgstr "Site settings"
 
 msgid "Modules"
 msgstr "Modules"
-
-msgid "Select language"
-msgstr "Select a language"
 
 msgid "Welcome"
 msgstr "Welcome, %s"
@@ -691,77 +601,6 @@ msgstr "Guest changed settings for the module \"%s\""
 msgid "Event - Settings were changed by user"
 msgstr "\"%s\" changed settings for the module \"%s\""
 
-msgid "Event - Getting localizations via XmlRpc"
-msgstr "Getting localizations via XmlRpc"
-
-msgid "Event - Localizations were got by guest via XmlRpc"
-msgstr "Guest got localizations via XmlRpc"
-
-msgid "Event - Localizations were got by user via XmlRpc"
-msgstr "\"%s\" got localizations via XmlRpc"
-
-msgid "Event - Deleting ACL roles"
-msgstr "Deleting ACL roles"
-
-msgid "Event - ACL role deleted by guest"
-msgstr "Guest deleted the ACL role with id - \"%d\""
-
-msgid "Event - ACL role deleteted by user"
-msgstr "\"%s\" deleted the ACL role with id - \"%d\""
-
-msgid "Event - Adding ACL roles"
-msgstr "Adding ACL roles"
-
-msgid "Event - ACL role added by guest"
-msgstr "Guest added the ACL role with id - \"%d\""
-
-msgid "Event - ACL role added by user"
-msgstr "\"%s\" added the ACL role with id - \"%d\""
-
-msgid "Event - Editing ACL roles"
-msgstr "Editing ACL roles"
-
-msgid "Event - ACL role edited by guest"
-msgstr "Guest edited the ACL role with id - \"%d\""
-
-msgid "Event - ACL role edited by user"
-msgstr "\"%s\" edited the ACL role with id - \"%d\""
-
-msgid "Event - Allowing ACL resources"
-msgstr "Allowing ACL resources"
-
-msgid "Event - ACL resource allowed by guest"
-msgstr ""
-"Guest allowed the ACL resource with id - \"%d\" for role with id - \"%d\""
-
-msgid "Event - ACL resource allowed by user"
-msgstr ""
-"\"%s\" allowed the ACL resource with id - \"%d\" for role with id - \"%d\""
-
-msgid "Event - Disallowing ACL resources"
-msgstr "Disallowing ACL resources"
-
-msgid "Event - ACL resource disallowed by guest"
-msgstr ""
-"Guest disallowed the ACL resource with id - \"%d\" for role with id - \"%d\""
-
-msgid "Event - ACL resource disallowed by user"
-msgstr ""
-"\"%s\" disallowed the ACL resource with id - \"%d\" for role with id - \"%d\""
-
-msgid "Event - Editing ACL resources settings"
-msgstr "Editing ACL resources settings"
-
-msgid "Event - ACL resource settings edited by guest"
-msgstr ""
-"Guest edited the ACL resource's settings with role id - \"%d\" and resource "
-"id - \"%d\""
-
-msgid "Event - ACL resource settings edited by user"
-msgstr ""
-"\"%s\" edited the ACL resource's settings with role id - \"%d\" and resource "
-"id - \"%d\""
-
 msgid "Event - Clearing site's cache"
 msgstr "Clearing site's cache"
 
@@ -779,35 +618,8 @@ msgstr ""
 "The  notification will be send at this email - \"%s\" with this subject - "
 "\"%s\""
 
-msgid "ACL - Getting site's localizations via XmlRpc"
-msgstr "Getting site's localizations via XmlRpc"
-
 msgid "ACL - Editing site's settings in admin area"
 msgstr "Editing site's settings in admin area"
-
-msgid "ACL - Viewing ACL roles in admin area"
-msgstr "Viewing ACL roles in admin area"
-
-msgid "ACL - Adding ACL roles in admin area"
-msgstr "Adding ACL roles in admin area"
-
-msgid "ACL - Deleting ACL roles in admin area"
-msgstr "Deleting ACL roles in admin area"
-
-msgid "ACL - Editing ACL roles in admin area"
-msgstr "Editing ACL roles in admin area"
-
-msgid "ACL - Browsing ACL resources in admin area"
-msgstr "Browsing ACL resources in admin area"
-
-msgid "ACL - Allowing ACL resources in admin area"
-msgstr "Allowing ACL resources in admin area"
-
-msgid "ACL - Disallowing ACL resources in admin area"
-msgstr "Disallowing ACL resources in admin area"
-
-msgid "ACL - Editing ACL resources settings in admin area"
-msgstr "Editing ACL resources settings in admin area"
 
 msgid "ACL - Clearing site's cache in admin area"
 msgstr "Clearing site's cache in admin area"

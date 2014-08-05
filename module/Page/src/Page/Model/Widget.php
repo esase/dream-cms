@@ -11,7 +11,7 @@ class Widget extends Base
     public function getWidgetsConnections()
     {
         // generate cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_CONNECTIONS);
+        /*$cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_CONNECTIONS);
 
         // check data in cache
         if (null === ($widgets = $this->staticCacheInstance->getItem($cacheName))) {
@@ -33,6 +33,7 @@ class Widget extends Base
             $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_PAGES_DATA_TAG));
         }
 
-        return $widgets;
+        return $widgets;*/
+        return array();
     }
 }

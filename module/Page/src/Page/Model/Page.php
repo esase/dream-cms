@@ -2,12 +2,12 @@
 
 namespace Page\Model;
 
+use Acl\Model\Base as AclBaseModel;
 use Application\Model\AbstractNestedSet;
+use Application\Model\AbstractBase;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression as Expression;
-use Application\Model\AbstractBase;
-use Application\Model\Acl as AclBaseModel;
 
 class Page extends AbstractNestedSet 
 {

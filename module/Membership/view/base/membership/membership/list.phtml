@@ -1,6 +1,6 @@
 <!-- include needed js and css files -->
-<?php $this->headScript()->appendFile($this->asset('membership.js', 'js', 'membership')) ?>
-<?php $this->headLink()->appendStylesheet($this->asset('main.css', 'css', 'membership')) ?>
+<?php $this->layoutHeadScript()->appendFile($this->layoutAsset('membership.js', 'js', 'membership')) ?>
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('main.css', 'css', 'membership')) ?>
 
 <?php $this->declareVars('pageTitle') ?>
 <?php $this->pageTitle = $this->translate('List of membership levels') ?>

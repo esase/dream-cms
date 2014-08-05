@@ -30,7 +30,7 @@ class UserController extends AbstractBaseController
     protected function getAuthService()
     {
         if (!$this->authService) {
-            $this->authService = $this->getServiceLocator()->get('Application\AuthService');
+            $this->authService = $this->getServiceLocator()->get('User\AuthService');
         }
 
         return $this->authService;

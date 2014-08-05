@@ -4,6 +4,8 @@ return array(
     'modules' => array(
         'Application',
         'User',
+        'Layout',
+        'Localization',
         'Page'
     ),
     'module_listener_options' => array(

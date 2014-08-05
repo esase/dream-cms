@@ -94,14 +94,14 @@
                 'controller' => 'payments',
                 'action' => 'view-transaction-items',
                 'check_acl' => false,
-                'image' => $this->asset('icon/browse_action.png', 'image')
+                'image' => $this->layoutAsset('icon/browse_action.png', 'image')
             ),
             2 => array(
                 'name' => $this->translate('Buy items'),
                 'controller' => 'payments',
                 'action' => 'buy',
                 'check_acl' => false,
-                'image' => $this->asset('icon/buy_action.png', 'image', 'payment'),
+                'image' => $this->layoutAsset('icon/buy_action.png', 'image', 'payment'),
                 'param' => 'slug'
             ),
         )

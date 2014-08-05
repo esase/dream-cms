@@ -3,8 +3,7 @@ namespace Page;
 
 use Zend\Db\TableGateway\TableGateway;
 use Zend\ModuleManager\ModuleManagerInterface;
-
-use Page\View\Helper\InjectWidget;
+use Page\View\Helper\PageInjectWidget;
 
 class Module
 {
@@ -70,12 +69,12 @@ class Module
                 'pageTitle' => 'Page\View\Helper\PageTitle'
             ],
             'factories' => [
-                'injectWidget' =>  function() {
+                'pageInjectWidget' =>  function() {
                     $widget = $this->serviceManager
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\Widget');
 
-                    return new InjectWidget($widget->getWidgetsConnections());
+                    return new PageInjectWidget($widget->getWidgetsConnections());
                 },
             ]
         ];

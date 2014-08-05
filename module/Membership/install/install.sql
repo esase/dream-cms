@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     KEY `lifetime` (`lifetime`),
     KEY `role` (`role_id`),
     KEY `active` (`active`, `language`),
-    FOREIGN KEY (`language`) REFERENCES `application_localization`(`language`)
+    FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
         ON UPDATE CASCADE
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

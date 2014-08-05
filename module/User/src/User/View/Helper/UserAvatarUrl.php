@@ -34,7 +34,7 @@ class UserAvatarUrl extends AbstractHelper
         }
         else if ($getDummy) {
             return $this->getView()->
-                    asset(($thumbnail ? self::USER_DUMMY_THUMBNAIL : self::USER_DUMMY_AVATAR), 'image', 'user');
+                    layoutAsset(($thumbnail ? self::USER_DUMMY_THUMBNAIL : self::USER_DUMMY_AVATAR), 'image', 'user');
         }
     }
 }

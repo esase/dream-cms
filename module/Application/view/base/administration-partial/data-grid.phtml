@@ -259,7 +259,7 @@
     
                             <!-- order direction icon -->
                             <?php if ($this->order_by == $header['order_name']): ?>
-                                <img src="<?php  echo $this->asset('icon/s_' . $this->order_type . '.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->order_type) ?>" />
+                                <img src="<?php  echo $this->layoutAsset('icon/s_' . $this->order_type . '.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->order_type) ?>" />
                             <?php endif; ?>
                         </a>
                     <?php endif; ?>
@@ -410,7 +410,7 @@
 
 <?php if ($this->multipleActionsCount) : ?>
     <!-- append a data grid's js file -->
-    <?php $this->headScript()->appendFile($this->asset('data_grid.js')) ?>
+    <?php $this->layoutHeadScript()->appendFile($this->layoutAsset('data_grid.js')) ?>
 
     <?php $this->inlineScript()->captureStart() ?>
         var dataGrid = new DataGrid({

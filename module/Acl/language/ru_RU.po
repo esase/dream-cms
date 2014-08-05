@@ -1,0 +1,179 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-08-05 21:23+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: Русский\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Permitted actions"
+msgstr "Разрешенные действия"
+
+msgid "Your request is forbidden"
+msgstr "Ваш запрос запрещен"
+
+msgid "Role already used"
+msgstr "Роль уже используется"
+
+msgid "Clean the action counter"
+msgstr "Очистить счетчик действий"
+
+msgid "Role"
+msgstr "Роль"
+
+msgid "Resource's settings have been edited"
+msgstr "Настройки ресурса были отредактированы"
+
+msgid "Number of allowed actions"
+msgstr "Количество разрешенных действий"
+
+msgid "Number of actions is reset every N seconds"
+msgstr "Количество действий сбрасывается каждые N секунд"
+
+msgid "This action is available since"
+msgstr "Действие доступно начиная с"
+
+msgid "This action is available until"
+msgstr "Действие доступно по"
+
+msgid "Resource's settings"
+msgstr "Настройки ресурса"
+
+msgid "Selected resources have been disallowed"
+msgstr "Выбранные ресурсы были запрещены"
+
+msgid "Selected resources have been allowed"
+msgstr "Выбранные ресурсы были разрешены"
+
+msgid "Disallow selected"
+msgstr "Запретить выбранное"
+
+msgid "Allow selected"
+msgstr "Разрешить выбранное"
+
+msgid "Browse resources"
+msgstr "Обзор ресурсов"
+
+msgid "Edit the role"
+msgstr "Редактировать роль"
+
+msgid "Role has been edited"
+msgstr "Роль была отредактирована"
+
+msgid "Role has been added"
+msgstr "Роль была добавлена"
+
+msgid "Selected roles will be deleted. Are you sure?"
+msgstr "Выбранные роли будут удалены. Вы уверены?"
+
+msgid "Add a role"
+msgstr "Добавить роль"
+
+msgid "Selected roles have been deleted"
+msgstr "Выбранные роли были удалены"
+
+msgid "List of roles"
+msgstr "Список ролей"
+
+msgid "Access Control List"
+msgstr "Контроль доступа"
+
+msgid "Event - Deleting ACL roles"
+msgstr "Удаленение ACL ролей"
+
+msgid "Event - ACL role deleted by guest"
+msgstr "Гость удалил роль ACL с идентификатором - \"%d\""
+
+msgid "Event - ACL role deleteted by user"
+msgstr "\"%s\" удалил(а) роль ACL с идентификатором - \"%d\""
+
+msgid "Event - Adding ACL roles"
+msgstr "Добавление ACL ролей"
+
+msgid "Event - ACL role added by guest"
+msgstr "Гость добавил роль ACL с идентификатором - \"%d\""
+
+msgid "Event - ACL role added by user"
+msgstr "\"%s\" добавил(а) роль ACL с идентификатором - \"%d\""
+
+msgid "Event - Editing ACL roles"
+msgstr "Редактирование ACL ролей"
+
+msgid "Event - ACL role edited by guest"
+msgstr "Гость отредактировал роль ACL с идентификатором - \"%d\""
+
+msgid "Event - ACL role edited by user"
+msgstr "\"%s\" отредактировал(а) роль ACL с идентификатором - \"%d\""
+
+msgid "Event - Allowing ACL resources"
+msgstr "Разрешение ACL ресурсов"
+
+msgid "Event - ACL resource allowed by guest"
+msgstr ""
+"Гость разрешил ресурс ACL с идентификатором - \"%d\" для роли с "
+"идентификатором - \"%d\""
+
+msgid "Event - ACL resource allowed by user"
+msgstr ""
+"\"%s\" разрешил(а) ресурс ACL с идентификатором - \"%d\" для роли с "
+"идентификатором - \"%d\""
+
+msgid "Event - Disallowing ACL resources"
+msgstr "Запрет ACL ресурсов"
+
+msgid "Event - ACL resource disallowed by guest"
+msgstr ""
+"Гость запретил ресурс ACL с идентификатором - \"%d\" для роли с "
+"идентификатором - \"%d\""
+
+msgid "Event - ACL resource disallowed by user"
+msgstr ""
+"\"%s\" запретил(а) ресурс ACL с идентификатором - \"%d\" для роли с "
+"идентификатором - \"%d\""
+
+msgid "Event - Editing ACL resources settings"
+msgstr "Изменение настроек ACL ресурсов"
+
+msgid "Event - ACL resource settings edited by guest"
+msgstr ""
+"Гость отредактировал настройки ACL ресурса с идентификатором роли - \"%d\" и "
+"идентификатором ресурса - \"%d\""
+
+msgid "Event - ACL resource settings edited by user"
+msgstr ""
+"\"%s\" отредактировал(а) настройки ACL ресурса с идентификатором роли - \"%d"
+"\" и идентификатором ресурса - \"%d\""
+
+msgid "ACL - Viewing ACL roles in admin area"
+msgstr "Просмотр ACL ролей в админке"
+
+msgid "ACL - Adding ACL roles in admin area"
+msgstr "Добавление ACL ролей в админке"
+
+msgid "ACL - Deleting ACL roles in admin area"
+msgstr "Удаление ACL ролей в админке"
+
+msgid "ACL - Editing ACL roles in admin area"
+msgstr "Редактирование ACL ролей в админке"
+
+msgid "ACL - Browsing ACL resources in admin area"
+msgstr "Обзор ACL ресурсов в админке"
+
+msgid "ACL - Allowing ACL resources in admin area"
+msgstr "Разрешение ACL ресурсов в админке"
+
+msgid "ACL - Disallowing ACL resources in admin area"
+msgstr "Запрет ACL ресурсов в админке"
+
+msgid "ACL - Editing ACL resources settings in admin area"
+msgstr "Редактирование настроек ACL ресурсов в админке"

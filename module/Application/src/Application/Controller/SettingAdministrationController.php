@@ -2,30 +2,35 @@
 namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
+use Application\Utility\Cache as CacheUtility;
 use Application\Event\Event as ApplicationEvent;
-use Application\Model\CacheAdministration as CacheAdministrationModel;
 
 class SettingAdministrationController extends AbstractAdministrationController
 {
     /**
-     * Cache model instance
-     * @var object  
+     * Cache static
      */
-    protected $cacheModel;
+    const CACHE_STATIC = 'static';
 
     /**
-     * Get cache model
+     * Cache dynamic
      */
-    protected function getCacheModel()
-    {
-        if (!$this->cacheModel) {
-            $this->cacheModel = $this->getServiceLocator()
-                ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\CacheAdministration');
-        }
+    const CACHE_DYNAMIC = 'dynamic';
 
-        return $this->cacheModel;
-    }
+    /**
+     * Cache config
+     */
+    const CACHE_CONFIG = 'config';
+
+    /**
+     * Cache js
+     */
+    const CACHE_JS = 'js';
+
+    /**
+     * Cache css
+     */
+    const CACHE_CSS = 'css';
 
     /**
      * Administration
@@ -65,14 +70,18 @@ class SettingAdministrationController extends AbstractAdministrationController
             if ($jsCache <> $post['application_js_cache'] 
                     || $jsCacheGzip <> $post['application_js_cache_gzip']) {
 
-                $this->getCacheModel()->clearCache(CacheAdministrationModel::CACHE_JS);
+                if (true === ($clearResult = CacheUtility::clearJsCache())) {
+                    ApplicationEvent::fireClearCacheEvent(self::CACHE_JS);
+                }
             }
 
             // clear css cache
             if ($cssCache <> $post['application_css_cache'] 
                     || $cssCacheGzip <> $post['application_css_cache_gzip']) {
 
-                $this->getCacheModel()->clearCache(CacheAdministrationModel::CACHE_CSS);
+                if (true === ($clearResult = CacheUtility::clearCssCache())) {
+                    ApplicationEvent::fireClearCacheEvent(self::CACHE_CSS);
+                }
             }
         });
     }
@@ -104,8 +113,29 @@ class SettingAdministrationController extends AbstractAdministrationController
                             return $result;
                         }
 
-                        // clearing specific cache 
-                        $clearResult = $this->getCacheModel()->clearCache($cache);
+                        $clearResult = false;
+
+                        switch ($cache) {
+                            case self::CACHE_STATIC :
+                                $clearResult = CacheUtility::clearStaticCache();
+                                break;
+
+                            case self::CACHE_DYNAMIC :
+                                $clearResult = CacheUtility::clearDynamicCache();
+                                break;
+
+                            case self::CACHE_CONFIG :
+                                $clearResult = CacheUtility::clearConfigCache();
+                                break;
+
+                            case self::CACHE_JS :
+                                $clearResult = CacheUtility::clearJsCache();
+                                break;
+
+                            case self::CACHE_CSS :
+                                $clearResult = CacheUtility::clearCssCache();
+                                break;
+                        }
 
                         if (false === $clearResult) {
                             $this->flashMessenger()
@@ -117,6 +147,8 @@ class SettingAdministrationController extends AbstractAdministrationController
                     }
 
                     if (true === $clearResult) {
+                        ApplicationEvent::fireClearCacheEvent($cache);
+
                         $this->flashMessenger()
                             ->setNamespace('success')
                             ->addMessage($this->getTranslator()->translate('Selected caches have been cleared'));

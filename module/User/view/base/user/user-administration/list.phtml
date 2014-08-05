@@ -110,21 +110,21 @@
                 'controller' => 'users-administration',
                 'action' => 'edit-role',
                 'check_acl' => true,
-                'image' => $this->asset('icon/role_action.png', 'image', 'user')
+                'image' => $this->layoutAsset('icon/role_action.png', 'image', 'user')
             ),
             1 => array(
                 'name' => $this->translate('Browse allowed ACL resources'),
                 'controller' => 'users-administration',
                 'action' => 'browse-acl-resources',
                 'check_acl' => true,
-                'image' => $this->asset('icon/browse_action.png', 'image')
+                'image' => $this->layoutAsset('icon/browse_action.png', 'image')
             ),
             2 => array(
                 'name' => $this->translate('Edit the user'),
                 'controller' => 'users-administration',
                 'action' => 'edit-user',
                 'check_acl' => true,
-                'image' => $this->asset('icon/edit_action.png', 'image')
+                'image' => $this->layoutAsset('icon/edit_action.png', 'image')
             )
         )
     ),

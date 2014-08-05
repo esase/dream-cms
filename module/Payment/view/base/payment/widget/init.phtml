@@ -1,8 +1,8 @@
-<?php $this->headScript()->appendFile($this->asset('payment.js', 'js', 'payment')) ?>
-<?php $this->headLink()->appendStylesheet($this->asset('payment.css', 'css', 'payment')) ?>
+<?php $this->layoutHeadScript()->appendFile($this->layoutAsset('payment.js', 'js', 'payment')) ?>
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('payment.css', 'css', 'payment')) ?>
 
 <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
-    <?php $this->headLink()->appendStylesheet($this->asset('payment.rtl.css', 'css', 'payment')) ?>
+    <?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('payment.rtl.css', 'css', 'payment')) ?>
 <?php endif; ?>
 
 <?php $this->inlineScript()->captureStart() ?>

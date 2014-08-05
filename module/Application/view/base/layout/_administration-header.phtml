@@ -13,30 +13,30 @@
         ?>
 
         <!-- Le styles -->
-        <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icon/favicon.ico', 'image')))
-            ->prependStylesheet($this->asset('administration.css', 'css')) 
-            ->prependStylesheet($this->asset('jquery-ui.css', 'css'))
-            ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
-            ->prependStylesheet($this->asset('bootstrap.css', 'css'))
+        <?php $this->layoutHeadLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->layoutAsset('icon/favicon.ico', 'image')))
+            ->prependStylesheet($this->layoutAsset('administration.css', 'css')) 
+            ->prependStylesheet($this->layoutAsset('jquery-ui.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('bootstrap-theme.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('bootstrap.css', 'css'))
         ?>
 
         <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
-            <?php $this->headLink()
-                ->appendStylesheet($this->asset('bootstrap.rtl.css', 'css'))
-                ->appendStylesheet($this->asset('administration.rtl.css', 'css'))?>
+            <?php $this->layoutHeadLink()
+                ->appendStylesheet($this->layoutAsset('bootstrap.rtl.css', 'css'))
+                ->appendStylesheet($this->layoutAsset('administration.rtl.css', 'css'))?>
         <?php endif; ?>
 
-        <?php echo $this->headLink() ?>
+        <?php echo $this->layoutHeadLink() ?>
 
         <!-- Scripts -->
-        <?php echo $this->headScript()
-            ->prependFile($this->asset('functions.js'))
-            ->prependFile($this->asset('jquery.cookie.js'))
-            ->prependFile($this->asset('bootstrap.js'))
-            ->prependFile($this->asset('jquery-ui.js'))            
-            ->prependFile($this->asset('jquery.js'))
-            ->prependFile($this->asset('respond.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
-            ->prependFile($this->asset('html5shiv.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
+        <?php echo $this->layoutHeadScript()
+            ->prependFile($this->layoutAsset('functions.js'))
+            ->prependFile($this->layoutAsset('jquery.cookie.js'))
+            ->prependFile($this->layoutAsset('bootstrap.js'))
+            ->prependFile($this->layoutAsset('jquery-ui.js'))            
+            ->prependFile($this->layoutAsset('jquery.js'))
+            ->prependFile($this->layoutAsset('respond.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
+            ->prependFile($this->layoutAsset('html5shiv.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
         ?>
     </head>
     <body>
@@ -61,7 +61,7 @@
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                         <?php if ($menuInfo['icon']): ?>
-                                            <img src="<?php  echo $this->asset('icon/' . $menuInfo['icon'], 'image', strtolower($menuInfo['module'])) ?>" />
+                                            <img src="<?php  echo $this->layoutAsset('icon/' . $menuInfo['icon'], 'image', strtolower($menuInfo['module'])) ?>" />
                                         <?php endif; ?>
                                         <?php echo $this->translate($menuPart) ?><b class="caret"></b>
                                     </a>
@@ -73,7 +73,7 @@
                                                 <?php endif; ?>
                                                 <li role="presentation" class="dropdown-header">
                                                     <?php if ($menuItem['category_icon']): ?>
-                                                        <img src="<?php  echo $this->asset('icon/' . $menuItem['category_icon'], 'image', strtolower($menuItem['category_module'])) ?>" />
+                                                        <img src="<?php  echo $this->layoutAsset('icon/' . $menuItem['category_icon'], 'image', strtolower($menuItem['category_module'])) ?>" />
                                                     <?php endif; ?>
                                                     <?php echo $this->translate($menuItem['category']) ?>
                                                 </li>
@@ -92,7 +92,7 @@
                         <?php endif; ?>
                         <li>
                             <a title="<?php echo $this->escapeHtmlAttr($this->translate('Back to site')) ?>" href="<?php echo  $this->url('administration') ?>">
-                                <img src="<?php  echo $this->asset('icon/home_menu.png', 'image') ?>" />
+                                <img src="<?php  echo $this->layoutAsset('icon/home_menu.png', 'image') ?>" />
                             </a>
                         </li>
                     </ul>
@@ -101,7 +101,7 @@
                             <!-- select language -->
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle current-language" data-toggle="dropdown">
-                                    <img title="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLanguageDescription()) ?>" src="<?php  echo $this->asset('icon/flag/' . $this->localization()->getCurrentLanguage() . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLanguageDescription()) ?>" />
+                                    <img title="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLanguageDescription()) ?>" src="<?php  echo $this->layoutAsset('icon/flag/' . $this->localization()->getCurrentLanguage() . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLanguageDescription()) ?>" />
                                     <?php echo $this->localization()->getCurrentLanguage() ?>
                                     <b class="caret"></b>
                                 </a>
@@ -109,7 +109,7 @@
                                     <?php foreach ($this->languageSwitcher() as $language) : ?>
                                         <li <?php if ($language['active']): ?>class="disabled"<?php endif; ?>>
                                             <a href="<?php echo $language['url'] ?>">
-                                                <img src="<?php  echo $this->asset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
+                                                <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
                                                 <?php echo $this->escapeHtml($language['description']) ?>
                                             </a>
                                         </li>
@@ -120,21 +120,21 @@
                         <?php if (!$this->isGuest()): ?>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="<?php  echo $this->asset('icon/hello_user_menu.png', 'image', 'user') ?>" />
+                                    <img src="<?php  echo $this->layoutAsset('icon/hello_user_menu.png', 'image', 'user') ?>" />
                                     <?php echo sprintf($this->translate('Welcome'), $this->userIdentity()->nick_name) ?><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <?php if ($this->checkPermission('users_administration_edit_user')): ?>
                                         <li>
                                             <a href="<?php echo  $this->url('administration', array('controller' => 'users-administration', 'action' => 'edit-user', 'slug' => $this->userIdentity()->user_id)) ?>">
-                                                <img src="<?php  echo $this->asset('icon/edit_menu.png', 'image', 'user') ?>" />
+                                                <img src="<?php  echo $this->layoutAsset('icon/edit_menu.png', 'image', 'user') ?>" />
                                                 <?php echo $this->translate('Edit account') ?>
                                             </a>
                                         </li>
                                     <?php endif; ?>
                                     <li>
                                         <a href="<?php echo  $this->url('administration', array('controller' => 'user', 'action' => 'logout')) ?>">
-                                            <img src="<?php  echo $this->asset('icon/logout-menu.png', 'image', 'user') ?>" />
+                                            <img src="<?php  echo $this->layoutAsset('icon/logout-menu.png', 'image', 'user') ?>" />
                                             <?php echo $this->translate('Logout') ?>
                                         </a>
                                     </li>

@@ -1,18 +1,20 @@
 <?php
 
-return array(
-    'modules' => array(
+return [
+    'modules' => [
         'Application',
         'User',
+        'Layout',
+        'Localization',
         'XmlRpc'
-    ),
-    'module_listener_options' => array(
-        'config_glob_paths' => array(
+    ],
+    'module_listener_options' => [
+        'config_glob_paths' => [
             APPLICATION_ROOT . 'config/autoload/{,*.}{global,local,development}.php',
-        ),
-        'module_paths' => array(
+        ],
+        'module_paths' => [
             './module',
             './vendor',
-        ),
-    ),
-);
+        ],
+    ],
+];

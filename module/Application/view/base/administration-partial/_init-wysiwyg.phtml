@@ -11,11 +11,11 @@
 <?php endif; ?>
 
 <!-- init tinymce -->
-<script type="text/javascript" src="<?php echo $this->asset('tinymce/jquery.tinymce.min.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->layoutAsset('tinymce/jquery.tinymce.min.js') ?>"></script>
 <script type="text/javascript">
     $('.htmlarea').tinymce({
         directionality : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguageDirection()) ?>',
-        script_url : '<?php echo $this->escapeJs($this->asset('tinymce/tinymce.min.js')) ?>',
+        script_url : '<?php echo $this->escapeJs($this->layoutAsset('tinymce/tinymce.min.js')) ?>',
         language : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguage()) ?>',
         plugins: [<?php echo $this->plugins ?>],
         menubar : <?php echo $this->menuBar ?>,

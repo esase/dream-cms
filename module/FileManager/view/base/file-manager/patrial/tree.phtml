@@ -1,10 +1,10 @@
 <!-- include needed js and css files -->
-<?php $this->headScript()->appendFile($this->asset('jquery.treeview.js')) ?>
-<?php $this->headLink()->appendStylesheet($this->asset(($this->localization()->isCurrentLanguageLtr()
+<?php $this->layoutHeadScript()->appendFile($this->layoutAsset('jquery.treeview.js')) ?>
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset(($this->localization()->isCurrentLanguageLtr()
         ? 'jquery.treeview.css'
         : 'jquery.treeview.rtl.css'), 'css')) ?>
 
-<?php $this->headLink()->appendStylesheet($this->asset('main.css', 'css', 'filemanager')) ?>
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('main.css', 'css', 'filemanager')) ?>
 
 <?php $this->declareVars('directoriesTreeId') ?>
 <?php $this->directoriesTreeId = 'directories-tree' ?>

@@ -98,14 +98,14 @@
                 'controller' => 'payments-administration',
                 'action' => 'view-transaction-details',
                 'check_acl' => true,
-                'image' => $this->asset('icon/view_details_action.png', 'image', 'payment')
+                'image' => $this->layoutAsset('icon/view_details_action.png', 'image', 'payment')
             ),
             1 => array(
                 'name' => $this->translate('View the transaction\'s items'),
                 'controller' => 'payments-administration',
                 'action' => 'view-transaction-items',
                 'check_acl' => true,
-                'image' => $this->asset('icon/browse_action.png', 'image')
+                'image' => $this->layoutAsset('icon/browse_action.png', 'image')
             ),
         )
     ),

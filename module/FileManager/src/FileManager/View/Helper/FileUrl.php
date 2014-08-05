@@ -49,7 +49,7 @@ class FileUrl extends AbstractHelper
                 'action' => $this->getView()->currentRoute()->getAction()), array('query' => $urlParams));
 
             // get the directory's image url
-            $imageUrl = $this->getView()->asset(self::DEFAULT_FOLDER_IMAGE, 'image/icon', 'filemanager');
+            $imageUrl = $this->getView()->layoutAsset(self::DEFAULT_FOLDER_IMAGE, 'image/icon', 'filemanager');
 
             return '<img src="' . $imageUrl
                     . '" alt="directory" /> <a class="directory" href="' . $directoryUrl  . '">' . $fileName . '</a>';
@@ -60,10 +60,10 @@ class FileUrl extends AbstractHelper
 
             // get the file's image url
             if (false === ($imageUrl = $this->getView()->
-                    asset(FileSystemUtility::getFileExtension($fileName) . self::DEFAULT_IMAGES_EXTENSION, 'image/icon', 'filemanager'))) {
+                    layoutAsset(FileSystemUtility::getFileExtension($fileName) . self::DEFAULT_IMAGES_EXTENSION, 'image/icon', 'filemanager'))) {
 
                 // get default the default image
-                $imageUrl = $this->getView()->asset(self::DEFAULT_FILE_IMAGE, 'image/icon', 'filemanager');
+                $imageUrl = $this->getView()->layoutAsset(self::DEFAULT_FILE_IMAGE, 'image/icon', 'filemanager');
             }
 
             return '<img src="' . $imageUrl

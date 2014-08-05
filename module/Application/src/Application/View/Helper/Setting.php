@@ -1,9 +1,8 @@
 <?php
- 
 namespace Application\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Application\Service\Service as ApplicationService;
+use Application\Service\Setting as SettingService;
 
 class Setting extends AbstractHelper
 {
@@ -16,6 +15,6 @@ class Setting extends AbstractHelper
      */
     public function __invoke($setting, $language = null)
     {
-        return ApplicationService::getSetting($setting, $language);
+        return SettingService::getSetting($setting, $language);
     }
 }

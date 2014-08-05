@@ -4,6 +4,8 @@ return array(
     'modules' => array(
         'Application',
         'User',
+        'Layout',
+        'Localization',
         'XmlRpc',
         'Membership',
         'Payment'

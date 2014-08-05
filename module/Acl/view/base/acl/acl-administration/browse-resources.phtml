@@ -1,0 +1,125 @@
+<?php use Application\Model\Acl as AclModel ?>
+
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate($this->roleInfo['name']) ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->translate('List of roles')) ?>
+
+<!-- render a header -->
+<?php echo $this->render('application/acl-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('partial/tab', array(
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+)) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('partial/breadcrumb', array(
+    'pages' => array(
+        'list' => array(
+            'name' => $this->translate('List of roles'),
+            'controller' => 'acl-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ),
+        'browse_resources' => array(
+            'name' => $this->subPageTitle,
+            'controller' => 'acl-administration',
+            'action' => 'browse-resources',
+            'check_acl' => true
+        )
+    )
+)) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data-grid', array(
+    'controller' => 'acl-administration',
+    'action' => 'browse-resources',
+    'slug' => $this->slug,
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => array(
+        0 => array(
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ),
+        1 => array(
+            'title' => $this->translate('Description')
+        ),
+        2 => array(
+            'title' => $this->translate('Module')
+        ),
+        3 => array(
+            'title' => $this->translate('Status'),
+            'order_name' => 'connection'
+        )
+    ),
+    'paginator' => $this->paginator,
+    'helpers' => array(
+        'description' => 'translate',
+        'module' => 'translate',
+        'connection' => 'booleanValue'
+    ),
+    'helpers_options' => array(
+        'connection' => array(
+            'true_string' => $this->translate('Allowed'),
+            'false_string' => $this->translate('Disallowed')
+        )
+    ),
+    'actions' => array(
+        'regular_actions' => array(
+        ),
+        'multiple_actions' => array(
+            0 => array(
+                'name' => $this->translate('Allow selected'),
+                'controller' => 'acl-administration',
+                'action' => 'allow-resources',
+                'params' => array(
+                    'slug' =>  $this->slug 
+                ),
+                'check_acl' => true
+            ),
+            1 => array(
+                'name' => $this->translate('Disallow selected'),
+                'controller' => 'acl-administration',
+                'action' => 'disallow-resources',
+                'params' => array(
+                    'slug' =>  $this->slug 
+                ),
+                'check_acl' => true
+            )
+        ),
+        'single_actions' => array(
+            0 => array(
+                'name' => $this->translate('Resource\'s settings'),
+                'controller' => 'acl-administration',
+                'action' => 'resource-settings',
+                'check_acl' => true,
+                'image' => $this->layoutAsset('icon/setting_action.png', 'image'),
+                'param' => 'connection'
+            ),
+        )
+    ),
+    'actions_options' => array(
+        'action_identity' => 'id',
+        'form_name' => 'acl-resources',
+        'multiple_actions' => array(
+            'items_name' => 'resources[]'
+        )
+    ),
+    'actions_extra_check' => array(
+        'single_actions' => array(
+            'resource-settings' => array(
+                0 => array(
+                    'param' => 'connection',
+                    'condition' =>  'return (int) "__value__" > 0;'
+                )
+            )
+        )
+    )
+)) ?>
