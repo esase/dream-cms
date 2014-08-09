@@ -1,24 +1,17 @@
 <?php
-
 namespace Application\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Application\Utility\Cache as CacheUtility;
 
-class Setting extends Base
+class Setting extends AbstractSetting
 {
     /**
      * List of settings
      * @var array
      */
     protected static $settings;
-
-    /**
-     * Array fields
-     * @var array
-     */
-    protected $arrayFields = array('multiselect', 'multicheckbox');
 
     /**
      * Application settings data cache
@@ -29,16 +22,6 @@ class Setting extends Base
      * Application settings data cache tag
      */
     const CACHE_SETTINGS_DATA_TAG = 'Application_Settings_Data_Tag';
-
-    /**
-     * System settings flag
-     */
-    const SYS_SETTINGS_FLAG = 'system';
-
-    /**
-     * Settings array devider
-     */
-    const SETTINGS_ARRAY_DEVIDER = ';';
 
     /**
      * Remove settings cache
@@ -124,25 +107,6 @@ class Setting extends Base
         }
 
         return $settings;
-    }
-
-    /**
-     * Convert string
-     *
-     * @param string $type
-     * @param string $value
-     * @return string|array
-     */
-    protected function convertString($type, $value)
-    {
-        if (in_array($type, $this->arrayFields)) {
-            $value = explode(self::SETTINGS_ARRAY_DEVIDER, $value);
-            return count($value) == 1 // check is array or not
-                ? current($value)
-                : $value;
-        }
-
-        return $value;
     }
 
     /**

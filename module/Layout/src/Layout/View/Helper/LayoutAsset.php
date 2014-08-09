@@ -2,7 +2,6 @@
 namespace Layout\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use Layout\Service\Layout as LayoutService;
 use Zend\Cache\Storage\StorageInterface;
 use Application\Utility\Cache as CacheUtility;
 
@@ -13,6 +12,24 @@ class LayoutAsset extends AbstractHelper
      * @var object
      */
     protected $dynamicCacheInstance;
+
+    /**
+     * Layout path
+     * @var string
+     */
+    protected $layoutPath;
+
+    /**
+     * Layouts
+     * @var array
+     */
+    protected $layouts;
+
+    /**
+     * Layout dir
+     * @var string
+     */
+    protected $layoutDir;
 
     /**
      * Default module
@@ -29,9 +46,12 @@ class LayoutAsset extends AbstractHelper
      *
      * @param object $dynamicCacheInstance
      */
-    public function __construct(StorageInterface $dynamicCacheInstance)
+    public function __construct(StorageInterface $dynamicCacheInstance, $layoutPath, array $layouts, $layoutDir)
     {
         $this->dynamicCacheInstance = $dynamicCacheInstance;
+        $this->layoutPath = $layoutPath;
+        $this->layouts = $layouts;
+        $this->layoutDir = $layoutDir;
     }
 
     /**
@@ -52,15 +72,15 @@ class LayoutAsset extends AbstractHelper
         ]);
 
         if (null === ($resourcePath = $this->dynamicCacheInstance->getItem($dynamicCacheInstanceName))) {
-            $baseResourcePath = LayoutService::getLayoutPath();
+            $baseResourcePath = $this->layoutPath ;
 
             // get a resource url
-            foreach (LayoutService::getCurrentLayouts() as $layout) {
+            foreach ($this->layouts as $layout) {
                 $checkResourcePath = $baseResourcePath . $layout['name'] . '/' . $module . '/' . $type . '/' . $fileName;
 
                 if (file_exists($checkResourcePath)) {
-                    $resourcePath = $this->view->basePath() . '/' .
-                            LayoutService::getLayoutDir() . '/' . $layout['name'] . '/' . $module . '/' . $type . '/' . $fileName;
+                    $resourcePath = $this->view->basePath() . '/' . $this->
+                            layoutDir . '/' . $layout['name'] . '/' . $module . '/' . $type . '/' . $fileName;
 
                     // save data in dynamicCacheInstance
                     $this->dynamicCacheInstance->setItem($dynamicCacheInstanceName, $resourcePath);

@@ -5,6 +5,11 @@ return [
         'invokables' => [
         ]
     ],
+    'controller_plugins' => [
+        'invokables' => [
+            'localization' => 'Localization\Controller\Plugin\Localization'
+        ]
+    ],
     'router' => [
         'routes' => [
         ]

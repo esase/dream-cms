@@ -26,6 +26,11 @@ class Page extends AbstractNestedSet
      */
     const PAGE_TYPE_CUSTOM = 'custom';
 
+    /**
+     * Default page layout flag
+     */
+    const DEFAULT_PAGE_LAYOUT = 1;
+
     public function __construct(TableGateway $tableGateway)
     {
         parent::__construct($tableGateway);
@@ -83,41 +88,49 @@ class Page extends AbstractNestedSet
     protected function getPageFilter(Select $select, $userRole, $language, $addLayout = true)
     {
         $select->join(
-            array('b' => 'application_module'),
-            new Expression('b.id = module and b.status = ?', array(AbstractBase::MODULE_STATUS_ACTIVE)), 
-            array()
+            ['b' => 'application_module'],
+            new Expression('b.id = module and b.status = ?', [AbstractBase::MODULE_STATUS_ACTIVE]), 
+            []
         );
 
         // add a layout information
         if ($addLayout) {
             $select->join(
-                array('c' => 'page_layout'),
+                ['c' => 'page_layout'],
                 new Expression('c.id = ' . $this->tableGateway->table . '.layout'), 
-                array(
-                    'layout' => 'name'
-                ),
+                [
+                    'layout' => 'path'
+                ],
                 'left'
+            );
+
+            $select->join(
+                ['d' => 'page_layout'],
+                new Expression('d.default = ?', [self::DEFAULT_PAGE_LAYOUT]), 
+                [
+                    'default_layout' => 'path'
+                ]
             );
         }
 
         // administrators can see any pages
         if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {
             $select->join(
-                array('d' => 'page_permission'),
-                new Expression('d.page_id = ' . 
-                        $this->tableGateway->table . '.id and d.disallowed_role = ?', array($userRole)), 
-                array(),
+                ['e' => 'page_permission'],
+                new Expression('e.page_id = ' . 
+                        $this->tableGateway->table . '.id and e.disallowed_role = ?', [$userRole]), 
+                [],
                 'left'
             );
         }
 
-        $select->where(array(
+        $select->where([
             'language' => $language,
             'active' => self::PAGE_STATUS_ACTIVE
-        ));
+        ]);
 
         if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {
-            $select->where->IsNull('d.id');
+            $select->where->IsNull('e.id');
         }
 
         return $select;

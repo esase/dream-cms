@@ -1,9 +1,7 @@
 <?php
-
 namespace User\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use User\Service\Service as UserService;
 
 class UserMenu extends AbstractHelper
 {
@@ -11,14 +9,14 @@ class UserMenu extends AbstractHelper
      * User menu
      * @var array
      */
-    protected $menu = array();
+    protected $menu = [];
 
     /**
      * Class constructor
      *
      * @param array $menu
      */
-    public function __construct(array $menu = array())
+    public function __construct(array $menu = [])
     {
         foreach ($menu as $menuItem) {
             if (!empty($menuItem['check']) && false === eval($menuItem['check'])) {

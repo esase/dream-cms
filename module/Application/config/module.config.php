@@ -63,7 +63,7 @@ return [
     ],
     'controller_plugins' => [
         'invokables' => [
-            'getSetting' => 'Application\Controller\Plugin\Setting'
+            'applicationSetting' => 'Application\Controller\Plugin\ApplicationSetting'
         ]
     ],
     'view_manager' => [

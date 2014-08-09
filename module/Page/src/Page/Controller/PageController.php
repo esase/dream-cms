@@ -3,8 +3,6 @@ namespace Page\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use User\Service\UserIdentity as UserIdentityService;
-use Localization\Service\Localization as LocalizationService;
 
 class PageController extends AbstractActionController
 {
@@ -19,11 +17,6 @@ class PageController extends AbstractActionController
      * @var array
      */
     protected $receivedPath = null;
-
-    /**
-     * Defaut layout
-     */
-    const DEFAULT_LAYOUT = 'layout_1_column';
 
     /**
      * Default page
@@ -51,8 +44,8 @@ class PageController extends AbstractActionController
         $pageName = end($receivedPath);
 
         // get current user's role and current site's language
-        $userRole = UserIdentityService::getCurrentUserIdentity()->role;
-        $language = LocalizationService::getCurrentLocalization()['language'];
+        $userRole = $this->userIdentity()['role'];
+        $language = $this->localization()['language'];
 
         // get a page info
         if (!$pageName || false == ($pageInfo = $this->
@@ -77,9 +70,8 @@ class PageController extends AbstractActionController
         ]);
 
         // set a custom page layout
-        $viewModel->setTemplate('page/layout/' . (
-            $pageInfo['layout'] ? $pageInfo['layout'] : self::DEFAULT_LAYOUT
-        ));
+        $viewModel->setTemplate(($pageInfo['layout'] 
+                ? $pageInfo['layout'] : $pageInfo['default_layout']));
 
         return $viewModel;
     }

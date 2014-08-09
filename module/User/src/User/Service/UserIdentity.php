@@ -1,7 +1,6 @@
 <?php
 namespace User\Service;
 
-use stdClass;
 use User\Model\Base as UserBaseModel;
 
 class UserIdentity
@@ -15,10 +14,10 @@ class UserIdentity
     /**
      * Set current user identity
      *
-     * @param object $userIdentity
+     * @param array $userIdentity
      * @return void
      */
-    public static function setCurrentUserIdentity(stdClass $userIdentity)
+    public static function setCurrentUserIdentity(array $userIdentity)
     {
         self::$currentUserIdentity = $userIdentity;
     }

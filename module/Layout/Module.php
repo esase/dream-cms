@@ -48,8 +48,6 @@ class Module
      */
     public function initApplication(ModuleEvent $e)
     {
-    echo 'init layout<br>';
-    
         $request = $this->serviceManager->get('Request');
 
         if (!$request instanceof ConsoleRequest) {
@@ -141,7 +139,10 @@ class Module
             ],
             'factories' => [
                 'layoutAsset' =>  function() {
-                    return new \Layout\View\Helper\LayoutAsset($this->serviceManager->get('Application\Cache\Dynamic'));
+                    $cache = $this->serviceManager->get('Application\Cache\Dynamic');
+
+                    return new \Layout\View\Helper\LayoutAsset($cache, 
+                            LayoutService::getLayoutPath(), LayoutService::getCurrentLayouts(), LayoutService::getLayoutDir());
                 },
             ]
         ];

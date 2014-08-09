@@ -21,6 +21,7 @@ class PageTitle extends AbstractHelper
         if ($pages) {
             $pages = array_reverse($pages);
 
+            // process pages
             foreach ($pages as $page) {
                 $pageTitle = $page['type'] == PageModel::PAGE_TYPE_SYSTEM  
                     ? strip_tags($this->getView()->translate($page['title'])) : strip_tags($page['title']);

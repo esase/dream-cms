@@ -8,7 +8,7 @@ class Base extends AbstractBase
     /**
      * Cache widgets connections
      */
-    const CACHE_WIDGETS_CONNECTIONS = 'Page_Widgets_Connections';
+    const CACHE_WIDGETS_CONNECTIONS = 'Page_Widgets_Connections_';
 
     /**
      * Pages data cache tag

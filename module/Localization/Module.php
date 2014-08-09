@@ -2,7 +2,7 @@
 namespace Localization;
 
 use Localization\Service\Localization as LocalizationService;
-use Application\Model\Acl as AclModelBase;
+use Acl\Model\Base as AclModelBase;
 use Application\Utility\ErrorLogger;
 use Application\Service\Setting as SettingService;
 use Zend\ModuleManager\ModuleManagerInterface;
@@ -19,7 +19,7 @@ class Module
 {
     /**
      * User identity
-     * @var object
+     * @var array
      */
     protected $userIdentity;
 
@@ -92,7 +92,6 @@ class Module
     public function initApplication(ModuleEvent $e)
     {
         $this->userIdentity = UserIdentityService::getCurrentUserIdentity();
-    echo 'init localization<br>';
 
         // init default localization
         $this->initDefaultLocalization();
@@ -113,8 +112,8 @@ class Module
             $this->localizations = $localization->getAllLocalizations();
             $acceptLanguage = Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
 
-            $defaultLanguage = !empty($this->userIdentity->language)
-                ? $this->userIdentity->language
+            $defaultLanguage = !empty($this->userIdentity['language'])
+                ? $this->userIdentity['language']
                 : ($acceptLanguage ? substr($acceptLanguage, 0, 2) : null);
 
             // setup locale
@@ -159,7 +158,6 @@ class Module
 
             if (!$matches->getParam('languge') 
                     || !array_key_exists($matches->getParam('languge'), $this->localizations)) {
-
                 if (!$matches->getParam('languge')) {
                     // set default language
                     $router->setDefaultParam('languge', $this->defaultLocalization['language']);
@@ -201,13 +199,13 @@ class Module
      */
     protected function setUserLanguage($language)
     {
-        if (!$this->userIdentity->language || $this->userIdentity->language != $language) {
+        if (!$this->userIdentity['language'] || $this->userIdentity['language'] != $language) {
             // save language
-            if ($this->userIdentity->role != AclModelBase::DEFAULT_ROLE_GUEST) {
+            if ($this->userIdentity['role'] != AclModelBase::DEFAULT_ROLE_GUEST) {
                 $model = $this->serviceManager
                     ->get('Application\Model\ModelManager')
                     ->getInstance('User\Model\Base')
-                    ->setUserLanguage($this->userIdentity->user_id, $language);
+                    ->setUserLanguage($this->userIdentity['user_id'], $language);
             }
 
             // set language cookie
@@ -218,7 +216,7 @@ class Module
                 ->setExpires(time() + (int) SettingService::getSetting('application_localization_cookie_time'));
 
             $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
-            $this->userIdentity->language = $language;
+            $this->userIdentity['language'] = $language;
         }
     }
 

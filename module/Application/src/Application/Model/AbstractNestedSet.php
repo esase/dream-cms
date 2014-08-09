@@ -49,7 +49,7 @@ abstract class AbstractNestedSet
      * @apram array $data
      * @return integer|string
      */
-    public function insertNode($parentLevel = 0, $parentRightKey = 1, array $data = array())
+    public function insertNode($parentLevel = 0, $parentRightKey = 1, array $data = [])
     {
         $insertId = 0;
 
@@ -58,28 +58,28 @@ abstract class AbstractNestedSet
 
             // update child
             if ($parentLevel) {
-                $this->tableGateway->update(array(
+                $this->tableGateway->update([
                     $this->left => new Expression($this->left   . ' + 2'),
                     $this->right => new Expression($this->right . ' + 2'),
-                ), array(
+                ], [
                     (new Predicate)->greaterThan($this->left, $parentRightKey),
-                ));
+                ]);
             }
 
             // update parent
-            $this->tableGateway->update(array(
+            $this->tableGateway->update([
                 $this->right => new Expression($this->right . ' + 2'),
-            ), array(
+            ], [
                 (new Predicate)->greaterThanOrEqualTo($this->right, $parentRightKey),
                 (new Predicate)->lessThan($this->left, $parentRightKey)
-            )); 
+            ]); 
 
             // insert a new node
-             $this->tableGateway->insert(array(
+             $this->tableGateway->insert([
                 $this->left => $parentRightKey,
                 $this->right => $parentRightKey + 1,
                 $this->level => $parentLevel + 1
-            ) + $data);
+            ] + $data);
 
             $insertId = $this->tableGateway->getLastInsertValue();
             $this->tableGateway->getAdapter()->getDriver()->getConnection()->commit();
@@ -128,9 +128,9 @@ abstract class AbstractNestedSet
     public function getNodeInfo($id, $field = 'id', Closure $closure = null)
     {
         $resultSet = $this->tableGateway->select(function (Select $select) use ($id, $field, $closure) {
-            $select->where(array(
+            $select->where([
                 $field => $id
-            ))->limit(1);
+            ])->limit(1);
 
             if ($closure) {
                 $closure($select);

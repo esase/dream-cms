@@ -285,39 +285,7 @@ class Module
     {
         return [
             'invokables' => [
-                'floatValue' => 'Application\View\Helper\FloatValue',
-                'date' => 'Application\View\Helper\Date',
-                'getSetting' => 'Application\View\Helper\Setting',
-                'fileSize' => 'Application\View\Helper\FileSize'
-            ],
-            'factories' => [
-                'booleanValue' => function() {
-                    return new \Application\View\Helper\BooleanValue($this->serviceManager->get('Translator'));
-                },
-                'adminMenu' => function() {
-                    $adminMenu = $this->serviceManager
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Application\Model\AdminMenu');
-
-                    return new \Application\View\Helper\AdminMenu($adminMenu->getMenu());
-                },
-                'currentRoute' =>  function() {
-                    $router = $this->serviceManager->get('router');
-                    $request = $this->serviceManager->get('request');
-                    $matches = $router->match($request);
-
-                    return new \Application\View\Helper\CurrentRoute($matches, $request->getQuery());
-                },
-                'flashMessage' => function() {
-                    $flashmessenger = $this->serviceManager
-                        ->get('ControllerPluginManager')
-                        ->get('flashmessenger');
- 
-                    $messages = new \Application\View\Helper\FlashMessage();
-                    $messages->setFlashMessenger($flashmessenger);
- 
-                    return $messages;
-                }
+                'applicationSetting' => 'Application\View\Helper\ApplicationSetting'
             ]
         ];
     }

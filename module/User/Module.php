@@ -11,25 +11,24 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 use Localization\Module as LocalizationModule;
 use Acl\Event\Event as AclEvent;
-use Application\Service\TimeZone as TimeZoneService;
+use Acl\Model\Base as AclModelBase;
 use Application\Model\Acl as AclModel;
 use Application\Utility\ErrorLogger;
-use Application\Model\Acl as AclModelBase;
 use Application\Service\Setting as SettingService;
-use stdClass;
+use Application\Service\Application as ApplicationService;
 use Exception;
 
 class Module
 {
     /**
-     * Service managerzend
+     * Service manager
      * @var object
      */
     protected $serviceManager;
 
     /**
      * User identity
-     * @var object
+     * @var array
      */
     protected $userIdentity;
 
@@ -68,8 +67,6 @@ class Module
      */
     public function initApplication(ModuleEvent $e)
     {
-    echo 'init user<br>';
-    
         // init user identity
         $this->initUserIdentity();
 
@@ -91,8 +88,8 @@ class Module
             $registeredTimeZones = $timeZone->getTimeZones();
 
             // what should we use here, user's or default time zone
-            $defaultTimeZone = !empty($this->userIdentity->time_zone_name)
-                ? $this->userIdentity->time_zone_name
+            $defaultTimeZone = !empty($this->userIdentity['time_zone_name'])
+                ? $this->userIdentity['time_zone_name']
                 : SettingService::getSetting('application_default_time_zone');
 
             // check default time zone existing
@@ -104,8 +101,6 @@ class Module
             if ($defaultTimeZone != date_default_timezone_get()) {
                 date_default_timezone_set($defaultTimeZone);
             }
-
-            TimeZoneService::setTimeZones($registeredTimeZones);
         }
         catch (Exception $e) {
             ErrorLogger::log($e);
@@ -125,18 +120,18 @@ class Module
                 $this->initGuestIdentity($authService);
             }
             else {
-                $this->userIdentity = $authService->getIdentity();
+                $this->userIdentity = (array) $authService->getIdentity();
     
                 // get extended user info
-                if ($authService->getIdentity()->user_id != UserBaseModel::DEFAULT_GUEST_ID) {
+                if ($authService->getIdentity()['user_id'] != UserBaseModel::DEFAULT_GUEST_ID) {
                     $user = $this->serviceManager
                         ->get('Application\Model\ModelManager')
                         ->getInstance('User\Model\Base');
     
-                    if (null != ($userInfo = $user->getUserInfo($authService->getIdentity()->user_id))) {
+                    if (null != ($userInfo = $user->getUserInfo($authService->getIdentity()['user_id']))) {
                         // fill the user identity with data
                         foreach($userInfo as $fieldName => $value) {
-                            $this->userIdentity->$fieldName = $value;
+                            $this->userIdentity[$fieldName] = $value;
                         }
                     }
                     else {
@@ -166,15 +161,15 @@ class Module
     {
         try {
         
-            $this->userIdentity = new stdClass();
-            $this->userIdentity->role = AclModelBase::DEFAULT_ROLE_GUEST;
-            $this->userIdentity->user_id = UserBaseModel::DEFAULT_GUEST_ID;
+            $this->userIdentity = [];
+            $this->userIdentity['role'] = AclModelBase::DEFAULT_ROLE_GUEST;
+            $this->userIdentity['user_id'] = UserBaseModel::DEFAULT_GUEST_ID;
 
             $request = $this->serviceManager->get('Request');
 
             // get language from cookie
             if (!$request instanceof ConsoleRequest) {
-                $this->userIdentity->language = isset($request->getCookie()->{LocalizationModule::LOCALIZATION_COOKIE})
+                $this->userIdentity['language'] = isset($request->getCookie()->{LocalizationModule::LOCALIZATION_COOKIE})
                     ? $request->getCookie()->{LocalizationModule::LOCALIZATION_COOKIE}
                     : null;
             }
@@ -234,9 +229,15 @@ class Module
     {
         return [
             'invokables' => [
-                'userAvatarUrl' => 'User\View\Helper\UserAvatarUrl'
+                'userLoginWidget' => 'User\View\Widget\UserLoginWidget',
             ],
             'factories' => [
+                'userAvatarUrl' => function(){
+                    $thumbDir  = ApplicationService::getResourcesUrl() . UserModelBase::getThumbnailsDir();
+                    $avatarDir = ApplicationService::getResourcesUrl() . UserModelBase::getAvatarsDir();
+
+                    return new \User\View\Helper\UserAvatarUrl($thumbDir, $avatarDir);
+                },
                 'userMenu' => function() {
                     $userMenu = $this->serviceManager
                         ->get('Application\Model\ModelManager')

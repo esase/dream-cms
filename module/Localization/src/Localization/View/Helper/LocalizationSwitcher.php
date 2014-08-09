@@ -15,7 +15,7 @@ class LocalizationSwitcher extends AbstractHelper
      * Localizations
      * @var array
      */
-    protected $localizations;
+    protected $localizations = [];
 
     /**
      * Class constructor
@@ -23,7 +23,7 @@ class LocalizationSwitcher extends AbstractHelper
      * @param array $currentLocalization
      * @param array $localizations
      */
-    public function __construct(array $localizations)
+    public function __construct(array $localizations = [])
     {
         $this->localizations = $localizations;
     }
@@ -39,30 +39,30 @@ class LocalizationSwitcher extends AbstractHelper
             return self::$languagesLinks;
         }
 
-        self::$languagesLinks = array();
+        self::$languagesLinks = [];
 
         if (count($this->localizations) < 2) {
             return self::$languagesLinks;
         }
 
         // process list of languages
-        $languagesLinks = array();
+        $languagesLinks = [];
         foreach ($this->localizations as $localization) {
             // collect url params
-            $urlParams = array(
+            $urlParams = [
                 'languge' => $localization['language'], 
                 'controller' => $this->getView()->currentRoute()->getController(), 
-                'action' => $this->getView()->currentRoute()->getAction());
+                'action' => $this->getView()->currentRoute()->getAction()];
 
             $url = $this->getView()->url(null, array_merge($urlParams,  $this->getView()->
-                    currentRoute()->getExtraRouteParams()), array('query' => $this->getView()->currentRoute()->getQuery()));
+                    currentRoute()->getExtraRouteParams()), ['query' => $this->getView()->currentRoute()->getQuery()]);
 
-            self::$languagesLinks[] = array(
+            self::$languagesLinks[] = [
                 'active' => $this->getView()->localization()->getCurrentLanguage() == $localization['language'],
                 'language' => $localization['language'],
                 'description' => $localization['description'],
                 'url' => $url
-            );
+            ];
         }
 
         return self::$languagesLinks;

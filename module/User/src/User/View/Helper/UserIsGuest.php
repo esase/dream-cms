@@ -18,7 +18,7 @@ class UserIsGuest extends AbstractHelper
      */
     public function __construct($isGuest)
     {
-        $this->isGuest = $userIdentity;
+        $this->isGuest = $isGuest;
     }
 
     /**

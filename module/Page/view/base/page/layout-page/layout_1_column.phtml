@@ -1,0 +1,10 @@
+<?php echo $this->partial('page/layout-page/_header', [
+    'breadcrumb' => $this->breadcrumb, 
+    'page' => $this->page
+]) ?>
+
+<div class="row">
+    <div class="col-md-12">
+        <?php echo $this->pageInjectWidget('content-middle', $this->page['id']) ?>
+    </div>
+</div>

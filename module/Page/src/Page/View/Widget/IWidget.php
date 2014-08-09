@@ -1,4 +1,5 @@
 <?php
+namespace Page\View\Widget;
 
 interface IWidget {
     /**

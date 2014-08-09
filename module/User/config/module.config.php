@@ -7,6 +7,11 @@ return array(
             'user' => 'User\Controller\UserController'
         )
     ),
+    'controller_plugins' => [
+        'invokables' => [
+            'userIdentity' => 'User\Controller\Plugin\UserIdentity'
+        ]
+    ],
     'router' => array(
         'routes' => array(
         )
