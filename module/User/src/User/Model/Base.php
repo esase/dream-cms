@@ -713,7 +713,7 @@ class Base extends AbstractBase
                     'avatar'
                 ))
                 ->join(
-                    array('b' => 'application_acl_role'),
+                    array('b' => 'acl_role'),
                     'a.role = b.id',
                     array(
                         'role_name' => 'name'

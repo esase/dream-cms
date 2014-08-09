@@ -6,11 +6,11 @@ class PageHtmlWidget extends AbstractWidget
     /**
      * Get widget content
      *
-     * @return string
+     * @return string|boolean
      */
     public function getContent() 
     {
-        return $this->getSetting('content');
+        return $this->getWidgetSetting('content');
     }
 
     /**
@@ -20,6 +20,6 @@ class PageHtmlWidget extends AbstractWidget
      */
     public function getTitle() 
     {
-        return $this->getSetting('title');
+        return $this->getWidgetSetting('title');
     }
 }

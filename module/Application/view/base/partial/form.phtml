@@ -1,0 +1,10 @@
+<?php echo $this->form()->openTag($this->form) ?>
+    <?php foreach($this->form as $element): ?>
+        <?php echo $this->formRow($element) ?>
+        <?php if(null != ($description = $element->getOption('description'))): ?>
+            <p class="help-block">
+                <?php echo $description ?>
+            </p>
+        <?php endif ?>
+    <?php endforeach ?>
+<?php echo $this->form()->closeTag() ?>

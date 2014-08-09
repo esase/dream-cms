@@ -48,32 +48,12 @@ class UserIdentity
     }
 
     /**
-     * Check is admin or not
-     *
-     * @return boolean
-     */
-    public static function isAdmin()
-    {
-        return self::getCurrentUserIdentity()->user_id == AclModelBase::DEFAULT_ROLE_ADMIN;
-    }
-
-    /**
-     * Check is default user or not
-     *
-     * @return boolean
-     */
-    public static function isDefaultUser()
-    {
-        return self::getCurrentUserIdentity()->user_id == UserBaseModel::DEFAULT_USER_ID;
-    }
-
-    /**
      * Check is guest or not
      *
      * @return boolean
      */
     public static function isGuest()
     {
-        return self::getCurrentUserIdentity()->user_id == UserBaseModel::DEFAULT_GUEST_ID;
+        return self::getCurrentUserIdentity()['user_id'] == UserBaseModel::DEFAULT_GUEST_ID;
     }
 }

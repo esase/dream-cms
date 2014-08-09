@@ -52,7 +52,7 @@ class UserAdministration extends Base
                 'role_id' => 'role'
             ))
             ->join(
-                array('b' => 'application_acl_role'),
+                array('b' => 'acl_role'),
                 'a.role = b.id',
                 array(
                     'role' => 'name'

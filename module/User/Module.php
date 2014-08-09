@@ -120,8 +120,8 @@ class Module
                 $this->initGuestIdentity($authService);
             }
             else {
-                $this->userIdentity = (array) $authService->getIdentity();
-    
+                $this->userIdentity = $authService->getIdentity();
+
                 // get extended user info
                 if ($authService->getIdentity()['user_id'] != UserBaseModel::DEFAULT_GUEST_ID) {
                     $user = $this->serviceManager
@@ -140,7 +140,7 @@ class Module
                     }
                 }
             }
-    
+
             // set the user identity
             UserIdentityService::setCurrentUserIdentity($this->userIdentity);
             

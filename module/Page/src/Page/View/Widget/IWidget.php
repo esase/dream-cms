@@ -5,7 +5,7 @@ interface IWidget {
     /**
      * Get widget content
      *
-     * @return string
+     * @return string|boolean
      */
     public function getContent();
 

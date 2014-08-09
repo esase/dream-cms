@@ -286,6 +286,18 @@ class Module
         return [
             'invokables' => [
                 'applicationSetting' => 'Application\View\Helper\ApplicationSetting'
+            ],
+            'factories' => [
+                'applicationFlashMessage' => function() {
+                    $flashmessenger = $this->serviceManager
+                        ->get('ControllerPluginManager')
+                        ->get('flashmessenger');
+ 
+                    $messages = new \Application\View\Helper\ApplicationFlashMessage();
+                    $messages->setFlashMessenger($flashmessenger);
+ 
+                    return $messages;
+                }
             ]
         ];
     }
