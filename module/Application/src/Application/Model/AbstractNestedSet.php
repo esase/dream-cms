@@ -42,6 +42,25 @@ abstract class AbstractNestedSet
     }
 
     /**
+     * Get all nodes
+     *
+     * @param object $closure
+     * @return object
+     */
+    public function getAllNodes(Closure $closure = null)
+    {
+        $resultSet = $this->tableGateway->select(function (Select $select) use ($closure) {
+            $select->order($this->left);
+
+            if ($closure) {
+                $closure($select);
+            }
+        });
+
+        return $resultSet;
+    }
+
+    /**
      * Insert node
      *
      * @param integer $parentLevel

@@ -1049,8 +1049,10 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     `user_menu` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
     `menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `disable_menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
+    `forced_permission` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `parent` SMALLINT(5) UNSIGNED NULL, 
     `layout` SMALLINT(5) UNSIGNED NULL,
+    `check` TEXT NOT NULL,
     `order` SMALLINT(5) NOT NULL,    
     PRIMARY KEY (`id`),
     UNIQUE (`slug`),
@@ -1068,10 +1070,11 @@ CREATE TABLE IF NOT EXISTS `page_system` (
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `allowed_role`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`) VALUES
-(1, 'home', 'Home', 1, NULL, 0, 1, NULL, 1, 0, 1),
-(2, 'login', 'Login', 2, 2, 0, 0, 1, 1, 0, 1),
-(3, 'register', 'Register', 2, 2, 0, 0, 1, 2, 0, 1);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `allowed_role`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `check`, `forced_permission`) VALUES
+(1, 'home', 'Home', 5, NULL, 0, 1, NULL, 1, 0, 1, '', 0),
+(2, 'login', 'Login', 2, NULL, 0, 0, 1, 1, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
+(3, 'register', 'Register', 2, NULL, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest() && (int) Application\\Service\\Setting::getSetting('user_allow_register');', 1);
+(4, 'forgot', 'Forgot', 2, NULL, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1083,10 +1086,12 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     `user_menu` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
     `menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `disable_menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
+    `forced_permission` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `active` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '1',
     `type` ENUM('system','custom') NOT NULL,
     `language` CHAR(2) NOT NULL,
     `layout` SMALLINT(5) UNSIGNED NULL,
+    `check` TEXT NOT NULL,
     `left_key` INT(10) NOT NULL DEFAULT '0',
     `right_key` INT(10) NOT NULL DEFAULT '0',
     `level` INT(10) NOT NULL DEFAULT '0',
@@ -1109,6 +1114,7 @@ CREATE TABLE IF NOT EXISTS `page_permission` (
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `disallowed_role` SMALLINT(5) UNSIGNED NULL,
     PRIMARY KEY (`id`),
+    UNIQUE `page_id` (`page_id`, `disallowed_role`),
     FOREIGN KEY (`disallowed_role`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -1134,7 +1140,8 @@ CREATE TABLE IF NOT EXISTS `page_widget` (
 
 INSERT INTO `page_widget` (`id`, `name`, `module`, `depend_page`, `type`) VALUES
 (1, 'pageHtmlWidget', 5, NULL, 'public'),
-(2, 'userLoginWidget', 2, NULL, 'public');
+(2, 'userLoginWidget', 2, NULL, 'public'),
+(3, 'userRegisterWidget', 2, NULL, 'public');
 
 CREATE TABLE IF NOT EXISTS `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

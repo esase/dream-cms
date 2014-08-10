@@ -102,6 +102,17 @@ abstract class AbstractWidget extends AbstractHelper implements IWidget
     }
 
     /**
+     * Reload page
+     *
+     * @return string
+     */
+    protected function reloadPage()
+    {
+        return $this->getServiceLocator()->
+                get('controllerPluginManager')->get('redirect')->toUrl($this->getView()->serverUrl(true));
+    }
+
+    /**
      * Get flash messenger
      *
      * @return object
@@ -143,7 +154,7 @@ abstract class AbstractWidget extends AbstractHelper implements IWidget
      * @param integer $pageId
      * @return object fluent interface
      */
-    public function setPageId($pageId) 
+    public function setPageId($pageId = 0) 
     {
         $this->pageId = $pageId;
         return $this;

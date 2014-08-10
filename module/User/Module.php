@@ -230,6 +230,7 @@ class Module
         return [
             'invokables' => [
                 'userLoginWidget' => 'User\View\Widget\UserLoginWidget',
+                'userRegisterWidget' => 'User\View\Widget\UserRegisterWidget'
             ],
             'factories' => [
                 'userAvatarUrl' => function(){

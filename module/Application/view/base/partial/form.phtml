@@ -1,10 +1,46 @@
-<?php echo $this->form()->openTag($this->form) ?>
-    <?php foreach($this->form as $element): ?>
-        <?php echo $this->formRow($element) ?>
-        <?php if(null != ($description = $element->getOption('description'))): ?>
-            <p class="help-block">
-                <?php echo $description ?>
-            </p>
-        <?php endif ?>
-    <?php endforeach ?>
-<?php echo $this->form()->closeTag() ?>
+<?php $this->declareVars('category', 'formCategories', 'openCategories') ?>
+<?php $this->formCategories = new ArrayObject() ?>
+<?php $this->openCategories = new ArrayObject() ?>
+
+<?php
+    $this->form->prepare();
+
+    // process the form elements
+    foreach ($this->form as $element) {
+        // get an element category
+        $this->category = null != $element->getOption('category')
+            ? $element->getOption('category')
+            : false;
+
+        // render the element
+        $renderedElement = $this->formRow($element);
+
+        // get the element's description
+        if (null != ($elementDescription = $element->getOption('description'))) {
+            $renderedElement .= '<p class="help-block">' . $elementDescription . '</p>';
+        }
+
+        // put the rendered element into categories array
+        isset($this->formCategories[$this->category])
+            ? $this->formCategories[$this->category] .= $renderedElement
+            : $this->formCategories[$this->category]  = $renderedElement;
+
+        // the element has a validation error and element's category should be opened
+        if ($element->getMessages() &&
+                    !in_array($this->category, (array) $this->openCategories)) {
+
+            $this->openCategories[] = $this->category;
+        }
+    }
+?>
+
+<?php
+    echo $this->form()->openTag($this->form);
+    echo $this->partial('partial/accordion', [
+        'name' => 'form-accordion',
+        'items' => $this->formCategories,
+        'openCategories' => $this->openCategories,
+        'categoriesAlwaysOpened' => $this->categoriesAlwaysOpened
+    ]);
+    echo $this->form()->closeTag();
+?>

@@ -1,9 +1,8 @@
 <?php
-
 namespace Application\Utility;
 
 use Imagine;
-use Application\Service\Service as ApplicationService;
+use Application\Service\Application as ApplicationService;
 
 class Image
 {

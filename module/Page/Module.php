@@ -3,7 +3,6 @@ namespace Page;
 
 use Zend\Db\TableGateway\TableGateway;
 use Zend\ModuleManager\ModuleManagerInterface;
-use Page\View\Helper\PageInjectWidget;
 use Localization\Service\Localization as LocalizationService;
 
 class Module
@@ -71,12 +70,20 @@ class Module
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
             ],
             'factories' => [
+                'pageUrl' =>  function() {
+                    $model = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Page\Model\Base');
+
+                    return new \Page\View\Helper\PageUrl($model->
+                            getPagesMap(LocalizationService::getCurrentLocalization()['language']));
+                },
                 'pageInjectWidget' =>  function() {
-                    $widget = $this->serviceManager
+                    $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\Widget');
 
-                    return new PageInjectWidget($widget->
+                    return new \Page\View\Helper\PageInjectWidget($model->
                             getWidgetsConnections(LocalizationService::getCurrentLocalization()['language']));
                 },
             ]

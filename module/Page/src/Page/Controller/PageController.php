@@ -54,12 +54,20 @@ class PageController extends AbstractActionController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
-        // get the page breadcrumb
-        $breadcrumb = $pageInfo['level'] > 2
-            ? $this->getModel()->getPageParents($pageInfo['left_key'], $pageInfo['right_key'], $userRole, $language)
+        // check the extra page's checking
+        if (!empty($pageInfo['check']) && false === eval($pageInfo['check'])) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // get the page's parents
+        $pageParents = $pageInfo['level'] > 1
+            ? $this->getModel()->getPageParents($pageInfo['left_key'], $pageInfo['right_key'], $userRole, $language, false)
             : [$pageInfo];
 
-        if (!$this->compareReceivedPath($breadcrumb)) {
+        // get the page's breadcrumb
+        if (false === ($breadcrumb = 
+                $this->getPageBreadcrumb($pageParents, $pageInfo['level'] > 1))) {
+
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
@@ -77,27 +85,43 @@ class PageController extends AbstractActionController
     }
 
     /**
-     * Compare received path
+     * Get page breadcrumb
      *
      * @param array $pages
-     * @return boolean
+     * @param boolean $homeIncluded
+     * @return array|boolean
      */
-    protected function compareReceivedPath(array $pages)
+    protected function getPageBreadcrumb(array $pages, $homeIncluded = false)
     {
-        if (count($this->getReceivedPath()) != count($pages)) {
+        // compare the count of paths
+        if (count($this->getReceivedPath()) 
+                != ($homeIncluded ? count($pages) - 1 : count($pages))) {
+
             return false;
         }
 
         $index = 0;
+        $breadcrumb = [];
+
         foreach ($pages as $page) {
-            if ($this->getReceivedPath()[$index] != $page['slug']) {
+            // check the extra page's checking
+            if (!empty($page['check']) && false === eval($page['check'])) {
                 return false;
             }
 
-            $index++;
+            // skip the home page 
+            if ($page['level'] > 1) {
+                // compare received slugs 
+                if ($this->getReceivedPath()[$index] != $page['slug']) {
+                    return false;
+                }
+
+                $index++;
+                $breadcrumb[] = $page;
+            }
         }
 
-        return true;
+        return $breadcrumb;
     }
 
     /**

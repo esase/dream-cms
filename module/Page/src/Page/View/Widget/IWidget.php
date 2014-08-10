@@ -22,7 +22,7 @@ interface IWidget {
      * @param integer $pageId
      * @return object fluent interface
      */
-    public function setPageId($pageId);
+    public function setPageId($pageId = 0);
 
     /**
      * Set widget connection id

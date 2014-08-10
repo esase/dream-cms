@@ -1,20 +1,21 @@
 <?php
 namespace User\Model;
 
-use Application\Model\AbstractBase;
-use Zend\Db\ResultSet\ResultSet;
+use Acl\Model\Base as AclModelBase;
 use Application\Utility\Cache as CacheUtility;
-use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Zend\Db\Sql\Predicate\isNull as IsNullPredicate;
-use Application\Service\Service as ApplicationService;
-use Application\Model\Acl as AclModelBase;
+use Application\Model\AbstractBase;
+use Application\Service\Setting as SettingService;
+use Localization\Service\Localization as LocalizationService;
 use Application\Utility\FileSystem as FileSystemUtility;
-use Exception;
-use User\Exception\UserException;
 use Application\Utility\Image as ImageUtility;
 use Application\Utility\ErrorLogger;
+use User\Exception\UserException;
 use User\Event\Event as UserEvent;
 use User\Service\Service as UserService;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
+use Zend\Db\Sql\Predicate\isNull as IsNullPredicate;
+use Exception;
 
 class Base extends AbstractBase
 {
@@ -293,12 +294,12 @@ class Base extends AbstractBase
 
             // resize the avatar
             ImageUtility::resizeResourceImage($avatarName, self::$avatarsDir,
-                    (int) ApplicationService::getSetting('user_thumbnail_width'),
-                    (int) ApplicationService::getSetting('user_thumbnail_height'), self::$thumbnailsDir);
+                    (int) SettingService::getSetting('user_thumbnail_width'),
+                    (int) SettingService::getSetting('user_thumbnail_height'), self::$thumbnailsDir);
 
             ImageUtility::resizeResourceImage($avatarName, self::$avatarsDir,
-                    (int) ApplicationService::getSetting('user_avatar_width'),
-                    (int) ApplicationService::getSetting('user_avatar_height'));
+                    (int) SettingService::getSetting('user_avatar_width'),
+                    (int) SettingService::getSetting('user_avatar_height'));
 
             $update = $this->update()
                 ->table('user_list')
@@ -433,7 +434,7 @@ class Base extends AbstractBase
                 ->values(array_merge($formData, array(
                     'role' => AclModelBase::DEFAULT_ROLE_MEMBER,
                     'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED,
-                    'language' => ApplicationService::getCurrentLocalization()['language'],
+                    'language' => LocalizationService::getCurrentLocalization()['language'],
                     'registered' => time(),
                     'salt' => $passwordSalt,
                     'password' => $this->generatePassword($formData['password'], $passwordSalt),

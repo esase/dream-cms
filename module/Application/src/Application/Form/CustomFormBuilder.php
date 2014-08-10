@@ -2,13 +2,14 @@
 
 namespace Application\Form;
  
+use Application\Service\Setting as SettingService;
+use Application\Service\Captcha as CaptchaService;
 use Zend\Form\Form;
 use Zend\Form\FormInterface;
 use Zend\Mvc\I18n\Translator;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\Form\Exception\InvalidArgumentException;
-use Application\Service\Service as ApplicationService;
 use Application\Utility\Locale as LocaleUtility;
 use Zend\Captcha\Image as CaptchaImage;
 use IntlDateFormatter;
@@ -637,15 +638,15 @@ class CustomFormBuilder extends Form
     {
         // pass captcha image options
         $captchaImage = new CaptchaImage(array(
-            'font' => ApplicationService::getCaptchaFontPath(),
-            'width' => ApplicationService::getSetting('application_captcha_width'),
-            'height' => ApplicationService::getSetting('application_captcha_height'),
-            'dotNoiseLevel' => ApplicationService::getSetting('application_captcha_dot_noise'),
-            'lineNoiseLevel' => ApplicationService::getSetting('application_captcha_line_noise')
+            'font' => CaptchaService::getCaptchaFontPath(),
+            'width' => SettingService::getSetting('application_captcha_width'),
+            'height' => SettingService::getSetting('application_captcha_height'),
+            'dotNoiseLevel' => SettingService::getSetting('application_captcha_dot_noise'),
+            'lineNoiseLevel' => SettingService::getSetting('application_captcha_line_noise')
         ));
 
-        $captchaImage->setImgDir(ApplicationService::getCaptchaPath());
-        $captchaImage->setImgUrl(ApplicationService::getCaptchaUrl());
+        $captchaImage->setImgDir(CaptchaService::getCaptchaPath());
+        $captchaImage->setImgUrl(CaptchaService::getCaptchaUrl());
 
         $this->add(array(
             'type' => self::FIELD_CAPTCHA,

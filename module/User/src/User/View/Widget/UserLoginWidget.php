@@ -90,7 +90,10 @@ class UserLoginWidget extends AbstractWidget
                             'nick_name'
                         ]);
 
-                        $rememberMe = null != ($result = $request->getPost('remember')) ? true : false;
+                        $rememberMe = null != ($result = $request->getPost('remember')) 
+                            ? true 
+                            : false;
+
                         return $this->loginUser($userData->user_id, $userData->nick_name, $rememberMe);
                     }
                     else {
@@ -104,7 +107,7 @@ class UserLoginWidget extends AbstractWidget
 
                         // fire the user login failed event
                         UserEvent::fireLoginFailedEvent(AclModel::DEFAULT_ROLE_GUEST, $request->getPost('nickname'));
-                        return $this->redirectTo();
+                        return $this->reloadPage();
                     }
                 }
             }
@@ -124,6 +127,6 @@ class UserLoginWidget extends AbstractWidget
      */
     public function getTitle() 
     {
-        return $this->getView()->translate('Login');
+        return $this->translate('Login');
     }
 }

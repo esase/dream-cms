@@ -2,8 +2,11 @@
 namespace User\Event;
 
 use Application\Event\AbstractEvent as AbstractEvent;
-use User\Service\Service as UserService;
 use Application\Utility\EmailNotification;
+use Application\Service\Setting as SettingService;
+use Application\Service\ServiceManager as ServiceManagerService;
+use User\Service\UserIdentity as UserIdentityService;
+use Localization\Service\Localization as LocalizationService;
 
 class Event extends AbstractEvent
 {
@@ -91,8 +94,8 @@ class Event extends AbstractEvent
 
         // send an email password reset notification
         EmailNotification::sendNotification($userInfo['email'],
-            UserService::getSetting('user_reset_password_title'),
-            UserService::getSetting('user_reset_password_message'), array(
+            SettingService::getSetting('user_reset_password_title'),
+            SettingService::getSetting('user_reset_password_message'), array(
                 'find' => array(
                     'RealName',
                     'ConfirmationLink',
@@ -100,7 +103,7 @@ class Event extends AbstractEvent
                 ),
                 'replace' => array(
                     $userInfo['nick_name'],
-                    UserService::getServiceManager()->get('viewhelpermanager')->get('url')->__invoke('administration', 
+                    ServiceManagerService::getServiceManager()->get('viewhelpermanager')->get('url')->__invoke('administration', 
                             array('controller' => 'user', 'action' => 'password-reset', 'slug' => $userInfo['slug']), array('force_canonical' => true)),
 
                     $activateCode
@@ -126,8 +129,8 @@ class Event extends AbstractEvent
 
         // send an email password reseted notification
         EmailNotification::sendNotification($userInfo['email'],
-            UserService::getSetting('user_password_reseted_title'),
-            UserService::getSetting('user_password_reseted_message'), array(
+            SettingService::getSetting('user_password_reseted_title'),
+            SettingService::getSetting('user_password_reseted_message'), array(
                 'find' => array(
                     'RealName',
                     'Password'
@@ -150,15 +153,15 @@ class Event extends AbstractEvent
         // event's description
         $eventDesc = $selfEdit
             ? 'Event - User edited'
-            : (UserService::isGuest() ? 'Event - User edited by guest'
+            : (UserIdentityService::isGuest() ? 'Event - User edited by guest'
                     : 'Event - User edited by user');
 
         $eventDescParams = $selfEdit
-            ? array(UserService::getCurrentUserIdentity()->nick_name, $userId)
-            : (UserService::isGuest() ? array($userId)
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $userId));
+            ? array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId)
+            : (UserIdentityService::isGuest() ? array($userId)
+                    : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
 
-        self::fireEvent(self::EDIT, $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+        self::fireEvent(self::EDIT, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -176,21 +179,21 @@ class Event extends AbstractEvent
         // event's description
         $eventDesc = $userInfo
             ? 'Event - User registered'
-            : (UserService::isGuest() ? 'Event - User added by guest'
+            : (UserIdentityService::isGuest() ? 'Event - User added by guest'
                     : 'Event - User added by user');
 
         $eventDescParams = $userInfo
             ? array($userInfo['nick_name'], $userId)
-            : (UserService::isGuest() ? array($userId)
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $userId));
+            : (UserIdentityService::isGuest() ? array($userId)
+                    : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
 
-        self::fireEvent(self::ADD, $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+        self::fireEvent(self::ADD, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
         // send an email notification about register the new user
-        if ($userInfo && (int) UserService::getSetting('user_registered_send')) {
-            EmailNotification::sendNotification(UserService::getSetting('application_site_email'),
-                UserService::getSetting('user_registered_title', UserService::getDefaultLocalization()['language']),
-                UserService::getSetting('user_registered_message', UserService::getDefaultLocalization()['language']), array(
+        if ($userInfo && (int) SettingService::getSetting('user_registered_send')) {
+            EmailNotification::sendNotification(SettingService::getSetting('application_site_email'),
+                SettingService::getSetting('user_registered_title', LocalizationService::getDefaultLocalization()['language']),
+                SettingService::getSetting('user_registered_message', LocalizationService::getDefaultLocalization()['language']), array(
                     'find' => array(
                         'RealName',
                         'Email'
@@ -218,25 +221,25 @@ class Event extends AbstractEvent
         // event's description
         $eventDesc = !$userInfo
             ? 'Event - User deleted'
-            : (UserService::isGuest() ? 'Event - User deleted by guest'
+            : (UserIdentityService::isGuest() ? 'Event - User deleted by guest'
                     : 'Event - User deleted by user');
 
         $eventDescParams = !$userInfo
-            ? array(UserService::getCurrentUserIdentity()->nick_name, $userId)
-            : (UserService::isGuest() ? array($userId)
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $userId));
+            ? array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId)
+            : (UserIdentityService::isGuest() ? array($userId)
+                    : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
 
-        self::fireEvent(self::DELETE, $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+        self::fireEvent(self::DELETE, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
         // send an email notification
-        if ($userInfo && (int) UserService::getSetting('user_deleted_send')) {
+        if ($userInfo && (int) SettingService::getSetting('user_deleted_send')) {
             $notificationLanguage = $userInfo['language']
                 ? $userInfo['language'] // we should use the user's language
-                : UserService::getDefaultLocalization()['language'];
+                : LocalizationService::getDefaultLocalization()['language'];
 
             EmailNotification::sendNotification($userInfo['email'],
-                    UserService::getSetting('user_deleted_title', $notificationLanguage),
-                    UserService::getSetting('user_deleted_message', $notificationLanguage), array(
+                    SettingService::getSetting('user_deleted_title', $notificationLanguage),
+                    SettingService::getSetting('user_deleted_message', $notificationLanguage), array(
                         'find' => array(
                             'RealName'
                         ),
@@ -263,24 +266,24 @@ class Event extends AbstractEvent
         // event's description
         $eventDesc = $selfUserName
             ? 'Event - User confirmed email'
-            :  (UserService::isGuest() ? 'Event - User approved by guest' : 'Event - User approved by user');
+            :  (UserIdentityService::isGuest() ? 'Event - User approved by guest' : 'Event - User approved by user');
 
         $eventDescParams = $selfUserName
             ? array($selfUserName)
-            : (UserService::isGuest() 
-                    ? array($userId) : array(UserService::getCurrentUserIdentity()->nick_name, $userId));
+            : (UserIdentityService::isGuest() 
+                    ? array($userId) : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
 
-        self::fireEvent(self::APPROVE, $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+        self::fireEvent(self::APPROVE, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
         // send an email notification
         if (!$selfUserName) {
             $notificationLanguage = $userInfo['language']
                 ? $userInfo['language'] // we should use the user's language
-                : UserService::getDefaultLocalization()['language'];
+                : LocalizationService::getDefaultLocalization()['language'];
 
             EmailNotification::sendNotification($userInfo['email'],
-                    UserService::getSetting('user_approved_title', $notificationLanguage),
-                    UserService::getSetting('user_approved_message', $notificationLanguage), array(
+                    SettingService::getSetting('user_approved_title', $notificationLanguage),
+                    SettingService::getSetting('user_approved_message', $notificationLanguage), array(
                         'find' => array(
                             'RealName',
                             'Email'
@@ -306,24 +309,24 @@ class Event extends AbstractEvent
     public static function fireUserDisapproveEvent($userId, $userInfo)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - User disapproved by guest'
             : 'Event - User disapproved by user';
 
-        $eventDescParams = UserService::isGuest()
+        $eventDescParams = UserIdentityService::isGuest()
             ? array($userId)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $userId);
+            : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId);
 
-        self::fireEvent(self::DISAPPROVE, $userId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+        self::fireEvent(self::DISAPPROVE, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
         // send an email notification
         $notificationLanguage = $userInfo['language']
             ? $userInfo['language'] // we should use the user's language
-            : UserService::getDefaultLocalization()['language'];
+            : LocalizationService::getDefaultLocalization()['language'];
 
         EmailNotification::sendNotification($userInfo['email'],
-                UserService::getSetting('user_disapproved_title', $notificationLanguage),
-                UserService::getSetting('user_disapproved_message', $notificationLanguage), array(
+                SettingService::getSetting('user_disapproved_title', $notificationLanguage),
+                SettingService::getSetting('user_disapproved_message', $notificationLanguage), array(
                     'find' => array(
                         'RealName',
                         'Email'
@@ -359,11 +362,11 @@ class Event extends AbstractEvent
     public static function fireGetUserInfoViaXmlRpcEvent($userId, $userNick, $viewerId, $viewerNick = null)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - User\'s info was obtained by guest via XmlRpc'
             : 'Event - User\'s info was obtained by user via XmlRpc';
 
-        $eventDescParams = UserService::isGuest()
+        $eventDescParams = UserIdentityService::isGuest()
             ? array($userNick)
             : array($viewerNick, $userNick);
 
@@ -423,33 +426,33 @@ class Event extends AbstractEvent
         // event's description
         $eventDesc = $isSystemEvent
             ? 'Event - User\'s role edited by the system'
-            : (UserService::isGuest() 
+            : (UserIdentityService::isGuest() 
                     ? 'Event - User\'s role edited by guest' : 'Event - User\'s role edited by user');
 
         $eventDescParams = $isSystemEvent
             ? array($user['user_id'])
-            : (UserService::isGuest() 
-                    ? array($user['user_id']) : array(UserService::getCurrentUserIdentity()->nick_name, $user['user_id']));
+            : (UserIdentityService::isGuest() 
+                    ? array($user['user_id']) : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $user['user_id']));
 
         self::fireEvent(self::EDIT_ROLE, $user['user_id'], self::getUserId($isSystemEvent), $eventDesc, $eventDescParams);
 
         // send a notification
-        if ((int) UserService::getSetting('user_role_edited_send')) {
+        if ((int) SettingService::getSetting('user_role_edited_send')) {
             $notificationLanguage = $user['language']
                 ? $user['language'] // we should use the user's language
-                : UserService::getDefaultLocalization()['language'];
+                : LocalizationService::getDefaultLocalization()['language'];
 
             EmailNotification::sendNotification($user['email'],
-                UserService::getSetting('user_role_edited_title', $notificationLanguage),
-                UserService::getSetting('user_role_edited_message', $notificationLanguage), array(
+                SettingService::getSetting('user_role_edited_title', $notificationLanguage),
+                SettingService::getSetting('user_role_edited_message', $notificationLanguage), array(
                     'find' => array(
                         'RealName',
                         'Role'
                     ),
                     'replace' => array(
                         $user['nick_name'],
-                        UserService::getServiceManager()->get('Translator')->
-                                translate($roleName, 'default', UserService::getLocalizations()[$notificationLanguage]['locale'])
+                        ServiceManagerService::getServiceManager()->get('Translator')->
+                                translate($roleName, 'default', LocalizationService::getLocalizations()[$notificationLanguage]['locale'])
                     )
                 ));
         }

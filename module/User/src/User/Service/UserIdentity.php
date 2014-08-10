@@ -7,7 +7,7 @@ class UserIdentity
 {
     /**
      * Current user identity
-     * @var object
+     * @var array
      */
     protected static $currentUserIdentity;
     
@@ -25,7 +25,7 @@ class UserIdentity
     /**
      * Get current user identity
      *
-     * @return object
+     * @return array
      */
     public static function getCurrentUserIdentity()
     {

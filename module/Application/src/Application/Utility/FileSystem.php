@@ -1,10 +1,9 @@
 <?php
-
 namespace Application\Utility;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Application\Service\Service as ApplicationService;
+use Application\Service\Application as ApplicationService;
 use Exception;
 use Application\Exception\ApplicationException;
 use SplFileInfo;
@@ -21,9 +20,9 @@ class FileSystem
      * System files
      * @var array
      */
-    protected static $systemFiles = array(
+    protected static $systemFiles = [
         '.htaccess'
-    );
+    ];
 
     /**
      * Convert bytes
@@ -35,7 +34,7 @@ class FileSystem
     {
         if ((int) $bytes) {
             $unit = intval(log($bytes, 1024));
-            $units = array('B', 'KB', 'MB', 'GB');
+            $units = ['B', 'KB', 'MB', 'GB'];
 
             if (array_key_exists($unit, $units) === true) {
                 return sprintf('%d %s', $bytes / pow(1024, $unit), $units[$unit]);
@@ -179,7 +178,7 @@ class FileSystem
      * @param boolean $removeCurrentDirectory
      * @return boolean
      */
-    public static function deleteFiles($path, array $undeletable = array(), $useUndeletableFiles = true, $removeCurrentDirectory = false)
+    public static function deleteFiles($path, array $undeletable = [], $useUndeletableFiles = true, $removeCurrentDirectory = false)
     {
         // check a path
         if (!file_exists($path)) {
@@ -194,7 +193,7 @@ class FileSystem
         // check for the undeletable files
         $undeletable = $useUndeletableFiles
             ? (!$undeletable ? self::$systemFiles : $undeletable)
-            : array();
+            : [];
 
         // open and read all child directories and files
         $iterator = new RecursiveDirectoryIterator($path);

@@ -1,8 +1,7 @@
 <?php
-
 namespace Application\Utility;
 
-use Application\Service\Service as ApplicationService;
+use Application\Service\Setting as SettingService;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Sendmail as SendmailTransport;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
@@ -29,8 +28,7 @@ class EmailNotification
      * @param string $replaceRightDevider
      * @return boolean
      */
-    public static function sendNotification($email, $subject, $message,
-            array $replacements = array(), $replaceLeftDevider = '__', $replaceRightDevider = '__')
+    public static function sendNotification($email, $subject, $message, array $replacements = [], $replaceLeftDevider = '__', $replaceRightDevider = '__')
     {
         try {
             // fire the send email notification event
@@ -55,28 +53,28 @@ class EmailNotification
             $message->type = 'text/html';
 
             $body = new MimeMessage();
-            $body->setParts(array($message));
+            $body->setParts([$message]);
 
             $messageInstance = new Message();
-            $messageInstance->addFrom(ApplicationService::getSetting('notification_from'))
+            $messageInstance->addFrom(SettingService::getSetting('notification_from'))
                 ->addTo($email)
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setEncoding('UTF-8');
 
             // should we use SMTP?
-            if ((int) ApplicationService::getSetting('use_smtp')) {
+            if ((int) SettingService::getSetting('use_smtp')) {
                 $transport = new SmtpTransport();
-                $options = new SmtpOptions(array(
-                    'host' => ApplicationService::getSetting('smtp_host'),
+                $options = new SmtpOptions([
+                    'host' => SettingService::getSetting('smtp_host'),
                     'connection_class' => 'login',
-                    'connection_config' => array(
+                    'connection_config' => [
                         'ssl' => 'tls',
-                        'username' => ApplicationService::getSetting('smtp_user'),
-                        'password' => ApplicationService::getSetting('smtp_password')
-                    ),
-                    'port' => ApplicationService::getSetting('smtp_port'),
-                ));
+                        'username' => SettingService::getSetting('smtp_user'),
+                        'password' => SettingService::getSetting('smtp_password')
+                    ],
+                    'port' => SettingService::getSetting('smtp_port'),
+                ]);
 
                 $transport->setOptions($options);
             }
