@@ -1072,9 +1072,10 @@ CREATE TABLE IF NOT EXISTS `page_system` (
 
 INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `check`, `forced_visibility`) VALUES
 (1, 'home', 'Home', 5, NULL, 0, 1, NULL, 1, 0, 1, '', 0),
-(2, 'login', 'Login', 2, 2, 0, 0, 1, 1, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
-(3, 'register', 'Register', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest() && (int) Application\\Service\\Setting::getSetting(\'user_allow_register\');', 1),
-(4, 'forgot', 'Forgot', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
+(2, 'user-login', 'Login', 2, 2, 0, 0, 1, 1, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
+(3, 'user-register', 'Register', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest() && (int) Application\\Service\\Setting::getSetting(\'user_allow_register\');', 1),
+(4, 'user-forgot', 'Have you forgotten your password or nickname?', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
+(5, 'user-activate', 'User activate', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

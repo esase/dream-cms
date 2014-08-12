@@ -2,59 +2,11 @@
 namespace User\View\Widget;
 
 use Acl\Model\Base as AclModel;
-use Page\View\Widget\AbstractWidget;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Event\Event as UserEvent;
 
-class UserLoginWidget extends AbstractWidget
+class UserLoginWidget extends UserAbstractWidget
 {
-    /**
-     * Auth service
-     * @var object  
-     */
-    protected $authService;
-
-    /**
-     * Get auth service
-     *
-     * @return object
-     */
-    protected function getAuthService()
-    {
-        if (!$this->authService) {
-            $this->authService = $this->getServiceLocator()->get('User\AuthService');
-        }
-
-        return $this->authService;
-    }
-
-    /**
-     * Login user
-     *
-     * @param integer $userId
-     * @param string $userNickname
-     * @param boolean $rememberMe
-     * @return string
-     */
-    protected function loginUser($userId, $userNickname, $rememberMe = false)
-    {
-        $user = [];
-        $user['user_id'] = $userId;
-
-        // save user id
-        $this->getAuthService()->getStorage()->write($user);
-
-        // fire the user login event
-        UserEvent::fireLoginEvent($userId, $userNickname);
-
-        if ($rememberMe) {
-            $this->serviceLocator->
-                    get('Zend\Session\SessionManager')->rememberMe((int) $this->getSetting('user_session_time'));
-        }
-
-        return $this->redirectTo(); // redirect to home page
-    }
-
     /**
      * Get widget content
      *
@@ -68,7 +20,7 @@ class UserLoginWidget extends AbstractWidget
                 ->get('Application\Form\FormManager')
                 ->getInstance('User\Form\Login');
 
-            $request  = $this->getServiceLocator()->get('Request');
+            $request = $this->getServiceLocator()->get('Request');
 
             if ($request->isPost()) {
                 // fill form with received values

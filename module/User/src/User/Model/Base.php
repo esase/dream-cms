@@ -410,12 +410,13 @@ class Base extends AbstractBase
      *      string email required
      *      string password required
      *      string time_zone optional
+     * @param string $language
      * @param boolean $statusApproved
      * @param array $avatar
      * @param boolean $retArray
      * @return array|integer|string
      */
-    public function addUser(array $formData, $statusApproved = true, array $avatar = array(), $retArray = false)
+    public function addUser(array $formData, $language, $statusApproved = true, array $avatar = [], $retArray = false)
     {
         $insertId = 0;
 
@@ -431,10 +432,10 @@ class Base extends AbstractBase
 
             $insert = $this->insert()
                 ->into('user_list')
-                ->values(array_merge($formData, array(
+                ->values(array_merge($formData, [
                     'role' => AclModelBase::DEFAULT_ROLE_MEMBER,
                     'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED,
-                    'language' => LocalizationService::getCurrentLocalization()['language'],
+                    'language' => $language,
                     'registered' => time(),
                     'salt' => $passwordSalt,
                     'password' => $this->generatePassword($formData['password'], $passwordSalt),
@@ -442,7 +443,7 @@ class Base extends AbstractBase
                     'activation_code' => !$statusApproved // generate an activation code
                         ? $this->generateRandString()
                         : ''
-                )));
+                ]));
 
             $statement = $this->prepareStatementForSqlObject($insert);
             $statement->execute();
@@ -451,13 +452,13 @@ class Base extends AbstractBase
             // update an api key and generate user's slug
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'api_key' => $insertId . '_' . $this->generateRandString(),
                     'slug' => $this->generateSlug($insertId, $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH)
-                ))
-                ->where(array(
+                ])
+                ->where([
                     'user_id' => $insertId
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -475,11 +476,11 @@ class Base extends AbstractBase
         }
 
         if ($retArray) {
-            $userInfo = $this->getUserInfo($insertId);
+            $userInfo = (array) $this->getUserInfo($insertId);
 
             // fire the add user event
             UserEvent::fireUserAddEvent($insertId, $userInfo);
-            return (array) $userInfo;
+            return $userInfo;
         }
 
         // fire the add user event
@@ -687,13 +688,13 @@ class Base extends AbstractBase
             : self::USER_INFO_BY_ID;
 
         // generate a cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_USER_INFO . $userId, array($field));
+        $cacheName = CacheUtility::getCacheName(self::CACHE_USER_INFO . $userId, [$field]);
 
         // check data in cache
         if (null === ($userInfo = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from(array('a' =>'user_list'))
-                ->columns(array(
+            $select->from(['a' =>'user_list'])
+                ->columns([
                     'user_id',
                     'nick_name',
                     'slug',
@@ -712,35 +713,35 @@ class Base extends AbstractBase
                     'registered',
                     'activation_code',
                     'avatar'
-                ))
+                ])
                 ->join(
-                    array('b' => 'acl_role'),
+                    ['b' => 'acl_role'],
                     'a.role = b.id',
-                    array(
+                    [
                         'role_name' => 'name'
-                    ),
+                    ],
                     'left'
                 )
                 ->join(
-                    array('c' => 'application_time_zone'),
+                    ['c' => 'application_time_zone'],
                     'a.time_zone = c.id',
-                    array(
+                    [
                         'time_zone_name' => 'name'
-                    ),
+                    ],
                     'left'
                 )
-                ->where(array(
+                ->where([
                     $field => $userId
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
-            $userInfo = $resultSet->current();
+            $userInfo = (array) $resultSet->current();
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $userInfo);
-            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_USER_DATA_TAG));
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_USER_DATA_TAG]);
         }
 
         return $userInfo;

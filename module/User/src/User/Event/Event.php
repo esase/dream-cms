@@ -174,18 +174,17 @@ class Event extends AbstractEvent
      *      string nick_name
      * @return void
      */
-    public static function fireUserAddEvent($userId, $userInfo = array())
+    public static function fireUserAddEvent($userId, array $userInfo = [])
     {
         // event's description
         $eventDesc = $userInfo
             ? 'Event - User registered'
-            : (UserIdentityService::isGuest() ? 'Event - User added by guest'
-                    : 'Event - User added by user');
+            : (UserIdentityService::isGuest() ? 'Event - User added by guest' : 'Event - User added by user');
 
         $eventDescParams = $userInfo
-            ? array($userInfo['nick_name'], $userId)
-            : (UserIdentityService::isGuest() ? array($userId)
-                    : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
+            ? [$userInfo['nick_name'], $userId]
+            : (UserIdentityService::isGuest() ? [$userId]
+                    : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId]);
 
         self::fireEvent(self::ADD, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
@@ -193,16 +192,16 @@ class Event extends AbstractEvent
         if ($userInfo && (int) SettingService::getSetting('user_registered_send')) {
             EmailNotification::sendNotification(SettingService::getSetting('application_site_email'),
                 SettingService::getSetting('user_registered_title', LocalizationService::getDefaultLocalization()['language']),
-                SettingService::getSetting('user_registered_message', LocalizationService::getDefaultLocalization()['language']), array(
-                    'find' => array(
+                SettingService::getSetting('user_registered_message', LocalizationService::getDefaultLocalization()['language']), [
+                    'find' => [
                         'RealName',
                         'Email'
-                    ),
-                    'replace' => array(
+                    ],
+                    'replace' => [
                         $userInfo['nick_name'],
                         $userInfo['email']
-                    )
-                ));
+                    ]
+                ]);
         }
     }
 
@@ -394,7 +393,7 @@ class Event extends AbstractEvent
      */
     public static function fireLoginFailedEvent($userId, $userNickname)
     {
-        self::fireEvent(self::LOGIN_FAILED, 0, $userId, 'Event - User login failed', array($userNickname));
+        self::fireEvent(self::LOGIN_FAILED, 0, $userId, 'Event - User login failed', [$userNickname]);
     }
 
     /**
@@ -406,7 +405,8 @@ class Event extends AbstractEvent
      */
     public static function fireLoginEvent($userId, $userNickname)
     {
-        self::fireEvent(self::LOGIN, $userId, $userId, 'Event - User successfully logged in', array($userNickname));
+        self::fireEvent(self::LOGIN, 
+                $userId, $userId, 'Event - User successfully logged in', [$userNickname]);
     }
 
     /**
