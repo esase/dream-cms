@@ -1045,11 +1045,11 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     `slug` VARCHAR(100) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `allowed_role` SMALLINT(5) UNSIGNED NULL,
+    `default_visibility` SMALLINT(5) UNSIGNED NULL,
+    `forced_visibility` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `user_menu` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
     `menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `disable_menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
-    `forced_permission` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `parent` SMALLINT(5) UNSIGNED NULL, 
     `layout` SMALLINT(5) UNSIGNED NULL,
     `check` TEXT NOT NULL,
@@ -1059,7 +1059,7 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`allowed_role`) REFERENCES `acl_role`(`id`)
+    FOREIGN KEY (`default_visibility`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
     FOREIGN KEY (`parent`) REFERENCES `page_system`(`id`)
@@ -1070,11 +1070,11 @@ CREATE TABLE IF NOT EXISTS `page_system` (
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `allowed_role`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `check`, `forced_permission`) VALUES
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `check`, `forced_visibility`) VALUES
 (1, 'home', 'Home', 5, NULL, 0, 1, NULL, 1, 0, 1, '', 0),
-(2, 'login', 'Login', 2, NULL, 0, 0, 1, 1, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
-(3, 'register', 'Register', 2, NULL, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest() && (int) Application\\Service\\Setting::getSetting('user_allow_register');', 1);
-(4, 'forgot', 'Forgot', 2, NULL, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
+(2, 'login', 'Login', 2, 2, 0, 0, 1, 1, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
+(3, 'register', 'Register', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest() && (int) Application\\Service\\Setting::getSetting(\'user_allow_register\');', 1),
+(4, 'forgot', 'Forgot', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1086,7 +1086,7 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     `user_menu` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
     `menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `disable_menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
-    `forced_permission` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
+    `forced_visibility` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `active` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '1',
     `type` ENUM('system','custom') NOT NULL,
     `language` CHAR(2) NOT NULL,
@@ -1109,13 +1109,13 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_permission` (
+CREATE TABLE IF NOT EXISTS `page_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
-    `disallowed_role` SMALLINT(5) UNSIGNED NULL,
+    `hidden` SMALLINT(5) UNSIGNED NULL,
     PRIMARY KEY (`id`),
-    UNIQUE `page_id` (`page_id`, `disallowed_role`),
-    FOREIGN KEY (`disallowed_role`) REFERENCES `acl_role`(`id`)
+    UNIQUE `page_id` (`page_id`, `hidden`),
+    FOREIGN KEY (`hidden`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
@@ -1241,6 +1241,20 @@ CREATE TABLE IF NOT EXISTS `page_widget_setting_value` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `setting` (`setting_id`, `widget_connection`),
     FOREIGN KEY (`setting_id`) REFERENCES `page_widget_setting`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_connection`) REFERENCES `page_widget_connection`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_widget_visibility` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `widget_connection_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `hidden` SMALLINT(5) UNSIGNED NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `widget` (`widget_connection`, `hidden`),
+    FOREIGN KEY (`hidden`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (`widget_connection`) REFERENCES `page_widget_connection`(`id`)

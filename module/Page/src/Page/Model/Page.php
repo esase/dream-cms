@@ -1,5 +1,4 @@
 <?php
-
 namespace Page\Model;
 
 use Acl\Model\Base as AclBaseModel;
@@ -116,9 +115,9 @@ class Page extends AbstractNestedSet
         // administrators can see any pages
         if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {
             $select->join(
-                ['e' => 'page_permission'],
+                ['e' => 'page_visibility'],
                 new Expression('e.page_id = ' . 
-                        $this->tableGateway->table . '.id and e.disallowed_role = ?', [$userRole]), 
+                        $this->tableGateway->table . '.id and e.hidden = ?', [$userRole]), 
                 [],
                 'left'
             );

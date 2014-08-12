@@ -4,6 +4,7 @@ namespace Page\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 use Page\Exception\PageException;
 use Page\View\Widget\IWidget;
+use User\Service\UserIdentity as UserIdentityService;
 
 class PageInjectWidget extends AbstractHelper
 {
@@ -38,7 +39,14 @@ class PageInjectWidget extends AbstractHelper
         if (!empty($this->widgets[$pageId][$position])) {
             // call widgets
             foreach ($this->widgets[$pageId][$position] as $widgetInfo) {
-                // call a widget
+                // check a widget visibility
+                if (!empty($widgetInfo['hidden']) 
+                        && in_array(UserIdentityService::getCurrentUserIdentity()['role'], $widgetInfo['hidden'])) {
+
+                    continue;
+                }
+
+                // call the widget
                 $widget = $this->getView()->{$widgetInfo['widget_name']}();
 
                 // check the widget

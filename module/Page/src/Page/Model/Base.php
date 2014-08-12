@@ -65,11 +65,11 @@ class Base extends AbstractBase
                 ];
             }
 
-            // get pages permissions
+            // get pages visibility
             $select = $this->select();
-            $select->from(['a' => 'page_permission'])
+            $select->from(['a' => 'page_visibility'])
                 ->columns([
-                    'disallowed_role',
+                    'hidden',
                 ])
                 ->join(
                     ['b' => 'page_structure'],
@@ -83,9 +83,9 @@ class Base extends AbstractBase
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
 
-            foreach ($resultSet as $pagePermission) {
-                if (!empty($pagesMap[$pagePermission->slug])) {
-                    $pagesMap[$pagePermission->slug]['disallowed_roles'][] = $pagePermission->disallowed_role;
+            foreach ($resultSet as $pageVisibility) {
+                if (!empty($pagesMap[$pageVisibility->slug])) {
+                    $pagesMap[$pageVisibility->slug]['hidden'][] = $pageVisibility->hidden;
                 }
             }
 

@@ -19,10 +19,39 @@ class Widget extends Base
 
         // check data in cache
         if (null === ($widgetConnections = $this->staticCacheInstance->getItem($cacheName))) {
+            // get widgets visibility
+            $select = $this->select();
+            $select->from(['a' => 'page_widget_visibility'])
+                ->columns([
+                    'hidden',
+                    'widget_connection_id'
+                ])
+                ->join(
+                    ['b' => 'page_widget_connection'],
+                    'b.id = a.widget_connection_id',
+                    []
+                )
+                ->join(
+                    ['c' => 'page_structure'],
+                    new Expression('b.page_id = c.id and c.language = ?', [$language]),
+                    []
+                );
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+
+            $visibilityOptions = [];
+            foreach ($resultSet as $visibility) {
+                $visibilityOptions[$visibility->widget_connection_id][] = $visibility->hidden;
+            }
+
+            // get widgets connections
             $select = $this->select();
             $select->from(['a' => 'page_widget_connection'])
                 ->columns([
-                    'widget_connection_id' => 'id'
+                    'widget_connection_id' => 'id',
+                    'widget_id'                    
                 ])
                 ->join(
                     ['b' => 'page_structure'],
@@ -71,7 +100,10 @@ class Widget extends Base
                 $widgetConnections[$connection->page_id][$connection->widget_position][] = [
                     'widget_name' => $connection->widget_name,
                     'widget_layout' => $connection->widget_layout,
-                    'widget_connection_id' => $connection->widget_connection_id
+                    'widget_connection_id' => $connection->widget_connection_id,
+                    'hidden' => !empty($visibilityOptions[$connection->widget_connection_id])
+                        ? $visibilityOptions[$connection->widget_connection_id]
+                        : []
                 ];
             }
 

@@ -67,9 +67,9 @@ class PageUrl extends AbstractHelper
             return false;
         }
 
-        // check the page's permissions
-        if (!empty($page['disallowed_roles']) 
-                && in_array(UserIdentityService::getCurrentUserIdentity()['role'], $page['disallowed_roles'])) {
+        // check the page's visibility
+        if (!empty($page['hidden']) 
+                && in_array(UserIdentityService::getCurrentUserIdentity()['role'], $page['hidden'])) {
 
             return false;
         }
