@@ -1074,7 +1074,7 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`
 (1, 'home', 'Home', 5, NULL, 0, 1, NULL, 1, 0, 1, '', 0),
 (2, 'user-login', 'Login', 2, 2, 0, 0, 1, 1, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
 (3, 'user-register', 'Register', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest() && (int) Application\\Service\\Setting::getSetting(\'user_allow_register\');', 1),
-(4, 'user-forgot', 'Have you forgotten your password or nickname?', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
+(4, 'user-forgot', 'Have you forgotten your password or nickname?', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
 (5, 'user-activate', 'User activate', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
@@ -1142,7 +1142,8 @@ CREATE TABLE IF NOT EXISTS `page_widget` (
 INSERT INTO `page_widget` (`id`, `name`, `module`, `depend_page`, `type`) VALUES
 (1, 'pageHtmlWidget', 5, NULL, 'public'),
 (2, 'userLoginWidget', 2, NULL, 'public'),
-(3, 'userRegisterWidget', 2, NULL, 'public');
+(3, 'userRegisterWidget', 2, NULL, 'public'),
+(4, 'userActivateWidget', 2, 5, 'public');
 
 CREATE TABLE IF NOT EXISTS `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1251,7 +1252,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_setting_value` (
 
 CREATE TABLE IF NOT EXISTS `page_widget_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `widget_connection_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_connection` SMALLINT(5) UNSIGNED NOT NULL,
     `hidden` SMALLINT(5) UNSIGNED NULL,
     PRIMARY KEY (`id`),
     UNIQUE `widget` (`widget_connection`, `hidden`),

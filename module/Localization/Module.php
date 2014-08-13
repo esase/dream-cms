@@ -158,6 +158,7 @@ class Module
 
             if (!$matches->getParam('languge') 
                     || !array_key_exists($matches->getParam('languge'), $this->localizations)) {
+
                 if (!$matches->getParam('languge')) {
                     // set default language
                     $router->setDefaultParam('languge', $this->defaultLocalization['language']);
@@ -217,6 +218,12 @@ class Module
 
             $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
             $this->userIdentity['language'] = $language;
+
+            // change globally user identity
+            UserIdentityService::setCurrentUserIdentity($this->userIdentity);
+
+            $authService = $this->serviceManager->get('User\AuthService');
+            $authService->getStorage()->write($this->userIdentity);
         }
     }
 

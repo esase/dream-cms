@@ -24,11 +24,11 @@ class Widget extends Base
             $select->from(['a' => 'page_widget_visibility'])
                 ->columns([
                     'hidden',
-                    'widget_connection_id'
+                    'widget_connection'
                 ])
                 ->join(
                     ['b' => 'page_widget_connection'],
-                    'b.id = a.widget_connection_id',
+                    'b.id = a.widget_connection',
                     []
                 )
                 ->join(
@@ -43,7 +43,7 @@ class Widget extends Base
 
             $visibilityOptions = [];
             foreach ($resultSet as $visibility) {
-                $visibilityOptions[$visibility->widget_connection_id][] = $visibility->hidden;
+                $visibilityOptions[$visibility->widget_connection][] = $visibility->hidden;
             }
 
             // get widgets connections

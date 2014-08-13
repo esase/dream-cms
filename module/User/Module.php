@@ -160,7 +160,6 @@ class Module
     protected function initGuestIdentity($authService)
     {
         try {
-        
             $this->userIdentity = [];
             $this->userIdentity['role'] = AclModelBase::DEFAULT_ROLE_GUEST;
             $this->userIdentity['user_id'] = UserBaseModel::DEFAULT_GUEST_ID;
@@ -230,7 +229,8 @@ class Module
         return [
             'invokables' => [
                 'userLoginWidget' => 'User\View\Widget\UserLoginWidget',
-                'userRegisterWidget' => 'User\View\Widget\UserRegisterWidget'
+                'userRegisterWidget' => 'User\View\Widget\UserRegisterWidget',
+                'userActivateWidget' => 'User\View\Widget\UserActivateWidget'
             ],
             'factories' => [
                 'userAvatarUrl' => function(){

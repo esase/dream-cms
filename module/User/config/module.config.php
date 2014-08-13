@@ -1,33 +1,33 @@
 <?php
 
-return array(
-    'controllers' => array(
-        'invokables' => array(
+return [
+    'controllers' => [
+        'invokables' => [
             'users-administration' => 'User\Controller\UserAdministrationController',
             'user' => 'User\Controller\UserController'
-        )
-    ),
+        ]
+    ],
     'controller_plugins' => [
         'invokables' => [
             'userIdentity' => 'User\Controller\Plugin\UserIdentity'
         ]
     ],
-    'router' => array(
-        'routes' => array(
-        )
-    ),
-    'translator' => array(
-        'translation_file_patterns' => array(
-            array(
+    'router' => [
+        'routes' => [
+        ]
+    ],
+    'translator' => [
+        'translation_file_patterns' => [
+            [
                 'type'     => 'getText',
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
                 'text_domain'  => 'default'
-            )
-        )
-    ),
-    'view_helpers' => array(
-        'invokables' => array(
-        )
-    )
-);
+            ]
+        ]
+    ],
+    'view_helpers' => [
+        'invokables' => [
+        ]
+    ]
+];
