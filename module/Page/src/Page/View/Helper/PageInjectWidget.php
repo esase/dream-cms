@@ -15,6 +15,12 @@ class PageInjectWidget extends AbstractHelper
     protected $widgets = [];
 
     /**
+     * Layout path
+     * @var string
+     */
+    protected $layoutPath = 'page/layout-widget/';
+
+    /**
      * Class constructor
      *
      * @param array $menu
@@ -61,7 +67,7 @@ class PageInjectWidget extends AbstractHelper
                 if (false !== ($widgetContent = $widget->getContent())) {
                     // add the widget's layout
                     if (!empty($widgetInfo['widget_layout'])) {
-                        $result .= $this->getView()->partial($widgetInfo['widget_layout'], [
+                        $result .= $this->getView()->partial($this->layoutPath . $widgetInfo['widget_layout'], [
                             'title' => $widget->getTitle(), 
                             'content' => $widgetContent
                         ]);

@@ -2,7 +2,7 @@
 namespace User\Event;
 
 use Application\Event\AbstractEvent as AbstractEvent;
-use Application\Utility\EmailNotification;
+use Application\Utility\EmailNotification as EmailNotificationUtility;
 use Application\Service\Setting as SettingService;
 use Application\Service\ServiceManager as ServiceManagerService;
 use User\Service\UserIdentity as UserIdentityService;
@@ -90,25 +90,25 @@ class Event extends AbstractEvent
     public static function fireUserPasswordResetRequestEvent($userId, $userInfo, $activateCode)
     {
         self::fireEvent(self::RESET_PASSWORD_REQUEST, 
-            $userId, $userId, 'Event - User requested password reset', array($userInfo['nick_name'], $userId));
+            $userId, $userId, 'Event - User requested password reset', [$userInfo['nick_name'], $userId]);
 
         // send an email password reset notification
-        EmailNotification::sendNotification($userInfo['email'],
+        EmailNotificationUtility::sendNotification($userInfo['email'],
             SettingService::getSetting('user_reset_password_title'),
-            SettingService::getSetting('user_reset_password_message'), array(
-                'find' => array(
+            SettingService::getSetting('user_reset_password_message'), [
+                'find' => [
                     'RealName',
                     'ConfirmationLink',
                     'ConfCode'
-                ),
-                'replace' => array(
+                ],
+                'replace' => [
                     $userInfo['nick_name'],
-                    ServiceManagerService::getServiceManager()->get('viewhelpermanager')->get('url')->__invoke('administration', 
-                            array('controller' => 'user', 'action' => 'password-reset', 'slug' => $userInfo['slug']), array('force_canonical' => true)),
+                    ServiceManagerService::getServiceManager()->get('viewHelperManager')->get('url')->
+                            __invoke('page', ['page_name' => 'user-password-reset', 'slug' => $userInfo['slug']], ['force_canonical' => true]),
 
                     $activateCode
-                )
-            ));
+                ]
+            ]);
     }
 
     /**
@@ -125,21 +125,21 @@ class Event extends AbstractEvent
     public static function fireUserPasswordResetEvent($userId, $userInfo, $newPassword)
     {
         self::fireEvent(self::RESET_PASSWORD, 
-                $userId, $userId, 'Event - User reseted password', array($userInfo['nick_name'], $userId));
+                $userId, $userId, 'Event - User reseted password', [$userInfo['nick_name'], $userId]);
 
         // send an email password reseted notification
-        EmailNotification::sendNotification($userInfo['email'],
+        EmailNotificationUtility::sendNotification($userInfo['email'],
             SettingService::getSetting('user_password_reseted_title'),
-            SettingService::getSetting('user_password_reseted_message'), array(
-                'find' => array(
+            SettingService::getSetting('user_password_reseted_message'), [
+                'find' => [
                     'RealName',
                     'Password'
-                ),
-                'replace' => array(
+                ],
+                'replace' => [
                     $userInfo['nick_name'],
                     $newPassword
-                )
-            ));
+                ]
+            ]);
     }
 
     /**
@@ -190,7 +190,7 @@ class Event extends AbstractEvent
 
         // send an email notification about register the new user
         if ($userInfo && (int) SettingService::getSetting('user_registered_send')) {
-            EmailNotification::sendNotification(SettingService::getSetting('application_site_email'),
+            EmailNotificationUtility::sendNotification(SettingService::getSetting('application_site_email'),
                 SettingService::getSetting('user_registered_title', LocalizationService::getDefaultLocalization()['language']),
                 SettingService::getSetting('user_registered_message', LocalizationService::getDefaultLocalization()['language']), [
                     'find' => [
@@ -215,18 +215,17 @@ class Event extends AbstractEvent
      *      string nick_name
      * @return void
      */
-    public static function fireUserDeleteEvent($userId, $userInfo = array())
+    public static function fireUserDeleteEvent($userId, array $userInfo = [])
     {
         // event's description
         $eventDesc = !$userInfo
             ? 'Event - User deleted'
-            : (UserIdentityService::isGuest() ? 'Event - User deleted by guest'
-                    : 'Event - User deleted by user');
+            : (UserIdentityService::isGuest() ? 'Event - User deleted by guest' : 'Event - User deleted by user');
 
         $eventDescParams = !$userInfo
-            ? array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId)
-            : (UserIdentityService::isGuest() ? array($userId)
-                    : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
+            ? [UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId]
+            : (UserIdentityService::isGuest() ? [$userId]
+                    : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId]);
 
         self::fireEvent(self::DELETE, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
@@ -236,16 +235,16 @@ class Event extends AbstractEvent
                 ? $userInfo['language'] // we should use the user's language
                 : LocalizationService::getDefaultLocalization()['language'];
 
-            EmailNotification::sendNotification($userInfo['email'],
+            EmailNotificationUtility::sendNotification($userInfo['email'],
                     SettingService::getSetting('user_deleted_title', $notificationLanguage),
-                    SettingService::getSetting('user_deleted_message', $notificationLanguage), array(
-                        'find' => array(
+                    SettingService::getSetting('user_deleted_message', $notificationLanguage), [
+                        'find' => [
                             'RealName'
-                        ),
-                        'replace' => array(
+                        ],
+                        'replace' => [
                             $userInfo['nick_name']
-                        )
-                    ));
+                        ]
+                    ]);
         }
     }
 
@@ -268,11 +267,12 @@ class Event extends AbstractEvent
             :  (UserIdentityService::isGuest() ? 'Event - User approved by guest' : 'Event - User approved by user');
 
         $eventDescParams = $selfUserName
-            ? array($selfUserName)
+            ? [$selfUserName]
             : (UserIdentityService::isGuest() 
-                    ? array($userId) : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
+                    ? [$userId] : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId]);
 
-        self::fireEvent(self::APPROVE, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+        self::fireEvent(self::APPROVE, $userId, 
+                UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
         // send an email notification
         if (!$selfUserName) {
@@ -280,18 +280,18 @@ class Event extends AbstractEvent
                 ? $userInfo['language'] // we should use the user's language
                 : LocalizationService::getDefaultLocalization()['language'];
 
-            EmailNotification::sendNotification($userInfo['email'],
+            EmailNotificationUtility::sendNotification($userInfo['email'],
                     SettingService::getSetting('user_approved_title', $notificationLanguage),
-                    SettingService::getSetting('user_approved_message', $notificationLanguage), array(
-                        'find' => array(
+                    SettingService::getSetting('user_approved_message', $notificationLanguage), [
+                        'find' => [
                             'RealName',
                             'Email'
-                        ),
-                        'replace' => array(
+                        ],
+                        'replace' => [
                             $userInfo['nick_name'],
                             $userInfo['email']
-                        )
-                    ));
+                        ]
+                    ]);
         }
     }
 
@@ -323,7 +323,7 @@ class Event extends AbstractEvent
             ? $userInfo['language'] // we should use the user's language
             : LocalizationService::getDefaultLocalization()['language'];
 
-        EmailNotification::sendNotification($userInfo['email'],
+        EmailNotificationUtility::sendNotification($userInfo['email'],
                 SettingService::getSetting('user_disapproved_title', $notificationLanguage),
                 SettingService::getSetting('user_disapproved_message', $notificationLanguage), array(
                     'find' => array(
@@ -442,7 +442,7 @@ class Event extends AbstractEvent
                 ? $user['language'] // we should use the user's language
                 : LocalizationService::getDefaultLocalization()['language'];
 
-            EmailNotification::sendNotification($user['email'],
+            EmailNotificationUtility::sendNotification($user['email'],
                 SettingService::getSetting('user_role_edited_title', $notificationLanguage),
                 SettingService::getSetting('user_role_edited_message', $notificationLanguage), array(
                     'find' => array(

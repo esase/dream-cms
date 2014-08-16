@@ -3,6 +3,7 @@ namespace Page\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Page\Utility\PagePrivacy as PagePrivacyUtility;
 
 class PageController extends AbstractActionController
 {
@@ -17,6 +18,12 @@ class PageController extends AbstractActionController
      * @var array
      */
     protected $receivedPath = null;
+
+    /**
+     * Layout path
+     * @var string
+     */
+    protected $layoutPath = 'page/layout-page/';
 
     /**
      * Default page
@@ -54,11 +61,6 @@ class PageController extends AbstractActionController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
-        // check the extra page's checking
-        if (!empty($pageInfo['check']) && false === eval($pageInfo['check'])) {
-            return $this->createHttpNotFoundModel($this->getResponse());
-        }
-
         // get the page's parents
         $pageParents = $pageInfo['level'] > 1
             ? $this->getModel()->getPageParents($pageInfo['left_key'], $pageInfo['right_key'], $userRole, $language, false)
@@ -78,9 +80,7 @@ class PageController extends AbstractActionController
         ]);
 
         // set a custom page layout
-        $viewModel->setTemplate(($pageInfo['layout'] 
-                ? $pageInfo['layout'] : $pageInfo['default_layout']));
-
+        $viewModel->setTemplate($this->layoutPath . $pageInfo['layout']);
         return $viewModel;
     }
 
@@ -104,8 +104,8 @@ class PageController extends AbstractActionController
         $breadcrumb = [];
 
         foreach ($pages as $page) {
-            // check the extra page's checking
-            if (!empty($page['check']) && false === eval($page['check'])) {
+            // check the page's privacy
+            if (false == ($result = PagePrivacyUtility::checkPagePrivacy($page['privacy']))) {
                 return false;
             }
 

@@ -20,18 +20,16 @@ class UserLoginWidget extends UserAbstractWidget
                 ->get('Application\Form\FormManager')
                 ->getInstance('User\Form\Login');
 
-            $request = $this->getServiceLocator()->get('Request');
-
-            if ($request->isPost()) {
+            if ($this->getRequest()->isPost()) {
                 // fill form with received values
-                $loginForm->getForm()->setData($request->getPost());
+                $loginForm->getForm()->setData($this->getRequest()->getPost());
 
                 if ($loginForm->getForm()->isValid()) {
                     // check an authentication
                     $this->getAuthService()
                         ->getAdapter()
-                        ->setIdentity($request->getPost('nickname'))
-                        ->setCredential($request->getPost('password'));
+                        ->setIdentity($this->getRequest()->getPost('nickname'))
+                        ->setCredential($this->getRequest()->getPost('password'));
 
                     $result = $this->getAuthService()->authenticate();
 
@@ -42,7 +40,7 @@ class UserLoginWidget extends UserAbstractWidget
                             'nick_name'
                         ]);
 
-                        $rememberMe = null != ($result = $request->getPost('remember')) 
+                        $rememberMe = null != ($result = $this->getRequest()->getPost('remember')) 
                             ? true 
                             : false;
 
@@ -58,7 +56,7 @@ class UserLoginWidget extends UserAbstractWidget
                         }
 
                         // fire the user login failed event
-                        UserEvent::fireLoginFailedEvent(AclModel::DEFAULT_ROLE_GUEST, $request->getPost('nickname'));
+                        UserEvent::fireLoginFailedEvent(AclModel::DEFAULT_ROLE_GUEST, $this->getRequest()->getPost('nickname'));
                         return $this->reloadPage();
                     }
                 }

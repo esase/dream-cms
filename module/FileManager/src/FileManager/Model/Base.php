@@ -2,7 +2,9 @@
 namespace FileManager\Model;
 
 use Application\Model\AbstractBase;
-use Application\Service\Service as ApplicationService;
+use Application\Service\Setting as SettingService;
+use Application\Service\Application as ApplicationService;
+use User\Service\UserIdentity as UserIdentityService;
 use Application\Utility\FileSystem as FileSystemUtility;
 use Exception;
 use RecursiveDirectoryIterator;
@@ -70,8 +72,7 @@ class Base extends AbstractBase
      */
     public static function getUserFilesDir($userId = null)
     {
-        return self::$filesDir .
-                (!$userId ? ApplicationService::getCurrentUserIdentity()->user_id : $userId);
+        return self::$filesDir . (!$userId ? UserIdentityService::getCurrentUserIdentity()['user_id'] : $userId);
     }
 
     /**
@@ -226,8 +227,8 @@ class Base extends AbstractBase
         $fileName = FileSystemUtility::getFileName($fileName);
 
         $maxFileNameLength = !$processFullName && $fileExtension
-            ? (int) ApplicationService::getSetting('file_manager_file_name_length') - (strlen($fileExtension) + 1)
-            : (int) ApplicationService::getSetting('file_manager_file_name_length');
+            ? (int) SettingService::getSetting('file_manager_file_name_length') - (strlen($fileExtension) + 1)
+            : (int) SettingService::getSetting('file_manager_file_name_length');
 
         $slug = SlugUtility::slugify(($processFullName && $fileExtension
                 ? $fileName . '.' . $fileExtension : $fileName), $maxFileNameLength, $spaceDevider = '_', 0, self::$fileNamePattern);
@@ -370,14 +371,14 @@ class Base extends AbstractBase
                     // show only images
                     case 'image' :
                         if (!in_array(FileSystemUtility::getFileExtension($current->getFileName()),
-                                explode(',', strtolower(ApplicationService::getSetting('file_manager_image_extensions'))))) {
+                                explode(',', strtolower(SettingService::getSetting('file_manager_image_extensions'))))) {
 
                             return false;
                         }
                         break;
                     case 'media' :
                         if (!in_array(FileSystemUtility::getFileExtension($current->getFileName()),
-                                explode(',', strtolower(ApplicationService::getSetting('file_manager_media_extensions'))))) {
+                                explode(',', strtolower(SettingService::getSetting('file_manager_media_extensions'))))) {
 
                             return false;
                         }
@@ -427,7 +428,7 @@ class Base extends AbstractBase
         $paginator = new Paginator(new ArrayAdapterPaginator($processedFiles));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
-        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         return $paginator;
     }

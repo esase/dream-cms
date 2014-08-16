@@ -39,8 +39,7 @@
     echo $this->partial('partial/accordion', [
         'name' => 'form-accordion',
         'items' => $this->formCategories,
-        'openCategories' => $this->openCategories,
-        'categoriesAlwaysOpened' => $this->categoriesAlwaysOpened
+        'openCategories' => $this->openCategories
     ]);
     echo $this->form()->closeTag();
 ?>

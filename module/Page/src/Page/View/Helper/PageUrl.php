@@ -4,6 +4,7 @@ namespace Page\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 use User\Service\UserIdentity as UserIdentityService;
 use Page\Model\Page as PageModel;
+use Page\Utility\PagePrivacy as PagePrivacyUtility;
 
 class PageUrl extends AbstractHelper
 {
@@ -60,16 +61,19 @@ class PageUrl extends AbstractHelper
         // get a page info
         $page = $this->pagesMap[$slug];
 
-        // check the extra page's checking and page's status
-        if ($page['active'] != PageModel::PAGE_STATUS_ACTIVE 
-                || (!empty($page['check']) && false === eval($page['check']))) {
+        // check the page's status
+        if ($page['active'] != PageModel::PAGE_STATUS_ACTIVE) {
+            return false;
+        }
 
+        // check the page's privacy
+        if (false == ($result = PagePrivacyUtility::checkPagePrivacy($page['privacy']))) {
             return false;
         }
 
         // check the page's visibility
-        if (!empty($page['hidden']) 
-                && in_array(UserIdentityService::getCurrentUserIdentity()['role'], $page['hidden'])) {
+        if (!empty($page['hidden']) && in_array(UserIdentityService::getCurrentUserIdentity()['role'], 
+                $page['hidden'])) {
 
             return false;
         }

@@ -3,7 +3,7 @@ namespace User\Form;
 
 use Application\Form\AbstractCustomForm;
 use Application\Form\CustomFormBuilder;
-use User\Model\User as UserModel;
+use User\Model\UserWidget as UserWidgetModel;
 
 class ActivationCode extends AbstractCustomForm 
 {
@@ -35,12 +35,10 @@ class ActivationCode extends AbstractCustomForm
             'type' => CustomFormBuilder::FIELD_TEXT,
             'label' => 'Activation code',
             'required' => true,
-            'category' => 'Activation'
         ),
         'captcha' => array(
             'name' => 'captcha',
             'type' => CustomFormBuilder::FIELD_CAPTCHA,
-            'category' => 'Activation'
         ),
         'csrf' => array(
             'name' => 'csrf',
@@ -98,7 +96,7 @@ class ActivationCode extends AbstractCustomForm
      * @param object $model
      * @return object fluent interface
      */
-    public function setModel(UserModel $model)
+    public function setModel(UserWidgetModel $model)
     {
         $this->model = $model;
         return $this;

@@ -1024,25 +1024,61 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
 (7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
 
+CREATE TABLE IF NOT EXISTS `page_widget_position` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_position` (`id`, `name`) VALUES
+(1, 'head'),
+(2, 'body'),
+(3, 'footer'),
+(4, 'content-left'),
+(5, 'content-right'),
+(6, 'content-top'),
+(7, 'content-bottom'),
+(8, 'content-middle');
+
 CREATE TABLE IF NOT EXISTS `page_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `path` VARCHAR(100) NOT NULL,
+    `name` VARCHAR(30) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
-    `default` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `default_position` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
-    KEY `default` (`default`),
+    FOREIGN KEY (`default_position`) REFERENCES `page_widget_position`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_layout` (`id`, `name`, `title`, `default_position`) VALUES
+(1, 'layout_1_column', '1 column', 8);
+
+CREATE TABLE IF NOT EXISTS `page_widget` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `type` ENUM('system','public') NOT NULL,
+    PRIMARY KEY (`id`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_layout` (`id`, `path`, `title`, `module`, `default`) VALUES
-(1, 'page/layout-page/layout_1_column', '1 column', 5, 1);
+INSERT INTO `page_widget` (`id`, `name`, `module`, `type`) VALUES
+(1, 'pageHtmlWidget', 5, 'public'),
+(2, 'userLoginWidget', 2, 'public'),
+(3, 'userRegisterWidget', 2, 'public'),
+(4, 'userActivateWidget', 2, 'system'),
+(5, 'userForgotWidget', 2, 'system'),
+(6, 'userPasswordResetWidget', 2, 'system'),
+(7, 'userDeleteWidget', 2, 'system');
 
 CREATE TABLE IF NOT EXISTS `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
+    `depend_page` VARCHAR(100) NULL,
     `title` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `default_visibility` SMALLINT(5) UNSIGNED NULL,
@@ -1051,8 +1087,9 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     `menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `disable_menu` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '0',
     `parent` SMALLINT(5) UNSIGNED NULL, 
-    `layout` SMALLINT(5) UNSIGNED NULL,
-    `check` TEXT NOT NULL,
+    `layout` SMALLINT(5) UNSIGNED NOT NULL,
+    `privacy` VARCHAR(50) NOT NULL,
+    `depend_widget` SMALLINT(5) UNSIGNED NULL,
     `order` SMALLINT(5) NOT NULL,    
     PRIMARY KEY (`id`),
     UNIQUE (`slug`),
@@ -1067,19 +1104,25 @@ CREATE TABLE IF NOT EXISTS `page_system` (
         ON DELETE CASCADE,
     FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
         ON UPDATE CASCADE
-        ON DELETE SET NULL
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_widget`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `check`, `forced_visibility`) VALUES
-(1, 'home', 'Home', 5, NULL, 0, 1, NULL, 1, 0, 1, '', 0),
-(2, 'user-login', 'Login', 2, 2, 0, 0, 1, 1, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
-(3, 'user-register', 'Register', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest() && (int) Application\\Service\\Setting::getSetting(\'user_allow_register\');', 1),
-(4, 'user-forgot', 'Have you forgotten your password or nickname?', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1),
-(5, 'user-activate', 'User activate', 2, 2, 0, 0, 1, 2, 0, 1, 'return User\\Service\\UserIdentity::isGuest();', 1);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `depend_widget`, `depend_page`) VALUES
+(1, 'home', 'Home', 5, NULL, 0, 1, NULL, 1, 0, 1, '', 0, NULL, NULL),
+(2, 'user-login', 'Login', 2, NULL, 0, 0, 1, 2, 0, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 2, NULL),
+(3, 'user-register', 'Register', 2, NULL, 0, 0, 1, 3, 0, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 3, NULL),
+(4, 'user-forgot', 'Account recovery', 2, NULL, 0, 0, 1, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 5, 'user-password-reset'),
+(5, 'user-activate', 'User activate', 2, NULL, 0, 0, 1, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 4, NULL),
+(6, 'user-password-reset', 'Password reset', 2, NULL, 0, 0, 1, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 6, NULL),
+(7, 'user-delete', 'Delete your account', 2, NULL, 0, 0, 1, 7, 0, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, 7, NULL);
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
+    `depend_page` VARCHAR(100) NULL,
     `title` VARCHAR(50) NOT NULL,
     `meta_description` VARCHAR(150) NOT NULL,
     `meta_keywords` VARCHAR(150) NOT NULL,
@@ -1091,8 +1134,9 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     `active` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '1',
     `type` ENUM('system','custom') NOT NULL,
     `language` CHAR(2) NOT NULL,
-    `layout` SMALLINT(5) UNSIGNED NULL,
-    `check` TEXT NOT NULL,
+    `layout` SMALLINT(5) UNSIGNED NOT NULL,
+    `privacy` VARCHAR(50) NOT NULL,
+    `depend_widget` SMALLINT(5) UNSIGNED NULL,
     `left_key` INT(10) NOT NULL DEFAULT '0',
     `right_key` INT(10) NOT NULL DEFAULT '0',
     `level` INT(10) NOT NULL DEFAULT '0',
@@ -1107,7 +1151,10 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
         ON DELETE CASCADE,
     FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
         ON UPDATE CASCADE
-        ON DELETE SET NULL
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_widget`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `page_visibility` (
@@ -1124,61 +1171,15 @@ CREATE TABLE IF NOT EXISTS `page_visibility` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_widget` (
-    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `depend_page` SMALLINT(5) UNSIGNED NULL,
-    `type` ENUM('system','public') NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    FOREIGN KEY (`depend_page`) REFERENCES `page_system`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `page_widget` (`id`, `name`, `module`, `depend_page`, `type`) VALUES
-(1, 'pageHtmlWidget', 5, NULL, 'public'),
-(2, 'userLoginWidget', 2, NULL, 'public'),
-(3, 'userRegisterWidget', 2, NULL, 'public'),
-(4, 'userActivateWidget', 2, 5, 'public');
-
-CREATE TABLE IF NOT EXISTS `page_widget_position` (
-    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE `name` (`name`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `page_widget_position` (`id`, `name`, `module`) VALUES
-(1, 'head', 5),
-(2, 'body', 5),
-(3, 'footer', 5),
-(4, 'content-left', 5),
-(5, 'content-right', 5),
-(6, 'content-top', 5),
-(7, 'content-bottom', 5),
-(8, 'content-middle', 5);
-
 CREATE TABLE IF NOT EXISTS `page_widget_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `path` VARCHAR(100) NOT NULL,
+    `name` VARCHAR(30) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget_layout` (`id`, `path`, `title`, `module`) VALUES
-(1, 'page/layout-widget/panel', 'Panel', 5);
+INSERT INTO `page_widget_layout` (`id`, `name`, `title`) VALUES
+(1, 'panel', 'Panel');
 
 CREATE TABLE IF NOT EXISTS `page_widget_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

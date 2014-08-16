@@ -82,7 +82,7 @@ class Widget extends Base
                     ['f' => 'page_widget_layout'],
                     'a.layout = f.id',
                     [
-                        'widget_layout' => 'path'
+                        'widget_layout' => 'name'
                     ],
                     'left'
                 )

@@ -7,10 +7,30 @@ use User\Event\Event as UserEvent;
 abstract class UserAbstractWidget extends AbstractWidget
 {
     /**
+     * Model instance
+     * @var object  
+     */
+    protected $model;
+
+    /**
      * Auth service
      * @var object  
      */
     protected $authService;
+
+    /**
+     * Get model
+     */
+    protected function getModel()
+    {
+        if (!$this->model) {
+            $this->model = $this->getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('User\Model\UserWidget');
+        }
+
+        return $this->model;
+    }
 
     /**
      * Get auth service

@@ -16,23 +16,22 @@ class Delete extends AbstractCustomForm
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        0 => array(
+    protected $formElements = [
+        0 => [
             'name' => 'confirm',
             'type' => CustomFormBuilder::FIELD_CHECKBOX,
             'label' => 'Confirm',
             'description' => 'All of your content will be deleted. Are you sure you want to delete your account?',
-            'required' => true,
-            'category' => 'Deleting',
-        ),
-        1 => array(
+            'required' => true
+        ],
+        1 => [
             'name' => 'submit',
             'type' => CustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Delete',
-        ),
-        2 => array(
+        ],
+        2 => [
             'name' => 'csrf',
             'type' => CustomFormBuilder::FIELD_CSRF
-        ), 
-    );
+        ], 
+    ];
 }

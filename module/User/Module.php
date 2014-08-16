@@ -230,7 +230,10 @@ class Module
             'invokables' => [
                 'userLoginWidget' => 'User\View\Widget\UserLoginWidget',
                 'userRegisterWidget' => 'User\View\Widget\UserRegisterWidget',
-                'userActivateWidget' => 'User\View\Widget\UserActivateWidget'
+                'userActivateWidget' => 'User\View\Widget\UserActivateWidget',
+                'userForgotWidget' => 'User\View\Widget\UserForgotWidget',
+                'userPasswordResetWidget' => 'User\View\Widget\UserPasswordResetWidget',
+                'userDeleteWidget' => 'User\View\Widget\UserDeleteWidget'
             ],
             'factories' => [
                 'userAvatarUrl' => function(){

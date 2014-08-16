@@ -6,7 +6,7 @@ use Exception;
 use Application\Utility\ErrorLogger;
 use User\Event\Event as UserEvent;
 
-class User extends Base
+class UserWidget extends Base
 {
     /**
      * Reset an user's password
@@ -24,14 +24,14 @@ class User extends Base
  
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'salt' => $passwordSalt,
                     'password' => $this->generatePassword($newPassword, $passwordSalt),
                     'activation_code' => ''
-                ))
-                ->where(array(
+                ])
+                ->where([
                     'user_id' => $userInfo['user_id']
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -47,7 +47,7 @@ class User extends Base
 
             return $e->getMessage();
         }
-
+        
         // fire the user password reset event
         UserEvent::fireUserPasswordResetEvent($userInfo['user_id'], $userInfo, $newPassword);
         return true;
@@ -67,12 +67,12 @@ class User extends Base
 
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'activation_code' => $activationCode
-                ))
-                ->where(array(
+                ])
+                ->where([
                     'user_id' => $userInfo['user_id']
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -91,7 +91,7 @@ class User extends Base
 
         // fire the user password reset request event
         UserEvent::fireUserPasswordResetRequestEvent($userInfo['user_id'], $userInfo, $activationCode);
-        return false;
+        return true;
     }
 
     /**
@@ -105,13 +105,13 @@ class User extends Base
     {
         $select = $this->select();
         $select->from('user_list')
-            ->columns(array(
+            ->columns([
                 'user_id'
-            ))
-            ->where(array(
+            ])
+            ->where([
                 'user_id' => $userId,
                 'activation_code' => $activationCode
-            ));
+            ]);
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;

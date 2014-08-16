@@ -42,7 +42,7 @@ class Base extends AbstractBase
                     'title',
                     'level',
                     'active',
-                    'check'
+                    'privacy'
                 ])
                 ->where([
                     'language' => $language
@@ -60,7 +60,7 @@ class Base extends AbstractBase
                     'title'  => $pathInfo->title,
                     'active' => $pathInfo->active,
                     'level' => $pathInfo->level,
-                    'check' => $pathInfo->check,
+                    'privacy' => $pathInfo->privacy,
                     'parent' => (isset($levels[$pathInfo->level - 1]) ? $levels[$pathInfo->level - 1] : null)
                 ];
             }

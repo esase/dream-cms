@@ -219,7 +219,7 @@ class Module
             $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
             $this->userIdentity['language'] = $language;
 
-            // change globally user identity
+            // change globally user's identity
             UserIdentityService::setCurrentUserIdentity($this->userIdentity);
 
             $authService = $this->serviceManager->get('User\AuthService');

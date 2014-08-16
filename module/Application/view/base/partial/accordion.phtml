@@ -10,16 +10,12 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <?php if (!$this->categoriesAlwaysOpened): ?>
-                            <a data-toggle="collapse" data-parent="#<?php echo $this->escapeHtmlAttr($this->name) ?>" href="#collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>">
-                                <?php echo $this->translate($category) ?>
-                            </a>
-                        <?php else: ?>
+                        <a data-toggle="collapse" data-parent="#<?php echo $this->escapeHtmlAttr($this->name) ?>" href="#collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>">
                             <?php echo $this->translate($category) ?>
-                        <?php endif; ?>
+                        </a>
                     </h4>
                 </div>
-                <div id="collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>" class="panel-collapse collapse <?php if (($this->index == 1 && ! (array) $this->openCategories) || (in_array($category, (array) $this->openCategories)) || $this->categoriesAlwaysOpened): ?>in<?php else: ?>collapse<?php endif ?>">
+                <div id="collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>" class="panel-collapse collapse <?php if (($this->index == 1 && ! (array) $this->openCategories) || (in_array($category, (array) $this->openCategories))): ?>in<?php else: ?>collapse<?php endif ?>">
                     <div class="panel-body">
                         <?php echo $content ?>
                     </div>

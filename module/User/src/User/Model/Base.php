@@ -83,23 +83,23 @@ class Base extends AbstractBase
      * User info fields
      * @var array
      */
-    protected $userInfoFields = array(
+    protected $userInfoFields = [
         self::USER_INFO_BY_ID,
         self::USER_INFO_BY_EMAIL,
         self::USER_INFO_BY_SLUG,
         self::USER_INFO_BY_API_KEY
-    );
+    ];
 
     /**
      * List of private fields
      * @var array
      */
-    protected $privateFields = array(
+    protected $privateFields = [
         'email',
         'api_key',
         'api_secret',
         'activation_code'
-    );
+    ];
 
     /**
      * Avatars directory
@@ -149,16 +149,16 @@ class Base extends AbstractBase
 
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'status' => ($approved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED),
                     'activation_code' => ''
-                ))
-                ->where(array(
+                ])
+                ->where([
                     'user_id' => $userId
-                ))
-                ->where(array(
-                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
-                ));
+                ])
+                ->where([
+                    new NotInPredicate('user_id', [self::DEFAULT_USER_ID])
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -197,28 +197,28 @@ class Base extends AbstractBase
      * @param boolean $selfEdit
      * @return boolean|string
      */
-    public function editUser($userInfo, array $formData, $statusApproved = true, array $avatar = array(), $deleteAvatar = false, $selfEdit = false)
+    public function editUser($userInfo, array $formData, $statusApproved = true, array $avatar = [], $deleteAvatar = false, $selfEdit = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             // generate a new slug
-            $extraValues = array(
+            $extraValues = [
                 'slug' => $this->generateSlug($userInfo['user_id'], 
                         $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH),
 
                 'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED
-            );
+            ];
 
             // regenerate the user's password
             if (!empty($formData['password'])) {
                 // generate a password salt
                 $passwordSalt = $this->generateRandString();
 
-                $extraValues = array_merge($extraValues, array(
+                $extraValues = array_merge($extraValues, [
                     'password' => $this->generatePassword($formData['password'], $passwordSalt),
                     'salt' => $passwordSalt
-                ));
+                ]);
             }
             else {
                 // remove the empty password
@@ -232,9 +232,9 @@ class Base extends AbstractBase
             $update = $this->update()
                 ->table('user_list')
                 ->set(array_merge($formData, $extraValues))
-                ->where(array(
+                ->where([
                     'user_id' => $userInfo['user_id']
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -303,10 +303,10 @@ class Base extends AbstractBase
 
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'avatar' => $avatarName
-                ))
-                ->where(array('user_id' => $userId));
+                ])
+                ->where(['user_id' => $userId]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -319,10 +319,10 @@ class Base extends AbstractBase
 
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'avatar' => ''
-                ))
-                ->where(array('user_id' => $userId));
+                ])
+                ->where(['user_id' => $userId]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -337,10 +337,10 @@ class Base extends AbstractBase
      */
     protected function deleteUserAvatar($avatarName)
     {
-        $avatarTypes = array(
+        $avatarTypes = [
             self::$thumbnailsDir,
             self::$avatarsDir
-        );
+        ];
 
         // delete avatar
         foreach ($avatarTypes as $path) {
@@ -360,22 +360,22 @@ class Base extends AbstractBase
      * @throws User/Exception/UserException
      * @return boolean|string
      */
-    public function deleteUser($userInfo, $sendMessage = true)
+    public function deleteUser(array $userInfo, $sendMessage = true)
     {
         // fire the delete user event
-        UserEvent::fireUserDeleteEvent($userInfo['user_id'], ($sendMessage ? $userInfo : array()));
+        UserEvent::fireUserDeleteEvent($userInfo['user_id'], ($sendMessage ? $userInfo : []));
 
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $delete = $this->delete()
                 ->from('user_list')
-                ->where(array(
+                ->where([
                     'user_id' => $userInfo['user_id']
-                ))
-                ->where(array(
-                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
-                ));
+                ])
+                ->where([
+                    new NotInPredicate('user_id', [self::DEFAULT_USER_ID])
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($delete);
             $result = $statement->execute();
@@ -511,15 +511,15 @@ class Base extends AbstractBase
     {
         $select = $this->select();
         $select->from('user_list')
-            ->columns(array(
+            ->columns([
                 'user_id'
-            ))
-            ->where(array('email' => $email));
+            ])
+            ->where(['email' => $email]);
 
         if ($userId) {
-            $select->where(array(
-                new NotInPredicate('user_id', array($userId))
-            ));
+            $select->where([
+                new NotInPredicate('user_id', [$userId])
+            ]);
         }
 
         $statement = $this->prepareStatementForSqlObject($select);
@@ -538,15 +538,15 @@ class Base extends AbstractBase
     {
         $select = $this->select();
         $select->from('user_list')
-            ->columns(array(
+            ->columns([
                 'user_id',
                 'nick_name',
                 'email',
                 'language'
-            ))
-            ->where(array(
+            ])
+            ->where([
                 new IsNullPredicate('role')
-            ));
+            ]);
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
@@ -576,15 +576,15 @@ class Base extends AbstractBase
 
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'role' => $roleId
-                ))
-                ->where(array(
+                ])
+                ->where([
                     'user_id' => $userId
-                ))
-                ->where(array(
-                    new NotInPredicate('user_id', array(self::DEFAULT_USER_ID))
-                ));
+                ])
+                ->where([
+                    new NotInPredicate('user_id', [self::DEFAULT_USER_ID])
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -616,15 +616,15 @@ class Base extends AbstractBase
     {
         $select = $this->select();
         $select->from('user_list')
-            ->columns(array(
+            ->columns([
                 'user_id'
-            ))
-            ->where(array('nick_name' => $nickName));
+            ])
+            ->where(['nick_name' => $nickName]);
 
         if ($userId) {
-            $select->where(array(
-                new NotInPredicate('user_id', array($userId))
-            ));
+            $select->where([
+                new NotInPredicate('user_id', [$userId])
+            ]);
         }
 
         $statement = $this->prepareStatementForSqlObject($select);
@@ -648,12 +648,12 @@ class Base extends AbstractBase
 
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'language' => $language
-                ))
-                ->where(array(
+                ])
+                ->where([
                     'user_id' => $userId
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -737,7 +737,7 @@ class Base extends AbstractBase
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
-            $userInfo = (array) $resultSet->current();
+            $userInfo = $resultSet->current() ? (array) $resultSet->current() : [];
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $userInfo);

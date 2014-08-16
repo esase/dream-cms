@@ -2,9 +2,10 @@
 namespace Page\View\Widget;
  
 use Application\Service\ServiceManager;
-use Zend\View\Helper\AbstractHelper;
-use Zend\Http\Response;
 use Application\Service\Setting as SettingService;
+use Page\Utility\RouteParam as RouteParamUtility;
+use Zend\Http\Response;
+use Zend\View\Helper\AbstractHelper;
 
 abstract class AbstractWidget extends AbstractHelper implements IWidget
 {
@@ -27,6 +28,18 @@ abstract class AbstractWidget extends AbstractHelper implements IWidget
     protected $serviceLocator;
 
     /**
+     * Slug
+     * @var string
+     */
+    protected $slug = null;
+
+    /**
+     * Request
+     * @var object
+     */
+    protected $request;
+
+    /**
      * Widget setting model instance
      * @var object  
      */
@@ -40,6 +53,35 @@ abstract class AbstractWidget extends AbstractHelper implements IWidget
     public function __invoke()
     {
         return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @param string $defaultValue
+     * @return string
+     */
+    protected function getSlug($defaultValue = null)
+    {
+        if ($this->slug === null) {
+            $this->slug = RouteParamUtility::getParam('slug', $defaultValue);
+        }
+
+        return $this->slug; 
+    }
+
+    /**
+     * Get request
+     *
+     * @return object
+     */
+    protected function getRequest()
+    {
+        if (!$this->request) {
+            $this->request = $this->getServiceLocator()->get('Request');
+        }
+
+        return $this->request;
     }
 
     /**

@@ -78,6 +78,7 @@ class UserController extends AbstractBaseController
      */
     protected function loginUser($userId, $userNickname, $rememberMe = false, $backUrl = null)
     {
+    //+
         $user = new StdClass();
         $user->user_id = $userId;
         
@@ -165,6 +166,7 @@ class UserController extends AbstractBaseController
      */
     public function passwordResetAction()
     {
+    //+
         // get user info
         if (!$this->isGuest() || null == ($userInfo =
                 $this->getModel()->getUserInfo($this->getSlug(), UserModel::USER_INFO_BY_SLUG))) {
@@ -235,6 +237,7 @@ class UserController extends AbstractBaseController
      */
     public function loginAction()
     {
+    //+
         if (!$this->isGuest()) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
@@ -301,6 +304,7 @@ class UserController extends AbstractBaseController
      */
     public function deleteAction()
     {
+    //+
         if (true !== ($result = $this->isAutorized())) {
             return $result;
         }
@@ -429,6 +433,7 @@ class UserController extends AbstractBaseController
      */
     public function forgotAction()
     {
+    //+
         if (!$this->isGuest()) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
@@ -478,6 +483,7 @@ class UserController extends AbstractBaseController
      */
     public function registerAction()
     {
+    //+
         if (!$this->isGuest() ||
                 null == ($result = $this->getSetting('user_allow_register'))) {
 

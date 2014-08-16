@@ -8,30 +8,10 @@ use Localization\Service\Localization as LocalizationService;
 class UserRegisterWidget extends UserAbstractWidget
 {
     /**
-     * Model instance
-     * @var object  
-     */
-    protected $model;
-
-    /**
      * Time zone model instance
      * @var object  
      */
     protected $timeZoneModel;
-
-    /**
-     * Get model
-     */
-    protected function getModel()
-    {
-        if (!$this->model) {
-            $this->model = $this->getServiceLocator()
-                ->get('Application\Model\ModelManager')
-                ->getInstance('User\Model\User');
-        }
-
-        return $this->model;
-    }
 
     /**
      * Get timezone model
@@ -65,14 +45,12 @@ class UserRegisterWidget extends UserAbstractWidget
                 ->setTimeZones($this->getTimeZoneModel()->getTimeZones())
                 ->showCaptcha(true);
 
-            $request  = $this->getServiceLocator()->get('Request');
-
             // validate the form
-            if ($request->isPost()) {
+            if ($this->getRequest()->isPost()) {
                 // make certain to merge the files info!
                 $post = array_merge_recursive(
-                    $request->getPost()->toArray(),
-                    $request->getFiles()->toArray()
+                    $this->getRequest()->getPost()->toArray(),
+                    $this->getRequest()->getFiles()->toArray()
                 );
 
                 // fill the form with received values
@@ -84,7 +62,7 @@ class UserRegisterWidget extends UserAbstractWidget
                     $status = (int) $this->getSetting('user_auto_confirm') ? true : false;
 
                     $userInfo = $this->getModel()->addUser($userForm->getForm()->getData(), 
-                        LocalizationService::getCurrentLocalization()['language'], $status, $request->getFiles()->avatar, true);
+                        LocalizationService::getCurrentLocalization()['language'], $status, $this->getRequest()->getFiles()->avatar, true);
 
                     // the user has been added
                     if (is_array($userInfo)) {
@@ -105,7 +83,7 @@ class UserRegisterWidget extends UserAbstractWidget
                                         'replace' => [
                                             $userInfo['nick_name'],
                                             $this->getSetting('application_site_name'),
-                                            $this->getView()->url('page', ['page_name' => $activateUrl], ['force_canonical' => true]),
+                                            $this->getView()->url('page', ['page_name' => $activateUrl, 'slug' => $userInfo['slug']], ['force_canonical' => true]),
                                             $userInfo['activation_code']
                                         ]
                                     ]);

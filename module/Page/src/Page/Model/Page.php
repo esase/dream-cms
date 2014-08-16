@@ -25,11 +25,6 @@ class Page extends AbstractNestedSet
      */
     const PAGE_TYPE_CUSTOM = 'custom';
 
-    /**
-     * Default page layout flag
-     */
-    const DEFAULT_PAGE_LAYOUT = 1;
-
     public function __construct(TableGateway $tableGateway)
     {
         parent::__construct($tableGateway);
@@ -51,7 +46,7 @@ class Page extends AbstractNestedSet
         return $this->getParentNodes($leftKey, 
                 $rightKey, function (Select $select) use ($userRole, $language, $excludeHome) {
 
-            $select->columns(['slug', 'title', 'type', 'check', 'level']);
+            $select->columns(['slug', 'title', 'type', 'privacy', 'level']);
             $select = $this->getPageFilter($select, $userRole, $language, false);
 
             if ($excludeHome) {
@@ -98,16 +93,7 @@ class Page extends AbstractNestedSet
                 ['c' => 'page_layout'],
                 new Expression('c.id = ' . $this->tableGateway->table . '.layout'), 
                 [
-                    'layout' => 'path'
-                ],
-                'left'
-            );
-
-            $select->join(
-                ['d' => 'page_layout'],
-                new Expression('d.default = ?', [self::DEFAULT_PAGE_LAYOUT]), 
-                [
-                    'default_layout' => 'path'
+                    'layout' => 'name'
                 ]
             );
         }
