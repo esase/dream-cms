@@ -7,7 +7,7 @@
                 <?php $this->uncategorized .= $content; continue; ?>
             <?php endif; ?>
             <?php $this->index++ ?>
-            <div class="panel panel-default">
+            <div class="panel panel-default panel-accordion">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#<?php echo $this->escapeHtmlAttr($this->name) ?>" href="#collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>">

@@ -29,6 +29,11 @@ div.filter-form {
 div.filter-form form {
   margin: 0;
 }
+div.panel-accordion div.panel-heading {
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  background-color: #f8f8ff;
+}
 legend {
   font-size: 14px;
   margin-bottom: 10px;

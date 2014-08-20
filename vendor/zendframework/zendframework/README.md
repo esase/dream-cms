@@ -9,23 +9,20 @@ Develop:
 
 ## RELEASE INFORMATION
 
-*Zend Framework 2.3.1*
+*Zend Framework 2.3.2*
 
-This is the first maintenance release for the version 2.3 series.
+This is the second maintenance release for the version 2.3 series.
 
-15 Apr 2014
+12 Aug 2014
 
-### UPDATES IN 2.3.1
+### UPDATES IN 2.3.2
 
-**This release contains security updates:**
+Notable changes include:
 
-- **ZF2014-03:** Potential XSS vector in multiple view helpers due to
-  inappropriate HTML attribute escaping. Many view helpers were using the
-  `escapeHtml()` view helper in order to escape HTML attributes. This release
-  patches them to use the `escapeHtmlAttr()` view helper in these situations.
-  If you use form or navigation view helpers, or "HTML element" view helpers
-  (such as `gravatar()`, `htmlFlash()`, `htmlPage()`, or `htmlQuicktime()`), we
-  recommend upgrading immediately.
+- [#6295](https://github.com/zendframework/zf2/pull/6295) introduces a slight change to how `Zend\Form\Fieldset` handles disabled values. Previously, they were represented in the form, and still processed on submit, which allowed the possibility of changing the value. This pull request modifies the behavior to extract the original value from any bound data if present and use that value instead, which is the correct behavior.
+- [#6423](https://github.com/zendframework/zf2/pull/6423) modifies the behavior of `Zend\Validator\File\UploadFile` to only return the `FILE_NOT_FOUND` error if upload was successful; previously, it incorrectly would report this error even if an error occurred during upload.
+
+In all, over 120 issues were resolved for this release.
 
 Please see [CHANGELOG.md](CHANGELOG.md).
 

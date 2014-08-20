@@ -1,2 +1,43 @@
 @import "common.css";
 @import "variables/frontend.less";
+@import "mixins/base.less";
+
+// logo wrapper
+div#logo-wrapper {
+    .horizontal-gradient(@logo-background-start-color, @logo-background-end-color);
+    margin-bottom: @logo-wrapper-margin-bottom;
+    padding: @logo-wrapper-padding;
+
+    h1 {
+        margin:0;
+
+        img {
+            margin-left: @main-menu-wrapper-margin-bottom;
+        }
+    }
+}
+
+// menu wrapper
+div#main-menu-wrapper {
+    margin-bottom: @main-menu-wrapper-margin-bottom;
+}
+
+// footer
+footer {
+    .horizontal-gradient(@footer-background-start-color, @footer-background-end-color);
+    .border-radiuses (@footer-border-radius-top-left, 0, 0, @footer-border-radius-top-right);
+    background-color: @footer-background-color;
+
+    .links {
+        padding:@footer-links-padding;
+
+            ul {
+                list-style: none outside none;
+                padding-left: 0px;
+
+                li {
+                    padding-bottom: @footer-links-ul-li-padding-bottom;
+                }
+            }
+    }
+}

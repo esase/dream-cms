@@ -15,6 +15,8 @@
         <?php $this->layoutHeadLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->layoutAsset('icon/favicon.ico', 'image')])
             ->prependStylesheet($this->layoutAsset('frontend.css', 'css')) 
             ->prependStylesheet($this->layoutAsset('jquery-ui.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('sm-simple.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('sm-core-css.css', 'css'))
             ->prependStylesheet($this->layoutAsset('bootstrap-theme.css', 'css'))
             ->prependStylesheet($this->layoutAsset('bootstrap.css', 'css'))
         ?>
@@ -29,6 +31,7 @@
 
         <!-- Scripts -->
         <?php echo $this->layoutHeadScript()
+            ->prependFile($this->layoutAsset('jquery.smartmenus.js'))
             ->prependFile($this->layoutAsset('functions.js'))
             ->prependFile($this->layoutAsset('jquery.cookie.js'))
             ->prependFile($this->layoutAsset('bootstrap.js'))
@@ -39,6 +42,46 @@
         ?>
     </head>
     <body>
-        <?php echo $this->pageInjectWidget('body') ?>
         <!-- container -->
         <div class="container" id="container">
+        <?php echo $this->pageInjectWidget('body') ?>
+        <div id="logo-wrapper">
+            <div class="row">
+                <div class="col-sm-7">
+                    <h1>
+                        <a href="<?php echo $this->url('page') ?>">
+                            <img src="<?php echo $this->layoutAsset('logo.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->applicationSetting('application_site_name')) ?>" title="<?php echo $this->escapeHtmlAttr($this->applicationSetting('application_site_name')) ?>" /></a>
+                        <?php echo $this->applicationSetting('application_site_name') ?> 
+                    </h1>
+                </div>
+                <div class="col-sm-5">
+                    <?php echo $this->pageInjectWidget('logo') ?>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div id="main-menu-wrapper">
+                <ul id="main-menu" class="sm sm-simple">
+                    <li><a href="http://www.smartmenus.org/">Home</a></li>
+                    <li><a href="http://www.smartmenus.org/about/">About</a>
+                        <ul>
+                            <li><a href="http://www.smartmenus.org/about/introduction-to-smartmenus-jquery/">Introduction to SmartMenus jQuery</a></li>
+                            <li><a href="http://www.smartmenus.org/about/themes/">Themes</a></li>
+                            <li><a href="http://vadikom.com/about/#vasil-dinkov">The author</a></li>
+                            <li><a href="http://www.smartmenus.org/about/vadikom/">The company</a>
+                                <ul>
+                                    <li><a href="http://vadikom.com/about/">About Vadikom</a></li>
+                                    <li><a href="http://vadikom.com/projects/">Projects</a></li>
+                                    <li><a href="http://vadikom.com/services/">Services</a></li>
+                                    <li><a href="http://www.smartmenus.org/about/vadikom/privacy-policy/">Privacy policy</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="http://www.smartmenus.org/about/old-smartmenus-versions/">Old SmartMenus versions</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <?php $this->inlineScript()->captureStart() ?>
+            $('#main-menu').smartmenus();
+        <?php $this->inlineScript()->captureEnd() ?>
