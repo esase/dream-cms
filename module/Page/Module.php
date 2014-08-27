@@ -74,7 +74,7 @@ class Module
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\Base');
-
+                        
                     return new \Page\View\Helper\PageUrl($model->
                             getPagesMap(LocalizationService::getCurrentLocalization()['language']));
                 },

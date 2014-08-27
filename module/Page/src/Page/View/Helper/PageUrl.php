@@ -1,10 +1,10 @@
 <?php
 namespace Page\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
-use User\Service\UserIdentity as UserIdentityService;
 use Page\Model\Page as PageModel;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
+use User\Service\UserIdentity as UserIdentityService;
+use Zend\View\Helper\AbstractHelper;
 
 class PageUrl extends AbstractHelper
 {

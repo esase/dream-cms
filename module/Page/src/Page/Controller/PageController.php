@@ -73,6 +73,11 @@ class PageController extends AbstractActionController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
+        // check for redirect
+        if ($pageInfo['redirect_url']) {
+            return $this->redirect()->toUrl($pageInfo['redirect_url']);
+        }
+
         // set the page variables
         $viewModel = new ViewModel([
             'page' => $pageInfo,

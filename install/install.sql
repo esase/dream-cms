@@ -691,7 +691,8 @@ INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (14,  'Filters', 4),
 (15,  'Embedded mode', 4),
 (16,  'View images', 4),
-(17,  'Localization', 1);
+(17,  'Localization', 1),
+(18,  'Main settings', 5);
 
 CREATE TABLE IF NOT EXISTS `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -812,8 +813,8 @@ CREATE TABLE IF NOT EXISTS `application_setting_value` (
 INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (1,  1,  'Dream CMS', NULL),
 (2,  2,  '1.0.0', NULL),
-(3,  3,  'Dream CMS demo site', NULL),
-(4,  4,  'stuff@mysite.com', NULL),
+(3,  3,  'Dream CMS', NULL),
+(4,  4,  'info@mysite.com', NULL),
 (5,  5,  'Dream CMS', NULL),
 (6,  6,  'php,dream cms,zend framework2', NULL),
 (7,  7,  '1', NULL),
@@ -1085,9 +1086,12 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     `default_visibility` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
     `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `parent` SMALLINT(5) UNSIGNED DEFAULT NULL, 
+    `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `parent` VARCHAR(100) DEFAULT NULL, 
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
     `depend_widget` SMALLINT(5) UNSIGNED DEFAULT NULL,
@@ -1100,9 +1104,6 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     FOREIGN KEY (`default_visibility`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
-    FOREIGN KEY (`parent`) REFERENCES `page_system`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
     FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -1111,14 +1112,14 @@ CREATE TABLE IF NOT EXISTS `page_system` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `depend_widget`, `depend_page`) VALUES
-(1, 'home', 'Home', 5, NULL, NULL, 1, NULL, 1, NULL, 1, NULL, NULL, NULL, NULL),
-(2, 'user-login', 'Login', 2, NULL, NULL, NULL, 1, 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 2, NULL),
-(3, 'user-register', 'Register', 2, NULL, NULL, NULL, 1, 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 3, NULL),
-(4, 'user-forgot', 'Account recovery', 2, NULL, NULL, NULL, 1, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 5, 'user-password-reset'),
-(5, 'user-activate', 'User activate', 2, NULL, NULL, NULL, 1, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 4, NULL),
-(6, 'user-password-reset', 'Password reset', 2, NULL, NULL, NULL, 1, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 6, NULL),
-(7, 'user-delete', 'Delete your account', 2, NULL, NULL, NULL, 1, 7, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, 7, NULL);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `depend_widget`, `depend_page`, `disable_user_menu`, `site_map`, `disable_site_map`) VALUES
+(1, 'home', 'Home', 5, NULL, NULL, 1, NULL, 1, NULL, 1, NULL, NULL, NULL, NULL, 1, 1, NULL),
+(2, 'user-login', 'Login', 2, NULL, NULL, NULL, 'home', 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 2, NULL, 1, 1, NULL),
+(3, 'user-register', 'Register', 2, NULL, NULL, NULL, 'home', 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 3, NULL, 1, 1, NULL),
+(4, 'user-forgot', 'Account recovery', 2, NULL, NULL, NULL, 'home', 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 5, 'user-password-reset', 1, 1, NULL),
+(5, 'user-activate', 'User activate', 2, NULL, NULL, NULL, 'home', 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 4, NULL, 1, NULL, 1),
+(6, 'user-password-reset', 'Password reset', 2, NULL, NULL, NULL, 'home', 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 6, NULL, 1, NULL, 1),
+(7, 'user-delete', 'Delete your account', 2, NULL, NULL, NULL, 'home', 7, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, 7, NULL, NULL, 1, NULL);
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1129,8 +1130,11 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     `meta_keywords` VARCHAR(150) DEFAULT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
     `active` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '1',
     `type` ENUM('system','custom') NOT NULL,
@@ -1138,6 +1142,7 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
     `depend_widget` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `redirect_url` VARCHAR(255) DEFAULT NULL,
     `left_key` INT(10) NOT NULL DEFAULT '0',
     `right_key` INT(10) NOT NULL DEFAULT '0',
     `level` INT(10) NOT NULL DEFAULT '0',

@@ -46,7 +46,7 @@ class Page extends AbstractNestedSet
         return $this->getParentNodes($leftKey, 
                 $rightKey, function (Select $select) use ($userRole, $language, $excludeHome) {
 
-            $select->columns(['slug', 'title', 'type', 'privacy', 'level']);
+            $select->columns(['slug', 'title', 'type', 'privacy', 'level', 'redirect_url']);
             $select = $this->getPageFilter($select, $userRole, $language, false);
 
             if ($excludeHome) {

@@ -19,9 +19,87 @@ class Base extends AbstractBase
     const CACHE_PAGES_MAP = 'Page_Pages_Map_';
 
     /**
+     * Cache pages tree
+     */
+    const CACHE_PAGES_TREE = 'Page_Pages_Tree_';
+
+    /**
      * Pages data cache tag
      */
     const CACHE_PAGES_DATA_TAG = 'Page_Data_Tag';
+
+    /**
+     * Pages map
+     * @var array
+     */
+    protected static $pagesMap = [];
+
+    /**
+     * Pages tree
+     * @var array
+     */
+    protected static $pagesTree = [];
+
+    /**
+     * Get pages tree
+     *
+     * @param string $language
+     * @return array
+     */
+    public function getPagesTree($language)
+    {
+        if (isset(self::$pagesTree[$language])) {
+            return self::$pagesTree[$language];
+        }
+
+        $cacheName = CacheUtility::getCacheName(self::CACHE_PAGES_TREE . $language);
+
+        // check data in a cache
+        if (null === ($pagesTree = $this->staticCacheInstance->getItem($cacheName))) {
+            $pagesTree = [];
+
+            // process pages map
+            foreach ($this->getPagesMap($language) as $pageName => $pageOptions) {
+                $this->processPagesTree($pagesTree, $pageName, $pageOptions);
+            }
+
+            // save data in cache
+            $this->staticCacheInstance->setItem($cacheName, $pagesTree);
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_PAGES_DATA_TAG]);
+        }
+
+        self::$pagesTree[$language] = $pagesTree;
+        return $pagesTree;
+    }
+
+    /**
+     * Process pages tree
+     *
+     * @param array $pagesTree
+     * @param string $currentPageName
+     * @param array $currentPageOptions
+     * @return void
+     */
+    protected function processPagesTree(array &$pages, $currentPageName, array $currentPageOptions)
+    {
+        if (empty($currentPageOptions['parent'])) {
+            $pages[$currentPageName] = $currentPageOptions;
+            return;
+        }
+
+        // searching for a parent
+        foreach ($pages as $pageName => &$pageOptions) {
+            if ($currentPageOptions['parent'] == $pageName) {
+                $pages[$pageName]['children'][$currentPageName] = $currentPageOptions;
+                return;
+            }
+
+            // checking for children
+            if (!empty($pageOptions['children'])) {
+                $this->processPagesTree($pageOptions['children'], $currentPageName, $currentPageOptions);
+            }
+        }
+    }
 
     /**
      * Get pages map
@@ -31,9 +109,13 @@ class Base extends AbstractBase
      */
     public function getPagesMap($language)
     {
+        if (isset(self::$pagesMap[$language])) {
+            return self::$pagesMap[$language];
+        }
+
         $cacheName = CacheUtility::getCacheName(self::CACHE_PAGES_MAP . $language);
 
-        // check data in cache
+        // check data in a cache
         if (null === ($pagesMap = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('page_structure')
@@ -42,7 +124,12 @@ class Base extends AbstractBase
                     'title',
                     'level',
                     'active',
-                    'privacy'
+                    'privacy',
+                    'redirect_url',
+                    'site_map',
+                    'disable_site_map',
+                    'menu',
+                    'disable_menu',
                 ])
                 ->where([
                     'language' => $language
@@ -61,7 +148,12 @@ class Base extends AbstractBase
                     'active' => $pathInfo->active,
                     'level' => $pathInfo->level,
                     'privacy' => $pathInfo->privacy,
-                    'parent' => (isset($levels[$pathInfo->level - 1]) ? $levels[$pathInfo->level - 1] : null)
+                    'parent' => (isset($levels[$pathInfo->level - 1]) ? $levels[$pathInfo->level - 1] : null),
+                    'redirect_url' => $pathInfo->redirect_url,
+                    'site_map' => $pathInfo->site_map,
+                    'disable_site_map' => $pathInfo->disable_site_map,
+                    'menu' => $pathInfo->menu,
+                    'disable_menu' => $pathInfo->disable_menu
                 ];
             }
 
@@ -94,6 +186,7 @@ class Base extends AbstractBase
             $this->staticCacheInstance->setTags($cacheName, [self::CACHE_PAGES_DATA_TAG]);
         }
 
+        self::$pagesMap[$language] = $pagesMap;
         return $pagesMap;
     }
 }
