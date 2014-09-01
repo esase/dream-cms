@@ -156,14 +156,14 @@ class Module
             $router = $this->serviceManager->get('router');
             $matches = $e->getRouteMatch();
 
-            if (!$matches->getParam('languge') 
-                    || !array_key_exists($matches->getParam('languge'), $this->localizations)) {
+            if (!$matches->getParam('language') 
+                    || !array_key_exists($matches->getParam('language'), $this->localizations)) {
 
-                if (!$matches->getParam('languge')) {
+                if (!$matches->getParam('language')) {
                     // set default language
-                    $router->setDefaultParam('languge', $this->defaultLocalization['language']);
+                    $router->setDefaultParam('language', $this->defaultLocalization['language']);
 
-                    // remember user's choose language
+                    // remember user's choosen language
                     $this->setUserLanguage($this->defaultLocalization['language']);
                     return;
                 }
@@ -173,19 +173,19 @@ class Module
             }
 
             // init an user localization
-            if ($this->defaultLocalization['language'] != $matches->getParam('languge')) {
+            if ($this->defaultLocalization['language'] != $matches->getParam('language')) {
                 $this->serviceManager
                     ->get('translator')
-                    ->setLocale($this->localizations[$matches->getParam('languge')]['locale']);
+                    ->setLocale($this->localizations[$matches->getParam('language')]['locale']);
 
-                LocalizationService::setCurrentLocalization($this->localizations[$matches->getParam('languge')]);    
+                LocalizationService::setCurrentLocalization($this->localizations[$matches->getParam('language')]);    
             }
 
-            Locale::setDefault($this->localizations[$matches->getParam('languge')]['locale']);
-            $router->setDefaultParam('languge', $matches->getParam('languge'));
+            Locale::setDefault($this->localizations[$matches->getParam('language')]['locale']);
+            $router->setDefaultParam('language', $matches->getParam('language'));
 
             // remember user's choose language
-            $this->setUserLanguage($matches->getParam('languge'));
+            $this->setUserLanguage($matches->getParam('language'));
         }
         catch (Exception $e) {
             ErrorLogger::log($e);
@@ -266,9 +266,6 @@ class Module
                 'localization' => function() {
                     return new \Localization\View\Helper\
                             Localization(LocalizationService::getCurrentLocalization(), LocalizationService::getLocalizations());
-                },
-                'localizationSwitcher' => function() {
-                    return new \Localization\View\Helper\localizationSwitcher(LocalizationService::getLocalizations());
                 }
             ]
         ];

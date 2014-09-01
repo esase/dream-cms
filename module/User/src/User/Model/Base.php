@@ -114,6 +114,12 @@ class Base extends AbstractBase
     protected static $thumbnailsDir = 'user/thumbnail/';
 
     /**
+     * User info
+     * @var array
+     */
+    protected static $userInfo = [];
+
+    /**
      * Get avatars directory name
      *
      * @return string
@@ -682,6 +688,11 @@ class Base extends AbstractBase
      */
     public function getUserInfo($userId, $field = self::USER_INFO_BY_ID)
     {
+        // check data memory
+        if (isset(self::$userInfo[$userId][$field])) {
+            return self::$userInfo[$userId][$field];
+        }
+
         // process a field name
         $field = in_array($field, $this->userInfoFields)
             ? $field
@@ -744,6 +755,7 @@ class Base extends AbstractBase
             $this->staticCacheInstance->setTags($cacheName, [self::CACHE_USER_DATA_TAG]);
         }
 
+        self::$userInfo[$userId][$field] = $userInfo;
         return $userInfo;
     }
 

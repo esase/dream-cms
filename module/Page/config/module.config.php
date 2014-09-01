@@ -6,14 +6,15 @@ return [
             'page' => 'Page\Controller\PageController',
         ]
     ],
+    'home_page' => 'home',
     'router' => [
         'routes' => [
             'page' => [
                 'type'    => 'segment',
                 'options' => [
-                    'route'    => '/[:languge[/:page_name[/_page/:page][/_per-page/:per_page][/_order-by/:order_by][/_category/:category][/_id/:slug]]][:trailing_slash]',
+                    'route'    => '/[:language[/:page_name[/_page/:page][/_per-page/:per_page][/_order-by/:order_by][/_category/:category][/_id/:slug]]][:trailing_slash]',
                     'constraints' => [
-                        'languge' => '[a-z]{2}',
+                        'language' => '[a-z]{2}',
                         'page_name' => '[0-9a-z-/]*[0-9a-z-]{1}',
                         'page' => '[0-9]+',
                         'per_page' => '[0-9]+',
@@ -45,5 +46,5 @@ return [
     'view_helpers' => [
         'invokables' => [
         ]
-    ]
+    ],
 ];

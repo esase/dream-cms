@@ -68,15 +68,32 @@ class Module
             'invokables' => [
                 'pageTitle' => 'Page\View\Helper\PageTitle',
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
+                'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'
             ],
             'factories' => [
+                'pageFooterMenu' =>  function() {
+                    $model = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Page\Model\Base');
+
+                    return new \Page\View\Helper\PageFooterMenu($model->
+                            getFooterMenu(LocalizationService::getCurrentLocalization()['language']));
+                },
+                'pageMenu' =>  function() {
+                    $model = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Page\Model\Base');
+
+                    return new \Page\View\Helper\PageMenu($model->
+                            getPagesTree(LocalizationService::getCurrentLocalization()['language']));
+                },
                 'pageUrl' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\Base');
-                        
+
                     return new \Page\View\Helper\PageUrl($model->
-                            getPagesMap(LocalizationService::getCurrentLocalization()['language']));
+                            getPagesMap(), $this->serviceManager->get('Config')['home_page']);
                 },
                 'pageInjectWidget' =>  function() {
                     $model = $this->serviceManager

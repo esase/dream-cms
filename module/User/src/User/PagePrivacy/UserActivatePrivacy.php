@@ -2,10 +2,10 @@
 namespace User\PagePrivacy;
 
 use Application\Service\ServiceManager as ServiceManagerService;
+use Application\Utility\RouteParam as RouteParamUtility;
 use Page\PagePrivacy\AbstractPagePrivacy;
 use User\Model\UserWidget as UserWidgetModel;
 use User\Service\UserIdentity as UserIdentityService;
-use Page\Utility\RouteParam as RouteParamUtility;
 
 class UserActivatePrivacy extends AbstractPagePrivacy
 {

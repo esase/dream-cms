@@ -13,9 +13,9 @@ return [
                     'page' => [
                         'type'    => 'segment',
                         'options' => [
-                            'route'    => '/[:languge[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:category][/:slug]]]][:trailing_slash]',
+                            'route'    => '/[:language[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:category][/:slug]]]][:trailing_slash]',
                             'constraints' => [
-                                'languge' => '[a-z]{2}',
+                                'language' => '[a-z]{2}',
                                 'controller' => '[a-z][a-z0-9-]*',
                                 'action' => '[a-z][a-z0-9-]*',
                                 'page' => '[0-9]+',

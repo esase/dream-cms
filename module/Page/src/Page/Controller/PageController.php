@@ -26,9 +26,10 @@ class PageController extends AbstractActionController
     protected $layoutPath = 'page/layout-page/';
 
     /**
-     * Default page
+     * Home page
+     * @var string
      */
-    const DEFAULT_PAGE = 'home';
+    protected $homePage;
 
     /**
      * Get model
@@ -73,10 +74,15 @@ class PageController extends AbstractActionController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
+        // TODO: Fire an event here
+
         // check for redirect
         if ($pageInfo['redirect_url']) {
             return $this->redirect()->toUrl($pageInfo['redirect_url']);
         }
+
+        // passing the current page info to the layout
+        $this->layout()->setVariable('page', $pageInfo);
 
         // set the page variables
         $viewModel = new ViewModel([
@@ -148,13 +154,27 @@ class PageController extends AbstractActionController
 
             // check some criterias
             null === $this->receivedPath
-                ? $this->receivedPath = self::DEFAULT_PAGE // home page will be as a default page
-                : ($this->receivedPath = $this->receivedPath == self::DEFAULT_PAGE ? null : $this->receivedPath);
+                ? $this->receivedPath = $this->getHomePage() // home page will be as a default page
+                : ($this->receivedPath = $this->receivedPath == $this->getHomePage() ? null : $this->receivedPath);
 
             // convert the path to an array
             $this->receivedPath = explode('/', $this->receivedPath);
         }
 
         return $this->receivedPath; 
+    }
+
+    /**
+     * Get home page
+     *
+     * @return string
+     */
+    protected function getHomePage()
+    {
+        if (!$this->homePage) {
+            $this->homePage = $this->getServiceLocator()->get('Config')['home_page'];
+        }
+
+        return $this->homePage;
     }
 }

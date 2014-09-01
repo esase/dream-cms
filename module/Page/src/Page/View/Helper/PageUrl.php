@@ -4,6 +4,7 @@ namespace Page\View\Helper;
 use Page\Model\Page as PageModel;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
 use User\Service\UserIdentity as UserIdentityService;
+use Localization\Service\Localization as LocalizationService;
 use Zend\View\Helper\AbstractHelper;
 
 class PageUrl extends AbstractHelper
@@ -21,45 +22,68 @@ class PageUrl extends AbstractHelper
     protected $pagesMap = [];
 
     /**
+     * Home page
+     * @var string
+     */
+    protected $homePage;
+
+    /**
      * Class constructor
      *
      * @param array $pagesMap
+     * @param string $homePage
      */
-    public function __construct(array $pagesMap = [])
+    public function __construct(array $pagesMap = [], $homePage)
     {
         $this->pagesMap = $pagesMap;
+        $this->homePage = $homePage;
     }
 
     /**
      * Page url
      *
      * @param string slug
+     * @param string $language
      * @return string|boolean
      */
-    public function __invoke($slug)
+    public function __invoke($slug, $language = null)
     {
-        if (array_key_exists($slug, $this->definedUrls)) {
-            return $this->definedUrls[$slug];
+        // compare the slug for home page 
+        if ($this->homePage == $slug) {
+            return null;
         }
 
-        $this->definedUrls[$slug] = $this->getPageUrl($slug);
-        return $this->definedUrls[$slug];
+        if (!$language) {
+            $language = LocalizationService::getCurrentLocalization()['language'];
+        }
+
+        if (isset($this->definedUrls[$language]) 
+                && array_key_exists($slug, $this->definedUrls[$language])) {
+
+            return $this->definedUrls[$language][$slug];
+        }
+
+        $pageUrl = $this->getPageUrl($slug, $language);
+        $this->definedUrls[$language][$slug] = $pageUrl;
+
+        return $pageUrl;
     }
 
     /**
      * Get page url
      *
      * @param string $slug
+     * @param string $language
      * @return string|boolean
      */
-    protected function getPageUrl($slug) 
+    protected function getPageUrl($slug, $language) 
     {
-        if (!array_key_exists($slug, $this->pagesMap)) {
+        if (!array_key_exists($slug, $this->pagesMap[$language])) {
             return false;
         }
 
         // get a page info
-        $page = $this->pagesMap[$slug];
+        $page = $this->pagesMap[$language][$slug];
 
         // check the page's status
         if ($page['active'] != PageModel::PAGE_STATUS_ACTIVE) {
@@ -79,8 +103,8 @@ class PageUrl extends AbstractHelper
         }
 
         // check for a parent and skip the home page
-        if (!empty($page['parent']) && $this->pagesMap[$page['parent']]['level'] > 1) {
-            if (false === ($parentUrl = $this->getPageUrl($page['parent']))) {
+        if (!empty($page['parent']) && $this->pagesMap[$language][$page['parent']]['level'] > 1) {
+            if (false === ($parentUrl = $this->getPageUrl($page['parent'], $language))) {
                 return false;
             }
 

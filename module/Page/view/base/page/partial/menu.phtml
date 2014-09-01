@@ -1,0 +1,13 @@
+<nav>
+    <div id="main-menu-wrapper">
+        <ul id="main-menu" class="sm sm-simple<?php if (!$this->localization()->isCurrentLanguageLtr()): ?> sm-rtl<?php endif ?>">
+            <?php echo $this->menu_items ?>
+        </ul>
+    </div>
+</nav>
+
+<?php $this->inlineScript()->captureStart() ?>
+    $('#main-menu').smartmenus({
+        markCurrentItem : true
+    });
+<?php $this->inlineScript()->captureEnd() ?>

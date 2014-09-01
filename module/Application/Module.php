@@ -285,7 +285,9 @@ class Module
     {
         return [
             'invokables' => [
-                'applicationSetting' => 'Application\View\Helper\ApplicationSetting'
+                'applicationSetting' => 'Application\View\Helper\ApplicationSetting',
+                'applicationRouteParam' => 'Application\View\Helper\ApplicationRouteParam',
+                'applicationRandId' => 'Application\View\Helper\ApplicationRandId',
             ],
             'factories' => [
                 'applicationFlashMessage' => function() {

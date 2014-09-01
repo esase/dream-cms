@@ -12,9 +12,9 @@
 	.sm-simple,
 	.sm-simple ul {
 		background:#f5f5f5;
-        -moz-border-radius:3px;
-        -webkit-border-radius:3px;
-        border-radius:3px;
+        -moz-border-radius:0 0 3px 3px;
+        -webkit-border-radius:0 0 3px 3px;
+        border-radius:0 0 3px 3px;
         border: 1px solid #ddd;
 	}
 
@@ -127,7 +127,7 @@
 
 	/* The following will make the sub menus collapsible for small screen devices (it's not recommended editing these) */
 	ul.sm-simple{width:auto !important;}
-	ul.sm-simple ul{display:none;position:static !important;top:auto !important;left:auto !important;margin-left:0 !important;margin-top:0 !important;width:auto !important;min-width:0 !important;max-width:none !important;}
+	ul.sm-simple ul{-moz-border-radius:0 0 3px 3px;-webkit-border-radius:0 0 3px 3px;border-radius:0 0 3px 3px;display:none;position:static !important;top:auto !important;left:auto !important;margin-left:0 !important;margin-top:0 !important;width:auto !important;min-width:0 !important;max-width:none !important;}
 	ul.sm-simple>li{float:none;}
 	ul.sm-simple>li>a,ul.sm-simple ul.sm-nowrap>li>a{white-space:normal;}
 	ul.sm-simple iframe{display:none;}
@@ -155,7 +155,7 @@
 		background:transparent !important;
 	}
 	.sm-simple a.current {
-		background:#ddd !important;
+		background:#f8f8ff !important;
 	}
 	.sm-simple a.has-submenu {
 		padding-right:23px;

@@ -793,7 +793,8 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (73, 'user_role_edited_send', 'Send notifications about editing users roles', NULL, 'checkbox', NULL, 17, 9, 2, NULL, NULL, NULL, NULL),
 (74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, NULL, NULL, NULL),
-(75, 'user_role_edited_message', 'User role edited message', NULL, 'notification_message', 1, 18, 9, 2, 1, NULL, NULL, NULL);
+(75, 'user_role_edited_message', 'User role edited message', NULL, 'notification_message', 1, 18, 9, 2, 1, NULL, NULL, NULL),
+(76, 'page_footer_menu_max_rows', 'Max rows in footer menu per column', NULL, 'integer', 1, 1, 18, 5, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE IF NOT EXISTS `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -896,7 +897,8 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (84, 74, 'Your role was edited', NULL),
 (85, 74, 'Ваша роль была отредактирована', 'ru'),
 (86, 75, '<p><b>Dear __RealName__</b>,</p>\r\n<p>Now your role on the site is: <b>__Role__</b></p>', NULL),
-(87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru');
+(87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru'),
+(88, 76, '5', NULL);
 
 CREATE TABLE IF NOT EXISTS `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1075,7 +1077,8 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`) VALUES
 (4, 'userActivateWidget', 2, 'system'),
 (5, 'userForgotWidget', 2, 'system'),
 (6, 'userPasswordResetWidget', 2, 'system'),
-(7, 'userDeleteWidget', 2, 'system');
+(7, 'userDeleteWidget', 2, 'system'),
+(8, 'pageSiteMapWidget', 5, 'public');
 
 CREATE TABLE IF NOT EXISTS `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1087,10 +1090,14 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
     `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `user_menu_order` SMALLINT(5) DEFAULT NULL,    
     `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `footer_menu_order` SMALLINT(5) DEFAULT NULL,    
     `parent` VARCHAR(100) DEFAULT NULL, 
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
@@ -1112,14 +1119,15 @@ CREATE TABLE IF NOT EXISTS `page_system` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `depend_widget`, `depend_page`, `disable_user_menu`, `site_map`, `disable_site_map`) VALUES
-(1, 'home', 'Home', 5, NULL, NULL, 1, NULL, 1, NULL, 1, NULL, NULL, NULL, NULL, 1, 1, NULL),
-(2, 'user-login', 'Login', 2, NULL, NULL, NULL, 'home', 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 2, NULL, 1, 1, NULL),
-(3, 'user-register', 'Register', 2, NULL, NULL, NULL, 'home', 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 3, NULL, 1, 1, NULL),
-(4, 'user-forgot', 'Account recovery', 2, NULL, NULL, NULL, 'home', 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 5, 'user-password-reset', 1, 1, NULL),
-(5, 'user-activate', 'User activate', 2, NULL, NULL, NULL, 'home', 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 4, NULL, 1, NULL, 1),
-(6, 'user-password-reset', 'Password reset', 2, NULL, NULL, NULL, 'home', 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 6, NULL, 1, NULL, 1),
-(7, 'user-delete', 'Delete your account', 2, NULL, NULL, NULL, 'home', 7, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, 7, NULL, NULL, 1, NULL);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `depend_widget`, `depend_page`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`) VALUES
+(1, 'home', 'Home', 5, NULL, NULL, 1, NULL, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 1, 1, NULL, NULL, NULL),
+(2, 'user-login', 'Login', 2, NULL, NULL, NULL, 'home', 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 2, NULL, 1, 1, NULL, NULL, NULL, NULL),
+(3, 'user-register', 'Register', 2, NULL, NULL, NULL, 'home', 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 3, NULL, 1, 1, NULL, NULL, NULL, NULL),
+(4, 'user-forgot', 'Account recovery', 2, NULL, NULL, NULL, 'home', 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 5, 'user-password-reset', 1, 1, NULL, NULL, NULL, NULL),
+(5, 'user-activate', 'User activate', 2, NULL, NULL, NULL, 'home', 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 4, NULL, 1, NULL, 1, NULL, 1, NULL),
+(6, 'user-password-reset', 'Password reset', 2, NULL, NULL, NULL, 'home', 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 6, NULL, 1, NULL, 1, NULL, 1, NULL),
+(7, 'user-delete', 'Delete your account', 2, NULL, NULL, NULL, 'home', 7, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, 7, NULL, NULL, 1, NULL, NULL, NULL, NULL),
+(8, 'sitemap', 'Sitemap', 5, NULL, NULL, NULL, 'home', 8, NULL, 1, NULL, NULL, 8, NULL, NULL, 1, NULL, NULL, NULL, NULL);
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1131,12 +1139,16 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `user_menu_order` SMALLINT(5) DEFAULT NULL, 
     `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `footer_menu_order` SMALLINT(5) DEFAULT NULL,
     `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `active` TINYINT(1) UNSIGNED NOT NULL  DEFAULT '1',
+    `active` TINYINT(1) UNSIGNED NULL  DEFAULT '1',
     `type` ENUM('system','custom') NOT NULL,
     `language` CHAR(2) NOT NULL,
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1149,6 +1161,8 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     PRIMARY KEY (`id`),
     UNIQUE `slug` (`slug`, `language`),
     KEY `node` (`left_key`, `right_key`, `language`, `active`, `level`),
+    KEY `footer_menu` (`footer_menu`),
+    KEY `user_menu` (`user_menu`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,

@@ -8,11 +8,36 @@ div#logo-wrapper {
     margin-bottom: @logo-wrapper-margin-bottom;
     padding: @logo-wrapper-padding;
 
-    h1 {
-        margin:0;
+    div#logo-image {
+        h1 {
+            margin:0;
 
-        img {
-            margin-left: @main-menu-wrapper-margin-bottom;
+            img {
+                margin-left: @logo-img-margin-left;
+            }
+        }
+    }
+
+    div#logo-actions {
+        text-align:right;
+
+        div.btn-group {
+            margin-right: @logo-btn-group-margin-right;
+            height: @logo-btn-group-height;
+
+            div.btn-group-wrapper {
+                display:table;
+                height:100%;
+
+                div.btn-group-item {
+                    display: table-cell;
+                    vertical-align: middle;
+
+                    ul.dropdown-menu {
+                        background-color: @logo-btn-group-dropdown-menu-background-color;
+                    }
+                }
+            }
         }
     }
 }
@@ -31,13 +56,13 @@ footer {
     .links {
         padding:@footer-links-padding;
 
-            ul {
-                list-style: none outside none;
-                padding-left: 0px;
+        ul {
+            list-style: none outside none;
+            padding-left: 0px;
 
-                li {
-                    padding-bottom: @footer-links-ul-li-padding-bottom;
-                }
+            li {
+                padding-bottom: @footer-links-ul-li-padding-bottom;
             }
+        }
     }
 }

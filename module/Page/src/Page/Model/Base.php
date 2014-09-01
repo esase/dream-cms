@@ -16,12 +16,17 @@ class Base extends AbstractBase
     /**
      * Cache pages map
      */
-    const CACHE_PAGES_MAP = 'Page_Pages_Map_';
+    const CACHE_PAGES_MAP = 'Page_Pages_Map';
 
     /**
      * Cache pages tree
      */
     const CACHE_PAGES_TREE = 'Page_Pages_Tree_';
+
+    /**
+     * Cache footer menu
+     */
+    const CACHE_FOOTER_MENU = 'Page_Footer_Menu_';
 
     /**
      * Pages data cache tag
@@ -32,13 +37,55 @@ class Base extends AbstractBase
      * Pages map
      * @var array
      */
-    protected static $pagesMap = [];
+    protected static $pagesMap = null;
 
     /**
      * Pages tree
      * @var array
      */
     protected static $pagesTree = [];
+
+    /**
+     * Get footer menu
+     * 
+     * @param string $language
+     * @return array
+     */
+    public function getFooterMenu($language)
+    {
+        // TODO: CLEAR THE 'CACHE_FOOTER_MENU' AFTER ANY CHANGES IN PAGES STRUCTURE FOR A SELECTED LANGUAGE
+
+        $cacheName = CacheUtility::getCacheName(self::CACHE_FOOTER_MENU . $language);
+
+        // check data in a cache
+        if (null === ($footerMenu = $this->staticCacheInstance->getItem($cacheName))) {
+            // get the footer menu
+            $select = $this->select();
+            $select->from('page_structure')
+                ->columns([
+                    'slug',
+                    'title',
+                    'type'
+                ])
+                ->where([
+                    'footer_menu' => Page::PAGE_IN_FOOTER_MENU,
+                    'language' => $language
+                ])
+                ->order('footer_menu_order');
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+
+            $footerMenu = $resultSet->toArray();
+
+            // save data in cache
+            $this->staticCacheInstance->setItem($cacheName, $footerMenu);
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_PAGES_DATA_TAG]);
+        }
+
+        return $footerMenu;
+    }
 
     /**
      * Get pages tree
@@ -48,6 +95,8 @@ class Base extends AbstractBase
      */
     public function getPagesTree($language)
     {
+        // TODO: CLEAR THE 'CACHE_PAGES_TREE' AFTER ANY CHANGES IN PAGES STRUCTURE FOR A SELECTED LANGUAGE
+
         if (isset(self::$pagesTree[$language])) {
             return self::$pagesTree[$language];
         }
@@ -67,7 +116,7 @@ class Base extends AbstractBase
             $this->staticCacheInstance->setItem($cacheName, $pagesTree);
             $this->staticCacheInstance->setTags($cacheName, [self::CACHE_PAGES_DATA_TAG]);
         }
-
+        
         self::$pagesTree[$language] = $pagesTree;
         return $pagesTree;
     }
@@ -107,65 +156,43 @@ class Base extends AbstractBase
      * @param string $language
      * @return array
      */
-    public function getPagesMap($language)
+    public function getPagesMap($language = null)
     {
-        if (isset(self::$pagesMap[$language])) {
-            return self::$pagesMap[$language];
+        $pagesMap = $this->getAllPagesMap();
+
+        return $language 
+            ? (isset($pagesMap[$language]) ? $pagesMap[$language] : [])
+            : $pagesMap;
+    }
+
+    /**
+     * Get all pages map
+     * 
+     * @return array
+     */
+    protected function getAllPagesMap()
+    {
+        // TODO: CLEAR THE 'CACHE_PAGES_MAP' AFTER ANY CHANGES IN PAGES STRUCTURE FOR ALL LANGUAGES
+
+        if (null !== self::$pagesMap) {
+            return self::$pagesMap;
         }
 
-        $cacheName = CacheUtility::getCacheName(self::CACHE_PAGES_MAP . $language);
+        $cacheName = CacheUtility::getCacheName(self::CACHE_PAGES_MAP);
 
         // check data in a cache
         if (null === ($pagesMap = $this->staticCacheInstance->getItem($cacheName))) {
-            $select = $this->select();
-            $select->from('page_structure')
-                ->columns([
-                    'slug',
-                    'title',
-                    'level',
-                    'active',
-                    'privacy',
-                    'redirect_url',
-                    'site_map',
-                    'disable_site_map',
-                    'menu',
-                    'disable_menu',
-                ])
-                ->where([
-                    'language' => $language
-                ])
-                ->order('left_key');
-
-            $statement = $this->prepareStatementForSqlObject($select);
-            $resultSet = new ResultSet;
-            $resultSet->initialize($statement->execute());
-
-            $levels = $pagesMap = [];
-            foreach ($resultSet as $pathInfo) {
-                $levels[$pathInfo->level] = $pathInfo->slug;
-                $pagesMap[$pathInfo->slug] = [
-                    'title'  => $pathInfo->title,
-                    'active' => $pathInfo->active,
-                    'level' => $pathInfo->level,
-                    'privacy' => $pathInfo->privacy,
-                    'parent' => (isset($levels[$pathInfo->level - 1]) ? $levels[$pathInfo->level - 1] : null),
-                    'redirect_url' => $pathInfo->redirect_url,
-                    'site_map' => $pathInfo->site_map,
-                    'disable_site_map' => $pathInfo->disable_site_map,
-                    'menu' => $pathInfo->menu,
-                    'disable_menu' => $pathInfo->disable_menu
-                ];
-            }
-
-            // get pages visibility
+            // get all pages visibility
+            $pagesVisibility = [];
             $select = $this->select();
             $select->from(['a' => 'page_visibility'])
                 ->columns([
-                    'hidden',
+                    'page_id',
+                    'hidden'
                 ])
                 ->join(
                     ['b' => 'page_structure'],
-                    new Expression('b.id = a.page_id and b.language = ?', [$language]),
+                    'b.id = a.page_id',
                     [
                         'slug'
                     ]
@@ -175,10 +202,55 @@ class Base extends AbstractBase
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
 
+            // process pages visibility
             foreach ($resultSet as $pageVisibility) {
-                if (!empty($pagesMap[$pageVisibility->slug])) {
-                    $pagesMap[$pageVisibility->slug]['hidden'][] = $pageVisibility->hidden;
+                $pagesVisibility[$pageVisibility->page_id][] = $pageVisibility->hidden;
+            }
+
+            // get all pages structure
+            $select = $this->select();
+            $select->from('page_structure')
+                ->columns([
+                    'id',
+                    'slug',
+                    'title',
+                    'level',
+                    'active',
+                    'privacy',
+                    'site_map',
+                    'menu',
+                    'type',
+                    'language'
+                ])
+                ->order('language, left_key');
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+
+            $language = null;
+            $pagesMap = [];
+
+            // process pages
+            foreach ($resultSet as $page) {
+                // check page's language
+                if ($language != $page['language']) {
+                    $language = $page['language'];
+                    $levels   = [];
                 }
+
+                $levels[$page->level] = $page->slug;
+                $pagesMap[$page->language][$page->slug] = [
+                    'title'  => $page->title,
+                    'active' => $page->active,
+                    'level' => $page->level,
+                    'privacy' => $page->privacy,
+                    'parent' => (isset($levels[$page->level - 1]) ? $levels[$page->level - 1] : null),
+                    'site_map' => $page->site_map,
+                    'menu' => $page->menu,
+                    'type' => $page->type,
+                    'hidden' => isset($pagesVisibility[$page->id]) ? $pagesVisibility[$page->id] : []
+                ];
             }
 
             // save data in cache
@@ -186,7 +258,7 @@ class Base extends AbstractBase
             $this->staticCacheInstance->setTags($cacheName, [self::CACHE_PAGES_DATA_TAG]);
         }
 
-        self::$pagesMap[$language] = $pagesMap;
+        self::$pagesMap = $pagesMap;
         return $pagesMap;
     }
 }

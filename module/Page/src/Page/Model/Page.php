@@ -16,6 +16,21 @@ class Page extends AbstractNestedSet
     const PAGE_STATUS_ACTIVE = 1;
 
     /**
+     * Page in menu 
+     */
+    const PAGE_IN_MENU = 1;
+
+    /**
+     * Page in sitemap 
+     */
+    const PAGE_IN_SITEMAP = 1;
+
+    /**
+     * Page in footer menu 
+     */
+    const PAGE_IN_FOOTER_MENU = 1;
+
+    /**
      * Page type system
      */
     const PAGE_TYPE_SYSTEM = 'system';

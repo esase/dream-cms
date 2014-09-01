@@ -10,11 +10,29 @@ div#logo-wrapper {
   margin-bottom: 1px;
   padding: 5px;
 }
-div#logo-wrapper h1 {
+div#logo-wrapper div#logo-image h1 {
   margin: 0;
 }
-div#logo-wrapper h1 img {
+div#logo-wrapper div#logo-image h1 img {
   margin-left: 20px;
+}
+div#logo-wrapper div#logo-actions {
+  text-align: right;
+}
+div#logo-wrapper div#logo-actions div.btn-group {
+  margin-right: 20px;
+  height: 90px;
+}
+div#logo-wrapper div#logo-actions div.btn-group div.btn-group-wrapper {
+  display: table;
+  height: 100%;
+}
+div#logo-wrapper div#logo-actions div.btn-group div.btn-group-wrapper div.btn-group-item {
+  display: table-cell;
+  vertical-align: middle;
+}
+div#logo-wrapper div#logo-actions div.btn-group div.btn-group-wrapper div.btn-group-item ul.dropdown-menu {
+  background-color: #f5f5f5;
 }
 div#main-menu-wrapper {
   margin-bottom: 20px;

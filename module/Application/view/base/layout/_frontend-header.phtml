@@ -47,41 +47,58 @@
         <?php echo $this->pageInjectWidget('body') ?>
         <div id="logo-wrapper">
             <div class="row">
-                <div class="col-sm-7">
+                <div class="col-sm-7" id="logo-image">
                     <h1>
                         <a href="<?php echo $this->url('page') ?>">
                             <img src="<?php echo $this->layoutAsset('logo.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->applicationSetting('application_site_name')) ?>" title="<?php echo $this->escapeHtmlAttr($this->applicationSetting('application_site_name')) ?>" /></a>
                         <?php echo $this->applicationSetting('application_site_name') ?> 
                     </h1>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-5" id="logo-actions">
                     <?php echo $this->pageInjectWidget('logo') ?>
+                    <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
+                        <?php $this->declareVars('languageParams') ?>
+                        <div class="btn-group">
+                            <div class="btn-group-wrapper">
+                                <div class="btn-group-item">
+                                    <div class="dropdown">
+                                        <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLocalization()['description']) ?>" />
+                                        <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#"><?php echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) ?><span class="caret"></span></a>
+                                        <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
+                                            <?php foreach ($this->localization()->getAllLocalizations() as $language): ?>
+                                                <li <?php if ($language['language'] == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
+
+                                                    <?php $this->languageParams = false !== $this->pageUrl($this->page['slug'], $language['language']) 
+                                                            ? ['language' => $language['language'], 'page_name' => $this->pageUrl($this->page['slug'], $language['language'])]
+                                                            : ['language' => $language['language']] ?>
+
+                                                    <a href="<?php echo $this->url('page', $this->languageParams, ['force_canonical' => true]) ?>">
+                                                        <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
+                                                        <?php echo $this->escapeHtml($language['description']) ?>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach ?>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif?>
+                    <div class="btn-group">
+                        <div class="btn-group-wrapper">
+                            <div class="btn-group-item">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Hello, Alex<span class="caret"></span></a>
+                                    <img width="44" alt="" src="http://demo.neontheme.com/assets/images/thumb-1@2x.png">
+                                    <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
+                                        <li><a href="#"><img src="<?php  echo $this->layoutAsset('icon/flag/en.gif', 'image') ?>"  /> English</a></li>
+                                        <li><a href="#"><img src="<?php  echo $this->layoutAsset('icon/flag/ru.gif', 'image') ?>"  /> Russian</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <nav>
-            <div id="main-menu-wrapper">
-                <ul id="main-menu" class="sm sm-simple">
-                    <li><a href="http://www.smartmenus.org/">Home</a></li>
-                    <li><a href="http://www.smartmenus.org/about/">About</a>
-                        <ul>
-                            <li><a href="http://www.smartmenus.org/about/introduction-to-smartmenus-jquery/">Introduction to SmartMenus jQuery</a></li>
-                            <li><a href="http://www.smartmenus.org/about/themes/">Themes</a></li>
-                            <li><a href="http://vadikom.com/about/#vasil-dinkov">The author</a></li>
-                            <li><a href="http://www.smartmenus.org/about/vadikom/">The company</a>
-                                <ul>
-                                    <li><a href="http://vadikom.com/about/">About Vadikom</a></li>
-                                    <li><a href="http://vadikom.com/projects/">Projects</a></li>
-                                    <li><a href="http://vadikom.com/services/">Services</a></li>
-                                    <li><a href="http://www.smartmenus.org/about/vadikom/privacy-policy/">Privacy policy</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="http://www.smartmenus.org/about/old-smartmenus-versions/">Old SmartMenus versions</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <?php $this->inlineScript()->captureStart() ?>
-            $('#main-menu').smartmenus();
-        <?php $this->inlineScript()->captureEnd() ?>
+        <?php echo $this->pageMenu() ?>
