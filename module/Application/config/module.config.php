@@ -3,10 +3,10 @@
 return [
     'router' => [
         'routes' => [
-            'administration' => [
+            'application' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route'    => '/administration'
+                    'route'    => '/application'
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
@@ -54,11 +54,6 @@ return [
     ],
     'controllers' => [
         'invokables' => [
-            'error' => 'Application\Controller\ErrorController',
-            'modules-administration' => 'Application\Controller\ModuleAdministrationController',
-            'settings-administration' => 'Application\Controller\SettingAdministrationController',
-            'acl-administration' => 'Application\Controller\AclAdministrationController',
-            'acl' => 'Application\Controller\AclController'
         ]
     ],
     'controller_plugins' => [

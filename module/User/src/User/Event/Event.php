@@ -381,7 +381,8 @@ class Event extends AbstractEvent
      */
     public static function fireLogoutEvent($userId, $userNickname)
     {
-        self::fireEvent(self::LOGOUT, $userId, $userId, 'Event - User successfully logged out', array($userNickname));
+        self::fireEvent(self::LOGOUT, 
+                $userId, $userId, 'Event - User successfully logged out', [$userNickname]);
     }
 
     /**

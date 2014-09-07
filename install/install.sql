@@ -1103,7 +1103,8 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`,
 (5, 'user-activate', 'User activate', 2, NULL, NULL, 1, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL),
 (6, 'user-password-reset', 'Password reset', 2, NULL, NULL, 1, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL),
 (7, 'user-delete', 'Delete your account', 2, NULL, NULL, 1, 7, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, 1, NULL, NULL, NULL, NULL),
-(8, 'sitemap', 'Sitemap', 5, NULL, NULL, 1, 8, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL);
+(8, 'sitemap', 'Sitemap', 5, NULL, 1, 1, 8, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL),
+(9, 'user', 'User profile', 2, NULL, NULL, 1, 9, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL);
 
 CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -86,14 +86,22 @@
                         </div>
                     <?php endif?>
                     <?php if(!$this->userIsGuest()): ?>
-                        <div class="btn-group">
+                        <?php $this->declareVars('userPage') ?>
+                        <?php $this->userPage = $this->pageUrl('user') ?>
+                        <div class="btn-group" id="logged-user-menu">
                             <!-- user menu -->
                             <div class="btn-group-wrapper">
                                 <div class="btn-group-item">
                                     <div class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                             <?php echo $this->translate('Hello') ?>, <?php echo $this->escapeHtml($this->userIdentity()['nick_name']) ?><span class="caret"></span></a>
-                                        <img class="icon" alt="<?php echo $this->escapeHtmlAttr($this->userIdentity()['nick_name']) ?>" src="<?php echo $this->escapeHtmlAttr($this->userAvatarUrl($this->userIdentity()['avatar'])) ?>" />
+                                        <?php if(false !== $this->userPage): ?>
+                                            <a href="<?php echo $this->url('page', ['page_name' => $this->userPage, 'slug' => $this->userIdentity()['slug']], ['force_canonical' => true]) ?>">
+                                                <img class="icon" alt="<?php echo $this->escapeHtmlAttr($this->userIdentity()['nick_name']) ?>" src="<?php echo $this->escapeHtmlAttr($this->userAvatarUrl($this->userIdentity()['avatar'])) ?>" />
+                                            </a>
+                                        <?php else: ?>
+                                            <img class="icon" alt="<?php echo $this->escapeHtmlAttr($this->userIdentity()['nick_name']) ?>" src="<?php echo $this->escapeHtmlAttr($this->userAvatarUrl($this->userIdentity()['avatar'])) ?>" />
+                                        <?php endif ?>
                                         <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
                                             <?php if ($this->pageUserMenu()): ?>
                                                 <?php foreach($this->pageUserMenu() as $menu) : ?>
@@ -103,7 +111,11 @@
                                                 <?php endforeach ?>
                                                 <li role="presentation" class="divider"></li>
                                             <?php endif ?>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('<?php echo $this->url('page', ['page_name' => $this->url], ['force_canonical' => true]) ?>')"><?php echo $this->translate('Logout') ?></a></li>
+                                            <li role="presentation">
+                                                <a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('logged-user-menu', '<?php echo $this->url('application/page', ['controller' => 'user-widget', 'action' => 'ajax-logout']) ?>', function(){location.href='<?php echo $this->url('page', [], ['force_canonical' => true]) ?>'}, 'post', {}, false)">
+                                                    <?php echo $this->translate('Logout') ?>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
