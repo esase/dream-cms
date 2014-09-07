@@ -1,6 +1,7 @@
 <?php
 namespace User;
 
+use User\Model\Base as UserModelBase;
 use User\Event\Event as UserEvent;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Model\Base as UserBaseModel;

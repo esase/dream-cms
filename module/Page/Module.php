@@ -71,6 +71,14 @@ class Module
                 'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'
             ],
             'factories' => [
+                'pageUserMenu' =>  function() {
+                    $model = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Page\Model\Base');
+
+                    return new \Page\View\Helper\PageUserMenu($model->
+                            getUserMenu(LocalizationService::getCurrentLocalization()['language']));
+                },
                 'pageFooterMenu' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')

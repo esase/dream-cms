@@ -612,24 +612,6 @@ CREATE TABLE IF NOT EXISTS `user_list` (
 INSERT INTO `user_list` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
 (1, 'esase', 'esase', 'approved', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
 
-CREATE TABLE IF NOT EXISTS `user_menu` (
-    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
-    `controller` VARCHAR(50) NOT NULL,
-    `action` VARCHAR(50) NOT NULL,
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `order` SMALLINT(5) DEFAULT NULL,
-    `check` VARCHAR(255) DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `user_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `check`) VALUES
-(1, 'Edit account', 'user', 'edit', 2, 1, ''),
-(2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::isDefaultUser() ? false : true;');
-
 CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
@@ -702,7 +684,7 @@ CREATE TABLE IF NOT EXISTS `application_setting` (
     `description_helper` TEXT DEFAULT NULL,
     `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
     `required` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `order` SMALLINT(5) DEFAULT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `language_sensitive` TINYINT(1) NULL DEFAULT '1',
@@ -1002,7 +984,7 @@ CREATE TABLE IF NOT EXISTS `application_admin_menu` (
     `controller` VARCHAR(50) NOT NULL,
     `action` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `order` SMALLINT(5) DEFAULT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED NOT NULL,
     `part` SMALLINT(5) UNSIGNED NOT NULL,
     `icon` VARCHAR(100) NOT NULL,
@@ -1074,90 +1056,147 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`) VALUES
 (1, 'pageHtmlWidget', 5, 'public'),
 (2, 'userLoginWidget', 2, 'public'),
 (3, 'userRegisterWidget', 2, 'public'),
-(4, 'userActivateWidget', 2, 'system'),
-(5, 'userForgotWidget', 2, 'system'),
-(6, 'userPasswordResetWidget', 2, 'system'),
-(7, 'userDeleteWidget', 2, 'system'),
+(4, 'userActivateWidget', 2, 'public'),
+(5, 'userForgotWidget', 2, 'public'),
+(6, 'userPasswordResetWidget', 2, 'public'),
+(7, 'userDeleteWidget', 2, 'public'),
 (8, 'pageSiteMapWidget', 5, 'public');
 
 CREATE TABLE IF NOT EXISTS `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
-    `depend_page` VARCHAR(100) DEFAULT NULL,
     `title` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `default_visibility` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
     `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `user_menu_order` SMALLINT(5) DEFAULT NULL,    
+    `user_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
     `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `footer_menu_order` SMALLINT(5) DEFAULT NULL,    
-    `parent` VARCHAR(100) DEFAULT NULL, 
+    `footer_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
+    `parent` SMALLINT(5) UNSIGNED DEFAULT NULL, 
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
-    `depend_widget` SMALLINT(5) UNSIGNED DEFAULT NULL,
-    `order` SMALLINT(5) DEFAULT NULL,    
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',    
     PRIMARY KEY (`id`),
     UNIQUE (`slug`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`default_visibility`) REFERENCES `acl_role`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE SET NULL,
     FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`depend_widget`) REFERENCES `page_widget`(`id`)
+    FOREIGN KEY (`parent`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`) VALUES
+(1, 'home', 'Home', 5, NULL, 1, NULL, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL),
+(2, 'user-login', 'Login', 2, NULL, 1, 1, 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL),
+(3, 'user-register', 'Register', 2, NULL, 1, 1, 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL),
+(4, 'user-forgot', 'Account recovery', 2, NULL, NULL, 1, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL),
+(5, 'user-activate', 'User activate', 2, NULL, NULL, 1, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL),
+(6, 'user-password-reset', 'Password reset', 2, NULL, NULL, 1, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL),
+(7, 'user-delete', 'Delete your account', 2, NULL, NULL, 1, 7, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, 1, NULL, NULL, NULL, NULL),
+(8, 'sitemap', 'Sitemap', 5, NULL, NULL, 1, 8, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL);
+
+CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `depend_page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_page_id`) REFERENCES `page_system`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `default_visibility`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `depend_widget`, `depend_page`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`) VALUES
-(1, 'home', 'Home', 5, NULL, NULL, 1, NULL, 1, 1, 1, NULL, NULL, NULL, NULL, 1, 1, 1, NULL, NULL, NULL),
-(2, 'user-login', 'Login', 2, NULL, NULL, NULL, 'home', 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 2, NULL, 1, 1, NULL, NULL, NULL, NULL),
-(3, 'user-register', 'Register', 2, NULL, NULL, NULL, 'home', 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 3, NULL, 1, 1, NULL, NULL, NULL, NULL),
-(4, 'user-forgot', 'Account recovery', 2, NULL, NULL, NULL, 'home', 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 5, 'user-password-reset', 1, 1, NULL, NULL, NULL, NULL),
-(5, 'user-activate', 'User activate', 2, NULL, NULL, NULL, 'home', 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 4, NULL, 1, NULL, 1, NULL, 1, NULL),
-(6, 'user-password-reset', 'Password reset', 2, NULL, NULL, NULL, 'home', 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 6, NULL, 1, NULL, 1, NULL, 1, NULL),
-(7, 'user-delete', 'Delete your account', 2, NULL, NULL, NULL, 'home', 7, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, 7, NULL, NULL, 1, NULL, NULL, NULL, NULL),
-(8, 'sitemap', 'Sitemap', 5, NULL, NULL, NULL, 'home', 8, NULL, 1, NULL, NULL, 8, NULL, NULL, 1, NULL, NULL, NULL, NULL);
+INSERT INTO `page_system_page_depend` (`id`, `page_id`, `depend_page_id`) VALUES
+(1, 4, 6);
+
+CREATE TABLE IF NOT EXISTS `page_system_widget_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`) VALUES
+(1, 2, 2),
+(2, 3, 3),
+(3, 4, 5),
+(4, 5, 4),
+(5, 6, 6),
+(6, 7, 7),
+(7, 8, 8);
+
+CREATE TABLE IF NOT EXISTS `page_widget_page_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_page_depend` (`id`, `page_id`, `widget_id`) VALUES
+(1, 5, 4),
+(2, 4, 5),
+(3, 6, 6),
+(4, 7, 7);
+
+CREATE TABLE IF NOT EXISTS `page_widget_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `depend_widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
-    `depend_page` VARCHAR(100) DEFAULT NULL,
-    `title` VARCHAR(50) NOT NULL,
+    `title` VARCHAR(50) DEFAULT NULL,
     `meta_description` VARCHAR(150) DEFAULT NULL,
     `meta_keywords` VARCHAR(150) DEFAULT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `user_menu_order` SMALLINT(5) DEFAULT NULL, 
+    `user_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',
     `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `footer_menu_order` SMALLINT(5) DEFAULT NULL,
-    `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `active` TINYINT(1) UNSIGNED NULL  DEFAULT '1',
+    `footer_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',
+    `active` TINYINT(1) UNSIGNED NULL  DEFAULT '1', 
     `type` ENUM('system','custom') NOT NULL,
     `language` CHAR(2) NOT NULL,
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
-    `privacy` VARCHAR(50) DEFAULT NULL,
-    `depend_widget` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `redirect_url` VARCHAR(255) DEFAULT NULL,
     `left_key` INT(10) NOT NULL DEFAULT '0',
     `right_key` INT(10) NOT NULL DEFAULT '0',
     `level` INT(10) NOT NULL DEFAULT '0',
+    `system_page` SMALLINT(5) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE `slug` (`slug`, `language`),
     KEY `node` (`left_key`, `right_key`, `language`, `active`, `level`),
@@ -1172,9 +1211,9 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`depend_widget`) REFERENCES `page_widget`(`id`)
+    FOREIGN KEY (`system_page`) REFERENCES `page_system`(`id`)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `page_visibility` (
@@ -1207,7 +1246,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_connection` (
     `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
     `position_id` SMALLINT(5) UNSIGNED NOT NULL,
     `layout` SMALLINT(5) UNSIGNED DEFAULT NULL,
-    `order` SMALLINT(5) DEFAULT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
         ON UPDATE CASCADE
@@ -1232,7 +1271,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_setting` (
     `description_helper` TEXT DEFAULT NULL,
     `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
     `required` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `order` SMALLINT(5) DEFAULT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `values_provider` VARCHAR(255) DEFAULT NULL,
     `check` TEXT DEFAULT NULL,
     `check_message` VARCHAR(150) DEFAULT NULL,

@@ -45,7 +45,7 @@ class PageFooterMenu extends AbstractHelper
             if (false !== ($pageUrl = $this->getView()->pageUrl($menu['slug']))) {
                 // get the page's title
                 $pageTitle = PageModel::PAGE_TYPE_SYSTEM == $menu['type']
-                        ? $this->getView()->translate($menu['title']) 
+                        ? $this->getView()->translate($menu['system_title']) 
                         : $this->getView()->escapeHtml($menu['title']);
 
                 if ($headerLink) {

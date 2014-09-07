@@ -31,6 +31,10 @@ div#logo-wrapper div#logo-actions div.btn-group div.btn-group-wrapper div.btn-gr
   display: table-cell;
   vertical-align: middle;
 }
+div#logo-wrapper div#logo-actions div.btn-group div.btn-group-wrapper div.btn-group-item img.icon {
+  height: 44px;
+  width: auto;
+}
 div#logo-wrapper div#logo-actions div.btn-group div.btn-group-wrapper div.btn-group-item ul.dropdown-menu {
   background-color: #f5f5f5;
 }

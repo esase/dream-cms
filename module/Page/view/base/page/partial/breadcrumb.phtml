@@ -9,7 +9,7 @@
     </li>
     <?php foreach($this->breadcrumb as $page) : ?>
         <?php $this->pageUrl  .= $page['slug'] ?>
-        <?php $this->pageTitle = $page['type'] == PageModel::PAGE_TYPE_SYSTEM ? $this->translate($page['title']) : $this->escapeHtml($page['title']) ?>
+        <?php $this->pageTitle = $page['type'] == PageModel::PAGE_TYPE_SYSTEM ? $this->translate($page['system_title']) : $this->escapeHtml($page['title']) ?>
         <li>
             <?php if ($this->page['slug'] == $page['slug']) : ?>
                 <?php echo $this->pageTitle ?>

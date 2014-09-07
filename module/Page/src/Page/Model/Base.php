@@ -29,6 +29,11 @@ class Base extends AbstractBase
     const CACHE_FOOTER_MENU = 'Page_Footer_Menu_';
 
     /**
+     * Cache user menu
+     */
+    const CACHE_USER_MENU = 'Page_User_Menu_';
+
+    /**
      * Pages data cache tag
      */
     const CACHE_PAGES_DATA_TAG = 'Page_Data_Tag';
@@ -46,6 +51,56 @@ class Base extends AbstractBase
     protected static $pagesTree = [];
 
     /**
+     * Get user menu
+     * 
+     * @param string $language
+     * @return array
+     */
+    public function getUserMenu($language)
+    {
+        // TODO: CLEAR THE 'CACHE_USER_MENU' AFTER ANY CHANGES IN PAGES STRUCTURE FOR A SELECTED LANGUAGE
+
+        $cacheName = CacheUtility::getCacheName(self::CACHE_USER_MENU . $language);
+
+        // check data in a cache
+        if (null === ($userMenu = $this->staticCacheInstance->getItem($cacheName))) {
+            // get the footer menu
+            $select = $this->select();
+            $select->from(['a' => 'page_structure'])
+                ->columns([
+                    'slug',
+                    'title',
+                    'type'
+                ])
+                ->join(
+                    ['b' => 'page_system'],
+                    'b.id = a.system_page',
+                    [
+                        'system_title' => 'title'
+                    ],
+                    'left'
+                )
+                ->where([
+                    'a.user_menu' => Page::PAGE_IN_USER_MENU,
+                    'a.language' => $language
+                ])
+                ->order('a.user_menu_order');
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+
+            $userMenu = $resultSet->toArray();
+
+            // save data in cache
+            $this->staticCacheInstance->setItem($cacheName, $userMenu);
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_PAGES_DATA_TAG]);
+        }
+
+        return $userMenu;
+    }
+
+    /**
      * Get footer menu
      * 
      * @param string $language
@@ -61,17 +116,25 @@ class Base extends AbstractBase
         if (null === ($footerMenu = $this->staticCacheInstance->getItem($cacheName))) {
             // get the footer menu
             $select = $this->select();
-            $select->from('page_structure')
+            $select->from(['a' => 'page_structure'])
                 ->columns([
                     'slug',
                     'title',
                     'type'
                 ])
+                ->join(
+                    ['b' => 'page_system'],
+                    'b.id = a.system_page',
+                    [
+                        'system_title' => 'title'
+                    ],
+                    'left'
+                )
                 ->where([
-                    'footer_menu' => Page::PAGE_IN_FOOTER_MENU,
-                    'language' => $language
+                    'a.footer_menu' => Page::PAGE_IN_FOOTER_MENU,
+                    'a.language' => $language
                 ])
-                ->order('footer_menu_order');
+                ->order('a.footer_menu_order');
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -209,20 +272,28 @@ class Base extends AbstractBase
 
             // get all pages structure
             $select = $this->select();
-            $select->from('page_structure')
+            $select->from(['a' => 'page_structure'])
                 ->columns([
                     'id',
                     'slug',
                     'title',
                     'level',
                     'active',
-                    'privacy',
                     'site_map',
                     'menu',
                     'type',
                     'language'
                 ])
-                ->order('language, left_key');
+                ->join(
+                    ['b' => 'page_system'],
+                    'b.id = a.system_page',
+                    [
+                        'privacy',
+                        'system_title' => 'title'
+                    ],
+                    'left'
+                )
+                ->order('a.language, a.left_key');
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -242,6 +313,7 @@ class Base extends AbstractBase
                 $levels[$page->level] = $page->slug;
                 $pagesMap[$page->language][$page->slug] = [
                     'title'  => $page->title,
+                    'system_title'  => $page->system_title,
                     'active' => $page->active,
                     'level' => $page->level,
                     'privacy' => $page->privacy,

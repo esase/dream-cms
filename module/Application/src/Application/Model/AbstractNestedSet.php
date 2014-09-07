@@ -148,7 +148,7 @@ abstract class AbstractNestedSet
     {
         $resultSet = $this->tableGateway->select(function (Select $select) use ($id, $field, $closure) {
             $select->where([
-                $field => $id
+                $this->tableGateway->table . '.' . $field => $id
             ])->limit(1);
 
             if ($closure) {

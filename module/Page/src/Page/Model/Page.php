@@ -31,6 +31,11 @@ class Page extends AbstractNestedSet
     const PAGE_IN_FOOTER_MENU = 1;
 
     /**
+     * Page in user menu 
+     */
+    const PAGE_IN_USER_MENU = 1;
+
+    /**
      * Page type system
      */
     const PAGE_TYPE_SYSTEM = 'system';
@@ -61,7 +66,7 @@ class Page extends AbstractNestedSet
         return $this->getParentNodes($leftKey, 
                 $rightKey, function (Select $select) use ($userRole, $language, $excludeHome) {
 
-            $select->columns(['slug', 'title', 'type', 'privacy', 'level', 'redirect_url']);
+            $select->columns(['slug', 'title', 'type', 'level', 'redirect_url']);
             $select = $this->getPageFilter($select, $userRole, $language, false);
 
             if ($excludeHome) {
@@ -106,7 +111,7 @@ class Page extends AbstractNestedSet
         if ($addLayout) {
             $select->join(
                 ['c' => 'page_layout'],
-                new Expression('c.id = ' . $this->tableGateway->table . '.layout'), 
+                'c.id = ' . $this->tableGateway->table . '.layout', 
                 [
                     'layout' => 'name'
                 ]
@@ -116,13 +121,23 @@ class Page extends AbstractNestedSet
         // administrators can see any pages
         if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {
             $select->join(
-                ['e' => 'page_visibility'],
-                new Expression('e.page_id = ' . 
-                        $this->tableGateway->table . '.id and e.hidden = ?', [$userRole]), 
+                ['d' => 'page_visibility'],
+                new Expression('d.page_id = ' . 
+                        $this->tableGateway->table . '.id and d.hidden = ?', [$userRole]), 
                 [],
                 'left'
             );
         }
+
+        $select->join(
+            ['i' => 'page_system'],
+            'i.id = ' . $this->tableGateway->table . '.system_page', 
+            [
+                'privacy',
+                'system_title' => 'title'
+            ],
+            'left'
+        );
 
         $select->where([
             'language' => $language,
@@ -130,9 +145,9 @@ class Page extends AbstractNestedSet
         ]);
 
         if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {
-            $select->where->IsNull('e.id');
+            $select->where->IsNull('d.id');
         }
-
+        
         return $select;
     }
 }

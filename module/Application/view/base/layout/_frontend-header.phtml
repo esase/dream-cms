@@ -11,7 +11,7 @@
             ->appendName('generator', $this->applicationSetting('application_generator') . ' ' . $this->applicationSetting('application_generator_version'))
         ?>
 
-        <!-- Le styles -->
+        <!-- styles -->
         <?php $this->layoutHeadLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->layoutAsset('icon/favicon.ico', 'image')])
             ->prependStylesheet($this->layoutAsset('frontend.css', 'css')) 
             ->prependStylesheet($this->layoutAsset('jquery-ui.css', 'css'))
@@ -29,7 +29,7 @@
 
         <?php echo $this->layoutHeadLink() ?>
 
-        <!-- Scripts -->
+        <!-- scripts -->
         <?php echo $this->layoutHeadScript()
             ->prependFile($this->layoutAsset('jquery.smartmenus.js'))
             ->prependFile($this->layoutAsset('functions.js'))
@@ -58,6 +58,7 @@
                     <?php echo $this->pageInjectWidget('logo') ?>
                     <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                         <?php $this->declareVars('languageParams') ?>
+                        <!-- language switcher -->
                         <div class="btn-group">
                             <div class="btn-group-wrapper">
                                 <div class="btn-group-item">
@@ -66,13 +67,13 @@
                                         <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#"><?php echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) ?><span class="caret"></span></a>
                                         <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
                                             <?php foreach ($this->localization()->getAllLocalizations() as $language): ?>
-                                                <li <?php if ($language['language'] == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
+                                                <li role="presentation" <?php if ($language['language'] == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
 
                                                     <?php $this->languageParams = false !== $this->pageUrl($this->page['slug'], $language['language']) 
                                                             ? ['language' => $language['language'], 'page_name' => $this->pageUrl($this->page['slug'], $language['language'])]
                                                             : ['language' => $language['language']] ?>
 
-                                                    <a href="<?php echo $this->url('page', $this->languageParams, ['force_canonical' => true]) ?>">
+                                                    <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', $this->languageParams, ['force_canonical' => true]) ?>">
                                                         <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
                                                         <?php echo $this->escapeHtml($language['description']) ?>
                                                     </a>
@@ -84,20 +85,31 @@
                             </div>
                         </div>
                     <?php endif?>
-                    <div class="btn-group">
-                        <div class="btn-group-wrapper">
-                            <div class="btn-group-item">
-                                <div class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Hello, Alex<span class="caret"></span></a>
-                                    <img width="44" alt="" src="http://demo.neontheme.com/assets/images/thumb-1@2x.png">
-                                    <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
-                                        <li><a href="#"><img src="<?php  echo $this->layoutAsset('icon/flag/en.gif', 'image') ?>"  /> English</a></li>
-                                        <li><a href="#"><img src="<?php  echo $this->layoutAsset('icon/flag/ru.gif', 'image') ?>"  /> Russian</a></li>
-                                    </ul>
+                    <?php if(!$this->userIsGuest()): ?>
+                        <div class="btn-group">
+                            <!-- user menu -->
+                            <div class="btn-group-wrapper">
+                                <div class="btn-group-item">
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                            <?php echo $this->translate('Hello') ?>, <?php echo $this->escapeHtml($this->userIdentity()['nick_name']) ?><span class="caret"></span></a>
+                                        <img class="icon" alt="<?php echo $this->escapeHtmlAttr($this->userIdentity()['nick_name']) ?>" src="<?php echo $this->escapeHtmlAttr($this->userAvatarUrl($this->userIdentity()['avatar'])) ?>" />
+                                        <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
+                                            <?php if ($this->pageUserMenu()): ?>
+                                                <?php foreach($this->pageUserMenu() as $menu) : ?>
+                                                    <li role="presentation">
+                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['page_name' => $menu['url']], ['force_canonical' => true]) ?>"><?php echo $menu['title'] ?></a>
+                                                    </li>
+                                                <?php endforeach ?>
+                                                <li role="presentation" class="divider"></li>
+                                            <?php endif ?>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('<?php echo $this->url('page', ['page_name' => $this->url], ['force_canonical' => true]) ?>')"><?php echo $this->translate('Logout') ?></a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php endif ?>
                 </div>
             </div>
         </div>
