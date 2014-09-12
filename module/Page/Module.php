@@ -66,7 +66,7 @@ class Module
     {
         return [
             'invokables' => [
-                'pageTitle' => 'Page\View\Helper\PageTitle',
+                'pageBreadcrumb' => 'Page\View\Helper\PageBreadcrumb',
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
                 'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'
             ],

@@ -6,7 +6,5 @@
         ? $this->page['meta_keywords'] 
         : $this->applicationSetting('application_meta_keywords')) ?>
 
-<?php if ($this->page['level'] > 1): ?>
-    <?php $this->pageTitle($this->breadcrumb) ?>
-    <?php echo $this->partial('page/partial/breadcrumb', ['breadcrumb' => $this->breadcrumb, 'page' => $this->page]) ?>
-<?php endif ?>
+<?php echo $this->pageBreadcrumb()
+        ->setBreadcrumb($this->breadcrumb)->setPage($this->page)->getBreadcrumb() ?>

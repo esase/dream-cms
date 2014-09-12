@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Form;
  
 use Application\Service\Setting as SettingService;
@@ -10,7 +9,7 @@ use Zend\Mvc\I18n\Translator;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\Form\Exception\InvalidArgumentException;
-use Application\Utility\Locale as LocaleUtility;
+use Localization\Utility\Locale as LocaleUtility;
 use Zend\Captcha\Image as CaptchaImage;
 use IntlDateFormatter;
 

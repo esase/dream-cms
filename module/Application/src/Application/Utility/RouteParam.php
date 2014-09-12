@@ -24,6 +24,16 @@ class RouteParam
     }
 
     /**
+     * Get a route query
+     *
+     * @return array
+     */
+    public static function getQuery()
+    {
+        return ServiceManagerService::getServiceManager()->get('Request')->getQuery()->toArray();
+    }
+
+    /**
      * Get route match
      *
      * @return object

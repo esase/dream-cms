@@ -1,8 +1,7 @@
 <?php
+namespace Localization\Utility;
 
-namespace Application\Utility;
-
-use Application\Service\Service as ApplicationService;
+use Localization\Service\Localization as LocalizationService;
 use Zend\I18n\Filter\NumberFormat;
 use IntlDateFormatter;
 use NumberFormatter;
@@ -28,7 +27,7 @@ class Locale
     public static function getLocale()
     {
         if (!self::$locale) {
-            self::$locale = ApplicationService::getCurrentLocalization()['locale'];
+            self::$locale = LocalizationService::getCurrentLocalization()['locale'];
         }
 
         return self::$locale;

@@ -1,0 +1,38 @@
+<?php echo $this->partial('partial/table', [
+    'headers' => [
+    ],
+    'list' => [
+        'nick_name' => [
+            'nick_name' => 'NickName',
+            'nick_name_value' => $this->user['nick_name']
+        ],
+        'name' => [
+            'first_name' => 'First Name',
+            'name_value' => $this->user['first_name']
+        ],
+        'surname' => [
+            'surname' => 'Last Name',
+            'surname_value' => $this->user['last_name']
+        ],
+        'registration_date' => [
+            'registration_date' => 'Registration date',
+            'registration_date_value' => $this->applicationDate($this->user['registered'])
+        ],
+        'phone' => array(
+            'phone' => 'Phone',
+            'phone_value' => $this->user['phone']
+        ),
+        'address' => array(
+            'address' => 'Address',
+            'address_value' => $this->user['address']
+        ),
+    ],
+    'helpers' => [
+        'nick_name' => 'translate',
+        'first_name' => 'translate',
+        'surname' => 'translate',
+        'registration_date' => 'translate',
+        'phone' => 'translate',
+        'address' => 'translate'
+    ]    
+]) ?>

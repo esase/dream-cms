@@ -234,7 +234,9 @@ class Module
                 'userActivateWidget' => 'User\View\Widget\UserActivateWidget',
                 'userForgotWidget' => 'User\View\Widget\UserForgotWidget',
                 'userPasswordResetWidget' => 'User\View\Widget\UserPasswordResetWidget',
-                'userDeleteWidget' => 'User\View\Widget\UserDeleteWidget'
+                'userDeleteWidget' => 'User\View\Widget\UserDeleteWidget',
+                'userInfoWidget' => 'User\View\Widget\UserInfoWidget',
+                'userAvatarWidget' => 'User\View\Widget\UserAvatarWidget'
             ],
             'factories' => [
                 'userAvatarUrl' => function(){

@@ -29,16 +29,22 @@ class UserViewPrivacy extends AbstractPagePrivacy
     }
 
     /**
-     * Is allowed to view page
-     *
+     * Is allowed view page
+     * 
+     * @param array $privacyOptions
      * @return boolean
      */
-    public function isAllowedViewPage()
+    public function isAllowedViewPage(array $privacyOptions = [])
     {
-    return true;
-        if (null == ($userInfo = $this->
-                getModel()->getUserInfo(RouteParamUtility::getParam('slug', -1), UserWidgetModel::USER_INFO_BY_SLUG))) {
+        $userId = !empty($privacyOptions['user_id']) 
+            ? $privacyOptions['user_id'] 
+            : RouteParamUtility::getParam('slug', -1);
 
+        $userField = !empty($privacyOptions['user_id']) 
+            ? UserWidgetModel::USER_INFO_BY_ID
+            : UserWidgetModel::USER_INFO_BY_SLUG;
+
+        if (null == ($userInfo = $this->getModel()->getUserInfo($userId, $userField))) {
             return false;
         }
 

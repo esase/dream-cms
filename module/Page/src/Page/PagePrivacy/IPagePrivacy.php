@@ -6,17 +6,10 @@ use Zend\Mvc\Controller\AbstractController;
 interface IPagePrivacy
 {
     /**
-     * Set controller
-     *
-     * @param object $controller
-     * @return object fluent interface
-     */
-    //public function setController(AbstractController $controller);
-
-    /**
      * Is allowed to view
      *
+     * @param array $privacyOptions
      * @return boolean
      */
-    public function isAllowedViewPage();
+    public function isAllowedViewPage(array $privacyOptions = []);
 }

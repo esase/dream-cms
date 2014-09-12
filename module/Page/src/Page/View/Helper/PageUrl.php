@@ -43,10 +43,11 @@ class PageUrl extends AbstractHelper
      * Page url
      *
      * @param string slug
+     * @param array $privacyOptions
      * @param string $language
      * @return string|boolean
      */
-    public function __invoke($slug, $language = null)
+    public function __invoke($slug, array $privacyOptions = [], $language = null)
     {
         // compare the slug for home page 
         if ($this->homePage == $slug) {
@@ -63,7 +64,7 @@ class PageUrl extends AbstractHelper
             return $this->definedUrls[$language][$slug];
         }
 
-        $pageUrl = $this->getPageUrl($slug, $language);
+        $pageUrl = $this->getPageUrl($slug, $privacyOptions, $language);
         $this->definedUrls[$language][$slug] = $pageUrl;
 
         return $pageUrl;
@@ -73,10 +74,11 @@ class PageUrl extends AbstractHelper
      * Get page url
      *
      * @param string $slug
+     * @param array $privacyOptions
      * @param string $language
      * @return string|boolean
      */
-    protected function getPageUrl($slug, $language) 
+    protected function getPageUrl($slug, array $privacyOptions = [], $language) 
     {
         if (!array_key_exists($slug, $this->pagesMap[$language])) {
             return false;
@@ -91,7 +93,9 @@ class PageUrl extends AbstractHelper
         }
 
         // check the page's privacy
-        if (false == ($result = PagePrivacyUtility::checkPagePrivacy($page['privacy']))) {
+        if (false == ($result = PagePrivacyUtility::checkPagePrivacy($page['privacy'], 
+                $privacyOptions))) {
+
             return false;
         }
 
@@ -104,7 +108,7 @@ class PageUrl extends AbstractHelper
 
         // check for a parent and skip the home page
         if (!empty($page['parent']) && $this->pagesMap[$language][$page['parent']]['level'] > 1) {
-            if (false === ($parentUrl = $this->getPageUrl($page['parent'], $language))) {
+            if (false === ($parentUrl = $this->getPageUrl($page['parent'], $privacyOptions, $language))) {
                 return false;
             }
 

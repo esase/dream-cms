@@ -32,9 +32,10 @@ class UserActivatePrivacy extends AbstractPagePrivacy
     /**
      * Is allowed to view page
      *
+     * @param array $privacyOptions
      * @return boolean
      */
-    public function isAllowedViewPage()
+    public function isAllowedViewPage(array $privacyOptions = [])
     {
         if (!UserIdentityService::isGuest() || null == ($userInfo = $this->
                 getModel()->getUserInfo(RouteParamUtility::getParam('slug', -1), UserWidgetModel::USER_INFO_BY_SLUG))) {

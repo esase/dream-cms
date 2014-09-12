@@ -57,7 +57,6 @@
                 <div class="col-sm-5" id="logo-actions">
                     <?php echo $this->pageInjectWidget('logo') ?>
                     <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
-                        <?php $this->declareVars('languageParams') ?>
                         <!-- language switcher -->
                         <div class="btn-group">
                             <div class="btn-group-wrapper">
@@ -68,15 +67,17 @@
                                         <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
                                             <?php foreach ($this->localization()->getAllLocalizations() as $language): ?>
                                                 <li role="presentation" <?php if ($language['language'] == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
-
-                                                    <?php $this->languageParams = false !== $this->pageUrl($this->page['slug'], $language['language']) 
-                                                            ? ['language' => $language['language'], 'page_name' => $this->pageUrl($this->page['slug'], $language['language'])]
-                                                            : ['language' => $language['language']] ?>
-
-                                                    <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', $this->languageParams, ['force_canonical' => true]) ?>">
-                                                        <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
-                                                        <?php echo $this->escapeHtml($language['description']) ?>
-                                                    </a>
+                                                    <?php if (false !== $this->pageUrl($this->page['slug'], [], $language['language'])): ?>
+                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['language' => $language['language'], 'page_name' => $this->pageUrl($this->page['slug'], [], $language['language'])], ['force_canonical' => true, 'query' => $this->applicationRoute()->getQuery()], true) ?>">
+                                                            <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
+                                                            <?php echo $this->escapeHtml($language['description']) ?>
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['language' => $language['language']], ['force_canonical' => true]) ?>">
+                                                            <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
+                                                            <?php echo $this->escapeHtml($language['description']) ?>
+                                                        </a>
+                                                    <?php endif ?>
                                                 </li>
                                             <?php endforeach ?>
                                         </ul>
@@ -87,7 +88,7 @@
                     <?php endif?>
                     <?php if(!$this->userIsGuest()): ?>
                         <?php $this->declareVars('userPage') ?>
-                        <?php $this->userPage = $this->pageUrl('user') ?>
+                        <?php $this->userPage = $this->pageUrl('user', ['user_id' => $this->userIdentity()['user_id']]) ?>
                         <div class="btn-group" id="logged-user-menu">
                             <!-- user menu -->
                             <div class="btn-group-wrapper">

@@ -3,7 +3,7 @@ namespace Page\View\Widget;
  
 use Application\Service\ServiceManager;
 use Application\Service\Setting as SettingService;
-use Page\Utility\RouteParam as RouteParamUtility;
+use Application\Utility\RouteParam as RouteParamUtility;
 use Zend\Http\Response;
 use Zend\View\Helper\AbstractHelper;
 

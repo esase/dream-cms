@@ -1,6 +1,3 @@
-<?php use Page\Model\Page as PageModel ?>
-<?php $this->declareVars('pageUrl', 'pageTitle') ?>
-
 <ol class="breadcrumb">
     <li>
         <a href="<?php echo $this->url('page', [], ['force_canonical' => true]) ?>">
@@ -8,17 +5,14 @@
         </a>
     </li>
     <?php foreach($this->breadcrumb as $page) : ?>
-        <?php $this->pageUrl  .= $page['slug'] ?>
-        <?php $this->pageTitle = $page['type'] == PageModel::PAGE_TYPE_SYSTEM ? $this->translate($page['system_title']) : $this->escapeHtml($page['title']) ?>
         <li>
-            <?php if ($this->page['slug'] == $page['slug']) : ?>
-                <?php echo $this->pageTitle ?>
+            <?php if (!$page['url']) : ?>
+                <?php echo $page['title'] ?>
             <?php else: ?>
-                <a href="<?php echo $this->url('page', ['page_name' => $this->pageUrl], ['force_canonical' => true]) ?>">
-                    <?php echo $this->pageTitle ?>
+                <a href="<?php echo $this->url('page', ['page_name' => $page['url']], ['force_canonical' => true]) ?>">
+                    <?php echo $page['title'] ?>
                 </a>
             <?php endif ?>
         </li>
-        <?php $this->pageUrl .= '/' ?>
     <?php endforeach ?>
 </ol>

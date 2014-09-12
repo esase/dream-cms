@@ -1053,14 +1053,16 @@ CREATE TABLE IF NOT EXISTS `page_widget` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `page_widget` (`id`, `name`, `module`, `type`) VALUES
-(1, 'pageHtmlWidget', 5, 'public'),
-(2, 'userLoginWidget', 2, 'public'),
-(3, 'userRegisterWidget', 2, 'public'),
-(4, 'userActivateWidget', 2, 'public'),
-(5, 'userForgotWidget', 2, 'public'),
-(6, 'userPasswordResetWidget', 2, 'public'),
-(7, 'userDeleteWidget', 2, 'public'),
-(8, 'pageSiteMapWidget', 5, 'public');
+(1,  'pageHtmlWidget', 5, 'public'),
+(2,  'userLoginWidget', 2, 'public'),
+(3,  'userRegisterWidget', 2, 'public'),
+(4,  'userActivateWidget', 2, 'public'),
+(5,  'userForgotWidget', 2, 'public'),
+(6,  'userPasswordResetWidget', 2, 'public'),
+(7,  'userDeleteWidget', 2, 'public'),
+(8,  'pageSiteMapWidget', 5, 'public'),
+(9,  'userInfoWidget', 2, 'public'),
+(10, 'userAvatarWidget', 2, 'public');
 
 CREATE TABLE IF NOT EXISTS `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1142,7 +1144,8 @@ INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`) VALUES
 (4, 5, 4),
 (5, 6, 6),
 (6, 7, 7),
-(7, 8, 8);
+(7, 8, 8),
+(8, 9, 9);
 
 CREATE TABLE IF NOT EXISTS `page_widget_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1161,7 +1164,9 @@ INSERT INTO `page_widget_page_depend` (`id`, `page_id`, `widget_id`) VALUES
 (1, 5, 4),
 (2, 4, 5),
 (3, 6, 6),
-(4, 7, 7);
+(4, 7, 7),
+(5, 9, 9),
+(6, 9, 10);
 
 CREATE TABLE IF NOT EXISTS `page_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
