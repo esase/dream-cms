@@ -8,26 +8,6 @@ use Localization\Service\Localization as LocalizationService;
 class UserRegisterWidget extends UserAbstractWidget
 {
     /**
-     * Time zone model instance
-     * @var object  
-     */
-    protected $timeZoneModel;
-
-    /**
-     * Get timezone model
-     */
-    protected function getTimeZoneModel()
-    {
-        if (!$this->timeZoneModel) {
-            $this->timeZoneModel = $this->getServiceLocator()
-                ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\TimeZone');
-        }
-
-        return $this->timeZoneModel;
-    }
-
-    /**
      * Get widget content
      *
      * @return string|boolean
@@ -69,7 +49,9 @@ class UserRegisterWidget extends UserAbstractWidget
                         // check the user status
                         if (!$status) {
                             // get user activate url
-                            if (false !== ($activateUrl = $this->getView()->pageUrl('user-activate'))) {
+                            if (false !== ($activateUrl = $this->
+                                    getView()->pageUrl('user-activate', ['user_id' => $userInfo['user_id']]))) {
+
                                 // send an email activate notification
                                 EmailNotification::sendNotification($userInfo['email'],
                                     $this->getSetting('user_email_confirmation_title'),
@@ -89,13 +71,13 @@ class UserRegisterWidget extends UserAbstractWidget
                                     ]);
 
                                 $this->getFlashMessenger()
-                                      ->setNamespace('success')
-                                      ->addMessage($this->translate('We sent a message with a confirmation code to your registration e-mail'));
+                                    ->setNamespace('success')
+                                    ->addMessage($this->translate('We sent a message with a confirmation code to your registration e-mail'));
                             }
                             else {
                                 $this->getFlashMessenger()
-                                      ->setNamespace('success')
-                                      ->addMessage($this->translate('Your profile will be activated after checking'));
+                                    ->setNamespace('success')
+                                    ->addMessage($this->translate('Your profile will be activated after checking'));
                             }
 
                             $this->reloadPage();

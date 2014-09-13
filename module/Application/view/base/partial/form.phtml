@@ -1,4 +1,8 @@
+<?php use Application\Form\CustomFormBuilder ?>
+
 <?php $this->declareVars('category', 'formCategories', 'openCategories') ?>
+<?php $this->declareVars('initCalendar', 'initWysiwyg', 'filePreview') ?>
+
 <?php $this->formCategories = new ArrayObject() ?>
 <?php $this->openCategories = new ArrayObject() ?>
 
@@ -18,6 +22,39 @@
         // get the element's description
         if (null != ($elementDescription = $element->getOption('description'))) {
             $renderedElement .= '<p class="help-block">' . $elementDescription . '</p>';
+        }
+
+        // get element's type
+        if (null !== ($elementType = $form->getElementType($element->getName()))) {
+            switch ($elementType) {
+                case CustomFormBuilder::FIELD_IMAGE :
+                case CustomFormBuilder::FIELD_FILE  :
+                    // generate an image preview area
+                    if (!empty($element->getOption('extra_options')['preview'])
+                                && !empty($element->getOption('extra_options')['file_url'])) {
+
+                        $this->filePreview = $elementType == CustomFormBuilder::FIELD_IMAGE
+                            ? 'partial/_form-image-preview'
+                            : 'partial/_form-file-preview';
+
+                        $renderedElement .= $this->partial($this->filePreview, array(
+                            'name' => $element->getName(),
+                            'file_url' => $element->getOption('extra_options')['file_url'],
+                            'delete_option' => !empty($element->getOption('extra_options')['delete_option']) ? true : false
+                        ));
+                    }
+                    break;
+
+                case CustomFormBuilder::FIELD_DATE :
+                case CustomFormBuilder::FIELD_DATE_UNIXTIME :
+                    $this->initCalendar = true;
+                    break;
+
+                case CustomFormBuilder::FIELD_HTML_AREA :
+                case CustomFormBuilder::FIELD_NOTIFICATION_MESSAGE :
+                    $this->initWysiwyg = true;
+                    break;
+            }
         }
 
         // put the rendered element into categories array
@@ -43,3 +80,13 @@
     ]);
     echo $this->form()->closeTag();
 ?>
+
+<?php if ($this->initWysiwyg): ?>
+    <?php echo $this->partial('partial/_init-wysiwyg', array(
+        'mode' => !empty($this->wysiwygMode) ? $this->wysiwygMode : null,
+    ));?>
+<?php endif; ?>
+
+<?php if ($this->initCalendar): ?>
+    <?php echo $this->partial('partial/_init-calendar') ?>
+<?php endif; ?>

@@ -1,5 +1,4 @@
 <?php
-
 namespace User\Utility;
 
 use Application\Service\ServiceManager;

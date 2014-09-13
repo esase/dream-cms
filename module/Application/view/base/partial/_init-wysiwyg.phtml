@@ -1,0 +1,39 @@
+<?php $this->declareVars(array('menuBar', 'toolbar', 'plugins')) ?>
+
+<?php if ($this->mode == 'simple'): ?>
+    <?php $this->menuBar = 'false' ?>
+    <?php $this->toolbar = 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | link image' ?>
+    <?php $this->plugins = '"link image"' ?>
+<?php else: ?>
+    <?php $this->menuBar = 'true' ?>
+    <?php $this->toolbar = 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image' ?>
+    <?php $this->plugins = '"advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen", "insertdatetime media table contextmenu paste"' ?>
+<?php endif; ?>
+
+<!-- init tinymce -->
+<script type="text/javascript" src="<?php echo $this->layoutAsset('tinymce/jquery.tinymce.min.js') ?>"></script>
+<script type="text/javascript">
+    $('.htmlarea').tinymce({
+        directionality : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguageDirection()) ?>',
+        script_url : '<?php echo $this->escapeJs($this->layoutAsset('tinymce/tinymce.min.js')) ?>',
+        language : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguage()) ?>',
+        plugins: [<?php echo $this->plugins ?>],
+        menubar : <?php echo $this->menuBar ?>,
+        toolbar: "<?php echo $this->toolbar ?>",
+        convert_urls : false,
+        <?php if ($this->checkPermission('files_manager_embedded_list')): ?>
+            file_browser_callback: function(field_name, url, type, win) { 
+                tinymce.activeEditor.windowManager.open({
+                    title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
+                    url: '<?php echo $this->escapeJs($this->url('administration', array('controller' => 'files-manager-embedded', 'action' => 'list'))) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
+                    width: <?php echo (int) $this->getSetting('file_manager_window_width') ?>,
+                    height: <?php echo (int) $this->getSetting('file_manager_window_height') ?>
+                }, {
+                    oninsert: function(url) {
+                        win.document.getElementById(field_name).value = url;
+                    }
+                });
+            }
+        <?php endif; ?>
+    });
+</script>

@@ -128,8 +128,11 @@ class Module
                     $user = $this->serviceManager
                         ->get('Application\Model\ModelManager')
                         ->getInstance('User\Model\Base');
-    
-                    if (null != ($userInfo = $user->getUserInfo($authService->getIdentity()['user_id']))) {
+
+                    // get user info
+                    $userInfo = $user->getUserInfo($authService->getIdentity()['user_id']);
+
+                    if ($userInfo && $userInfo['status'] == UserBaseModel::STATUS_APPROVED) {
                         // fill the user identity with data
                         foreach($userInfo as $fieldName => $value) {
                             $this->userIdentity[$fieldName] = $value;
@@ -236,7 +239,10 @@ class Module
                 'userPasswordResetWidget' => 'User\View\Widget\UserPasswordResetWidget',
                 'userDeleteWidget' => 'User\View\Widget\UserDeleteWidget',
                 'userInfoWidget' => 'User\View\Widget\UserInfoWidget',
-                'userAvatarWidget' => 'User\View\Widget\UserAvatarWidget'
+                'userAvatarWidget' => 'User\View\Widget\UserAvatarWidget',
+                'userDashboardWidget' => 'User\View\Widget\UserDashboardWidget',
+                'userDashboardUserInfoWidget' => 'User\View\Widget\UserDashboardUserInfoWidget',
+                'userEditWidget' => 'User\View\Widget\UserEditWidget'
             ],
             'factories' => [
                 'userAvatarUrl' => function(){

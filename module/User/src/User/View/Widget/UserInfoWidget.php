@@ -16,6 +16,8 @@ class UserInfoWidget extends UserAbstractWidget
         if (null != ($userInfo = 
                     $this->getModel()->getUserInfo($this->getSlug(), UserWidgetModel::USER_INFO_BY_SLUG))) {
 
+            //TODO: add a system event here
+
             // breadcrumb
             $this->getView()->pageBreadcrumb()->setCurrentPageTitle($userInfo['nick_name']);
 

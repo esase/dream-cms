@@ -153,13 +153,12 @@ class Event extends AbstractEvent
         // event's description
         $eventDesc = $selfEdit
             ? 'Event - User edited'
-            : (UserIdentityService::isGuest() ? 'Event - User edited by guest'
-                    : 'Event - User edited by user');
+            : (UserIdentityService::isGuest() ? 'Event - User edited by guest' : 'Event - User edited by user');
 
         $eventDescParams = $selfEdit
-            ? array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId)
-            : (UserIdentityService::isGuest() ? array($userId)
-                    : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId));
+            ? [UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId]
+            : (UserIdentityService::isGuest() ? [$userId]
+                    : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId]);
 
         self::fireEvent(self::EDIT, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }

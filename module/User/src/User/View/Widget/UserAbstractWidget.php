@@ -19,6 +19,26 @@ abstract class UserAbstractWidget extends AbstractWidget
     protected $authService;
 
     /**
+     * Time zone model instance
+     * @var object  
+     */
+    protected $timeZoneModel;
+
+    /**
+     * Get timezone model
+     */
+    protected function getTimeZoneModel()
+    {
+        if (!$this->timeZoneModel) {
+            $this->timeZoneModel = $this->getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Application\Model\TimeZone');
+        }
+
+        return $this->timeZoneModel;
+    }
+
+    /**
      * Get model
      */
     protected function getModel()
@@ -70,6 +90,11 @@ abstract class UserAbstractWidget extends AbstractWidget
                     get('Zend\Session\SessionManager')->rememberMe((int) $this->getSetting('user_session_time'));
         }
 
-        return $this->redirectTo(); // redirect to home page
+        // check the user's dashboard url
+        $userDashboard = $this->getView()->pageUrl('user-dashboard', ['skip_checking' => 'true']);
+
+        return false !== $userDashboard
+            ? $this->redirectTo(['page_name' => $userDashboard])
+            : $this->redirectTo(); // redirect to home page
     }
 }
