@@ -2,12 +2,12 @@
 namespace User\Controller;
 
 use Zend\View\Model\ViewModel;
-use Application\Controller\AbstractAdministrationController;
+use Application\Controller\ApplicationAbstractAdministrationController;
 use Application\Model\Acl as AclBaseModel;
 use User\Service\Service as UserService;
 use User\Model\UserAdministration as UserAdministrationModel;
 
-class UserAdministrationController extends AbstractAdministrationController
+class UserAdministrationController extends ApplicationAbstractAdministrationController
 {
     /**
      * Model instance
@@ -197,7 +197,7 @@ class UserAdministrationController extends AbstractAdministrationController
         // get a role form
         $roleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('User\Form\Role');
+            ->getInstance('User\Form\UserRole');
 
         // fill the form with default values
         $roleForm->getForm()->setData($user);

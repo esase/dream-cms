@@ -3,7 +3,7 @@ namespace Page\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
 use Page\Exception\PageException;
-use Page\View\Widget\IWidget;
+use Page\View\Widget\IPageWidget;
 use User\Service\UserIdentity as UserIdentityService;
 
 class PageInjectWidget extends AbstractHelper
@@ -56,8 +56,8 @@ class PageInjectWidget extends AbstractHelper
                 $widget = $this->getView()->{$widgetInfo['widget_name']}();
 
                 // check the widget
-                if (!$widget instanceof IWidget) {
-                    throw new PageException(sprintf($widgetInfo['widget_name'] . ' must be an object implementing IWidget'));
+                if (!$widget instanceof IPageWidget) {
+                    throw new PageException(sprintf($widgetInfo['widget_name'] . ' must be an object implementing IPageWidget'));
                 }
 
                 // init the widget

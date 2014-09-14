@@ -1,14 +1,14 @@
 <?php
 namespace Page\Model;
 
-use Acl\Model\Base as AclBaseModel;
-use Application\Model\AbstractNestedSet;
-use Application\Model\AbstractBase;
+use Acl\Model\AclBase as AclBaseModel;
+use Application\Model\ApplicationAbstractNestedSet;
+use Application\Model\ApplicationAbstractBase;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression as Expression;
 
-class Page extends AbstractNestedSet 
+class Page extends ApplicationAbstractNestedSet 
 {
     /**
      * Page status active 
@@ -103,7 +103,7 @@ class Page extends AbstractNestedSet
     {
         $select->join(
             ['b' => 'application_module'],
-            new Expression('b.id = module and b.status = ?', [AbstractBase::MODULE_STATUS_ACTIVE]), 
+            new Expression('b.id = module and b.status = ?', [ApplicationAbstractBase::MODULE_STATUS_ACTIVE]), 
             []
         );
 

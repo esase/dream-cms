@@ -1,12 +1,12 @@
 <?php
 namespace User\Form;
 
-use Application\Form\AbstractCustomForm;
-use User\Model\Base as UserBaseModel;
-use Application\Form\CustomFormBuilder;
+use Application\Form\ApplicationAbstractCustomForm;
+use User\Model\UserBase as UserBaseModel;
+use Application\Form\ApplicationCustomFormBuilder;
 use Application\Service\Service as ApplicationService;
 
-class UserFilter extends AbstractCustomForm 
+class UserFilter extends ApplicationAbstractCustomForm 
 {
     /**
      * Form name
@@ -33,17 +33,17 @@ class UserFilter extends AbstractCustomForm
     protected $formElements = array(
         'nickname' => array(
             'name' => 'nickname',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'NickName'
         ),
         'email' => array(
             'name' => 'email',
-            'type' => CustomFormBuilder::FIELD_EMAIL,
+            'type' => ApplicationCustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email'
         ),
         'status' => array(
             'name' => 'status',
-            'type' => CustomFormBuilder::FIELD_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
             'values' => array(
                UserBaseModel::STATUS_APPROVED => 'approved',
@@ -52,14 +52,14 @@ class UserFilter extends AbstractCustomForm
         ),
         'role' => array(
             'name' => 'role',
-            'type' => CustomFormBuilder::FIELD_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Role',
             'values' => array(
             )
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => CustomFormBuilder::FIELD_SUBMIT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Search',
         )
     );
@@ -76,7 +76,7 @@ class UserFilter extends AbstractCustomForm
             // get list of acl roles
             $this->formElements['role']['values'] = ApplicationService::getAclRoles();
 
-            $this->form = new CustomFormBuilder($this->formName,
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 

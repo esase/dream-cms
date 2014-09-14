@@ -38,8 +38,6 @@ class Module
     {
         return [
             'invokables' => [
-                'aclCheckPermission' => 'Acl\View\Helper\AclCheckPermission',
-                'aclRoutePermission' => 'Acl\View\Helper\AclRoutePermission'
             ]
         ];
     }

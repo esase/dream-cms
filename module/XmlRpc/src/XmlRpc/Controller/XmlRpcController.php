@@ -6,7 +6,7 @@ use Zend\XmlRpc\Server as XmlRpcServer;
 use Zend\XmlRpc\Server\Fault as XmlRpcServerFault;
 use User\Service\Service as UserService;
 use stdClass;
-use User\Model\Base as UserModelBase;
+use User\Model\UserBase as UserModelBase;
 
 class XmlRpcController extends AbstractBaseController
 {

@@ -124,7 +124,7 @@
                     0 => array(
                         'param' => 'name',
                         'condition' =>  '$basePath = "' . $this->current_directory . '"; $fileName = "__value__";
-                                return !is_dir($basePath . $fileName) && in_array(Application\Utility\FileSystem::getFileExtension($fileName), explode(",", "' . strtolower($this->getSetting('file_manager_image_extensions')) . '"));'
+                                return !is_dir($basePath . $fileName) && in_array(Application\Utility\ApplicationFileSystem::getFileExtension($fileName), explode(",", "' . strtolower($this->getSetting('file_manager_image_extensions')) . '"));'
                     )
                 )
             )

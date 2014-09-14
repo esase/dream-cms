@@ -8,7 +8,7 @@ use Layout\Service\Layout as LayoutService;
 use User\Service\UserIdentity as UserIdentityService;
 use Layout\View\Resolver\TemplatePathStack;
 use Exception;
-use Application\Utility\ErrorLogger;
+use Application\Utility\ApplicationErrorLogger;
 
 class Module
 {
@@ -73,7 +73,7 @@ class Module
 
             $layout = $this->serviceManager
                 ->get('Application\Model\ModelManager')
-                ->getInstance('Layout\Model\Base');
+                ->getInstance('Layout\Model\LayoutBase');
 
             // get default or user defined layouts
             $activeLayouts = !empty(UserIdentityService::getCurrentUserIdentity()->layout)
@@ -90,7 +90,7 @@ class Module
             LayoutService::setCurrentLayouts($activeLayouts);
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 

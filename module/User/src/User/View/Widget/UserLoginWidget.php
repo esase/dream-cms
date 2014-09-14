@@ -1,9 +1,9 @@
 <?php
 namespace User\View\Widget;
 
-use Acl\Model\Base as AclModel;
+use Acl\Model\AclBase as AclBaseModel;
 use User\Service\UserIdentity as UserIdentityService;
-use User\Event\Event as UserEvent;
+use User\Event\UserEvent;
 
 class UserLoginWidget extends UserAbstractWidget
 {
@@ -18,7 +18,7 @@ class UserLoginWidget extends UserAbstractWidget
             // get a login form
             $loginForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
-                ->getInstance('User\Form\Login');
+                ->getInstance('User\Form\UserLogin');
 
             if ($this->getRequest()->isPost()) {
                 // fill form with received values
@@ -56,7 +56,7 @@ class UserLoginWidget extends UserAbstractWidget
                         }
 
                         // fire the user login failed event
-                        UserEvent::fireLoginFailedEvent(AclModel::DEFAULT_ROLE_GUEST, $this->getRequest()->getPost('nickname'));
+                        UserEvent::fireLoginFailedEvent(AclBaseModel::DEFAULT_ROLE_GUEST, $this->getRequest()->getPost('nickname'));
                         return $this->reloadPage();
                     }
                 }

@@ -1,13 +1,13 @@
 <?php
 namespace User\Form;
 
-use Application\Service\Setting as SettingService;
+use Application\Service\ApplicationSetting as SettingService;
 use Application\Service\Application as ApplicationService;
-use Application\Form\AbstractCustomForm;
-use Application\Form\CustomFormBuilder;
-use User\Model\Base as UserBaseModel;
+use Application\Form\ApplicationAbstractCustomForm;
+use Application\Form\ApplicationCustomFormBuilder;
+use User\Model\UserBase as UserBaseModel;
 
-class User extends AbstractCustomForm 
+class User extends ApplicationAbstractCustomForm 
 {
     /**
      * Email max string length
@@ -88,7 +88,7 @@ class User extends AbstractCustomForm
     protected $formElements = [
         'nick_name' => [
             'name' => 'nick_name',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'NickName',
             'required' => true,
             'category' => 'General info',
@@ -97,7 +97,7 @@ class User extends AbstractCustomForm
         ],
         'email' => [
             'name' => 'email',
-            'type' => CustomFormBuilder::FIELD_EMAIL,
+            'type' => ApplicationCustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email',
             'required' => true,
             'category' => 'General info',
@@ -105,7 +105,7 @@ class User extends AbstractCustomForm
         ],
         'password' => [
             'name' => 'password',
-            'type' => CustomFormBuilder::FIELD_PASSWORD,
+            'type' => ApplicationCustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Password',
             'required' => true,
             'category' => 'General info',
@@ -113,7 +113,7 @@ class User extends AbstractCustomForm
         ],
         'confirm_password' => [
             'name' => 'confirm_password',
-            'type' => CustomFormBuilder::FIELD_PASSWORD,
+            'type' => ApplicationCustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Confirm password',
             'required' => true,
             'category' => 'General info',
@@ -121,12 +121,12 @@ class User extends AbstractCustomForm
         ],
         'captcha' => [
             'name' => 'captcha',
-            'type' => CustomFormBuilder::FIELD_CAPTCHA,
+            'type' => ApplicationCustomFormBuilder::FIELD_CAPTCHA,
             'category' => 'General info'
         ],
         'phone' => [
             'name' => 'phone',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Phone',
             'required' => false,
             'category' => 'Miscellaneous info',
@@ -134,7 +134,7 @@ class User extends AbstractCustomForm
         ],
         'first_name' => [
             'name' => 'first_name',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'First Name',
             'required' => false,
             'category' => 'Miscellaneous info',
@@ -142,7 +142,7 @@ class User extends AbstractCustomForm
         ],
         'last_name' => [
             'name' => 'last_name',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Last Name',
             'required' => false,
             'category' => 'Miscellaneous info',
@@ -150,7 +150,7 @@ class User extends AbstractCustomForm
         ],
         'address' => [
             'name' => 'address',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Address',
             'required' => false,
             'category' => 'Miscellaneous info',
@@ -158,7 +158,7 @@ class User extends AbstractCustomForm
         ],
         'time_zone' => [
             'name' => 'time_zone',
-            'type' => CustomFormBuilder::FIELD_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Time zone',
             'required' => false,
             'values' => [],
@@ -167,7 +167,7 @@ class User extends AbstractCustomForm
         ],
         'avatar' => [
             'name' => 'avatar',
-            'type' => CustomFormBuilder::FIELD_IMAGE,
+            'type' => ApplicationCustomFormBuilder::FIELD_IMAGE,
             'label' => 'Avatar',
             'required' => false,
             'extra_options' => [
@@ -179,11 +179,11 @@ class User extends AbstractCustomForm
         ],
         'csrf' => [
             'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
         ],
         'submit' => [
             'name' => 'submit',
-            'type' => CustomFormBuilder::FIELD_SUBMIT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit',
         ],
     ];
@@ -271,7 +271,7 @@ class User extends AbstractCustomForm
             // fill the form with default values
             $this->formElements['time_zone']['values'] = $this->timeZones;
 
-            $this->form = new CustomFormBuilder($this->formName,
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 

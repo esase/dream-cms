@@ -1,7 +1,7 @@
 <?php
 namespace Page\View\Widget;
  
-class PageHtmlWidget extends AbstractWidget
+class PageHtmlWidget extends PageAbstractWidget
 {
     /**
      * Get widget content

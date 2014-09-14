@@ -3,7 +3,7 @@ namespace Layout\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use Zend\Cache\Storage\StorageInterface;
-use Application\Utility\Cache as CacheUtility;
+use Application\Utility\ApplicationCache as CacheUtility;
 
 class LayoutAsset extends AbstractHelper
 {

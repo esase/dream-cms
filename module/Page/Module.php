@@ -74,7 +74,7 @@ class Module
                 'pageUserMenu' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
-                        ->getInstance('Page\Model\Base');
+                        ->getInstance('Page\Model\PageBase');
 
                     return new \Page\View\Helper\PageUserMenu($model->
                             getUserMenu(LocalizationService::getCurrentLocalization()['language']));
@@ -82,7 +82,7 @@ class Module
                 'pageFooterMenu' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
-                        ->getInstance('Page\Model\Base');
+                        ->getInstance('Page\Model\PageBase');
 
                     return new \Page\View\Helper\PageFooterMenu($model->
                             getFooterMenu(LocalizationService::getCurrentLocalization()['language']));
@@ -90,7 +90,7 @@ class Module
                 'pageMenu' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
-                        ->getInstance('Page\Model\Base');
+                        ->getInstance('Page\Model\PageBase');
 
                     return new \Page\View\Helper\PageMenu($model->
                             getPagesTree(LocalizationService::getCurrentLocalization()['language']));
@@ -98,7 +98,7 @@ class Module
                 'pageUrl' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
-                        ->getInstance('Page\Model\Base');
+                        ->getInstance('Page\Model\PageBase');
 
                     return new \Page\View\Helper\PageUrl($model->
                             getPagesMap(), $this->serviceManager->get('Config')['home_page']);
@@ -106,7 +106,7 @@ class Module
                 'pageInjectWidget' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')
-                        ->getInstance('Page\Model\Widget');
+                        ->getInstance('Page\Model\PageWidget');
 
                     return new \Page\View\Helper\PageInjectWidget($model->
                             getWidgetsConnections(LocalizationService::getCurrentLocalization()['language']));

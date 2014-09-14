@@ -3,16 +3,17 @@ namespace User\Test\Service;
 
 use User\Test\UserBootstrap;
 use PHPUnit_Framework_TestCase;
-use stdClass;
 
-use Zend\Permissions\Acl\Acl as Acl;
+use Zend\Permissions\Acl\Acl as AclZend;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
 use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 use Zend\Math\Rand;
 use Zend\Db\Sql\Expression as Expression;
 
-use Application\Model\Acl as AclModel;
+use Acl\Model\AclBase as AclModelBase;
 use User\Service\Service as UserService;
+use User\Service\UserIdentity as UserIdentityService;
+use Acl\Service\Acl as AclService;
 
 class ServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -26,7 +27,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      * Acl model
      * @var object
      */
-    protected $aclModel;
+    protected $aclModelBase;
 
     /**
      * User Id
@@ -55,9 +56,9 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->serviceManager = UserBootstrap::getServiceManager();
 
         // get acl model
-        $this->aclModel = $this->serviceManager
+        $this->aclModelBase = $this->serviceManager
             ->get('Application\Model\ModelManager')
-            ->getInstance('Application\Model\Acl');
+            ->getInstance('Acl\Model\AclBase');
     }
 
     /**
@@ -67,22 +68,22 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     {
         // delete test user
         if ($this->userId) {
-            $query = $this->aclModel->delete()
+            $query = $this->aclModelBase->delete()
                 ->from('user_list')
                 ->where(array('user_id' => $this->userId));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
             $this->userId = null;
         }
 
         // delete acl test resources 
         if ($this->aclResourcesIds) {
-            $query = $this->aclModel->delete()
-                ->from('application_acl_resource')
+            $query = $this->aclModelBase->delete()
+                ->from('acl_resource')
                 ->where(array('id' => $this->aclResourcesIds));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
             $this->aclResourcesIds = array();
         }
@@ -95,7 +96,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      * @param boolean $createConnections
      * @param integer $userRole
      */
-    protected function addAclResources($resources, $createConnections = true, $userRole = AclModel::DEFAULT_ROLE_MEMBER)
+    protected function addAclResources($resources, $createConnections = true, $userRole = AclModelBase::DEFAULT_ROLE_MEMBER)
     {
         // create a test user
         $userData = array(
@@ -105,41 +106,41 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         );
 
         // add member
-        $query = $this->aclModel->insert()
+        $query = $this->aclModelBase->insert()
             ->into('user_list')
             ->values($userData);
 
-        $statement = $this->aclModel->prepareStatementForSqlObject($query);
+        $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
         $statement->execute();
-        $this->userId = $this->aclModel->getAdapter()->getDriver()->getLastGeneratedValue();
+        $this->userId = $this->aclModelBase->getAdapter()->getDriver()->getLastGeneratedValue();
 
         // create new resources
         foreach ($resources as $resource) {
             // add new test resource
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource')
                 ->values(array(
                     'resource' => $resource,
                     'module' => 1
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
-            $resourceId = $this->aclModel->getAdapter()->getDriver()->getLastGeneratedValue();
+            $resourceId = $this->aclModelBase->getAdapter()->getDriver()->getLastGeneratedValue();
             $this->aclResourcesIds[] = $resourceId;
 
             if ($createConnections) {
-                $query = $this->aclModel->insert()
-                    ->into('application_acl_resource_connection')
+                $query = $this->aclModelBase->insert()
+                    ->into('acl_resource_connection')
                     ->values(array(
                         'role' => $userRole,
                         'resource' => $resourceId
                     ));
 
-                $statement = $this->aclModel->prepareStatementForSqlObject($query);
+                $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
                 $statement->execute();
                 $this->aclResourcesConnections[] = $this->
-                        aclModel->getAdapter()->getDriver()->getLastGeneratedValue();
+                        aclModelBase->getAdapter()->getDriver()->getLastGeneratedValue();
             }
         }
     }
@@ -152,20 +153,20 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     protected function initAcl($userRole)
     {
         // init user identity
-        $userIdentity = new stdClass();
-        $userIdentity->role = $userRole;
-        $userIdentity->user_id = $this->userId;
+        $userIdentity = [];
+        $userIdentity['role'] = $userRole;
+        $userIdentity['user_id'] = $this->userId;
 
-        UserService::setCurrentUserIdentity($userIdentity);
+        UserIdentityService::setCurrentUserIdentity($userIdentity);
 
-        // init new acl
-        $acl = new Acl();
+        // init new AclZend
+        $acl = new AclZend();
         $acl->addRole(new Role($userRole));
-        UserService::setCurrentAcl($acl);
+        AclService::setCurrentAcl($acl);
 
         // get acl resources
-        if (null != ($resources = $this->aclModel->
-                getAclResources($userIdentity->role, $userIdentity->user_id))) {
+        if (null != ($resources = $this->aclModelBase->
+                getAclResources($userIdentity['role'], $userIdentity['user_id']))) {
 
             // process acl resources
             $resourcesInfo = array();
@@ -174,14 +175,14 @@ class ServiceTest extends PHPUnit_Framework_TestCase
                 $acl->addResource(new Resource($resource['resource']));
 
                 // add resource's action
-                $resource['permission'] == AclModel::ACTION_ALLOWED
-                    ? $acl->allow($userIdentity->role, $resource['resource'])
-                    : $acl->deny($userIdentity->role, $resource['resource']);
+                $resource['permission'] == AclModelBase::ACTION_ALLOWED
+                    ? $acl->allow($userIdentity['role'], $resource['resource'])
+                    : $acl->deny($userIdentity['role'], $resource['resource']);
 
                 $resourcesInfo[$resource['resource']] = $resource;
             }
 
-            UserService::setCurrentAclResources($resourcesInfo);
+            AclService::setCurrentAclResources($resourcesInfo);
         }
     }
 
@@ -195,11 +196,11 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             'test application modules administration',
         );
 
-        $role = AclModel::DEFAULT_ROLE_ADMIN;
+        $role = AclModelBase::DEFAULT_ROLE_ADMIN;
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertTrue(UserService::checkPermission($resource));
+            $this->assertTrue(AclService::checkPermission($resource));
         }
     }
 
@@ -213,11 +214,11 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             'test application modules administration',
         );
 
-        $role = AclModel::DEFAULT_ROLE_MEMBER;
+        $role = AclModelBase::DEFAULT_ROLE_MEMBER;
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertFalse(UserService::checkPermission($resource));
+            $this->assertFalse(AclService::checkPermission($resource));
         }
     }
 
@@ -226,7 +227,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testAclAllDeniedGlobally()
     {
-        $role = AclModel::DEFAULT_ROLE_GUEST;
+        $role = AclModelBase::DEFAULT_ROLE_GUEST;
 
         $testResources = array(
             'test application settings administration'
@@ -237,21 +238,21 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
             // add global settings
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => new Expression('null')
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
         }
         
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertFalse(UserService::checkPermission($resource));
+            $this->assertFalse(AclService::checkPermission($resource));
         }
     }
 
@@ -260,7 +261,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testAclAllDeniedGloballyAndAlowedLocaly()
     {
-        $role = AclModel::DEFAULT_ROLE_MEMBER;
+        $role = AclModelBase::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
             'test_application_settings_administration'
@@ -273,33 +274,33 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
             // add global settings
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => new Expression('null')
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
 
             // add local settings
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,
                     'actions_limit' => $localActionsLimit
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
         }
 
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertTrue(UserService::checkPermission($resource));
+            $this->assertTrue(AclService::checkPermission($resource));
         }
     }
 
@@ -308,7 +309,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testAclResourceLocalSettings()
     {
-        $role = AclModel::DEFAULT_ROLE_MEMBER;
+        $role = AclModelBase::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
             'test_application_settings_administration'
@@ -322,33 +323,33 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
             // add global settings
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'actions_limit' => $globalActionsLimit
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
 
             // add local settings
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'actions_limit' => $localActionsLimit,
                     'user_id' => $this->userId
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
         }
 
         $this->initAcl($role);
 
         // get registered acl resources
-        $resources = UserService::getCurrentAclResources();
+        $resources = AclService::getCurrentAclResources();
 
         // check local settings
         foreach ($testResources as $resource) {
@@ -361,7 +362,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testAclByActionsReset()
     {
-        $role =AclModel::DEFAULT_ROLE_MEMBER;
+        $role =AclModelBase::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
             'test_application_settings_administration'
@@ -373,8 +374,8 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,
@@ -382,7 +383,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
                     'actions_reset' => $actionsReset
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
         }
 
@@ -390,7 +391,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         foreach ($testResources as $resource) {
             for ($i = 1; $i <= $actionsLimit; $i++) {
                 $this->initAcl($role);
-                $this->assertTrue(UserService::checkPermission($resource));
+                $this->assertTrue(AclService::checkPermission($resource));
             }
         }
 
@@ -398,7 +399,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertFalse(UserService::checkPermission($resource));
+            $this->assertFalse(AclService::checkPermission($resource));
         }
 
         sleep($actionsReset +  1);
@@ -407,7 +408,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertTrue(UserService::checkPermission($resource));
+            $this->assertTrue(AclService::checkPermission($resource));
         }
     }
 
@@ -416,7 +417,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testAclByActions()
     {
-        $role = AclModel::DEFAULT_ROLE_MEMBER;
+        $role = AclModelBase::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
             'test_application_settings_administration',
@@ -428,15 +429,15 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,
                     'actions_limit' => $actionsLimit 
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
         }
 
@@ -444,7 +445,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         foreach ($testResources as $resource) {
             for ($i = 1; $i <= $actionsLimit; $i++) {
                 $this->initAcl($role);
-                $this->assertTrue(UserService::checkPermission($resource));
+                $this->assertTrue(AclService::checkPermission($resource));
             }
         }
 
@@ -452,7 +453,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $this->initAcl($role);
 
         foreach ($testResources as $resource) {
-            $this->assertFalse(UserService::checkPermission($resource));
+            $this->assertFalse(AclService::checkPermission($resource));
         }
     }
 
@@ -461,7 +462,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testAclByDate()
     {
-        $role = AclModel::DEFAULT_ROLE_MEMBER;
+        $role = AclModelBase::DEFAULT_ROLE_MEMBER;
 
         $testResources = array(
             'test_application_settings_administration',
@@ -474,8 +475,8 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // add acl resources connections settings
         foreach ($this->aclResourcesConnections as $connectId) {
-            $query = $this->aclModel->insert()
-                ->into('application_acl_resource_connection_setting')
+            $query = $this->aclModelBase->insert()
+                ->into('acl_resource_connection_setting')
                 ->values(array(
                     'connection_id' => $connectId,
                     'user_id' => $this->userId,
@@ -483,7 +484,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
                     'date_end' => $currentTime + 1,// user be able to use resource only 1 second
                 ));
 
-            $statement = $this->aclModel->prepareStatementForSqlObject($query);
+            $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
             $statement->execute();
         }
 
@@ -491,7 +492,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // all created acl resources must be active
         foreach ($testResources as $resource) {
-            $this->assertTrue(UserService::checkPermission($resource));
+            $this->assertTrue(AclService::checkPermission($resource));
         }
 
         // wait two seconds and check acl resources again
@@ -500,7 +501,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
 
         // now all created acl resources must be expired
         foreach ($testResources as $resource) {
-            $this->assertFalse(UserService::checkPermission($resource));
+            $this->assertFalse(AclService::checkPermission($resource));
         }
     }
 }

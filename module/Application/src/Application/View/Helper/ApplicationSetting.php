@@ -2,7 +2,7 @@
 namespace Application\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Application\Service\Setting as SettingService;
+use Application\Service\ApplicationSetting as SettingService;
 
 class ApplicationSetting extends AbstractHelper
 {

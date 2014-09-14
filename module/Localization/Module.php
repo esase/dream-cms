@@ -2,9 +2,9 @@
 namespace Localization;
 
 use Localization\Service\Localization as LocalizationService;
-use Acl\Model\Base as AclModelBase;
-use Application\Utility\ErrorLogger;
-use Application\Service\Setting as SettingService;
+use Acl\Model\AclBase as AclBaseModel;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Service\ApplicationSetting as SettingService;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Console\Request as ConsoleRequest;
@@ -106,7 +106,7 @@ class Module
             // get all registered localizations
             $localization = $this->serviceManager
                 ->get('Application\Model\ModelManager')
-                ->getInstance('Localization\Model\Base');
+                ->getInstance('Localization\Model\LocalizationBase');
 
             // init default localization
             $this->localizations = $localization->getAllLocalizations();
@@ -140,7 +140,7 @@ class Module
             LocalizationService::setLocalizations($this->localizations);
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -188,7 +188,7 @@ class Module
             $this->setUserLanguage($matches->getParam('language'));
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -202,10 +202,10 @@ class Module
     {
         if (!$this->userIdentity['language'] || $this->userIdentity['language'] != $language) {
             // save language
-            if ($this->userIdentity['role'] != AclModelBase::DEFAULT_ROLE_GUEST) {
+            if ($this->userIdentity['role'] != AclBaseModel::DEFAULT_ROLE_GUEST) {
                 $model = $this->serviceManager
                     ->get('Application\Model\ModelManager')
-                    ->getInstance('User\Model\Base')
+                    ->getInstance('User\Model\UserBase')
                     ->setUserLanguage($this->userIdentity['user_id'], $language);
             }
 

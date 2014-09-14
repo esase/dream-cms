@@ -2,7 +2,7 @@
 namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Application\Service\Setting as SettingService;
+use Application\Service\ApplicationSetting as SettingService;
 
 class ApplicationSetting extends AbstractPlugin
 {

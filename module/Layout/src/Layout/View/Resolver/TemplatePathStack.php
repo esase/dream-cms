@@ -4,7 +4,7 @@ namespace Layout\View\Resolver;
 
 use Zend\View\Resolver\TemplatePathStack as BaseTemplatePathStack;
 use Zend\View\Renderer\RendererInterface as Renderer;
-use Application\Utility\Cache as CacheUtility;
+use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\Cache\Storage\StorageInterface;
 
 /**

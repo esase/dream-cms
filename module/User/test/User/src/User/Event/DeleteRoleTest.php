@@ -4,7 +4,7 @@ namespace User\Test\Event;
 use User\Test\UserBootstrap;
 use PHPUnit_Framework_TestCase;
 use Zend\Math\Rand;
-use Application\Event\Event as ApplicationEvent;
+use Application\Event\ApplicationEvent;
 use Zend\Db\ResultSet\ResultSet;
 use Application\Model\Acl as AclModel;
 
@@ -45,7 +45,7 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         // get base user model instance
         $this->model = $this->serviceManager
             ->get('Application\Model\ModelManager')
-            ->getInstance('User\Model\Base');
+            ->getInstance('User\Model\UserBase');
     }
 
      /**

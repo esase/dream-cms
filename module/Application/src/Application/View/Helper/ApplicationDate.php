@@ -1,8 +1,8 @@
 <?php
 namespace Application\View\Helper;
 
-use Application\Service\Setting as SettingService;
-use Localization\Utility\Locale as LocaleUtility;
+use Application\Service\ApplicationSetting as SettingService;
+use Localization\Utility\LocalizationLocale as LocaleUtility;
 use Zend\View\Helper\AbstractHelper;
 use IntlDateFormatter;
 

@@ -1,13 +1,13 @@
 <?php
 namespace User\PagePrivacy;
 
-use Application\Service\ServiceManager as ServiceManagerService;
-use Application\Utility\RouteParam as RouteParamUtility;
-use Page\PagePrivacy\AbstractPagePrivacy;
+use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Utility\ApplicationRouteParam as RouteParamUtility;
+use Page\PagePrivacy\PageAbstractPagePrivacy;
 use User\Model\UserWidget as UserWidgetModel;
 use User\Service\UserIdentity as UserIdentityService;
 
-class UserActivatePrivacy extends AbstractPagePrivacy
+class UserActivatePrivacy extends PageAbstractPagePrivacy
 {
     /**
      * Model instance

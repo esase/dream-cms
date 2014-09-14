@@ -1,7 +1,7 @@
 <?php
 namespace FileManager;
 
-use User\Event\Event as UserEvent;
+use User\Event\UserEvent;
 use Zend\ModuleManager\ModuleManagerInterface;
 
 class Module
@@ -17,7 +17,7 @@ class Module
             // get a model instance
             $model = $moduleManager->getEvent()->getParam('ServiceManager')
                 ->get('Application\Model\ModelManager')
-                ->getInstance('FileManager\Model\Base')
+                ->getInstance('FileManager\Model\FileManagerBase')
                 ->deleteUserHomeDirectory($e->getParam('object_id'));
         });
     }
@@ -59,9 +59,9 @@ class Module
     {
         return array(
             'invokables' => array(
-                'filesManagerDirectoriesTree' => 'FileManager\View\Helper\FileManagerDirectoryTree',
-                'fileUrl' => 'FileManager\View\Helper\FileUrl',
-                'baseFileUrl' => 'FileManager\View\Helper\BaseFileUrl'
+                'fileManagerDirectoriesTree' => 'FileManager\View\Helper\FileManagerDirectoryTree',
+                'fileManagerFileUrl' => 'FileManager\View\Helper\FileManagerFileUrl',
+                'fileManagerBaseFileUrl' => 'FileManager\View\Helper\FileManagerBaseFileUrl'
             ),
         );
     }

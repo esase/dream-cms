@@ -2,7 +2,7 @@
 namespace Application\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use Application\Utility\RouteParam as RouteParamUtility;
+use Application\Utility\ApplicationRouteParam as RouteParamUtility;
 
 class ApplicationRoute extends AbstractHelper
 {

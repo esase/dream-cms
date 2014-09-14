@@ -3,9 +3,10 @@
 return [
     'modules' => [
         'Application',
+        'Acl',
         'User',
         'Layout',
-        'Localization',
+        'Localization'
     ],
     'module_listener_options' => [
         'config_glob_paths' => [

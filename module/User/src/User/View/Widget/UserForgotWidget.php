@@ -15,7 +15,7 @@ class UserForgotWidget extends UserAbstractWidget
         // get a forgot form
         $forgotForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('User\Form\Forgot')
+            ->getInstance('User\Form\UserForgot')
             ->setModel($this->getModel());
 
         $request = $this->getRequest();

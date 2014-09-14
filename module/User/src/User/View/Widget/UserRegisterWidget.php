@@ -2,7 +2,7 @@
 namespace User\View\Widget;
 
 use User\Service\UserIdentity as UserIdentityService;
-use Application\Utility\EmailNotification;
+use Application\Utility\ApplicationEmailNotification;
 use Localization\Service\Localization as LocalizationService;
 
 class UserRegisterWidget extends UserAbstractWidget

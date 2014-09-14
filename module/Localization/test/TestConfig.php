@@ -3,6 +3,7 @@
 return [
     'modules' => [
         'Application',
+        'Acl',
         'User',
         'Layout',
         'Localization'

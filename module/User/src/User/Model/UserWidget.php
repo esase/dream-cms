@@ -3,10 +3,10 @@ namespace User\Model;
 
 use Zend\Db\ResultSet\ResultSet;
 use Exception;
-use Application\Utility\ErrorLogger;
-use User\Event\Event as UserEvent;
+use Application\Utility\ApplicationErrorLogger;
+use User\Event\UserEvent;
 
-class UserWidget extends Base
+class UserWidget extends UserBase
 {
     /**
      * Reset an user's password
@@ -43,7 +43,7 @@ class UserWidget extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }
@@ -84,7 +84,7 @@ class UserWidget extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }

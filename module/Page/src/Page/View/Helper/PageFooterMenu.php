@@ -1,7 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
-use Application\Service\Setting as SettingService;
+use Application\Service\ApplicationSetting as SettingService;
 use Page\Model\Page as PageModel;
 use Zend\View\Helper\AbstractHelper;
 

@@ -1,9 +1,9 @@
 <?php
 namespace Application;
 
-use Application\Service\ServiceManager as ServiceManagerService;
-use Application\Utility\ErrorLogger;
-use Application\Service\Setting as SettingService;
+use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Service\ApplicationSetting as SettingService;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Mvc\MvcEvent;
 use Zend\Log\Writer\FirePhp as FirePhp;
@@ -45,7 +45,7 @@ class Module
         // log errors
         $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_DISPATCH_ERROR, function($e){
             if (null != ($exception = $e->getParam('exception'))) {
-                ErrorLogger::log($exception);
+                ApplicationErrorLogger::log($exception);
             }
         });
 
@@ -104,7 +104,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -144,7 +144,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -163,7 +163,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -268,11 +268,11 @@ class Module
                     return $cache;
                 },
                 'Application\Model\ModelManager' => function($serviceManager) {
-                    return new Model\ModelManager($serviceManager->
+                    return new Model\ApplicationModelManager($serviceManager->
                             get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Application\Cache\Static'), $serviceManager);
                 },
                 'Application\Form\FormManager' => function($serviceManager) {
-                    return new Form\FormManager($serviceManager->get('Translator'));
+                    return new Form\ApplicationFormManager($serviceManager->get('Translator'));
                 }
             ]
         ];

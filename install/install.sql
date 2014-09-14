@@ -458,8 +458,8 @@ CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `xmlrpc_class` (`namespace`, `path`, `module`) VALUES
-('localization', 'Localization\\XmlRpc\\Handler', 1),
-('user', 'User\\XmlRpc\\Handler', 2);
+('localization', 'Localization\\XmlRpc\\LocalizationHandler', 1),
+('user', 'User\\XmlRpc\\UserHandler', 2);
 
 CREATE TABLE IF NOT EXISTS `localization_list` (
     `language` CHAR(2) NOT NULL,

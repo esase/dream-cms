@@ -1,4 +1,4 @@
-<?php use Application\Form\CustomFormBuilder ?>
+<?php use Application\Form\ApplicationCustomFormBuilder ?>
 
 <?php $this->declareVars('category', 'formCategories', 'openCategories') ?>
 <?php $this->declareVars('initCalendar', 'initWysiwyg', 'filePreview') ?>
@@ -27,13 +27,13 @@
         // get element's type
         if (null !== ($elementType = $form->getElementType($element->getName()))) {
             switch ($elementType) {
-                case CustomFormBuilder::FIELD_IMAGE :
-                case CustomFormBuilder::FIELD_FILE  :
+                case ApplicationCustomFormBuilder::FIELD_IMAGE :
+                case ApplicationCustomFormBuilder::FIELD_FILE  :
                     // generate an image preview area
                     if (!empty($element->getOption('extra_options')['preview'])
                                 && !empty($element->getOption('extra_options')['file_url'])) {
 
-                        $this->filePreview = $elementType == CustomFormBuilder::FIELD_IMAGE
+                        $this->filePreview = $elementType == ApplicationCustomFormBuilder::FIELD_IMAGE
                             ? 'partial/_form-image-preview'
                             : 'partial/_form-file-preview';
 
@@ -45,13 +45,13 @@
                     }
                     break;
 
-                case CustomFormBuilder::FIELD_DATE :
-                case CustomFormBuilder::FIELD_DATE_UNIXTIME :
+                case ApplicationCustomFormBuilder::FIELD_DATE :
+                case ApplicationCustomFormBuilder::FIELD_DATE_UNIXTIME :
                     $this->initCalendar = true;
                     break;
 
-                case CustomFormBuilder::FIELD_HTML_AREA :
-                case CustomFormBuilder::FIELD_NOTIFICATION_MESSAGE :
+                case ApplicationCustomFormBuilder::FIELD_HTML_AREA :
+                case ApplicationCustomFormBuilder::FIELD_NOTIFICATION_MESSAGE :
                     $this->initWysiwyg = true;
                     break;
             }

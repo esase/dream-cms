@@ -3,11 +3,11 @@ namespace User\Model;
 
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
-use Application\Utility\Pagination as PaginationUtility;
+use Application\Utility\ApplicationPagination as PaginationUtility;
 use Application\Service\Service as ApplicationService;
 use Zend\Db\Sql\Predicate\Like as LikePredicate;
 
-class UserAdministration extends Base
+class UserAdministration extends UserBase
 {
     /**
      * Get users

@@ -3,7 +3,7 @@ namespace Layout\View\Helper;
 
 use Layout\Service\Layout as LayoutService;
 use Layout\View\Helper\LayoutHeadResource as LayoutHeadResource;
-use Application\Service\Setting as SettingService;
+use Application\Service\ApplicationSetting as SettingService;
 use Zend\View\Helper\HeadLink as BaseHeadLink;
 
 class LayoutHeadLink extends BaseHeadLink

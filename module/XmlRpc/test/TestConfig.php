@@ -2,10 +2,6 @@
 
 return [
     'modules' => [
-        'Application',
-        'User',
-        'Layout',
-        'Localization',
         'XmlRpc'
     ],
     'module_listener_options' => [

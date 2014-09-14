@@ -1,13 +1,13 @@
 <?php
 namespace User\PagePrivacy;
 
-use Application\Utility\RouteParam as RouteParamUtility;
-use Application\Service\ServiceManager as ServiceManagerService;
-use Page\PagePrivacy\AbstractPagePrivacy;
+use Application\Utility\ApplicationRouteParam as RouteParamUtility;
+use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Page\PagePrivacy\PageAbstractPagePrivacy;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Model\UserWidget as UserWidgetModel;
 
-class UserPasswordResetPrivacy extends AbstractPagePrivacy
+class UserPasswordResetPrivacy extends PageAbstractPagePrivacy
 {
     /**
      * Model instance

@@ -2,7 +2,7 @@
 namespace FileManager\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use FileManager\Model\Base as FileManagerBaseModel;
+use FileManager\Model\FileManagerBase as FileManagerBaseModel;
 
 class FileManagerDirectoryTree extends AbstractHelper
 {

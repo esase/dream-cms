@@ -4,10 +4,10 @@ namespace FileManager\Test\Event;
 use FileManager\Test\FileManagerBootstrap;
 use PHPUnit_Framework_TestCase;
 use Zend\Math\Rand;
-use Application\Model\Acl as AclModel;
-use FileManager\Model\Base as BaseFileManagerModel;
-use Application\Utility\FileSystem as FileSystemUtility;
-use User\Event\Event as UserEvent;
+use Acl\Model\AclBase as AclModelBase;
+use FileManager\Model\FileManagerBase as FileManagerBaseModel;
+use Application\Utility\ApplicationFileSystem as FileSystemUtility;
+use User\Event\UserEvent;
 
 class DeleteUserTest extends PHPUnit_Framework_TestCase
 {
@@ -34,7 +34,7 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
         // get base user model instance
         $this->userModel = $this->serviceManager
             ->get('Application\Model\ModelManager')
-            ->getInstance('User\Model\Base');
+            ->getInstance('User\Model\UserBase');
     }
 
     /**
@@ -53,7 +53,7 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
             'nick_name' => Rand::getString(32),
             'email' => Rand::getString(32),
             'api_key' => Rand::getString(32),
-            'role' => AclModel::DEFAULT_ROLE_MEMBER,
+            'role' => AclModelBase::DEFAULT_ROLE_MEMBER,
             'language' => null
         );
 
@@ -67,8 +67,8 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
         $testUserId = $this->userModel->getAdapter()->getDriver()->getLastGeneratedValue();
 
         // create a test user's home directory
-        $homeUserDirectory = BaseFileManagerModel::getUserBaseFilesDir($testUserId) . '/' .
-                BaseFileManagerModel::getHomeDirectoryName();
+        $homeUserDirectory = FileManagerBaseModel::getUserBaseFilesDir($testUserId) . '/' .
+                FileManagerBaseModel::getHomeDirectoryName();
 
         FileSystemUtility::createDir($homeUserDirectory);
 

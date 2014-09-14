@@ -1,12 +1,12 @@
 <?php
 namespace User\Controller;
 
-use Application\Controller\AbstractBaseController;
+use Application\Controller\ApplicationAbstractBaseController;
 use User\Service\UserIdentity as UserIdentityService;
-use User\Event\Event as UserEvent;
+use User\Event\UserEvent;
 use Zend\View\Model\ViewModel;
 
-class UserWidgetController extends AbstractBaseController
+class UserWidgetController extends ApplicationAbstractBaseController
 {
     /**
      * Auth service

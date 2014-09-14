@@ -2,9 +2,9 @@
 namespace XmlRpc\Model;
 
 use Zend\Db\ResultSet\ResultSet;
-use Application\Utility\Cache as CacheUtility;
+use Application\Utility\ApplicationCache as CacheUtility;
 
-class XmlRpc extends Base
+class XmlRpc extends XmlRpcBase
 {
     /**
      * Get all classes

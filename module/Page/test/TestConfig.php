@@ -3,6 +3,7 @@
 return array(
     'modules' => array(
         'Application',
+        'Acl',
         'User',
         'Layout',
         'Localization',

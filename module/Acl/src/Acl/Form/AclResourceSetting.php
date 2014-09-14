@@ -1,7 +1,7 @@
 <?php
 namespace Acl\Form;
 
-use Application\Form\CustomFormBuilder;
+use Application\Form\ApplicationCustomFormBuilder;
 
 class AclResourceSetting extends AbstractCustomForm 
 {
@@ -64,7 +64,7 @@ class AclResourceSetting extends AbstractCustomForm
     protected $formElements = array(
         'actions_limit' => array(
             'name' => 'actions_limit',
-            'type' => CustomFormBuilder::FIELD_INTEGER,
+            'type' => ApplicationCustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of allowed actions',
             'required' => false,
             'category' => 'General info',
@@ -72,7 +72,7 @@ class AclResourceSetting extends AbstractCustomForm
         ),
         'actions_reset' => array(
             'name' => 'actions_reset',
-            'type' => CustomFormBuilder::FIELD_INTEGER,
+            'type' => ApplicationCustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of actions is reset every N seconds',
             'required' => false,
             'category' => 'General info',
@@ -80,28 +80,28 @@ class AclResourceSetting extends AbstractCustomForm
         ),
         'date_start' => array(
             'name' => 'date_start',
-            'type' => CustomFormBuilder::FIELD_DATE_UNIXTIME,
+            'type' => ApplicationCustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available since',
             'required' => false,
             'category' => 'General info',
         ),
         'date_end' => array(
             'name' => 'date_end',
-            'type' => CustomFormBuilder::FIELD_DATE_UNIXTIME,
+            'type' => ApplicationCustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available until',
             'required' => false,
             'category' => 'General info',
         ),
         'clean_counter' => array(
             'name' => 'clean_counter',
-            'type' => CustomFormBuilder::FIELD_CHECKBOX,
+            'type' => ApplicationCustomFormBuilder::FIELD_CHECKBOX,
             'label' => 'Clean the action counter',
             'required' => false,
             'category' => 'General info',
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => CustomFormBuilder::FIELD_SUBMIT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit',
         )
     );
@@ -126,7 +126,7 @@ class AclResourceSetting extends AbstractCustomForm
                 unset($this->formElements['clean_counter']);
             }
 
-            $this->form = new CustomFormBuilder($this->formName,
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 

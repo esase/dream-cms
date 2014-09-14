@@ -3,16 +3,16 @@ namespace Acl\Model;
 
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
-use Application\Utility\Pagination as PaginationUtility;
+use Application\Utility\ApplicationPagination as PaginationUtility;
 use Application\Service\Service as ApplicationService;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\ResultSet\ResultSet;
 use Exception;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Application\Utility\ErrorLogger;
-use Application\Event\Event as ApplicationEvent;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Event\ApplicationEvent;
 
-class AclAdministration extends Base
+class AclAdministration extends AclBase
 {
     /**
      * Is a role's name free
@@ -70,7 +70,7 @@ class AclAdministration extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }
@@ -108,7 +108,7 @@ class AclAdministration extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }
@@ -196,7 +196,7 @@ class AclAdministration extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }
@@ -249,7 +249,7 @@ class AclAdministration extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }
@@ -285,7 +285,7 @@ class AclAdministration extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }
@@ -320,7 +320,7 @@ class AclAdministration extends Base
         }
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
 
             return $e->getMessage();
         }

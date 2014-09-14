@@ -3,7 +3,7 @@ namespace Acl\Controller;
 
 use Zend\View\Model\ViewModel;
 
-class AclAdministrationController extends AbstractAdministrationController
+class AclAdministrationController extends ApplicationAbstractAdministrationController
 {
     /**
      * Model instance

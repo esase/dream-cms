@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Test;
 
 define('APPLICATION_ROOT', '../../../');

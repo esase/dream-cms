@@ -18,7 +18,7 @@ class UserPasswordResetWidget extends UserAbstractWidget
             // get a reset form
             $resetForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
-                ->getInstance('User\Form\ActivationCode')
+                ->getInstance('User\Form\UserActivationCode')
                 ->setModel($this->getModel())
                 ->setUserId($userInfo['user_id']);
 

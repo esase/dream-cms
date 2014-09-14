@@ -1,10 +1,10 @@
 <?php
 namespace User\View\Widget;
 
-use Page\View\Widget\AbstractWidget;
-use User\Event\Event as UserEvent;
+use Page\View\Widget\PageAbstractWidget;
+use User\Event\UserEvent;
 
-abstract class UserAbstractWidget extends AbstractWidget
+abstract class UserAbstractWidget extends PageAbstractWidget
 {
     /**
      * Model instance
@@ -32,7 +32,7 @@ abstract class UserAbstractWidget extends AbstractWidget
         if (!$this->timeZoneModel) {
             $this->timeZoneModel = $this->getServiceLocator()
                 ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\TimeZone');
+                ->getInstance('Application\Model\ApplicationTimeZone');
         }
 
         return $this->timeZoneModel;

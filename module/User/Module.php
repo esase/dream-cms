@@ -1,21 +1,20 @@
 <?php
 namespace User;
 
-use User\Model\Base as UserModelBase;
-use User\Event\Event as UserEvent;
+use User\Event\UserEvent;
 use User\Service\UserIdentity as UserIdentityService;
-use User\Model\Base as UserBaseModel;
+use User\Model\UserBase as UserBaseModel;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 use Localization\Module as LocalizationModule;
-use Acl\Event\Event as AclEvent;
-use Acl\Model\Base as AclModelBase;
+use Acl\Event\AclEvent;
+use Acl\Model\AclBase as AclBaseModel;
 use Application\Model\Acl as AclModel;
-use Application\Utility\ErrorLogger;
-use Application\Service\Setting as SettingService;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Service\ApplicationSetting as SettingService;
 use Application\Service\Application as ApplicationService;
 use Exception;
 
@@ -48,7 +47,7 @@ class Module
         $eventManager->attach(AclEvent::DELETE_ACL_ROLE, function ($e) use ($moduleManager) {
             $users = $moduleManager->getEvent()->getParam('ServiceManager')
                 ->get('Application\Model\ModelManager')
-                ->getInstance('User\Model\Base');
+                ->getInstance('User\Model\UserBase');
 
             // change the empty role with the default role
             if (null != ($usersList = $users->getUsersWithEmptyRole())) {
@@ -84,7 +83,7 @@ class Module
             // get list of all registered time zones
             $timeZone  = $this->serviceManager
                 ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\TimeZone');
+                ->getInstance('Application\Model\ApplicationTimeZone');
 
             $registeredTimeZones = $timeZone->getTimeZones();
 
@@ -104,7 +103,7 @@ class Module
             }
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -127,7 +126,7 @@ class Module
                 if ($authService->getIdentity()['user_id'] != UserBaseModel::DEFAULT_GUEST_ID) {
                     $user = $this->serviceManager
                         ->get('Application\Model\ModelManager')
-                        ->getInstance('User\Model\Base');
+                        ->getInstance('User\Model\UserBase');
 
                     // get user info
                     $userInfo = $user->getUserInfo($authService->getIdentity()['user_id']);
@@ -151,7 +150,7 @@ class Module
             
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -165,7 +164,7 @@ class Module
     {
         try {
             $this->userIdentity = [];
-            $this->userIdentity['role'] = AclModelBase::DEFAULT_ROLE_GUEST;
+            $this->userIdentity['role'] = AclBaseModel::DEFAULT_ROLE_GUEST;
             $this->userIdentity['user_id'] = UserBaseModel::DEFAULT_GUEST_ID;
 
             $request = $this->serviceManager->get('Request');
@@ -180,7 +179,7 @@ class Module
             $authService->getStorage()->write($this->userIdentity);
         }
         catch (Exception $e) {
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
         }
     }
 
@@ -246,8 +245,8 @@ class Module
             ],
             'factories' => [
                 'userAvatarUrl' => function(){
-                    $thumbDir  = ApplicationService::getResourcesUrl() . UserModelBase::getThumbnailsDir();
-                    $avatarDir = ApplicationService::getResourcesUrl() . UserModelBase::getAvatarsDir();
+                    $thumbDir  = ApplicationService::getResourcesUrl() . UserBaseModel::getThumbnailsDir();
+                    $avatarDir = ApplicationService::getResourcesUrl() . UserBaseModel::getAvatarsDir();
 
                     return new \User\View\Helper\UserAvatarUrl($thumbDir, $avatarDir);
                 },

@@ -1,10 +1,10 @@
 <?php
 namespace User\PagePrivacy;
 
-use Page\PagePrivacy\AbstractPagePrivacy;
+use Page\PagePrivacy\PageAbstractPagePrivacy;
 use User\Service\UserIdentity as UserIdentityService;
 
-class UserDeletePrivacy extends AbstractPagePrivacy
+class UserDeletePrivacy extends PageAbstractPagePrivacy
 {
     /**
      * Is allowed to view page

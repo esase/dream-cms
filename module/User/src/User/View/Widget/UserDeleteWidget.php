@@ -1,7 +1,7 @@
 <?php
 namespace User\View\Widget;
 
-use User\Event\Event as UserEvent;
+use User\Event\UserEvent;
 use User\Service\UserIdentity as UserIdentityService;
 
 class UserDeleteWidget extends UserAbstractWidget
@@ -17,7 +17,7 @@ class UserDeleteWidget extends UserAbstractWidget
             // get the user delete form
             $deleteForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
-                ->getInstance('User\Form\Delete');
+                ->getInstance('User\Form\UserDelete');
 
             $request = $this->getRequest();
 

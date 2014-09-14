@@ -2,7 +2,7 @@
 namespace User\View\Widget;
 
 use User\Service\UserIdentity as UserIdentityService;
-use Acl\Model\Base as AclBaseModel;
+use Acl\Model\AclBase as AclBaseModel;
 
 class UserEditWidget extends UserAbstractWidget
 {

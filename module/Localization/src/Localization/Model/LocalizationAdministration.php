@@ -1,5 +1,5 @@
 <?php
 namespace Localization\Model;
 
-class LocalizationAdministration extends Base
+class LocalizationAdministration extends LocalizationBase
 {}

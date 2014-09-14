@@ -1,10 +1,10 @@
 <?php
 namespace FileManager\Controller;
 
-use Application\Controller\AbstractAdministrationController;
-use FileManager\Model\Base as FileManagerBaseModel;
+use Application\Controller\ApplicationAbstractAdministrationController;
+use FileManager\Model\FileManagerBase as FileManagerBaseModel;
 
-abstract class FileManagerBaseController extends AbstractAdministrationController
+abstract class FileManagerBaseController extends ApplicationAbstractAdministrationController
 {
     /**
      * Model instance
@@ -20,7 +20,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
         if (!$this->model) {
             $this->model = $this->getServiceLocator()
                 ->get('Application\Model\ModelManager')
-                ->getInstance('FileManager\Model\Base');
+                ->getInstance('FileManager\Model\FileManagerBase');
         }
 
         return $this->model;
@@ -58,7 +58,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
             // get a form
             $fileForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
-                ->getInstance('FileManager\Form\File');
+                ->getInstance('FileManager\Form\FileManagerFile');
 
             $request  = $this->getRequest();
 
@@ -127,7 +127,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
             // get a form
             $directoryForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
-                ->getInstance('FileManager\Form\Directory')
+                ->getInstance('FileManager\Form\FileManagerDirectory')
                 ->setPath($userPath)
                 ->setModel($this->getModel());
 
@@ -206,7 +206,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                 // get a form
                 $editForm = $this->getServiceLocator()
                     ->get('Application\Form\FormManager')
-                    ->getInstance('FileManager\Form\Edit')
+                    ->getInstance('FileManager\Form\FileManagerEdit')
                     ->setFileName($fileName)
                     ->setFullFilePath($currentDirectory)
                     ->setFullUserPath($userDirectory)
@@ -316,7 +316,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('FileManager\Form\FileFilter');
+            ->getInstance('FileManager\Form\FileManagerFileFilter');
 
         $request = $this->getRequest();
         $filterForm->getForm()->setData($request->getQuery(), false);

@@ -1,7 +1,7 @@
 <?php
 namespace Acl\Form;
 
-use Application\Form\CustomFormBuilder;
+use Application\Form\ApplicationCustomFormBuilder;
 use Application\Model\AclAdministration as AclAdministrationModel;
 
 class AclRole extends AbstractCustomForm 
@@ -36,7 +36,7 @@ class AclRole extends AbstractCustomForm
     protected $formElements = array(
         'name' => array(
             'name' => 'name',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Name',
             'required' => true,
             'category' => 'General info',
@@ -44,7 +44,7 @@ class AclRole extends AbstractCustomForm
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => CustomFormBuilder::FIELD_SUBMIT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit'
         ),
     );
@@ -69,7 +69,7 @@ class AclRole extends AbstractCustomForm
                 )
             );
 
-            $this->form = new CustomFormBuilder($this->formName,
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 

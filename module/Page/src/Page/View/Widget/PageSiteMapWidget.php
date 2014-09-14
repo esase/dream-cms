@@ -4,7 +4,7 @@ namespace Page\View\Widget;
 use Localization\Service\Localization as LocalizationService;
 use Page\Model\Page as PageModel;
 
-class PageSiteMapWidget extends AbstractWidget
+class PageSiteMapWidget extends PageAbstractWidget
 {
     /**
      * Model instance
@@ -26,7 +26,7 @@ class PageSiteMapWidget extends AbstractWidget
         if (!$this->model) {
             $this->model = $this->getServiceLocator()
                 ->get('Application\Model\ModelManager')
-                ->getInstance('Page\Model\Base');
+                ->getInstance('Page\Model\PageBase');
         }
 
         return $this->model;

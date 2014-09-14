@@ -1,7 +1,7 @@
 <?php
 namespace Acl\Form;
 
-use Application\Form\CustomFormBuilder;
+use Application\Form\ApplicationCustomFormBuilder;
 use Application\Model\Acl as AclBaseModel;
 
 class AclResourceFilter extends AbstractCustomForm 
@@ -43,14 +43,14 @@ class AclResourceFilter extends AbstractCustomForm
     protected $formElements = array(
         'modules' => array(
             'name' => 'modules',
-            'type' => CustomFormBuilder::FIELD_MULTI_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_SELECT,
             'label' => 'Module',
             'values' => array(
             )
         ),
         'status' => array(
             'name' => 'status',
-            'type' => CustomFormBuilder::FIELD_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
             'values' => array(
                 AclBaseModel::ACTION_ALLOWED  => 'Allowed',
@@ -59,7 +59,7 @@ class AclResourceFilter extends AbstractCustomForm
         ),
         'submit' => array(
             'name' => 'submit',
-            'type' => CustomFormBuilder::FIELD_SUBMIT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Search',
         )
     );
@@ -83,7 +83,7 @@ class AclResourceFilter extends AbstractCustomForm
                 unset($this->formElements['status']);
             }
 
-            $this->form = new CustomFormBuilder($this->formName,
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
