@@ -1,4 +1,4 @@
-<?php use Application\Model\Acl as AclModel ?>
+<?php use Acl\Model\AclBase as AclBaseModel ?>
 <?php $this->declareVars('subPageTitle') ?>
 <?php $this->subPageTitle = $this->translate('List of roles') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
@@ -99,20 +99,20 @@
         'multiple_actions' => array(
             'system_items' => array(
                 'param' => 'type',
-                'condition' =>  'return "__value__" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+                'condition' =>  'return "__value__" == "' . AclBaseModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
             )
         ),
         'single_actions' => array(
             'edit-role' => array(
                 0 => array(
                     'param' => 'type',
-                    'condition' =>  'return "__value__" == "' . AclModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . AclBaseModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
                 )
             ),
             'browse-resources' => array(
                 0 => array(
                     'param' => 'id',
-                    'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . AclBaseModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
                 )
             )
         )

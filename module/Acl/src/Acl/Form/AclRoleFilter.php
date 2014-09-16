@@ -1,7 +1,7 @@
 <?php
 namespace Acl\Form;
 
-use Application\Model\Acl as AclModelBase;
+use Acl\Model\AclBase as AclBaseModel;
 use Application\Form\ApplicationCustomFormBuilder;
 
 class AclRoleFilter extends AbstractCustomForm 
@@ -34,8 +34,8 @@ class AclRoleFilter extends AbstractCustomForm
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Type',
             'values' => array(
-               AclModelBase::ROLE_TYPE_SYSTEM => 'system',
-               AclModelBase::ROLE_TYPE_CUSTOM => 'custom'
+               AclBaseModel::ROLE_TYPE_SYSTEM => 'system',
+               AclBaseModel::ROLE_TYPE_CUSTOM => 'custom'
             )
         ),
         1 => array(

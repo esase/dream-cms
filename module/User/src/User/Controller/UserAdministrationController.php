@@ -1,11 +1,11 @@
 <?php
 namespace User\Controller;
 
-use Zend\View\Model\ViewModel;
+use Acl\Model\AclBase as AclBaseModel;
 use Application\Controller\ApplicationAbstractAdministrationController;
-use Application\Model\Acl as AclBaseModel;
-use User\Service\Service as UserService;
 use User\Model\UserAdministration as UserAdministrationModel;
+use User\Service\Service as UserService;
+use Zend\View\Model\ViewModel;
 
 class UserAdministrationController extends ApplicationAbstractAdministrationController
 {
@@ -43,7 +43,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         if (!$this->aclModel) {
             $this->aclModel = $this->getServiceLocator()
                 ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\AclAdministration');
+                ->getInstance('Acl\Model\AclAdministration');
         }
 
         return $this->aclModel;

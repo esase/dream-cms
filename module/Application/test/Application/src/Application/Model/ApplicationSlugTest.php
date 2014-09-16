@@ -26,7 +26,7 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
      * User Ids
      * @var array
      */
-    protected $userIds = array();
+    protected $userIds = [];
 
     /**
      * Setup
@@ -51,13 +51,13 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
         if ($this->userIds) {
             $query = $this->model->delete()
                 ->from('user_list')
-                ->where(array(
+                ->where([
                     new InPredicate('user_id', $this->userIds)
-                ));
+                ]);
 
             $statement = $this->model->prepareStatementForSqlObject($query);
             $statement->execute();
-            $this->userIds = array();
+            $this->userIds = [];
         }
     }
 
@@ -70,14 +70,14 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
         $firstUserSlug = 'terminator';
         $firstUserId   = 1000;
 
-        $firstUserData = array(
+        $firstUserData = [
             'user_id' => $firstUserId,
             'nick_name' => Rand::getString(32),
             'email' => Rand::getString(32),
             'role' => AclModel::DEFAULT_ROLE_MEMBER,
             'slug' => $firstUserSlug,
             'api_key' => $firstUserId . Rand::getString(32)
-        );
+        ];
 
         $query = $this->model->insert()
             ->into('user_list')
@@ -91,14 +91,14 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
         $secondUserSlug = '1002-terminator';
         $secondUserId   = 1001;
 
-        $secondUserData = array(
+        $secondUserData = [
             'user_id' => $secondUserId,
             'nick_name' => Rand::getString(32),
             'email' => Rand::getString(32),
             'role' => AclModel::DEFAULT_ROLE_MEMBER,
             'slug' => $secondUserSlug,
             'api_key' => $secondUserId . Rand::getString(32)
-        );
+        ];
 
         $query = $this->model->insert()
             ->into('user_list')
@@ -124,13 +124,13 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
         // generate a first test user
         $firstUserSlug = SlugUtility::slugify(Rand::getString(20));
 
-        $firstUserData = array(
+        $firstUserData = [
             'nick_name' => Rand::getString(32),
             'email' => Rand::getString(32),
             'role' => AclModel::DEFAULT_ROLE_MEMBER,
             'slug' => $firstUserSlug,
             'api_key' => Rand::getString(32)
-        );
+        ];
 
         $query = $this->model->insert()
             ->into('user_list')

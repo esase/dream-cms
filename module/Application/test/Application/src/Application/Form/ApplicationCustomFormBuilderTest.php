@@ -36,56 +36,56 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testHmlAreaField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'htmlarea'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'htmlarea',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'htmlarea',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b>some content</b>'), false);
+        $form->setData(['test' => '<b>some content</b>'], false);
         $this->assertTrue($form->isValid());
         $values = $form->getData();
         $this->assertEquals($values['test'], '<b>some content</b>');
 
         // test with js (all dangerous scripts should be stripped off)
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'htmlarea',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<script>alert("test")</script>some content'), false);
+        $form->setData(['test' => '<script>alert("test")</script>some content'], false);
         $this->assertTrue($form->isValid());
         $values = $form->getData();
         $this->assertEquals($values['test'], 'some content');
@@ -97,56 +97,56 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testDateUnixTimeField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'text',
                 'type' => 'date_unixtime'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'date_unixtime',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value with locale
         $this->setCustomLocale('ru_RU');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'date_unixtime',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '21 мая 2014 г.'), false);
+        $form->setData(['test' => '21 мая 2014 г.'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value with locale
         $this->setCustomLocale('en_US');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'date_unixtime',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '21 мая 2014 г.'), false);
+        $form->setData(['test' => '21 мая 2014 г.'], false);
         $this->assertFalse($form->isValid());
     }
 
@@ -156,70 +156,70 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testDateField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'text',
                 'type' => 'date'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value with locale
         $this->setCustomLocale('ru_RU');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '21 мая 2014 г.'), false);
+        $form->setData(['test' => '21 мая 2014 г.'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value with locale
         $this->setCustomLocale('en_US');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '21 мая 2014 г'), false);
+        $form->setData(['test' => '21 мая 2014 г'], false);
         $this->assertFalse($form->isValid());
 
         // test a date convertation
         $this->setCustomLocale('fr_FR');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '2 nov. 2013'), false);
+        $form->setData(['test' => '2 nov. 2013'], false);
         $this->assertTrue($form->isValid());
         $values = $form->getData();
         $this->assertEquals($values['test'], '2013-11-02');
@@ -231,67 +231,67 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testUrlField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'url'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'http://mail.com'), false);
+        $form->setData(['test' => 'http://mail.com'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'mail.com'), false);
+        $form->setData(['test' => 'mail.com'], false);
         $this->assertFalse($form->isValid());
 
         // test with html tags
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b>http://mail.com</b>'), false);
+        $form->setData(['test' => '<b>http://mail.com</b>'], false);
         $this->assertTrue($form->isValid());
 
         $values = $form->getData();
@@ -304,61 +304,61 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testMulticheckboxField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multicheckbox'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multicheckbox',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => ''), false);
+        $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
-        
+
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multicheckbox',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1,
                     2 => 2
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => array('1', '2')), false);
+        $form->setData(['test' => ['1', '2']], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multicheckbox',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => array('1', '2')), false);
+        $form->setData(['test' => ['1', '2']], false);
         $this->assertFalse($form->isValid());
     }
 
@@ -368,54 +368,54 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testCheckboxField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'checkbox'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'checkbox',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => ''), false);
+        $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'checkbox',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '1'), false);
+        $form->setData(['test' => '1'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'checkbox',
                 'required' => false
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'asdsadas'), false);
+        $form->setData(['test' => 'asdsadas'], false);
         $this->assertFalse($form->isValid());
     }
 
@@ -425,61 +425,61 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testMultiselectField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multiselect'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multiselect',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => ''), false);
+        $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
         
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multiselect',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1,
                     2 => 2
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => array('1', '2')), false);
+        $form->setData(['test' => ['1', '2']], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'multiselect',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => array('1', '2')), false);
+        $form->setData(['test' => ['1', '2']], false);
         $this->assertFalse($form->isValid());
     }
 
@@ -489,60 +489,60 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testSelectField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'select'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'select',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => ''), false);
+        $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
         
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'select',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '1'), false);
+        $form->setData(['test' => '1'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'select',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '2'), false);
+        $form->setData(['test' => '2'], false);
         $this->assertFalse($form->isValid());
     }
 
@@ -552,60 +552,60 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testRadioField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'radio'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'radio',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => ''), false);
+        $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
-        
+
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'radio',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '1'), false);
+        $form->setData(['test' => '1'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'radio',
                 'required' => true,
-                'values' => array(
+                'values' => [
                     1 => 1
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '2'), false);
+        $form->setData(['test' => '2'], false);
         $this->assertFalse($form->isValid());
     }
 
@@ -615,67 +615,67 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testPasswordField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'password'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'some content'), false);
+        $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
         // test with html tags
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b></b>'), false);
+        $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
         // test with html tags#2 we should get clean data
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b>bbb</b>'), false);
+        $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
         $values = $form->getData();
@@ -688,67 +688,67 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testHiddenField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'hidden'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'some content'), false);
+        $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
         // test with html tags
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b></b>'), false);
+        $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
         // test with html tags#2 we should get clean data
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b>bbb</b>'), false);
+        $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
         $values = $form->getData();
@@ -761,67 +761,67 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testEmailField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'email'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'tester@mail.com'), false);
+        $form->setData(['test' => 'tester@mail.com'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'testermail.com'), false);
+        $form->setData(['test' => 'testermail.com'], false);
         $this->assertFalse($form->isValid());
 
         // test with html tags
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b>tester@mail.com</b>'), false);
+        $form->setData(['test' => '<b>tester@mail.com</b>'], false);
         $this->assertTrue($form->isValid());
 
         $values = $form->getData();
@@ -834,67 +834,67 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testTextField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'text'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'some content'), false);
+        $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
         // test with html tags
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b></b>'), false);
+        $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
         // test with html tags#2 we should get clean data
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b>bbb</b>'), false);
+        $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
         $values = $form->getData();
@@ -907,67 +907,67 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testTextareaField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'textarea'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'some content'), false);
+        $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
         // test with html tags
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b></b>'), false);
+        $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
         // test with html tags#2 we should get clean data
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '<b>bbb</b>'), false);
+        $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
         $values = $form->getData();
@@ -980,67 +980,67 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testIntegerField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'text',
                 'type' => 'integer'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 1), false);
+        $form->setData(['test' => 1], false);
         $this->assertTrue($form->isValid());
 
         // pass a float value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 0.5), false);
+        $form->setData(['test' => 0.5], false);
         $this->assertFalse($form->isValid());
 
         // test not required value with defined wrong value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => false
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 'some content'), false);
+        $form->setData(['test' => 'some content'], false);
         $this->assertFalse($form->isValid());
     }
 
@@ -1050,84 +1050,84 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     public function testFloatField()
     {
         // test with not required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'text',
                 'type' => 'float'
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertTrue($form->isValid());
 
         // test with required value
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array(), false);
+        $form->setData([], false);
         $this->assertFalse($form->isValid());
 
         // test a correct value
         $this->setCustomLocale('en_US');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => 0.5), false);
+        $form->setData(['test' => 0.5], false);
         $this->assertTrue($form->isValid());
 
         // test a correct value with locale
         $this->setCustomLocale('ru_RU');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '0,5'), false);
+        $form->setData(['test' => '0,5'], false);
         $this->assertTrue($form->isValid());
 
         // test a incorrect value with locale
         $this->setCustomLocale('en_US');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '0,5'), false);
+        $form->setData(['test' => '0,5'], false);
         $this->assertFalse($form->isValid());
 
         // test a float convertation
         $this->setCustomLocale('fr_FR');
-        $field = array(
-            0 => array(
+        $field = [
+            0 => [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
-            )
-        );
+            ]
+        ];
 
         $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
-        $form->setData(array('test' => '0,5'), false);
+        $form->setData(['test' => '0,5'], false);
 
         $this->assertTrue($form->isValid());
         $values = $form->getData();

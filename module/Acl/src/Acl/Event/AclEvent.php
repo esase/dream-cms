@@ -1,7 +1,7 @@
 <?php
 namespace Acl\Event;
 
-use User\Service\Service as UserService;
+use User\Service\UserIdentity as UserIdentityService;
 use Application\Event\ApplicationAbstractEvent;
 
 class AclEvent extends ApplicationAbstractEvent
@@ -50,19 +50,19 @@ class AclEvent extends ApplicationAbstractEvent
     {
         // event's description
         $eventDesc = $userId
-            ? (UserService::isGuest() ? 'Event - ACL user\'s resource settings edited by guest'
+            ? (UserIdentityService::isGuest() ? 'Event - ACL user\'s resource settings edited by guest'
                     : 'Event - ACL user\'s resource settings edited by user')
-            : (UserService::isGuest() ? 'Event - ACL resource settings edited by guest'
+            : (UserIdentityService::isGuest() ? 'Event - ACL resource settings edited by guest'
                     : 'Event - ACL resource settings edited by user');
 
         $eventDescParams = $userId
-            ? (UserService::isGuest() ? array($roleId, $resourceId, $userId)
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $roleId, $resourceId, $userId))
-            : (UserService::isGuest() ? array($roleId, $resourceId)
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $roleId, $resourceId));
+            ? (UserIdentityService::isGuest() ? [$roleId, $resourceId, $userId]
+                    : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId, $resourceId, $userId])
+            : (UserIdentityService::isGuest() ? [$roleId, $resourceId]
+                    : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId, $resourceId]);
 
         self::fireEvent(self::EDIT_ACL_RESOURCE_SETTINGS, 
-                $connectionId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $connectionId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -75,16 +75,16 @@ class AclEvent extends ApplicationAbstractEvent
     public static function fireDisallowAclResourceEvent($resourceId, $roleId)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - ACL resource disallowed by guest'
             : 'Event - ACL resource disallowed by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($resourceId, $roleId)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $resourceId, $roleId);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$resourceId, $roleId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $resourceId, $roleId];
 
         self::fireEvent(self::DISALLOW_ACL_RESOURCE, 
-                $resourceId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $resourceId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -97,16 +97,16 @@ class AclEvent extends ApplicationAbstractEvent
     public static function fireAllowAclResourceEvent($resourceId, $roleId)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
            ? 'Event - ACL resource allowed by guest'
            : 'Event - ACL resource allowed by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($resourceId, $roleId)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $resourceId, $roleId);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$resourceId, $roleId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $resourceId, $roleId];
 
         self::fireEvent(self::ALLOW_ACL_RESOURCE, 
-                $resourceId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $resourceId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -118,16 +118,16 @@ class AclEvent extends ApplicationAbstractEvent
     public static function fireEditAclRoleEvent($roleId)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - ACL role edited by guest'
             : 'Event - ACL role edited by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($roleId)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $roleId);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$roleId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId];
 
         self::fireEvent(self::EDIT_ACL_ROLE, 
-                $roleId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $roleId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -139,16 +139,16 @@ class AclEvent extends ApplicationAbstractEvent
     public static function fireAddAclRoleEvent($roleId)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - ACL role added by guest'
             : 'Event - ACL role added by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($roleId)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $roleId);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$roleId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId];
 
         self::fireEvent(self::ADD_ACL_ROLE, 
-                $roleId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $roleId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -160,15 +160,15 @@ class AclEvent extends ApplicationAbstractEvent
     public static function fireDeleteAclRoleEvent($roleId)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - ACL role deleted by guest'
             : 'Event - ACL role deleteted by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($roleId)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $roleId);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$roleId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId];
 
         self::fireEvent(self::DELETE_ACL_ROLE, 
-                $roleId, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $roleId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

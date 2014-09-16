@@ -12,7 +12,6 @@ use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 use Localization\Module as LocalizationModule;
 use Acl\Event\AclEvent;
 use Acl\Model\AclBase as AclBaseModel;
-use Application\Model\Acl as AclModel;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Service\Application as ApplicationService;
@@ -54,7 +53,7 @@ class Module
                 // process users list
                 foreach ($usersList as $userInfo) {
                     $users->editUserRole($userInfo['user_id'], 
-                            AclModel::DEFAULT_ROLE_MEMBER, AclModel::DEFAULT_ROLE_MEMBER_NAME, $userInfo, true);
+                            AclBaseModel::DEFAULT_ROLE_MEMBER, AclBaseModel::DEFAULT_ROLE_MEMBER_NAME, $userInfo, true);
                 }
             }
         }, -100);

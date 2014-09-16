@@ -4,9 +4,9 @@ namespace User\Test\Event;
 use User\Test\UserBootstrap;
 use PHPUnit_Framework_TestCase;
 use Zend\Math\Rand;
-use Application\Event\ApplicationEvent;
+use Acl\Event\AclEvent;
 use Zend\Db\ResultSet\ResultSet;
-use Application\Model\Acl as AclModel;
+use Acl\Model\AclBase as AclBaseModel;
 
 class DeleteRoleTest extends PHPUnit_Framework_TestCase
 {
@@ -26,13 +26,13 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
      * ACL roles ids
      * @var array
      */
-    protected $aclRolesIds = array();
+    protected $aclRolesIds = [];
 
     /**
      * Users ids
      * @var array
      */
-    protected $usersIds = array();
+    protected $usersIds = [];
 
     /**
      * Setup
@@ -57,14 +57,14 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         if ($this->aclRolesIds) {
             foreach ($this->aclRolesIds as $roleId) {
                 $query = $this->model->delete()
-                    ->from('application_acl_role')
-                    ->where(array('id' => $roleId));
+                    ->from('acl_role')
+                    ->where(['id' => $roleId]);
 
                 $statement = $this->model->prepareStatementForSqlObject($query);
                 $statement->execute();
             }
 
-            $this->aclRolesIds = array();
+            $this->aclRolesIds = [];
         }
 
         // delete test users
@@ -72,13 +72,13 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
             foreach ($this->usersIds as $userId) {
                 $query = $this->model->delete()
                     ->from('user_list')
-                    ->where(array('user_id' => $userId));
+                    ->where(['user_id' => $userId]);
 
                 $statement = $this->model->prepareStatementForSqlObject($query);
                 $statement->execute();
             }
 
-            $this->usersIds = array();
+            $this->usersIds = [];
         }
     }
 
@@ -89,10 +89,10 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
     {
         // create a first test ACL role
         $query = $this->model->insert()
-            ->into('application_acl_role')
-            ->values(array(
+            ->into('acl_role')
+            ->values([
                 'name' => 'test role 1'
-            ));
+            ]);
 
         $statement = $this->model->prepareStatementForSqlObject($query);
         $statement->execute();
@@ -101,11 +101,11 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
         // create a test user
         $query = $this->model->insert()
             ->into('user_list')
-            ->values(array(
+            ->values([
                 'nick_name' => Rand::getString(32),
                 'email' => Rand::getString(32),
                 'role' => $this->aclRolesIds[0]
-            ));
+            ]);
 
         $statement = $this->model->prepareStatementForSqlObject($query);
         $statement->execute();
@@ -113,30 +113,30 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
 
         // delete the created ACL role
         $query = $this->model->delete()
-            ->from('application_acl_role')
-            ->where(array('id' => $this->aclRolesIds[0]));
+            ->from('acl_role')
+            ->where(['id' => $this->aclRolesIds[0]]);
 
         $statement = $this->model->prepareStatementForSqlObject($query);
         $statement->execute();
 
         // fire the delete ACL role event
-        ApplicationEvent::fireDeleteAclRoleEvent($this->aclRolesIds[0]);
+        AclEvent::fireDeleteAclRoleEvent($this->aclRolesIds[0]);
 
         // check the created test user's role
         $select = $this->model->select();
         $select->from('user_list')
-            ->columns(array(
+            ->columns([
                 'role'
-            ))
-            ->where(array(
+            ])
+            ->where([
                 'user_id' => $this->usersIds[0]
-            ));
+            ]);
 
         $statement = $this->model->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
         $result = $resultSet->initialize($statement->execute());
 
         // user must be a default member
-        $this->assertEquals($result->current()['role'], AclModel::DEFAULT_ROLE_MEMBER);
+        $this->assertEquals($result->current()['role'], AclBaseModel::DEFAULT_ROLE_MEMBER);
     }
 }

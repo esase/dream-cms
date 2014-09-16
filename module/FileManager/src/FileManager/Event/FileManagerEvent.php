@@ -2,7 +2,7 @@
 namespace FileManager\Event;
 
 use Application\Event\ApplicationAbstractEvent;
-use User\Service\Service as UserService;
+use User\Service\Service as UserIdentityService;
 
 class FileManagerEvent extends ApplicationAbstractEvent
 {
@@ -46,16 +46,16 @@ class FileManagerEvent extends ApplicationAbstractEvent
     public static function fireEditDirectoryEvent($path, $newPath)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - Directory edited by guest'
             : 'Event - Directory edited by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($path, $newPath)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $path, $newPath);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$path, $newPath]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $path, $newPath];
 
         self::fireEvent(self::EDIT_DIRECTORY, 
-                $path, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $path, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -68,16 +68,16 @@ class FileManagerEvent extends ApplicationAbstractEvent
     public static function fireEditFileEvent($path, $newPath)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - File edited by guest'
             : 'Event - File edited by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($path, $newPath)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $path, $newPath);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$path, $newPath]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $path, $newPath];
 
         self::fireEvent(self::EDIT_FILE, 
-                $path, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $path, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -89,16 +89,16 @@ class FileManagerEvent extends ApplicationAbstractEvent
     public static function fireAddFileEvent($path)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - File added by guest'
             : 'Event - File added by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($path)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $path);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$path]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $path];
 
         self::fireEvent(self::ADD_FILE, 
-                $path, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $path, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -110,16 +110,16 @@ class FileManagerEvent extends ApplicationAbstractEvent
     public static function fireAddDirectoryEvent($path)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - Directory added by guest'
             : 'Event - Directory added by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($path)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $path);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$path]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $path];
 
         self::fireEvent(self::ADD_DIRECTORY, 
-                $path, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $path, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -134,13 +134,12 @@ class FileManagerEvent extends ApplicationAbstractEvent
         // event's description
         $eventDesc = $isSystemEvent
             ? 'Event - Directory deleted by the system'
-            : (UserService::isGuest() ? 'Event - Directory deleted by guest' 
-                    : 'Event - Directory deleteted by user');
+            : (UserIdentityService::isGuest() ? 'Event - Directory deleted by guest'  : 'Event - Directory deleteted by user');
 
         $eventDescParams = $isSystemEvent
-            ? array($path)
-            : (UserService::isGuest() ? array($path) 
-                    : array(UserService::getCurrentUserIdentity()->nick_name, $path));
+            ? [$path]
+            : (UserIdentityService::isGuest() ? [$path]
+                    : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $path]);
 
         self::fireEvent(self::DELETE_DIRECTORY, $path, self::getUserId($isSystemEvent), $eventDesc, $eventDescParams);
     }
@@ -154,15 +153,15 @@ class FileManagerEvent extends ApplicationAbstractEvent
     public static function fireDeleteFileEvent($path)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - File deleted by guest'
             : 'Event - File deleteted by user';
 
-        $eventDescParams = UserService::isGuest()
-            ? array($path)
-            : array(UserService::getCurrentUserIdentity()->nick_name, $path);
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$path]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $path];
 
         self::fireEvent(self::DELETE_FILE, 
-                $path, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $path, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

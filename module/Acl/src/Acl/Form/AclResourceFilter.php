@@ -2,7 +2,7 @@
 namespace Acl\Form;
 
 use Application\Form\ApplicationCustomFormBuilder;
-use Application\Model\Acl as AclBaseModel;
+use Acl\Model\AclBase as AclBaseModel;
 
 class AclResourceFilter extends AbstractCustomForm 
 {

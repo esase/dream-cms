@@ -44,7 +44,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         // clear settings array
         $reflectionProperty = new ReflectionProperty($this->settingModel, 'settings');
         $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue(array());
+        $reflectionProperty->setValue([]);
     }
 
     /**
@@ -56,11 +56,11 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         if ($this->settingsNames) {
             $query = $this->settingModel->delete()
                 ->from('application_setting')
-                ->where(array('name' => $this->settingsNames));
+                ->where(['name' => $this->settingsNames]);
 
             $statement = $this->settingModel->prepareStatementForSqlObject($query);
             $statement->execute();
-            $this->settingsNames = array();
+            $this->settingsNames = [];
         }
     }
 
@@ -72,12 +72,12 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      * @param integer $moduleId
      * @return void
      */
-    protected function addSetting($setting, array $settingValues = array(), $moduleId = 1)
+    protected function addSetting($setting, array $settingValues = [], $moduleId = 1)
     {
-        $settingData = array(
+        $settingData = [
             'name' => $setting,
             'module' => $moduleId
-        );
+        ];
 
         $query = $this->settingModel->insert()
             ->into('application_setting')
@@ -93,7 +93,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
                 // insert setting value
                 $query = $this->settingModel->insert()
                     ->into('application_setting_value')
-                    ->values(array_merge($settingValue, array('setting_id' => $settingId)));
+                    ->values(array_merge($settingValue, ['setting_id' => $settingId]));
 
                 $statement = $this->settingModel->prepareStatementForSqlObject($query);
                 $statement->execute(); 
@@ -107,17 +107,17 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     public function testBaseSettings()
     {
         // list of test settings
-        $this->settingsNames = array(
+        $this->settingsNames = [
             'test language setting'
-        );
+        ];
 
         $baseValue = time();
 
         // list of settings values
-        $settingValues = array();
-        $settingValues[] = array(
+        $settingValues = [];
+        $settingValues[] = [
             'value' => $baseValue
-        );
+        ];
 
         // get current language
         $currentLocalization = LocalizationService::getCurrentLocalization();
@@ -133,10 +133,10 @@ class ServiceTest extends PHPUnit_Framework_TestCase
                 continue;
             }
 
-            $settingValues[] = array(
+            $settingValues[] = [
                 'value' => $localizationInfo['locale'],
                 'language' => $localizationInfo['language']
-            );
+            ];
         }
 
         // add test settings
@@ -156,9 +156,9 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     public function testSettingsByLanguage()
     {
         // list of test settings
-        $this->settingsNames = array(
+        $this->settingsNames = [
             'test language setting'
-        );
+        ];
 
         // get localization model
         $localization = $this->serviceManager
@@ -166,17 +166,17 @@ class ServiceTest extends PHPUnit_Framework_TestCase
             ->getInstance('Localization\Model\LocalizationBase');
 
         // list of settings values
-        $settingValues = array();
-        $settingValues[] = array(
+        $settingValues = [];
+        $settingValues[] = [
             'value' => 'base'
-        );
+        ];
 
         // process all registered localization
         foreach ($localization->getAllLocalizations() as $localizationInfo) {
-            $settingValues[] = array(
+            $settingValues[] = [
                 'value' => $localizationInfo['locale'],
                 'language' => $localizationInfo['language']
-            );
+            ];
         }
 
         // add test settings
@@ -198,10 +198,10 @@ class ServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testNotExistSettings()
     {
-        $this->settingsNames = array(
+        $this->settingsNames = [
             'test language setting',
             'test acl setting'
-        );
+        ];
 
         // check setting
         foreach ($this->settingsNames as $setting) {

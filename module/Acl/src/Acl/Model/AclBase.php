@@ -418,7 +418,7 @@ class AclBase extends ApplicationAbstractBase
                 ->and->isNull('d.user_id');
 
         $extraTrackCondition = $userId == UserBaseModel::DEFAULT_GUEST_ID
-            ? 'i.user_id is null'
+            ? 'i.user_id IS NULL'
             : 'i.user_id = ' . (int) $userId;
 
         $mainSelect = $this->select();
@@ -452,13 +452,13 @@ class AclBase extends ApplicationAbstractBase
                     'actions',
                     'actions_last_reset',
                     'permission' => new Expression('if (
-                        c.id is null
+                        c.id IS NULL
                             or
-                        (c.date_start = 0 or (? >= c.date_start))    
+                        (c.date_start IS NULL or (? >= c.date_start))    
                             and
-                        (c.date_end = 0 or (? <= c.date_end))    
+                        (c.date_end IS NULL or (? <= c.date_end))    
                             and
-                        (c.actions_limit = 0 or i.actions is null or c.actions_limit > i.actions), "' .
+                        (c.actions_limit IS NULL or i.actions IS NULL or c.actions_limit > i.actions), "' .
                         self::ACTION_ALLOWED . '", "' .
                         self::ACTION_DISALLOWED . '")',array($currentTime, $currentTime))
                 ),

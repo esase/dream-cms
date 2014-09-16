@@ -49,13 +49,13 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
     public function testDeleteUserHomeDirectory()
     {
         // test user data
-        $data = array(
+        $data = [
             'nick_name' => Rand::getString(32),
             'email' => Rand::getString(32),
             'api_key' => Rand::getString(32),
             'role' => AclModelBase::DEFAULT_ROLE_MEMBER,
             'language' => null
-        );
+        ];
 
         // create a test user
         $query = $this->userModel->insert()
@@ -78,7 +78,7 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
         // delete the created user
         $query = $this->userModel->delete()
             ->from('user_list')
-            ->where(array('user_id' => $testUserId));
+            ->where(['user_id' => $testUserId]);
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
         $statement->execute();

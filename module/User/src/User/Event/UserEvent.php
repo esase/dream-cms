@@ -312,8 +312,8 @@ class UserEvent extends ApplicationAbstractEvent
             : 'Event - User disapproved by user';
 
         $eventDescParams = UserIdentityService::isGuest()
-            ? array($userId)
-            : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId);
+            ? [$userId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $userId];
 
         self::fireEvent(self::DISAPPROVE, $userId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
 
@@ -324,16 +324,16 @@ class UserEvent extends ApplicationAbstractEvent
 
         EmailNotificationUtility::sendNotification($userInfo['email'],
                 SettingService::getSetting('user_disapproved_title', $notificationLanguage),
-                SettingService::getSetting('user_disapproved_message', $notificationLanguage), array(
-                    'find' => array(
+                SettingService::getSetting('user_disapproved_message', $notificationLanguage), [
+                    'find' => [
                         'RealName',
                         'Email'
-                    ),
-                    'replace' => array(
+                    ],
+                    'replace' => [
                         $userInfo['nick_name'],
                         $userInfo['email']
-                    )
-                ));
+                    ]
+                ]);
     }
 
     /**
@@ -345,7 +345,8 @@ class UserEvent extends ApplicationAbstractEvent
      */
     public static function fireSetTimezoneViaXmlRpcEvent($userId, $userNickname)
     {
-        self::fireEvent(self::SET_TIMEZONE_XMLRPC, $userId, $userId, 'Event - Timezone set by user via XmlRpc', array($userNickname));
+        self::fireEvent(self::SET_TIMEZONE_XMLRPC, 
+                $userId, $userId, 'Event - Timezone set by user via XmlRpc', [$userNickname]);
     }
 
     /**
@@ -364,9 +365,9 @@ class UserEvent extends ApplicationAbstractEvent
             ? 'Event - User\'s info was obtained by guest via XmlRpc'
             : 'Event - User\'s info was obtained by user via XmlRpc';
 
-        $eventDescParams = UserIdentityService::isGuest()
-            ? array($userNick)
-            : array($viewerNick, $userNick);
+        $eventDescParams = UserIdentityService::isGuest() 
+            ? [$userNick] 
+            : [$viewerNick, $userNick];
 
         self::fireEvent(self::GET_INFO_XMLRPC, $viewerId, $userId, $eventDesc, $eventDescParams);
     }
@@ -430,9 +431,9 @@ class UserEvent extends ApplicationAbstractEvent
                     ? 'Event - User\'s role edited by guest' : 'Event - User\'s role edited by user');
 
         $eventDescParams = $isSystemEvent
-            ? array($user['user_id'])
+            ? [$user['user_id']]
             : (UserIdentityService::isGuest() 
-                    ? array($user['user_id']) : array(UserIdentityService::getCurrentUserIdentity()['nick_name'], $user['user_id']));
+                    ? [$user['user_id']] : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $user['user_id']]);
 
         self::fireEvent(self::EDIT_ROLE, $user['user_id'], self::getUserId($isSystemEvent), $eventDesc, $eventDescParams);
 
@@ -444,17 +445,17 @@ class UserEvent extends ApplicationAbstractEvent
 
             EmailNotificationUtility::sendNotification($user['email'],
                 SettingService::getSetting('user_role_edited_title', $notificationLanguage),
-                SettingService::getSetting('user_role_edited_message', $notificationLanguage), array(
-                    'find' => array(
+                SettingService::getSetting('user_role_edited_message', $notificationLanguage), [
+                    'find' => [
                         'RealName',
                         'Role'
-                    ),
-                    'replace' => array(
+                    ],
+                    'replace' => [
                         $user['nick_name'],
                         ServiceManagerService::getServiceManager()->get('Translator')->
                                 translate($roleName, 'default', LocalizationService::getLocalizations()[$notificationLanguage]['locale'])
-                    )
-                ));
+                    ]
+                ]);
         }
     }
 }

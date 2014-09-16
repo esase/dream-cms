@@ -1,7 +1,7 @@
 <?php
 namespace Application\Event;
 
-use User\Service\Service as UserService;
+use User\Service\UserIdentity as UserIdentityService;
 
 class ApplicationEvent extends ApplicationAbstractEvent
 {
@@ -46,16 +46,16 @@ class ApplicationEvent extends ApplicationAbstractEvent
     public static function fireClearCacheEvent($cache)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - Cache cleared by guest'
             : 'Event - Cache cleared by user';
 
-        $eventDescParams = UserService::isGuest()
+        $eventDescParams = UserIdentityService::isGuest()
             ? [$cache]
-            : [UserService::getCurrentUserIdentity()->nick_name, $cache];
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $cache];
 
         self::fireEvent(self::CLEAR_CACHE, 
-                $cache, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $cache, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
     /**
@@ -67,15 +67,15 @@ class ApplicationEvent extends ApplicationAbstractEvent
     public static function fireChangeSettingsEvent($module)
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - Settings were changed by guest'
             : 'Event - Settings were changed by user';
 
-        $eventDescParams = UserService::isGuest()
+        $eventDescParams = UserIdentityService::isGuest()
             ? [$module]
-            : [UserService::getCurrentUserIdentity()->nick_name, $module];
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
 
         self::fireEvent(self::CHANGE_SETTINGS, 
-                $module, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

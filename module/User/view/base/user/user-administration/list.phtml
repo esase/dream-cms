@@ -1,4 +1,4 @@
-<?php use Application\Model\Acl as AclModel ?>
+<?php use Acl\Model\AclBase as AclBaseModel ?>
 <?php use User\Model\UserBase as UserBaseModel ?>
 
 <?php $this->declareVars('subPageTitle') ?>
@@ -144,7 +144,7 @@
             'browse-acl-resources' => array(
                 0 => array(
                     'param' => 'role_id',
-                    'condition' =>  'return "__value__" == "' . AclModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
+                    'condition' =>  'return "__value__" == "' . AclBaseModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
                 )
             ),
             'edit-role' => array(

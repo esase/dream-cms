@@ -2,7 +2,7 @@
 namespace Acl\Form;
 
 use Application\Form\ApplicationCustomFormBuilder;
-use Application\Model\AclAdministration as AclAdministrationModel;
+use Acl\Model\AclAdministration as AclAdministrationModel;
 
 class AclRole extends AbstractCustomForm 
 {

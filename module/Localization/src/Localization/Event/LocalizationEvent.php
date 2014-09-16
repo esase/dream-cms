@@ -1,7 +1,7 @@
 <?php
 namespace Localization\Event;
 
-use User\Service\Service as UserService;
+use User\Service\UserIdentity as UserIdentityService;
 
 class LocalizationEvent extends AbstractEvent
 {
@@ -18,15 +18,15 @@ class LocalizationEvent extends AbstractEvent
     public static function fireGetLocalizationsViaXmlRpcEvent()
     {
         // event's description
-        $eventDesc = UserService::isGuest()
+        $eventDesc = UserIdentityService::isGuest()
             ? 'Event - Localizations were got by guest via XmlRpc'
             : 'Event - Localizations were got by user via XmlRpc';
 
-        $eventDescParams = UserService::isGuest()
+        $eventDescParams = UserIdentityService::isGuest()
             ? []
-            : [UserService::getCurrentUserIdentity()->nick_name];
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name']];
 
         self::fireEvent(self::GET_LOCALIZATIONS, 
-                0, UserService::getCurrentUserIdentity()->user_id, $eventDesc, $eventDescParams);
+                0, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }
