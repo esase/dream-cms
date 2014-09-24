@@ -40,12 +40,12 @@ class FileManagerFileUrl extends AbstractHelper
         
         // generate a directory navigation link
         if (is_dir($absolutePath . '/'. $options['path'] . '/' . $fileName)) {
-            $urlParams = array('path' => $currentPath) + $options['filters'];
+            $urlParams = ['path' => $currentPath] + $options['filters'];
 
             // get the directory url
-            $directoryUrl = $this->getView()->url('administration', array(
-                'controller' => $this->getView()->currentRoute()->getController(),
-                'action' => $this->getView()->currentRoute()->getAction()), array('query' => $urlParams));
+            $directoryUrl = $this->getView()->url('application/page', [
+                'controller' => $this->getView()->applicationRoute()->getParam('controller'),
+                'action' => $this->getView()->applicationRoute()->getParam('action')], ['force_canonical' => true, 'query' => $urlParams]);
 
             // get the directory's image url
             $imageUrl = $this->getView()->layoutAsset(self::DEFAULT_FOLDER_IMAGE, 'image/icon', 'filemanager');

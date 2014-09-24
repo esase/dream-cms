@@ -5,6 +5,6 @@
         changeMonth: true,
         changeYear: true,
         regional: '<?php echo $this->escapeJs($this->localization()->getCurrentLanguage()) ?>',
-        yearRange: '<?php echo (int) $this->getSetting('application_calendar_min_year') ?>:<?php echo (int) $this->getSetting('application_calendar_max_year') ?>'
+        yearRange: '<?php echo (int) $this->applicationSetting('application_calendar_min_year') ?>:<?php echo (int) $this->applicationSetting('application_calendar_max_year') ?>'
     });
 </script>

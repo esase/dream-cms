@@ -104,32 +104,6 @@ abstract class ApplicationAbstractBaseController extends AbstractActionControlle
     }
 
     /**
-     * Check the current user permission.
-     *
-     * @param string $resource
-     * @param boolean $increaseActions
-     * @param boolean $showAccessDenied
-     * @return boolean
-     */
-    public function checkPermission($resource = null, $increaseActions = true, $showAccessDenied = true)
-    {
-        // get ACL resource name
-        $resource = !$resource
-            ? $this->getController() . ' ' . $this->getAction()
-            : $resource;
-
-        // check the permission
-        if (false === ($result = 
-                UserIdentityService::checkPermission($resource, $increaseActions)) && $showAccessDenied) {
-
-            // redirect to a forbidden page
-            $this->showErrorPage();
-        }
-
-        return $result;
-    }
-
-    /**
      * Show an error page
      *
      * @param string $action
@@ -281,7 +255,7 @@ abstract class ApplicationAbstractBaseController extends AbstractActionControlle
      * @param string $route
      * @return string
      */
-    protected function redirectTo($controller = null, $action = null, array $params = array(), $useReferer = false, array $queries = array(), $route = 'application')
+    protected function redirectTo($controller = null, $action = null, array $params = [], $useReferer = false, array $queries = [], $route = 'application/page')
     {
         $request = $this->getRequest();
 
@@ -291,10 +265,10 @@ abstract class ApplicationAbstractBaseController extends AbstractActionControlle
         }
 
         $urlParams = $params
-            ? array_merge(array('controller' => $controller, 'action' => $action), $params)
-            : array('controller' => $controller, 'action' => $action);
+            ? array_merge(['controller' => $controller, 'action' => $action], $params)
+            : ['controller' => $controller, 'action' => $action];
 
-        return $this->redirect()->toRoute($route, $urlParams, array('query' => $queries)); 
+        return $this->redirect()->toRoute($route, $urlParams, ['query' => $queries]); 
     }
 
     /**

@@ -9,35 +9,31 @@
 <?php echo $this->render('user/user-administration/_header') ?>
 
 <!-- render tabs -->
-<?php echo $this->partial('partial/tab', array(
+<?php echo $this->partial('administration-partial/tab', [
     'tabs' => $this->baseTabs,
     'active' => 'list' // selected action is "list"
-)) ?>
+]) ?>
 
 <!-- render a breadcrumb -->
-<?php echo $this->partial('partial/breadcrumb', array(
-    'pages' => array(
-        'list' => array(
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
             'name' => $this->translate('List of users'),
             'controller' => 'users-administration',
             'action' => 'list',
             'check_acl' => true
-        ),
-        'edit_role' => array(
+        ],
+        'edit_role' => [
             'name' => $this->user['nick_name'] . ' - ' . $this->subPageTitle,
             'controller' => 'users-administration',
             'action' => 'edit-role',
             'check_acl' => true
-        )
-    )
-)) ?>
+        ]
+    ]
+]) ?>
 
 <!-- render a form -->
-<?php echo $this->partial('partial/form', array(
-    'form' => $this->roleForm,
-    'controller' => 'users-administration',
-    'action' => 'edit-role',
-    'params' => array(
-        'slug' => $this->user['user_id']
-    )
-)); ?>
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('General info'),
+    'body' => $this->partial('partial/form', ['form' => $this->roleForm])
+]) ?>

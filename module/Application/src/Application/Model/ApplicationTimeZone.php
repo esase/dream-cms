@@ -17,12 +17,23 @@ class ApplicationTimeZone extends ApplicationBase
     const CACHE_TIME_ZONES_DATA_TAG = 'Application_Time_Zones_Data_Tag';
 
     /**
+     * Time zones
+     * @var array
+     */
+    protected static $timeZones = null;
+
+    /**
      * Get time zones
      *
      * @return array
      */
     public function getTimeZones()
     {
+        // check data in a memory
+        if (null !== self::$timeZones) {
+            return self::$timeZones;
+        }
+
         // generate a cache name
         $cacheName = CacheUtility::getCacheName(self::CACHE_TIME_ZONES);
 
@@ -30,10 +41,10 @@ class ApplicationTimeZone extends ApplicationBase
         if (null === ($timeZones = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('application_time_zone')
-                ->columns(array(
+                ->columns([
                     'id',
                     'name',
-                ))
+                ])
                 ->order('name');
 
             $statement = $this->prepareStatementForSqlObject($select);
@@ -46,9 +57,10 @@ class ApplicationTimeZone extends ApplicationBase
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $timeZones);
-            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_TIME_ZONES_DATA_TAG));
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_TIME_ZONES_DATA_TAG]);
         }
 
+        self::$timeZones = $timeZones;
         return $timeZones;
     }
 }

@@ -1,10 +1,12 @@
 <?php
 namespace User\Controller;
 
+use Application\Service\ApplicationTimeZone as TimeZoneService;
 use Acl\Model\AclBase as AclBaseModel;
+use Acl\Service\Acl as AclService;
 use Application\Controller\ApplicationAbstractAdministrationController;
 use User\Model\UserAdministration as UserAdministrationModel;
-use User\Service\Service as UserService;
+use Localization\Service\Localization as LocalizationService;
 use Zend\View\Model\ViewModel;
 
 class UserAdministrationController extends ApplicationAbstractAdministrationController
@@ -54,9 +56,9 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
      */
     public function settingsAction()
     {
-        return new ViewModel(array(
+        return new ViewModel([
             'settingsForm' => parent::settingsForm('user', 'users-administration', 'settings')
-        ));
+        ]);
     }
 
     /**
@@ -81,7 +83,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         // get an acl resource's settings form
         $aclResourceSettingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclResourceSetting')
+            ->getInstance('Acl\Form\AclResourceSetting')
             ->setActionsLimit($settings['actions_limit'])
             ->setActionsReset($settings['actions_reset'])
             ->setDateStart($settings['date_start'])
@@ -98,7 +100,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             // save data
             if ($aclResourceSettingsForm->getForm()->isValid()) {
                 // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
+                if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
                 }
 
@@ -117,17 +119,17 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('users-administration', 'acl-resource-settings', array(
+                return $this->redirectTo('users-administration', 'acl-resource-settings', [
                     'slug' => $settings['connection']
-                ), false, array('user' => $user['user_id']));
+                ], false, ['user' => $user['user_id']]);
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'user' => $user,
             'resourceSettings' => $settings,
             'aclResourceSettingsForm' => $aclResourceSettingsForm->getForm()
-        ));
+        ]);
     }
 
     /**
@@ -136,7 +138,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
     public function browseAclResourcesAction()
     {
         // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
+        if (true !== ($result = $this->aclCheckPermission())) {
             return $result;
         }
 
@@ -148,14 +150,14 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         // we need only allowed ACL resources
-        $filters = array(
+        $filters = [
             'status' => AclBaseModel::ACTION_ALLOWED
-        );
+        ];
 
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclResourceFilter')
+            ->getInstance('Acl\Form\AclResourceFilter')
             ->setModel($this->getAclModel())
             ->hideStatusFilter(true);
 
@@ -171,7 +173,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         $paginator = $this->getAclModel()->getResources($user['role'],
                 $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
-        return new ViewModel(array(
+        return new ViewModel([
             'slug' => $user['user_id'],
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
@@ -179,7 +181,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             'order_type' => $this->getOrderType(),
             'per_page' => $this->getPerPage(),
             'user' => $user
-        ));
+        ]);
     }
 
     /**
@@ -211,12 +213,12 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             // save data
             if ($roleForm->getForm()->isValid()) {
                 // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
+                if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
                 }
 
                 // get the role name
-                $roleName = UserService::getAclRoles()[$roleForm->getForm()->getData()['role']];
+                $roleName = AclService::getAclRoles()[$roleForm->getForm()->getData()['role']];
 
                 if (true === ($result = $this->getModel()->
                         editUserRole($user['user_id'], $roleForm->getForm()->getData()['role'], $roleName, (array) $user))) {
@@ -231,16 +233,16 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('users-administration', 'edit-role', array(
+                return $this->redirectTo('users-administration', 'edit-role', [
                     'slug' => $user['user_id']
-                ));
+                ]);
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'roleForm' => $roleForm->getForm(),
             'user' => $user
-        ));
+        ]);
     }
 
     /**
@@ -259,6 +261,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             ->getInstance('User\Form\User')
             ->setModel($this->getModel())
             ->setUserId($user['user_id'])
+            ->setTimeZones(TimeZoneService::getTimeZones())
             ->setUserAvatar($user['avatar']);
  
         // fill the form with default values
@@ -279,15 +282,13 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             // save data
             if ($userForm->getForm()->isValid()) {
                 // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
+                if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
                 }
 
                 // edit the user
                 $status = $user['status'] == UserAdministrationModel::STATUS_APPROVED ?:false;
-                $deleteAvatar = (int) $this->getRequest()->getPost('avatar_delete')
-                    ? true
-                    : false;
+                $deleteAvatar = (int) $this->getRequest()->getPost('avatar_delete') ? true : false;
 
                 if (true === ($result = $this->getModel()->editUser($user, $userForm->
                         getForm()->getData(), $status, $this->params()->fromFiles('avatar'), $deleteAvatar))) {
@@ -302,16 +303,16 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('users-administration', 'edit-user', array(
+                return $this->redirectTo('users-administration', 'edit-user', [
                     'slug' => $user['user_id']
-                ));
+                ]);
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'userForm' => $userForm->getForm(),
             'user' => $user
-        ));
+        ]);
     }
 
     /**
@@ -323,7 +324,8 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         $userForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('User\Form\User')
-            ->setModel($this->getModel());
+            ->setModel($this->getModel())
+            ->setTimeZones(TimeZoneService::getTimeZones());
 
         $request  = $this->getRequest();
 
@@ -341,13 +343,13 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             // save data
             if ($userForm->getForm()->isValid()) {
                 // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
+                if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
                 }
 
                 // add a new user
-                $result = $this->getModel()->
-                        addUser($userForm->getForm()->getData(), true, $this->params()->fromFiles('avatar'));
+                $result = $this->getModel()->addUser($userForm->getForm()->getData(), 
+                        LocalizationService::getCurrentLocalization()['language'], true, $this->params()->fromFiles('avatar'));
 
                 if (is_numeric($result)) {
                     $this->flashMessenger()
@@ -364,9 +366,9 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'userForm' => $userForm->getForm()
-        ));
+        ]);
     }
 
     /**
@@ -397,7 +399,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                     }
 
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -421,7 +423,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         // redirect back
-        return $this->redirectTo('users-administration', 'list', array(), true);
+        return $this->redirectTo('users-administration', 'list', [], true);
     }
 
     /**
@@ -444,7 +446,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                     }
 
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -469,7 +471,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         // redirect back
-        return $this->redirectTo('users-administration', 'list', array(), true);
+        return $this->redirectTo('users-administration', 'list', [], true);
     }
 
     /**
@@ -490,7 +492,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                     }
 
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -515,7 +517,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         // redirect back
-        return $this->redirectTo('users-administration', 'list', array(), true);
+        return $this->redirectTo('users-administration', 'list', [], true);
     }
 
     /**
@@ -524,11 +526,11 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
     public function listAction()
     {
         // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
+        if (true !== ($result = $this->aclCheckPermission())) {
             return $result;
         }
 
-        $filters = array();
+        $filters = [];
 
         // get a filter form
         $filterForm = $this->getServiceLocator()
@@ -547,12 +549,12 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         $paginator = $this->getModel()->getUsers($this->getPage(),
                 $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
-        return new ViewModel(array(
+        return new ViewModel([
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
             'order_by' => $this->getOrderBy(),
             'order_type' => $this->getOrderType(),
             'per_page' => $this->getPerPage()
-        ));
+        ]);
     }
 }

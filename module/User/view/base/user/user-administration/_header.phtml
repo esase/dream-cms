@@ -4,27 +4,27 @@
 <?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
 
 <div class="page-header">
-  <h1>
-    <img src="<?php  echo $this->layoutAsset('icon/user.png', 'image', 'user') ?>" alt="<?php echo $this->escapeHtmlAttr($this->pageTitle) ?>" />    
-    <?php echo $this->escapeHtml($this->pageTitle) ?>
-  </h1>
+    <h1>
+        <img src="<?php  echo $this->layoutAsset('icon/user.png', 'image', 'user') ?>" alt="<?php echo $this->escapeHtmlAttr($this->pageTitle) ?>" />    
+        <?php echo $this->escapeHtml($this->pageTitle) ?>
+    </h1>
 </div>
 
 <?php $this->declareVars('baseTabs') ?>
 
 <?php
-    $this->baseTabs = array(
-        'list' => array(
+    $this->baseTabs = [
+        'list' => [
             'name' => $this->translate('List of users'),
             'controller' => 'users-administration',
             'action' => 'list',
             'check_acl' => true
-        ),
-        'settings' => array(
-            'name' => $this->translate('Settings'),
+        ],
+        'settings' => [
+            'name' => $this->translate('List of settings'),
             'controller' => 'users-administration',
             'action' => 'settings',
             'check_acl' => true
-        ) 
-    );
+        ]
+    ];
 ?>

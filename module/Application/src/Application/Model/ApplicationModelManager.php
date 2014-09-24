@@ -29,7 +29,7 @@ class ApplicationModelManager
      * List of models instances
      * @var array
      */
-    private $instances = array();
+    private $instances = [];
 
     /**
      * Class constructor

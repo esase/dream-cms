@@ -3,7 +3,7 @@ namespace User\Form;
 
 use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
-use Application\Service\Service as ApplicationService;
+use Acl\Service\Acl as AclService;
 
 class UserRole extends ApplicationAbstractCustomForm 
 {
@@ -17,20 +17,19 @@ class UserRole extends ApplicationAbstractCustomForm
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'role' => array(
+    protected $formElements = [
+        'role' => [
             'name' => 'role',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Role',
-            'required' => true,
-            'category' => 'List of roles'
-        ),
-        'submit' => array(
+            'required' => true
+        ],
+        'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
-        ),
-    );
+            'label' => 'Submit'
+        ]
+    ];
 
     /**
      * Get form instance
@@ -42,7 +41,7 @@ class UserRole extends ApplicationAbstractCustomForm
         // get form builder
         if (!$this->form) {
             // fill the form with default values
-            $this->formElements['role']['values'] = ApplicationService::getAclRoles();
+            $this->formElements['role']['values'] = AclService::getAclRoles();
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    

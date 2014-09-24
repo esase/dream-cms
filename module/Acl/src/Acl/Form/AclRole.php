@@ -1,10 +1,11 @@
 <?php
 namespace Acl\Form;
 
+use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
 use Acl\Model\AclAdministration as AclAdministrationModel;
 
-class AclRole extends AbstractCustomForm 
+class AclRole extends ApplicationAbstractCustomForm 
 {
     /**
      * ACL role name max string length
@@ -33,21 +34,20 @@ class AclRole extends AbstractCustomForm
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'name' => array(
+    protected $formElements = [
+        'name' => [
             'name' => 'name',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Name',
             'required' => true,
-            'category' => 'General info',
             'max_length' => self::ACL_NAME_MAX_LENGTH
-        ),
-        'submit' => array(
+        ],
+        'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit'
-        ),
-    );
+        ]
+    ];
 
     /**
      * Get form instance
@@ -59,15 +59,15 @@ class AclRole extends AbstractCustomForm
         // get form builder
         if (!$this->form) {
             // add extra validators
-            $this->formElements['name']['validators'] = array(
-                array(
+            $this->formElements['name']['validators'] = [
+                [
                     'name' => 'callback',
-                    'options' => array(
-                        'callback' => array($this, 'validateRoleName'),
+                    'options' => [
+                        'callback' => [$this, 'validateRoleName'],
                         'message' => 'Role already used'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
@@ -107,7 +107,7 @@ class AclRole extends AbstractCustomForm
      * @param array $context
      * @return boolean
      */
-    public function validateRoleName($value, array $context = array())
+    public function validateRoleName($value, array $context = [])
     {
         return $this->model->isRoleNameFree($value, $this->roleId);
     }

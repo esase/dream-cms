@@ -3,8 +3,8 @@ namespace FileManager\Form;
 
 use Application\Form\ApplicationCustomFormBuilder;
 use Application\Form\ApplicationAbstractCustomForm;
+use Application\Service\ApplicationSetting as SettingService;
 use FileManager\Model\FileManagerBase as FileManagerBaseModel;
-use Application\Service\Service as ApplicationService;
 
 class FileManagerDirectory extends ApplicationAbstractCustomForm 
 {
@@ -38,12 +38,12 @@ class FileManagerDirectory extends ApplicationAbstractCustomForm
             'required' => true,
             'category' => 'General info',
             'description' => 'New directory description',
-            'description_params' => [],
+            'description_params' => []
         ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
+            'label' => 'Submit'
         ],
     ];
 
@@ -65,7 +65,7 @@ class FileManagerDirectory extends ApplicationAbstractCustomForm
 
             // add descriptions params
             $this->formElements['name']['description_params'] = [
-                ApplicationService::getSetting('file_manager_file_name_length')
+                SettingService::getSetting('file_manager_file_name_length')
             ];
 
             // add extra validators
@@ -87,7 +87,7 @@ class FileManagerDirectory extends ApplicationAbstractCustomForm
             ];
 
             // add a directory name length limit
-            $this->formElements['name']['max_length'] = (int) ApplicationService::getSetting('file_manager_file_name_length');
+            $this->formElements['name']['max_length'] = (int) SettingService::getSetting('file_manager_file_name_length');
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    

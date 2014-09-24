@@ -2,7 +2,8 @@
 namespace Application\Controller;
 
 use Zend\EventManager\EventManagerInterface;
-use User\Service\Service as UserService;
+use Acl\Service\Acl as AclService;
+use Localization\Service\Localization as LocalizationService;
 
 abstract class ApplicationAbstractAdministrationController extends ApplicationAbstractBaseController
 {
@@ -22,7 +23,7 @@ abstract class ApplicationAbstractAdministrationController extends ApplicationAb
         // execute before executing action logic
         $events->attach('dispatch', function ($e) use ($controller) {
             // check permission
-            if (!UserService::checkPermission($controller->
+            if (!AclService::checkPermission($controller->
                     params('controller') . ' ' . $controller->params('action'), false)) {
 
                 return $controller->showErrorPage();
@@ -45,8 +46,8 @@ abstract class ApplicationAbstractAdministrationController extends ApplicationAb
      */
     protected function settingsForm($module, $controller, $action)
     {
-        $currentlanguage = UserService::getCurrentLocalization()['language'];
-        
+        $currentlanguage = LocalizationService::getCurrentLocalization()['language'];
+
         // get settings form
         $settingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
@@ -69,7 +70,7 @@ abstract class ApplicationAbstractAdministrationController extends ApplicationAb
                 // save data
                 if ($settingsForm->getForm()->isValid()) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $settingsForm->getForm();
                     }
 

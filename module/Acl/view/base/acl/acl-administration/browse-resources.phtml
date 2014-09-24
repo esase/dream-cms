@@ -1,37 +1,37 @@
-<?php $this->declareVars('subPageTitle') ?>
+<?php $this->declareVars('subPageTitle', 'content') ?>
 <?php $this->subPageTitle = $this->translate($this->roleInfo['name']) ?>
 <?php $this->headTitle($this->subPageTitle) ?>
 <?php $this->headTitle($this->translate('List of roles')) ?>
 
 <!-- render a header -->
-<?php echo $this->render('application/acl-administration/_header') ?>
+<?php echo $this->render('acl/acl-administration/_header') ?>
 
 <!-- render tabs -->
-<?php echo $this->partial('partial/tab', array(
+<?php echo $this->partial('administration-partial/tab', [
     'tabs' => $this->baseTabs,
     'active' => 'list' // selected action is "list"
-)) ?>
+]) ?>
 
 <!-- render a breadcrumb -->
-<?php echo $this->partial('partial/breadcrumb', array(
-    'pages' => array(
-        'list' => array(
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
             'name' => $this->translate('List of roles'),
             'controller' => 'acl-administration',
             'action' => 'list',
             'check_acl' => true
-        ),
-        'browse_resources' => array(
+        ],
+        'browse_resources' => [
             'name' => $this->subPageTitle,
             'controller' => 'acl-administration',
             'action' => 'browse-resources',
             'check_acl' => true
-        )
-    )
-)) ?>
+        ]
+    ]
+]) ?>
 
 <!-- render a data grid -->
-<?php echo $this->partial('partial/data-grid', array(
+<?php $this->content = $this->partial('partial/data-grid', [
     'controller' => 'acl-administration',
     'action' => 'browse-resources',
     'slug' => $this->slug,
@@ -41,83 +41,89 @@
     'default_order' => 'id',
     'default_order_type' => 'desc',
     'filter_form' => $this->filter_form,
-    'headers' => array(
-        0 => array(
+    'headers' => [
+        0 => [
             'title' => $this->translate('ID'),
             'order_name' => 'id'
-        ),
-        1 => array(
+        ],
+        1 => [
             'title' => $this->translate('Description')
-        ),
-        2 => array(
+        ],
+        2 => [
             'title' => $this->translate('Module')
-        ),
-        3 => array(
+        ],
+        3 => [
             'title' => $this->translate('Status'),
             'order_name' => 'connection'
-        )
-    ),
+        ]
+    ],
     'paginator' => $this->paginator,
-    'helpers' => array(
+    'helpers' => [
         'description' => 'translate',
         'module' => 'translate',
-        'connection' => 'booleanValue'
-    ),
-    'helpers_options' => array(
-        'connection' => array(
+        'connection' => 'applicationBooleanValue'
+    ],
+    'helpers_options' => [
+        'connection' => [
             'true_string' => $this->translate('Allowed'),
             'false_string' => $this->translate('Disallowed')
-        )
-    ),
-    'actions' => array(
-        'regular_actions' => array(
-        ),
-        'multiple_actions' => array(
-            0 => array(
+        ]
+    ],
+    'actions' => [
+        'regular_actions' => [
+        ],
+        'multiple_actions' => [
+            0 => [
                 'name' => $this->translate('Allow selected'),
                 'controller' => 'acl-administration',
                 'action' => 'allow-resources',
-                'params' => array(
+                'params' => [
                     'slug' =>  $this->slug 
-                ),
+                ],
                 'check_acl' => true
-            ),
-            1 => array(
+            ],
+            1 => [
                 'name' => $this->translate('Disallow selected'),
                 'controller' => 'acl-administration',
                 'action' => 'disallow-resources',
-                'params' => array(
+                'params' => [
                     'slug' =>  $this->slug 
-                ),
+                ],
                 'check_acl' => true
-            )
-        ),
-        'single_actions' => array(
-            0 => array(
+            ]
+        ],
+        'single_actions' => [
+            0 => [
                 'name' => $this->translate('Resource\'s settings'),
                 'controller' => 'acl-administration',
                 'action' => 'resource-settings',
                 'check_acl' => true,
                 'image' => $this->layoutAsset('icon/setting_action.png', 'image'),
                 'param' => 'connection'
-            ),
-        )
-    ),
-    'actions_options' => array(
+            ],
+        ]
+    ],
+    'actions_options' => [
         'action_identity' => 'id',
         'form_name' => 'acl-resources',
-        'multiple_actions' => array(
+        'multiple_actions' => [
             'items_name' => 'resources[]'
-        )
-    ),
-    'actions_extra_check' => array(
-        'single_actions' => array(
-            'resource-settings' => array(
-                0 => array(
+        ]
+    ],
+    'actions_extra_check' => [
+        'single_actions' => [
+            'resource-settings' => [
+                0 => [
                     'param' => 'connection',
                     'condition' =>  'return (int) "__value__" > 0;'
-                )
-            )
-        )
-    )
-)) ?>
+                ]
+            ]
+        ]
+    ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Resources'),
+    'body' => $this->content
+]) ?>

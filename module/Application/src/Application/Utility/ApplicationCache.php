@@ -2,7 +2,8 @@
 namespace Application\Utility;
 
 use Application\Service\ApplicationServiceManager as ServiceManagerService;
-use Application\Service\Service as ApplicationService;
+use Application\Service\Application as ApplicationService;
+use Layout\Service\Layout as LayoutService;
 use Application\Model\ApplicationAdminMenu as AdminMenuBaseModel;
 use Application\Model\ApplicationTimeZone as TimeZoneBaseModel;
 use Application\Model\ApplicationSetting as SettingBaseModel;
@@ -69,7 +70,7 @@ class ApplicationCache
      */
     public static function clearConfigCache()
     {
-        return FileSystem::deleteFiles(ApplicationService::getConfigCachePath());
+        return ApplicationFileSystem::deleteFiles(ApplicationService::getConfigCachePath());
     }
 
     /**
@@ -79,7 +80,7 @@ class ApplicationCache
      */
     public static function clearJsCache()
     {
-        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath('js'));
+        return ApplicationFileSystem::deleteFiles(LayoutService::getLayoutCachePath('js'));
     }
 
     /**
@@ -89,7 +90,7 @@ class ApplicationCache
      */
     public static function clearCssCache()
     {
-        return FileSystem::deleteFiles(ApplicationService::getLayoutCachePath());
+        return ApplicationFileSystem::deleteFiles(LayoutService::getLayoutCachePath());
     }
 
     /**

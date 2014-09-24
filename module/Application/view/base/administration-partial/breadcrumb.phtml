@@ -1,0 +1,31 @@
+<?php $this->declareVars('baseUrl', 'breadcrumb', 'breadcrumbCount') ?>
+<?php $this->breadcrumb = $this->aclRoutePermission($this->pages, false, true) ?>
+<?php $this->breadcrumbCount = count($this->breadcrumb) ?>
+
+<ol class="breadcrumb">
+    <?php for ($i = 0; $i < $this->breadcrumbCount; $i++) : ?>
+        <?php
+            // get base url
+            $this->baseUrl = [
+                'controller' => $this->breadcrumb[$i]['controller'],
+                'action' => $this->breadcrumb[$i]['action']
+            ];
+
+            // get extra url params
+            if (!empty($this->breadcrumb[$i]['params']) &&
+                        is_array($this->breadcrumb[$i]['params'])) {
+
+                $this->baseUrl = array_merge($this->baseUrl, $this->breadcrumb[$i]['params']);    
+            }
+        ?>
+        <li>
+            <?php if ($i == $this->breadcrumbCount - 1 || (isset($this->breadcrumb[$i]['permission']) && false == $this->breadcrumb[$i]['permission'])): ?>
+                <?php echo $this->escapeHtml($this->breadcrumb[$i]['name']) ?>
+            <?php else: ?>
+                <a href="<?php echo $this->url('application/page', $this->baseUrl, ['force_canonical' => true, 'query' => !empty($this->breadcrumb[$i]['queries']) && is_array($this->breadcrumb[$i]['queries']) ? $this->breadcrumb[$i]['queries'] : null]) ?>">
+                    <?php echo $this->escapeHtml($this->breadcrumb[$i]['name']) ?>
+                </a>
+            <?php endif; ?>
+        </li>
+    <?php endfor; ?>
+</ol>

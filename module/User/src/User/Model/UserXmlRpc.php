@@ -46,10 +46,10 @@ class UserXmlRpc extends UserBase
 
             $update = $this->update()
                 ->table('user_list')
-                ->set(array(
+                ->set([
                     'time_zone' => $timeZoneId
-                ))
-                ->where(array('user_id' => $userId));
+                ])
+                ->where(['user_id' => $userId]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();

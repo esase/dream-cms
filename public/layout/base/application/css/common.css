@@ -2,6 +2,9 @@ input[type="radio"],
 input[type="checkbox"] {
   margin-right: 4px;
 }
+ul.pagination {
+  margin-bottom: 0;
+}
 div.loading-ajax-wrapper {
   height: 64px;
   position: absolute;
@@ -28,6 +31,9 @@ div.filter-form {
 }
 div.filter-form form {
   margin: 0;
+}
+div.panel div.panel-group {
+  margin-bottom: 0;
 }
 div.panel-accordion div.panel-heading {
   background-image: none;
@@ -73,7 +79,8 @@ div.data-list ul.nav {
   margin-bottom: 15px;
 }
 table.table {
-  margin-top: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 table.table th.selector-items {
   width: 20px;

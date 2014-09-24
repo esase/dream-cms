@@ -1,16 +1,16 @@
 <?php
 namespace Acl\Model;
 
+use Acl\Event\AclEvent;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Utility\ApplicationPagination as PaginationUtility;
+use Application\Service\ApplicationSetting as SettingService;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
-use Application\Utility\ApplicationPagination as PaginationUtility;
-use Application\Service\Service as ApplicationService;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\ResultSet\ResultSet;
-use Exception;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Application\Utility\ApplicationErrorLogger;
-use Application\Event\ApplicationEvent;
+use Exception;
 
 class AclAdministration extends AclBase
 {
@@ -25,15 +25,15 @@ class AclAdministration extends AclBase
     {
         $select = $this->select();
         $select->from('acl_role')
-            ->columns(array(
+            ->columns([
                 'id'
-            ))
-            ->where(array('name' => $roleName));
+            ])
+            ->where(['name' => $roleName]);
 
         if ($roleId) {
-            $select->where(array(
-                new NotInPredicate('id', array($roleId))
-            ));
+            $select->where([
+                new NotInPredicate('id', [$roleId])
+            ]);
         }
 
         $statement = $this->prepareStatementForSqlObject($select);
@@ -59,9 +59,9 @@ class AclAdministration extends AclBase
             $update = $this->update()
                 ->table('acl_role')
                 ->set($roleInfo)
-                ->where(array(
+                ->where([
                     'id' => $roleId
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
@@ -74,9 +74,9 @@ class AclAdministration extends AclBase
 
             return $e->getMessage();
         }
-        
+
         // fire the edit acl role event
-        ApplicationEvent::fireEditAclRoleEvent($roleId);
+        AclEvent::fireEditAclRoleEvent($roleId);
         return true;
     }
 
@@ -96,9 +96,9 @@ class AclAdministration extends AclBase
 
             $insert = $this->insert()
                 ->into('acl_role')
-                ->values(array_merge($roleInfo, array(
+                ->values(array_merge($roleInfo, [
                     'type' => self::ROLE_TYPE_CUSTOM
-                )));
+                ]));
 
             $statement = $this->prepareStatementForSqlObject($insert);
             $statement->execute();
@@ -114,7 +114,7 @@ class AclAdministration extends AclBase
         }
 
         // fire the add acl role event
-        ApplicationEvent::fireAddAclRoleEvent($insertId);
+        AclEvent::fireAddAclRoleEvent($insertId);
         return $insertId;
     }
 
@@ -133,7 +133,7 @@ class AclAdministration extends AclBase
      * @param boolean $cleanActionCounter
      * @return integer|string
      */
-    public function editResourceSettings($connectionId, $resourceId, $roleId, array $settings = array(), $userId = 0, $cleanActionCounter = false)
+    public function editResourceSettings($connectionId, $resourceId, $roleId, array $settings = [], $userId = 0, $cleanActionCounter = false)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -141,39 +141,39 @@ class AclAdministration extends AclBase
             // delete old settings
             $delete = $this->delete()
                 ->from('acl_resource_connection_setting')
-                ->where(array(
+                ->where([
                     'connection_id' => $connectionId
-                ));
+                ]);
 
             if (!$userId) {
                 $delete->where->IsNull('user_id'); // global settings
             }
             else {
-                $delete->where(array(
+                $delete->where([
                     'user_id' => $userId // local settings
-                ));
+                ]);
             }
 
             $statement = $this->prepareStatementForSqlObject($delete);
             $statement->execute();
 
             // check settings
-            $saveSettings = false;
-            foreach ($settings as $value) {
+            $processedSettings = [];
+            foreach ($settings as $name => $value) {
                 if ((int) $value) {
-                    $saveSettings = true;
-                    break;
+                    // skip empty values
+                    $processedSettings[$name] = $value;
                 }
             }
 
-            if ($saveSettings) {
+            if ($processedSettings) {
                 $extraValues = $userId
-                    ? array('user_id' => $userId, 'connection_id' => $connectionId)
-                    : array('connection_id' => $connectionId);
+                    ? ['user_id' => $userId, 'connection_id' => $connectionId]
+                    : ['connection_id' => $connectionId];
 
                 $insert = $this->insert()
                     ->into('acl_resource_connection_setting')
-                    ->values(array_merge($settings, $extraValues));
+                    ->values(array_merge($processedSettings, $extraValues));
     
                 $statement = $this->prepareStatementForSqlObject($insert);
                 $statement->execute();
@@ -183,10 +183,10 @@ class AclAdministration extends AclBase
             if ($cleanActionCounter && $userId) {
                 $delete = $this->delete()
                     ->from('acl_resource_action_track')
-                    ->where(array(
+                    ->where([
                         'connection_id' => $connectionId,
                         'user_id' => $userId
-                    ));
+                    ]);
 
                 $statement = $this->prepareStatementForSqlObject($delete);
                 $statement->execute();
@@ -202,7 +202,7 @@ class AclAdministration extends AclBase
         }
 
         // fire the edit acl resource settings event
-        ApplicationEvent::fireEditAclResourceSettingsEvent($connectionId, $resourceId, $roleId, $userId);
+        AclEvent::fireEditAclResourceSettingsEvent($connectionId, $resourceId, $roleId, $userId);
         return true;
     }
 
@@ -221,13 +221,13 @@ class AclAdministration extends AclBase
             // check the existing connection
             $select = $this->select();
             $select->from('acl_resource_connection')
-                ->columns(array(
+                ->columns([
                     'resource'
-                ))
-                ->where(array(
+                ])
+                ->where([
                     'role' => $roleId,
                     'resource' => $resourceId
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $result = $statement->execute();
@@ -236,10 +236,10 @@ class AclAdministration extends AclBase
             if (!$result->current()) {
                 $insert = $this->insert()
                     ->into('acl_resource_connection')
-                    ->values(array(
+                    ->values([
                         'role' => $roleId,
                         'resource' => $resourceId
-                    ));
+                    ]);
 
                 $statement = $this->prepareStatementForSqlObject($insert);
                 $statement->execute();
@@ -255,7 +255,7 @@ class AclAdministration extends AclBase
         }
 
         // fire the allow acl resource event
-        ApplicationEvent::fireAllowAclResourceEvent($resourceId, $roleId);
+        AclEvent::fireAllowAclResourceEvent($resourceId, $roleId);
         return true;
     }
 
@@ -273,10 +273,10 @@ class AclAdministration extends AclBase
 
             $delete = $this->delete()
                 ->from('acl_resource_connection')
-                ->where(array(
+                ->where([
                     'role' => $roleId,
                     'resource' => $resourceId
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($delete);
             $result = $statement->execute();
@@ -291,7 +291,7 @@ class AclAdministration extends AclBase
         }
 
         // fire the disallow acl resource event
-        ApplicationEvent::fireDisallowAclResourceEvent($resourceId, $roleId);
+        AclEvent::fireDisallowAclResourceEvent($resourceId, $roleId);
         return true;
     }
 
@@ -308,10 +308,10 @@ class AclAdministration extends AclBase
 
             $delete = $this->delete()
                 ->from('acl_role')
-                ->where(array(
+                ->where([
                     'type' => self::ROLE_TYPE_CUSTOM,
                     'id' => $roleId
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($delete);
             $result = $statement->execute();
@@ -324,9 +324,9 @@ class AclAdministration extends AclBase
 
             return $e->getMessage();
         }
-        
+
         // fire the delete acl role event
-        ApplicationEvent::fireDeleteAclRoleEvent($roleId);
+        AclEvent::fireDeleteAclRoleEvent($roleId);
         return $result->count() ? true : false;
     }
 
@@ -341,11 +341,11 @@ class AclAdministration extends AclBase
      *      string type
      * @return object
      */
-    public function getRoles($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    public function getRoles($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
-        $orderFields = array(
+        $orderFields = [
             'id'
-        );
+        ];
 
         $orderType = !$orderType || $orderType == 'desc'
             ? 'desc'
@@ -357,24 +357,24 @@ class AclAdministration extends AclBase
 
         $select = $this->select();
         $select->from('acl_role')
-            ->columns(array(
+            ->columns([
                 'id',
                 'name',
                 'type'
-            ))
+            ])
             ->order($orderBy . ' ' . $orderType);
 
         // filter by type
         if (!empty($filters['type'])) {
-            $select->where(array(
+            $select->where([
                 'type' => $filters['type']
-            ));
+            ]);
         }
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
-        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         return $paginator;
     }
@@ -392,12 +392,12 @@ class AclAdministration extends AclBase
      *      string status
      * @return object
      */
-    public function getResources($roleId, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    public function getResources($roleId, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
-        $orderFields = array(
+        $orderFields = [
             'id',
             'connection'
-        );
+        ];
 
         $orderType = !$orderType || $orderType == 'desc'
             ? 'desc'
@@ -408,24 +408,24 @@ class AclAdministration extends AclBase
             : 'id';
 
         $select = $this->select();
-        $select->from(array('a' => 'acl_resource'))
-            ->columns(array(
+        $select->from(['a' => 'acl_resource'])
+            ->columns([
                 'id',
                 'description'
-            ))
+            ])
             ->join(
-                array('b' => 'application_module'),
-                new Expression('a.module = b.id and b.status = ?', array(self::MODULE_STATUS_ACTIVE)),
-                array(
+                ['b' => 'application_module'],
+                new Expression('a.module = b.id and b.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                [
                     'module' => 'name'
-                )
+                ]
             )
             ->join(
-                array('c' => 'acl_resource_connection'),
-                new Expression('a.id = c.resource and c.role = ?', array($roleId)),
-                array(
+                ['c' => 'acl_resource_connection'],
+                new Expression('a.id = c.resource and c.role = ?', [$roleId]),
+                [
                     'connection' => 'id'
-                ),
+                ],
                 'left'
             )
             ->order($orderBy . ' ' . $orderType);
@@ -450,7 +450,7 @@ class AclAdministration extends AclBase
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
-        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         return $paginator;
     }
@@ -469,40 +469,40 @@ class AclAdministration extends AclBase
             : 'd.user_id is null';
 
         $select = $this->select();
-        $select->from(array('a' => 'acl_resource_connection'))
-            ->columns(array(
+        $select->from(['a' => 'acl_resource_connection'])
+            ->columns([
                 'connection' => 'id',
                 'role',
                 'resource'
-            ))
+            ])
             ->join(
-                array('b' => 'acl_role'),
+                ['b' => 'acl_role'],
                 'b.id = a.role',
-                array(
+                [
                     'role_name' => 'name'
-                )
+                ]
             )
             ->join(
-                array('c' => 'acl_resource'),
+                ['c' => 'acl_resource'],
                 'c.id = a.resource',
-                array(
+                [
                     'resource_description' => 'description'
-                )
+                ]
             )
             ->join(
-                array('d' => 'acl_resource_connection_setting'),
+                ['d' => 'acl_resource_connection_setting'],
                 new Expression('a.id = d.connection_id and ' . $extraCondition),
-                array(
+                [
                     'date_start',
                     'date_end',
                     'actions_limit',
                     'actions_reset'
-                ),
+                ],
                 'left'
             )
-            ->where(array(
+            ->where([
                 'a.id' => $connectionId
-            ));
+            ]);
 
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();

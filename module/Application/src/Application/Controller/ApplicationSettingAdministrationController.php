@@ -39,9 +39,9 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
     {
         $this->clearJsCssCache();
 
-        return new ViewModel(array(
-            'settingsForm' => parent::settingsForm('administration', 'settings-administration', 'index')
-        ));
+        return new ViewModel([
+            'settingsForm' => parent::settingsForm('application', 'settings-administration', 'index')
+        ]);
     }
 
     /**
@@ -52,11 +52,11 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
     protected function clearJsCssCache()
     {
         // remember settings before changes 
-        $jsCache = $this->getSetting('application_js_cache');
-        $jsCacheGzip = $this->getSetting('application_js_cache_gzip');
+        $jsCache = $this->applicationSetting('application_js_cache');
+        $jsCacheGzip = $this->applicationSetting('application_js_cache_gzip');
 
-        $cssCache = $this->getSetting('application_css_cache');
-        $cssCacheGzip = $this->getSetting('application_css_cache_gzip');
+        $cssCache = $this->applicationSetting('application_css_cache');
+        $cssCacheGzip = $this->applicationSetting('application_css_cache_gzip');
 
         // clear js and css cache if needed
         $eventManager = ApplicationEvent::getEventManager();
@@ -109,7 +109,7 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
                     // clear selected caches
                     foreach ($caches as $cache) {
                         // check the permission and increase permission's actions track
-                        if (true !== ($result = $this->checkPermission())) {
+                        if (true !== ($result = $this->aclCheckPermission())) {
                             return $result;
                         }
 
@@ -159,8 +159,8 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'cacheForm' => $cacheForm->getForm()
-        ));
+        ]);
     }
 }

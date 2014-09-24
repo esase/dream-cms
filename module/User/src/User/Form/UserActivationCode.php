@@ -29,27 +29,27 @@ class UserActivationCode extends ApplicationAbstractCustomForm
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'activation_code' => array(
+    protected $formElements = [
+        'activation_code' => [
             'name' => 'activation_code',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Activation code',
-            'required' => true,
-        ),
-        'captcha' => array(
+            'required' => true
+        ],
+        'captcha' => [
             'name' => 'captcha',
-            'type' => ApplicationCustomFormBuilder::FIELD_CAPTCHA,
-        ),
-        'csrf' => array(
+            'type' => ApplicationCustomFormBuilder::FIELD_CAPTCHA
+        ],
+        'csrf' => [
             'name' => 'csrf',
             'type' => ApplicationCustomFormBuilder::FIELD_CSRF
-        ),
-        'submit' => array(
+        ],
+        'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
-        ),
-    );
+            'label' => 'Submit'
+        ]
+    ];
 
     /**
      * Get form instance
@@ -61,15 +61,15 @@ class UserActivationCode extends ApplicationAbstractCustomForm
         // get form builder
         if (!$this->form) {
             // validate activation code
-            $this->formElements['activation_code']['validators'] = array(
-                array(
+            $this->formElements['activation_code']['validators'] = [
+                [
                     'name' => 'callback',
-                    'options' => array(
-                        'callback' => array($this, 'validateActivationCode'),
+                    'options' => [
+                        'callback' => [$this, 'validateActivationCode'],
                         'message' => 'Wrong activation code'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
@@ -85,7 +85,7 @@ class UserActivationCode extends ApplicationAbstractCustomForm
      * @param array $context
      * @return boolean
      */
-    public function validateActivationCode($value, array $context = array())
+    public function validateActivationCode($value, array $context = [])
     {
         return $this->model->checkActivationCode($this->userId, $value);
     }

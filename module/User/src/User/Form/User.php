@@ -184,7 +184,7 @@ class User extends ApplicationAbstractCustomForm
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
+            'label' => 'Submit'
         ],
     ];
 

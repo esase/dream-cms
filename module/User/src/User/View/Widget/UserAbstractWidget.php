@@ -19,26 +19,6 @@ abstract class UserAbstractWidget extends PageAbstractWidget
     protected $authService;
 
     /**
-     * Time zone model instance
-     * @var object  
-     */
-    protected $timeZoneModel;
-
-    /**
-     * Get timezone model
-     */
-    protected function getTimeZoneModel()
-    {
-        if (!$this->timeZoneModel) {
-            $this->timeZoneModel = $this->getServiceLocator()
-                ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\ApplicationTimeZone');
-        }
-
-        return $this->timeZoneModel;
-    }
-
-    /**
      * Get model
      */
     protected function getModel()

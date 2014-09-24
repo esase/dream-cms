@@ -1,4 +1,4 @@
-<?php $this->declareVars(array('menuBar', 'toolbar', 'plugins')) ?>
+<?php $this->declareVars(['menuBar', 'toolbar', 'plugins']) ?>
 
 <?php if ($this->mode == 'simple'): ?>
     <?php $this->menuBar = 'false' ?>
@@ -21,13 +21,13 @@
         menubar : <?php echo $this->menuBar ?>,
         toolbar: "<?php echo $this->toolbar ?>",
         convert_urls : false,
-        <?php if ($this->checkPermission('files_manager_embedded_list')): ?>
+        <?php if ($this->aclCheckPermission('files_manager_embedded_list')): ?>
             file_browser_callback: function(field_name, url, type, win) { 
                 tinymce.activeEditor.windowManager.open({
                     title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
-                    url: '<?php echo $this->escapeJs($this->url('administration', array('controller' => 'files-manager-embedded', 'action' => 'list'))) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
-                    width: <?php echo (int) $this->getSetting('file_manager_window_width') ?>,
-                    height: <?php echo (int) $this->getSetting('file_manager_window_height') ?>
+                    url: '<?php echo $this->escapeJs($this->url('application/page', ['controller' => 'files-manager-embedded', 'action' => 'list'], ['force_canonical' => true])) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
+                    width: <?php echo (int) $this->applicationSetting('file_manager_window_width') ?>,
+                    height: <?php echo (int) $this->applicationSetting('file_manager_window_height') ?>
                 }, {
                     oninsert: function(url) {
                         win.document.getElementById(field_name).value = url;

@@ -37,7 +37,7 @@ class UserLogin extends ApplicationAbstractCustomForm
         3 => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
+            'label' => 'Submit'
         ],
         4 => [
             'name' => 'csrf',

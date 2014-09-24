@@ -2,8 +2,9 @@
 namespace Acl\Form;
 
 use Application\Form\ApplicationCustomFormBuilder;
+use Application\Form\ApplicationAbstractCustomForm;
 
-class AclResourceSetting extends AbstractCustomForm 
+class AclResourceSetting extends ApplicationAbstractCustomForm 
 {
     /**
      * Actions limit max string length
@@ -25,7 +26,7 @@ class AclResourceSetting extends AbstractCustomForm
      * List of ignored elements
      * @var array
      */
-    protected $ignoredElements = array('clean_counter');
+    protected $ignoredElements = ['clean_counter'];
 
     /**
      * Actions limit
@@ -61,50 +62,45 @@ class AclResourceSetting extends AbstractCustomForm
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'actions_limit' => array(
+    protected $formElements = [
+        'actions_limit' => [
             'name' => 'actions_limit',
             'type' => ApplicationCustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of allowed actions',
             'required' => false,
-            'category' => 'General info',
             'max_length' => self::ACTIONS_LIMIT_MAX_LENGTH
-        ),
-        'actions_reset' => array(
+        ],
+        'actions_reset' => [
             'name' => 'actions_reset',
             'type' => ApplicationCustomFormBuilder::FIELD_INTEGER,
             'label' => 'Number of actions is reset every N seconds',
             'required' => false,
-            'category' => 'General info',
             'max_length' => self::ACTIONS_RESET_MAX_LENGTH
-        ),
-        'date_start' => array(
+        ],
+        'date_start' => [
             'name' => 'date_start',
             'type' => ApplicationCustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available since',
-            'required' => false,
-            'category' => 'General info',
-        ),
-        'date_end' => array(
+            'required' => false
+        ],
+        'date_end' => [
             'name' => 'date_end',
             'type' => ApplicationCustomFormBuilder::FIELD_DATE_UNIXTIME,
             'label' => 'This action is available until',
-            'required' => false,
-            'category' => 'General info',
-        ),
-        'clean_counter' => array(
+            'required' => false
+        ],
+        'clean_counter' => [
             'name' => 'clean_counter',
             'type' => ApplicationCustomFormBuilder::FIELD_CHECKBOX,
             'label' => 'Clean the action counter',
-            'required' => false,
-            'category' => 'General info',
-        ),
-        'submit' => array(
+            'required' => false
+        ],
+        'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
-        )
-    );
+            'label' => 'Submit'
+        ]
+    ];
 
     /**
      * Get form instance

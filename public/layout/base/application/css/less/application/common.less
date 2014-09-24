@@ -6,6 +6,11 @@ input[type="checkbox"] {
     margin-right: @radio-checkbox-margin-right;
 }
 
+// pagination
+ul.pagination {
+    margin-bottom: 0;
+}
+
 // loading ajax
 div.loading-ajax-wrapper {
     height: @loading-ajax-height;
@@ -38,6 +43,13 @@ div.filter-form {
 
     form {
         margin: 0;
+    }
+}
+
+// panel
+div.panel {
+    div.panel-group {
+        margin-bottom:0;
     }
 }
 
@@ -110,7 +122,8 @@ div.data-list {
 
 // table grid
 table.table {
-    margin-top:@table-grid-margin-top;
+    margin-top:0;
+    margin-bottom:0;
 
     th.selector-items {
         width: @table-grid-selector-items-width;

@@ -23,8 +23,8 @@ class FileManagerDirectoryTree extends AbstractHelper
             : FileManagerBaseModel::getHomeDirectoryName();
 
         return  $userDirectories
-            ? '<ul id="' . $treeId . '" class="' . $treeClass . '">' .
-                    $this->processDirectories($userDirectories, $currentPath, $filters) . '</ul>'
+            ? '<div id="directories-tree-wrapper"><ul id="' . $treeId . '" class="' . $treeClass . '">' .
+                    $this->processDirectories($userDirectories, $currentPath, $filters) . '</ul></div>'
             : null;
     }
 
@@ -48,9 +48,9 @@ class FileManagerDirectoryTree extends AbstractHelper
             $path = $parentDirectory ? $parentDirectory . '/' . $directoryName : $directoryName;
             $urlParams = array('path' => $path) + $filters;
 
-            $url = $this->getView()->url('administration', array(
-                'controller' => $this->getView()->currentRoute()->getController(),
-                'action' => $this->getView()->currentRoute()->getAction()), array('query' => $urlParams));
+            $url = $this->getView()->url('application/page', array(
+                'controller' => $this->getView()->applicationRoute()->getParam('controller'),
+                'action' => $this->getView()->applicationRoute()->getParam('action')), array('force_canonical' => true, 'query' => $urlParams));
 
             $content .= $currentPath == $path
                 ? '<li><span class="folder">' . $directoryName . '</span>'

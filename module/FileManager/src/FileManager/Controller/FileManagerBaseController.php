@@ -76,7 +76,7 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                 // save data
                 if ($fileForm->getForm()->isValid()) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -95,16 +95,16 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                     }
 
                     return $this->redirectTo($this->
-                            params('controller'), 'add-file', array(), false, array('path' => $userPath));
+                            params('controller'), 'add-file', [], false, ['path' => $userPath]);
                 }
             }
         }
 
-        return array(
+        return [
             'fileForm' => $fileForm ? $fileForm->getForm() : null,
             'path' => $userPath,
             'userDirectories' => $userDirectories
-        );
+        ];
     }
 
     /**
@@ -141,7 +141,7 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                 // save data
                 if ($directoryForm->getForm()->isValid()) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -160,16 +160,16 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                     }
 
                     return $this->redirectTo($this->
-                            params('controller'), 'add-directory', array(), false, array('path' => $userPath));
+                            params('controller'), 'add-directory', [], false, ['path' => $userPath]);
                 }
             }
         }
 
-        return array(
+        return [
             'directoryForm' => $directoryForm ? $directoryForm->getForm() : null,
             'path' => $userPath,
             'userDirectories' => $userDirectories
-        );
+        ];
     }
 
     /**
@@ -238,21 +238,21 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                                         translate((!$isDirectory ? 'The file has been edited' : 'The directory has been edited')));
                         }
 
-                        return $this->redirectTo($this->params('controller'), 'edit', array(), false,
-                                array('path' => $userPath, 'file_path' => $userPath, 'slug' => ($newFileName ? $newFileName : $fileName)));
+                        return $this->redirectTo($this->params('controller'), 'edit', [], false,
+                                ['path' => $userPath, 'file_path' => $userPath, 'slug' => ($newFileName ? $newFileName : $fileName)]);
                     }
                 }
             }
         }
 
-        return array(
+        return [
             'isDirectory' => $isDirectory,
             'editForm' => $editForm ? $editForm->getForm() : null,
             'path' => $userPath,
             'filePath' => $filePath,
             'fileName' => $fileName,
             'userDirectories' => $userDirectories
-        );
+        ];
     }
 
     /**
@@ -272,7 +272,7 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                 // process files names
                 foreach ($fileNames as $file) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -296,7 +296,7 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
         }
 
         // redirect back
-        return $this->redirectTo(null, null, array(), true);
+        return $this->redirectTo(null, null, [], true);
     }
 
     /**
@@ -307,11 +307,11 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
     protected function getListFiles()
     {
         // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
+        if (true !== ($result = $this->aclCheckPermission())) {
             return $result;
         }
 
-        $filters = array();
+        $filters = [];
 
         // get a filter form
         $filterForm = $this->getServiceLocator()
@@ -339,7 +339,7 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                 $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
         }
 
-        return array(
+        return [
             'current_directory' => $currentDirectory,
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
@@ -349,6 +349,6 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
             'order_by' => $this->getOrderBy(),
             'order_type' => $this->getOrderType(),
             'per_page' => $this->getPerPage()
-        );
+        ];
     }
 }

@@ -719,7 +719,7 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (15, 'application_calendar_min_year', 'Min year in calendar', NULL, 'integer', 1, 1, 4, 1, NULL, NULL, 'return intval(''__value__'') >= 1902 and intval(''__value__'') <= 2037;', 'Year should be in range from 1902 to 2037'),
 (16, 'application_calendar_max_year', 'Max year in calendar', NULL, 'integer', 1, 2, 4, 1, NULL, NULL, 'return intval(''__value__'') >= 1902 and intval(''__value__'') <= 2037;', 'Year should be in range from 1902 to 2037'),
 (17, 'application_default_date_format', 'Default date format', NULL, 'select', 1, 3, 1, 1, 1, NULL, NULL, NULL),
-(18, 'application_default_time_zone', 'Default time zone', NULL, 'select', 1, 4, 1, 1, NULL, '$timeZones = Application\\Service\\Service::getTimeZones(); return array_combine($timeZones, $timeZones);', NULL, NULL),
+(18, 'application_default_time_zone', 'Default time zone', NULL, 'select', 1, 4, 1, 1, NULL, '$timeZones = Application\\Service\\ApplicationTimeZone::getTimeZones(); return array_combine($timeZones, $timeZones);', NULL, NULL),
 (19, 'application_per_page', 'Default per page value', NULL, 'integer', 1, 1, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Default per page value should be greater than 0'),
 (20, 'application_min_per_page_range', 'Min per page range', NULL, 'integer', 1, 2, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Min per page range should be greater than 0'),
 (21, 'application_max_per_page_range', 'Max per page range', NULL, 'integer', 1, 3, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Max per page range should be greater than 0'),
@@ -974,7 +974,7 @@ CREATE TABLE IF NOT EXISTS `application_admin_menu_category` (
 
 INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'Site settings', 1, 'setting_menu_item.png'),
-(2, 'Access Control List', 1, 'acl_menu_item.png'),
+(2, 'Access Control List', 8, 'acl_menu_item.png'),
 (3, 'Users', 2, 'user_group_menu_item.png'),
 (4, 'Files manager', 4, 'file_manager_menu_item.png');
 
@@ -1005,9 +1005,9 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
 (3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
 (4, 'List of users', 'users-administration', 'list', 2, 4, 3, 1),
-(5, 'Settings', 'users-administration', 'settings', 2, 5, 3, 1),
+(5, 'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
-(7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
+(7, 'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
 
 CREATE TABLE IF NOT EXISTS `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

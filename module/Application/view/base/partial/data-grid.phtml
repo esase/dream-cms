@@ -1,0 +1,409 @@
+<?php use Application\Utility\ApplicationPagination as PaginationUtility ?>
+<?php use Zend\Form\Form ?>
+<?php use Zend\Form\Element ?>
+
+<?php
+    // init base url params
+    $this->declareVars('baseUrlParams');
+    $this->baseUrlParams = [
+        'controller' => $this->controller,
+        'action' => $this->action,
+        'order_by' => $this->order_by,
+        'order_type' => $this->order_type,
+        'slug' => $this->slug
+    ];
+
+    // init per page
+    $this->per_page = PaginationUtility::processPerPage($this->per_page);
+
+    // init default order
+    if (!$this->order_by) {
+        $this->order_by = $this->default_order;
+    }
+
+    // init default order type
+    if (!$this->order_type) {
+        $this->order_type = $this->default_order_type;
+    }
+
+    // init filter params
+    $this->declareVars('filterParams', 'urlQueries');
+    $this->filterParams = !empty($this->filter_form) && $this->filter_form->isValid()
+        ? $this->filter_form->getData(false)
+        : [];
+
+    // init extra url queries
+    if (!empty($this->queries)) {
+        $this->filterParams = array_merge($this->filterParams, $this->queries);
+    }
+
+    // init pagination
+    $this->declareVars('paginationCount');
+    $this->paginationCount = $this->paginator
+        ? $this->paginator->count()
+        : 0;
+
+    // init pagination per page ranges
+    $this->declareVars('perPageRanges');
+    $this->perPageRanges = PaginationUtility::getPerPageRanges();
+
+    // init data grid regular actions
+    $this->declareVars('regularActions', 'actionsInitialized', 'regularActionsCount');
+    $this->actionsInitialized = false;
+
+    // process regular actions
+    if (!empty($this->actions['regular_actions'])) {
+        // check actions permissions
+        if (null != ($this->regularActions =
+                $this->aclRoutePermission($this->actions['regular_actions']))) {
+
+            $this->actionsInitialized = true;
+            $this->regularActionsCount = count($this->regularActions);
+        }
+    }
+
+    // init data grid multiple actions
+    $this->declareVars('multipleActions', 'multipleActionsCount', 'multipleActionParams');
+
+    // process multiple actions
+    if (!empty($this->actions['multiple_actions'])) {
+        // check actions permissions
+        if (null != ($this->multipleActions =
+                $this->aclRoutePermission($this->actions['multiple_actions']))) {
+
+            $this->actionsInitialized = true;
+            $this->multipleActionsCount = count($this->multipleActions);
+        }
+    }
+
+    // init  multiple actions display error time
+    $this->declareVars('multipleActionsErrorTime');
+    $this->multipleActionsErrorDisplayTime = empty($this->actions_options['multiple_actions']['error_display_time'])
+        ? 2000
+        : (int) $this->actions_options['multiple_actions']['error_display_time'];
+
+    // init multiple actions selector id
+    $this->declareVars('multipleActionsSelectorId');
+    $this->multipleActionsSelectorId = empty($this->actions_options['multiple_actions']['selector_id'])
+        ? 'items-selector'
+        : $this->actions_options['multiple_actions']['selector_id'];
+
+    // init multiple actions items name
+    $this->declareVars('multipleActionsItemsName');
+    $this->multipleActionsItemsName = empty($this->actions_options['multiple_actions']['items_name'])
+        ? 'items[]'
+        : $this->actions_options['multiple_actions']['items_name'];
+
+    // init data grid single actions
+    $this->declareVars('singleActions', 'singleActionsCount');
+
+    // process single actions
+    if (!empty($this->actions['single_actions'])) {
+        // check actions permissions
+        if (null != ($this->singleActions =
+                $this->aclRoutePermission($this->actions['single_actions']))) {
+
+            $this->singleActionsCount = count($this->singleActions);
+        }
+    }
+
+    // init form name
+    $this->declareVars('formName', 'value');
+    $this->formName = empty($this->actions_options['form_name'])
+        ? 'data-grid-form'
+        : $this->actions_options['form_name'];
+?>
+
+<!-- filters, actions, etc -->
+<?php if ($this->paginationCount || !empty($this->filter_form) || $this->actionsInitialized) : ?>
+    <ul class="nav nav-pills">
+        <?php if (!empty($this->filter_form)) : ?>
+            <!-- filter form -->
+            <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-left<?php else: ?>pull-right<?php endif; ?><?php if (!$this->filter_form->isValid()) : ?> open<?php endif; ?>">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <?php echo $this->translate('Filter') ?>
+                    <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu">
+                    <div class="filter-form">
+                        <?php echo $this->partial('partial/form', [
+                            'form' => $this->filter_form,
+                        ]) ?>
+                    </div>
+                </div>
+            </li>
+        <?php endif; ?>
+
+        <?php if ($this->regularActionsCount || ($this->multipleActionsCount && $this->paginationCount)) : ?>
+            <!-- multiple actions -->
+            <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-left<?php else: ?>pull-right<?php endif; ?>">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <?php echo $this->translate('Actions') ?>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <?php if ($this->multipleActionsCount && $this->paginationCount) : ?>
+                        <?php foreach ($this->multipleActions as $action) : ?>
+                            <?php
+                                $this->multipleActionParams = [
+                                    'controller' => $action['controller'],
+                                    'action' => $action['action']  
+                                ];
+
+                                if (!empty($action['params']) && is_array($action['params'])) {
+                                    $this->multipleActionParams = array_merge($this->multipleActionParams, $action['params']);
+                                }
+                            ?>
+                            <li>
+                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('application/page', $this->multipleActionParams, ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">
+                                    <?php echo $action['name'] ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                        <?php if ($this->regularActionsCount) : ?>
+                            <li class="divider"></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <!-- regular actions -->
+                    <?php if ($this->regularActionsCount) : ?>
+                        <?php foreach ($this->regularActions as $action) : ?>
+                            <li>
+                                <?php if (empty($action['js'])) : ?>
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="<?php echo $this->url('application/page', ['controller' => $action['controller'], 'action' => $action['action']], ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">
+                                        <?php echo $action['name'] ?>
+                                    </a>
+                                <?php else: ?>
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="javascript:void(0)" onclick="<?php echo $action['js'] ?>">
+                                        <?php echo $action['name'] ?>
+                                    </a>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </ul>
+            </li>
+        <?php endif; ?>
+        <!-- per page changer -->
+        <?php if ($this->paginationCount && count($this->perPageRanges) > 1) : ?>
+            <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-right<?php else: ?>pull-left<?php endif; ?>">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <?php echo $this->translate('Per page') ?> - <?php echo $this->per_page ?>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <?php foreach ($this->perPageRanges as $perPage) : ?>
+                        <li <?php if ($this->per_page == $perPage) : ?>class="disabled"<?php endif; ?>>
+                            <a href="<?php echo $this->url('application/page', array_merge($this->baseUrlParams, ['per_page' => $perPage]), ['force_canonical' => true, 'query' => $this->filterParams]) ?>"><?php echo $perPage ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+        <?php endif; ?>
+    </ul>
+<?php endif; ?>
+
+<!-- the data grid -->
+<?php if ($this->paginationCount): ?>
+
+    <?php if ($this->multipleActionsCount) : ?>
+        <?php $form = new Form() ?>
+        <?php $form->setAttribute('method', 'post') ?>
+        <?php $form->setAttribute('id', $this->formName) ?>
+        <?php $form->setAttribute('name', $this->formName) ?>
+        <?php echo $this->form()->openTag($form) ?>
+    <?php endif; ?>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <?php if ($this->multipleActionsCount) : ?>    
+                <th class="selector-items">
+                    <?php
+                        $selectCheckbox = new Element\Checkbox($this->multipleActionsSelectorId);
+                        $selectCheckbox->setUseHiddenElement(false);
+                        $selectCheckbox->setAttributes([
+                            'onclick' => "$('input[name=\'{$this->multipleActionsItemsName}\']:enabled').prop('checked', this.checked)",
+                            'id' => $this->multipleActionsSelectorId
+                        ]);
+
+                        echo $this->formCheckbox($selectCheckbox);                    
+                    ?>
+                </th>
+            <?php endif; ?>
+            <?php foreach ($this->headers as $index => $header) : ?>
+                <th>
+                    <?php if (empty($header['order_name'])) : ?>
+                        <?php echo $header['title'] ?>
+                    <?php else: ?>
+                        <a href="<?php echo $this->url('application/page', array_merge($this->baseUrlParams, [
+                            'per_page' => $this->per_page,
+                            'order_type' => ($this->order_type == 'asc' ? 'desc' : 'asc'),
+                            'order_by' => $header['order_name']
+                        ]), ['force_canonical' => true, 'query' => $this->filterParams]) ?>">
+                            <?php echo $header['title'] ?>
+
+                            <!-- order direction icon -->
+                            <?php if ($this->order_by == $header['order_name']): ?>
+                                <img src="<?php  echo $this->layoutAsset('icon/s_' . $this->order_type . '.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->order_type) ?>" />
+                            <?php endif; ?>
+                        </a>
+                    <?php endif; ?>
+                </th>
+            <?php endforeach; ?>
+            </thead>
+            <tbody>
+            <?php foreach ($paginator as $data) : ?>
+                <tr>
+                    <?php if ($this->multipleActionsCount) : ?>
+                        <td>
+                            <?php
+                                $selectCheckbox = new Element\Checkbox($this->multipleActionsItemsName);
+                                $selectCheckbox->setCheckedValue($data[$this->actions_options['action_identity']]);
+                                $selectCheckbox->setUseHiddenElement(false);
+
+                                // extra check
+                                if (!empty($this->actions_extra_check['multiple_actions'])) {
+                                    foreach ($this->actions_extra_check['multiple_actions'] as $check) {
+                                        if (isset($check['param'], $check['condition'])) {
+                                            $this->value = is_object($data) ? $data->{$check['param']} : $data[$check['param']];
+
+                                            if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
+                                                $selectCheckbox->setAttributes([
+                                                    'disabled' => 'disabled'
+                                                ]);
+
+                                                break;
+                                            }
+                                        }
+                                        else if (isset($check['function'])) {
+                                            if (false === ($result = $check['function']($data))) {
+                                                $selectCheckbox->setAttributes([
+                                                    'disabled' => 'disabled'
+                                                ]);
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                echo $this->formCheckbox($selectCheckbox);
+                            ?>
+                        </td>
+                    <?php endif; ?>
+                    <?php foreach ($data as $fieldName => $fieldValue) : ?>
+                        <?php if (is_array($this->skipped_fields) && in_array($fieldName, $this->skipped_fields)) : ?>
+                            <?php continue ?>
+                        <?php endif; ?>
+                        <td>
+                            <?php if (!empty($this->helpers[$fieldName])) : ?>
+
+                                <?php if ($fieldValue === null) : ?>
+                                    <?php $fieldValue = '' ?>
+                                <?php endif; ?>
+
+                                <?php    
+                                    echo empty($this->helpers_options[$fieldName])
+                                        ? $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data))
+                                        : $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data), $this->helpers_options[$fieldName])
+                                ?>
+                            <?php else: ?>
+                                <?php echo $this->escapeHtml($fieldValue) ?>
+                            <?php endif; ?>
+                        </td>
+                    <?php endforeach; ?>
+                    <?php if ($this->singleActionsCount) : ?>
+                        <?php foreach ($this->singleActions as $action) : ?>
+                            <td class="action">
+                                <?php
+                                    // extra check
+                                    if (!empty($this->actions_extra_check['single_actions'][$action['action']])) {
+                                        foreach ($this->actions_extra_check['single_actions'][$action['action']] as $check) {
+                                            if (isset($check['param'], $check['condition'])) {
+                                                $this->value = is_object($data) ? $data->{$check['param']} : $data[$check['param']];
+
+                                                if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
+                                                    continue 2;
+                                                }
+                                            }
+                                            else if (isset($check['function'])) {
+                                                if (false === ($result = $check['function']($data))) {
+                                                    continue 2;
+                                                }
+                                            }
+                                        }
+                                    }
+                                ?>
+                                <?php if (empty($action['js'])) : ?>
+                                    <?php $this->urlQueries = !empty($action['queries']) && is_array($action['queries']) ? $action['queries'] : [] ?>
+                                    <?php
+                                        if (!empty($action['slug_params']['use_query']) && $action['slug_params']['use_query'] === true) {
+                                            $this->urlQueries = array_merge($this->urlQueries, [
+                                                'slug' => !empty($action['param'])
+                                                    ? $data[$action['param']]
+                                                    : $data[$this->actions_options['action_identity']]
+                                            ]);
+                                        }
+                                    ?>
+
+                                    <a class="single-actions" href="<?php echo $this->url('application/page', [
+                                            'controller' => $action['controller'],
+                                            'action' => $action['action'],
+                                            'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
+                                                ? !empty($action['param'])
+                                                    ? $data[$action['param']]
+                                                    : $data[$this->actions_options['action_identity']]
+                                                : null
+                                        ],
+                                        ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+
+                                        <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
+                                    </a>
+                                <?php else: ?>
+                                    <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']]), $action['js']) ?>">
+                                        <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
+                                    </a>
+                                <?php endif; ?>
+                            </td>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <?php if ($this->multipleActionsCount) : ?>
+        <?php echo $this->form()->closeTag() ?>
+    <?php endif; ?>
+ 
+    <!-- a pagination -->
+    <?php
+        echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', [
+            'params' => array_merge($this->baseUrlParams, ['per_page' => $this->per_page]),
+            'queries' => $this->filterParams
+        ])
+    ?>
+<?php else: ?>
+    <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
+<?php endif; ?>
+
+<?php if ($this->multipleActionsCount) : ?>
+    <!-- append a data grid's js file -->
+    <?php $this->layoutHeadScript()->appendFile($this->layoutAsset('data_grid.js')) ?>
+
+    <?php $this->inlineScript()->captureStart() ?>
+        var dataGrid = new DataGrid({
+            'formId' : '#<?php echo $this->escapeJs($this->formName) ?>',
+            'multipleActionsClass' : 'a.multiple-actions',
+            'items' : '<?php echo $this->escapeJs($this->multipleActionsItemsName) ?>',
+            'selectorId' : '#<?php echo $this->escapeJs($this->multipleActionsSelectorId) ?>',
+            'selectorErrorTitle' : '<?php echo $this->escapeJs($this->translate('Error')) ?>',
+            'selectorErrorContent' : '<?php echo $this->escapeJs($this->translate('You need select some of checkboxes below')) ?>',
+            'selectorErrorTime' : <?php echo (int) $this->multipleActionsErrorDisplayTime ?>,
+            'confirmButtonTitle' : '<?php echo $this->escapeJs($this->translate('Yes')) ?>',
+            'cancelButtonTitle' : '<?php echo $this->escapeJs($this->translate('No')) ?>',
+            'langDirection' : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguageDirection()) ?>'
+        });
+    <?php $this->inlineScript()->captureEnd() ?>
+<?php endif; ?>

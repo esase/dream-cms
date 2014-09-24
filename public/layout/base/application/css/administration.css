@@ -13,3 +13,14 @@ div.page-header {
   margin-bottom: 20px;
   margin-top: 70px;
 }
+div.panel-general {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+div.alert {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+ol.breadcrumb {
+  margin-bottom: 0;
+}

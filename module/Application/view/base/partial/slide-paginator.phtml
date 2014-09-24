@@ -1,0 +1,41 @@
+<?php
+    $this->declareVars('queries');
+
+    if(!isset($this->params)) {
+        $this->params = [];
+    }
+
+    $this->queries = !empty($this->queries) && is_array($this->queries) ? $this->queries : [];
+?>
+
+<?php if ($this->pageCount > 1): ?>
+    <ul class="pagination">
+        <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif ?>>
+            <?php if (isset($this->previous)): ?>
+                <a href="<?php echo $this->url('application/page', ['page' => $this->previous] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">&lt;</a>
+            <?php else: ?>
+                <span>&lt;</span>
+            <?php endif ?>
+        </li>
+
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <li <?php if ($page == $this->current): ?>class="active"<?php endif; ?>>
+                <?php if ($page != $this->current): ?>
+                    <a href="<?php echo $this->url('application/page', ['page' => $page] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">
+                        <?php echo $page ?>
+                    </a>
+                <?php else: ?>
+                    <span><?php echo $page ?></span>
+                <?php endif; ?>
+            </li>
+        <?php endforeach ?>
+
+        <li <?php if (!isset($this->next)): ?>class="disabled"<?php endif ?>>
+            <?php if (isset($this->next)): ?>
+                <a href="<?php echo $this->url('application/page', ['page' => $this->next] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">&gt;</a>
+            <?php else: ?>
+                <span>&gt;</span>
+            <?php endif ?>
+        </li>
+    </ul>
+<?php endif ?>

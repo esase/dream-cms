@@ -33,28 +33,28 @@ class ApplicationSettingAdministration extends ApplicationSetting
                 if (array_key_exists($setting['name'], $settingsValues)) {
                     // remove previously value
                     $query = $this->delete('application_setting_value')
-                        ->where(array(
+                        ->where([
                             'setting_id' => $setting['id']
-                        ))
-                        ->where((!$setting['language_sensitive'] ? 'language is null' : array('language' => $currentlanguage)));
+                        ])
+                        ->where((!$setting['language_sensitive'] ? 'language is null' : ['language' => $currentlanguage]));
 
                     $statement = $this->prepareStatementForSqlObject($query);
                     $statement->execute();
 
                     // insert new value
                     $extraValues = $setting['language_sensitive']
-                        ? array('language' => $currentlanguage)
-                        : array();
+                        ? ['language' => $currentlanguage]
+                        : [];
 
                     $value = is_array($settingsValues[$setting['name']])
                         ? implode(self::SETTINGS_ARRAY_DEVIDER, $settingsValues[$setting['name']])
                         : (null != $settingsValues[$setting['name']] ? $settingsValues[$setting['name']] : '');
 
                     $query = $this->insert('application_setting_value')
-                        ->values(array_merge(array(
+                        ->values(array_merge([
                            'setting_id' => $setting['id'],
                            'value' => $value
-                        ), $extraValues));
+                        ], $extraValues));
 
                     $statement = $this->prepareStatementForSqlObject($query);
                     $statement->execute();
@@ -73,7 +73,7 @@ class ApplicationSettingAdministration extends ApplicationSetting
 
             return $e->getMessage();
         }
-        
+
         // fire the change settings event
         ApplicationEvent::fireChangeSettingsEvent($module);
         return true;
@@ -91,12 +91,12 @@ class ApplicationSettingAdministration extends ApplicationSetting
         // get module info
         if (null != ($moduleInfo = $this->getModuleInfo($module))) {
             $subQuery= $this->select();
-            $subQuery->from(array('c' => 'application_setting_value'))
-                ->columns(array(
+            $subQuery->from(['c' => 'application_setting_value'])
+                ->columns([
                     'id'
-                ))
+                ])
                 ->limit(1)
-                ->where(array('a.id' => new Expression('c.setting_id')))
+                ->where(['a.id' => new Expression('c.setting_id')])
                 ->where
                     ->and->equalTo('c.language', $language)
                 ->where
@@ -104,8 +104,8 @@ class ApplicationSettingAdministration extends ApplicationSetting
                     ->and->isNull('c.language');
 
             $mainSelect = $this->select();
-            $mainSelect->from(array('a' => 'application_setting'))
-                ->columns(array(
+            $mainSelect->from(['a' => 'application_setting'])
+                ->columns([
                     'id',
                     'name',
                     'label',
@@ -117,25 +117,25 @@ class ApplicationSettingAdministration extends ApplicationSetting
                     'values_provider',
                     'check',
                     'check_message'
-                ))
+                ])
                 ->join(
-                    array('b' => 'application_setting_value'),
+                    ['b' => 'application_setting_value'],
                     new Expression('b.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
-                    array(
+                    [
                         'value'
-                    ),
+                    ],
                     'left'
                 )
                 ->join(
-                    array('d' => 'application_setting_category'),
+                    ['d' => 'application_setting_category'],
                     new Expression('a.category = d.id'),
-                    array(
+                    [
                         'category_name' => new Expression('d.name')
-                    ),
+                    ],
                     'left'
                 )
                 ->order('a.order')
-                ->where(array('a.module' => $moduleInfo['id']))
+                ->where(['a.module' => $moduleInfo['id']])
                 ->where
                     ->and->notEqualTo('a.type', self::SYS_SETTINGS_FLAG);
 
@@ -144,12 +144,12 @@ class ApplicationSettingAdministration extends ApplicationSetting
             $resultSet->initialize($statement->execute());
 
             // processing settings list
-            $settings = array();
+            $settings = [];
             foreach ($resultSet as $setting) {
                 // convert an array
                 $settingValue = $this->convertString($setting->type, $setting->value);
 
-                $settings[$setting->id] = array(
+                $settings[$setting->id] = [
                     'id' => $setting->id,
                     'category' => $setting->category_name,
                     'name' => $setting->name,
@@ -163,29 +163,29 @@ class ApplicationSettingAdministration extends ApplicationSetting
                     'value' => $settingValue,
                     'values_provider' => $setting->values_provider,
                     'max_length' => self::SETTING_VALUE_MAX_LENGTH 
-                );
+                ];
 
                 // add extra validators
                 if ($setting->check) {
-                    $settings[$setting->id]['validators'][] = array(
+                    $settings[$setting->id]['validators'][] = [
                         'name' => 'callback',
-                        'options' => array(
+                        'options' => [
                             'message' => $setting->check_message,
                             'callback' => function($value) use ($setting) {
                                 return eval(str_replace('__value__', $value, $setting->check));
                             }
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
 
             // get list of predefined values
             $select = $this->select();
             $select->from('application_setting_predefined_value')
-                ->columns(array(
+                ->columns([
                     'setting_id',
                     'value'
-                ))
+                ])
                 ->where->in('setting_id', array_keys($settings));
 
             $statement = $this->prepareStatementForSqlObject($select);

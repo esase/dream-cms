@@ -3,7 +3,7 @@ namespace Application\Form;
 
 use Application\Form\ApplicationCustomFormBuilder;
 
-class ApplicationSetting extends AbstractCustomForm 
+class ApplicationSetting extends ApplicationAbstractCustomForm 
 {
     /**
      * Form name
@@ -19,7 +19,7 @@ class ApplicationSetting extends AbstractCustomForm
         0 => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Save',
+            'label' => 'Save'
         ]
     ];
 }

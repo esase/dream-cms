@@ -688,7 +688,7 @@ class UserBase extends ApplicationAbstractBase
      */
     public function getUserInfo($userId, $field = self::USER_INFO_BY_ID)
     {
-        // check data memory
+        // check data in a memory
         if (isset(self::$userInfo[$userId][$field])) {
             return self::$userInfo[$userId][$field];
         }
@@ -769,7 +769,7 @@ class UserBase extends ApplicationAbstractBase
     {
         // clear all cache kinds
         foreach ($this->userInfoFields as $field) {
-            $cacheName = CacheUtility::getCacheName(self::CACHE_USER_INFO . $userId, array($field));
+            $cacheName = CacheUtility::getCacheName(self::CACHE_USER_INFO . $userId, [$field]);
             $this->staticCacheInstance->removeItem($cacheName);
         }
     }

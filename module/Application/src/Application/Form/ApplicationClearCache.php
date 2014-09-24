@@ -25,14 +25,13 @@ class ApplicationClearCache extends ApplicationAbstractCustomForm
                 'dynamic' => 'Dynamic cache (translations, template paths, etc)',
                 'config' => 'Application config cache',
                 'js' => 'Js cache',
-                'css' => 'Css cache',
+                'css' => 'Css cache'
             ],
-            'category' => 'Cache types',
         ],
         1 => [
             'name' => 'clear',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Clear',
+            'label' => 'Clear'
         ],
     ];
 }

@@ -3,6 +3,7 @@
 return [
     'controllers' => [
         'invokables' => [
+            'acl-administration' => 'Acl\Controller\AclAdministrationController'
         ]
     ],
     'router' => [
@@ -17,6 +18,11 @@ return [
                 'pattern'  => '%s.mo',
                 'text_domain'  => 'default'
             ]
+        ]
+    ],
+    'controller_plugins' => [
+        'invokables' => [
+            'aclCheckPermission' => 'Acl\Controller\Plugin\AclCheckPermission'
         ]
     ],
     'view_helpers' => [

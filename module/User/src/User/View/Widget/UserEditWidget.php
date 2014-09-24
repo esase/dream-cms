@@ -1,6 +1,7 @@
 <?php
 namespace User\View\Widget;
 
+use Application\Service\ApplicationTimeZone as TimeZoneService;
 use User\Service\UserIdentity as UserIdentityService;
 use Acl\Model\AclBase as AclBaseModel;
 
@@ -19,7 +20,7 @@ class UserEditWidget extends UserAbstractWidget
                 ->get('Application\Form\FormManager')
                 ->getInstance('User\Form\User')
                 ->setModel($this->getModel())
-                ->setTimeZones($this->getTimeZoneModel()->getTimeZones())
+                ->setTimeZones(TimeZoneService::getTimeZones())
                 ->setUserId(UserIdentityService::getCurrentUserIdentity()['user_id'])
                 ->setUserAvatar(UserIdentityService::getCurrentUserIdentity()['avatar']);
 

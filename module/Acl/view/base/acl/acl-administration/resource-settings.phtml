@@ -7,24 +7,24 @@
 <?php $this->headTitle($this->translate('List of roles')) ?>
 
 <!-- render a header -->
-<?php echo $this->render('application/acl-administration/_header') ?>
+<?php echo $this->render('acl/acl-administration/_header') ?>
 
 <!-- render tabs -->
-<?php echo $this->partial('partial/tab', array(
+<?php echo $this->partial('administration-partial/tab', [
     'tabs' => $this->baseTabs,
     'active' => 'list' // selected action is "list"
-)) ?>
+]) ?>
 
 <!-- render a breadcrumb -->
-<?php echo $this->partial('partial/breadcrumb', array(
-    'pages' => array(
-        'list' => array(
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
             'name' => $this->translate('List of roles'),
             'controller' => 'acl-administration',
             'action' => 'list',
             'check_acl' => true
-        ),
-        'browse_resources' => array(
+        ],
+        'browse_resources' => [
             'name' => $this->parentPageTitle,
             'controller' => 'acl-administration',
             'action' => 'browse-resources',
@@ -32,22 +32,18 @@
             'params' => array(
                 'slug' => $this->resourceSettings['role']
             )
-        ),
-        'resource_settings' => array(
+        ],
+        'resource_settings' => [
             'name' => $this->subPageTitle,
             'controller' => 'acl-administration',
             'action' => 'resource-settings',
             'check_acl' => true
-        )
-    )
-)) ?>
+        ]
+    ]
+]) ?>
 
 <!-- render a form -->
-<?php echo $this->partial('partial/form', array(
-    'form' => $this->aclResourceSettingsForm,
-    'controller' => 'acl-administration',
-    'action' => 'resource-settings',
-    'params' => array(
-        'slug' => $this->resourceSettings['connection']
-    )
-)); ?>
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('General info'),
+    'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
+]) ?>

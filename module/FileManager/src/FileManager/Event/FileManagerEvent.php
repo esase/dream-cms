@@ -2,7 +2,7 @@
 namespace FileManager\Event;
 
 use Application\Event\ApplicationAbstractEvent;
-use User\Service\Service as UserIdentityService;
+use User\Service\UserIdentity as UserIdentityService;
 
 class FileManagerEvent extends ApplicationAbstractEvent
 {

@@ -1,10 +1,11 @@
 <?php
 namespace Acl\Form;
 
+use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
 use Acl\Model\AclBase as AclBaseModel;
 
-class AclResourceFilter extends AbstractCustomForm 
+class AclResourceFilter extends ApplicationAbstractCustomForm 
 {
     /**
      * Form name
@@ -22,7 +23,7 @@ class AclResourceFilter extends AbstractCustomForm
      * List of not validated elements
      * @var array
      */
-    protected $notValidatedElements = array('submit');
+    protected $notValidatedElements = ['submit'];
 
     /**
      * Model
@@ -40,29 +41,28 @@ class AclResourceFilter extends AbstractCustomForm
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'modules' => array(
+    protected $formElements = [
+        'modules' => [
             'name' => 'modules',
-            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_CHECKBOX,
             'label' => 'Module',
-            'values' => array(
-            )
-        ),
-        'status' => array(
+            'values' => []
+        ],
+        'status' => [
             'name' => 'status',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
-            'values' => array(
+            'values' => [
                 AclBaseModel::ACTION_ALLOWED  => 'Allowed',
                 AclBaseModel::ACTION_DISALLOWED => 'Disallowed'
-            )
-        ),
-        'submit' => array(
+            ]
+        ],
+        'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Search',
-        )
-    );
+        ]
+    ];
 
     /**
      * Get form instance

@@ -27,19 +27,19 @@ abstract class ApplicationAbstractCustomForm implements ApplicationCustomFormInt
      * Form elements
      * @var array
      */
-    protected $formElements = array();
+    protected $formElements = [];
 
     /**
      * List of ignored elements
      * @var array
      */
-    protected $ignoredElements = array();
+    protected $ignoredElements = [];
 
     /**
      * List of not validated elements
      * @var array
      */
-    protected $notValidatedElements = array();
+    protected $notValidatedElements = [];
 
     /**
      * Translator

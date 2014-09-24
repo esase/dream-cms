@@ -11,15 +11,17 @@
 
 <!-- files manager wrapper -->
 <div class="row" id="files-manager-wrapper">
-    <div class="col-md-3">
-        <div id="directories-tree-wrapper">
-            <?php echo $this->filesManagerDirectoriesTree($this->userDirectories, $this->directoriesTreeId, $this->path, $this->filters) ?>
-        </div>
+    <div class="col-md-4">
+        <?php echo $this->partial('administration-partial/panel', [
+            'title' => $this->translate('Tree'),
+            'body' => $this->fileManagerDirectoriesTree($this->userDirectories, $this->directoriesTreeId, $this->path, $this->filters)
+        ]) ?>
     </div>
-    <div class="col-md-9">
-        <div id="action-wrapper">
-            <?php echo $this->action ?>
-        </div>
+    <div class="col-md-8">
+        <?php echo $this->partial('administration-partial/panel', [
+            'title' => $this->translate('Files'),
+            'body' => $this->action
+        ]) ?>
     </div>
 </div>
 

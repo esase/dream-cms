@@ -1,10 +1,11 @@
 <?php
 namespace Acl\Form;
 
+use Application\Form\ApplicationAbstractCustomForm;
 use Acl\Model\AclBase as AclBaseModel;
 use Application\Form\ApplicationCustomFormBuilder;
 
-class AclRoleFilter extends AbstractCustomForm 
+class AclRoleFilter extends ApplicationAbstractCustomForm 
 {
     /**
      * Form name
@@ -22,26 +23,26 @@ class AclRoleFilter extends AbstractCustomForm
      * List of not validated elements
      * @var array
      */
-    protected $notValidatedElements = array('submit');
+    protected $notValidatedElements = ['submit'];
 
     /**
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        0 => array(
+    protected $formElements = [
+        0 => [
             'name' => 'type',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Type',
-            'values' => array(
+            'values' => [
                AclBaseModel::ROLE_TYPE_SYSTEM => 'system',
                AclBaseModel::ROLE_TYPE_CUSTOM => 'custom'
-            )
-        ),
-        1 => array(
+            ]
+        ],
+        1 => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Search',
-        )
-    );
+            'label' => 'Search'
+        ]
+    ];
 }

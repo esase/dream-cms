@@ -1,6 +1,7 @@
 <?php
 namespace Acl\Controller;
 
+use Application\Controller\ApplicationAbstractAdministrationController;
 use Zend\View\Model\ViewModel;
 
 class AclAdministrationController extends ApplicationAbstractAdministrationController
@@ -53,7 +54,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 // allow recources
                 foreach ($resourcesIds as $resourceId) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -78,9 +79,9 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         }
 
         // redirect back
-        return $this->redirectTo('acl-administration', 'browse-resources', array(
+        return $this->redirectTo('acl-administration', 'browse-resources', [
             'slug' => $role['id']
-        ), true);
+        ], true);
     }
 
     /**
@@ -102,7 +103,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 // disallow recources
                 foreach ($resourcesIds as $resourceId) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -127,9 +128,9 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         }
 
         // redirect back
-        return $this->redirectTo('acl-administration', 'browse-resources', array(
+        return $this->redirectTo('acl-administration', 'browse-resources', [
             'slug' => $role['id']
-        ), true);
+        ], true);
     }
 
     /**
@@ -144,7 +145,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 // delete selected roles
                 foreach ($rolesIds as $roleId) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -168,7 +169,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         }
 
         // redirect back
-        return $this->redirectTo('acl-administration', 'list', array(), true);
+        return $this->redirectTo('acl-administration', 'list', [], true);
     }
 
     /**
@@ -177,16 +178,14 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
     public function editRoleAction()
     {
         // get the role info
-        if (null == ($role = 
-                $this->getModel()->getRoleInfo($this->getSlug()))) {
-
+        if (null == ($role = $this->getModel()->getRoleInfo($this->getSlug()))) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
-        // get an acl role form
+        // get the acl role form
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclRole')
+            ->getInstance('Acl\Form\AclRole')
             ->setModel($this->getModel())
             ->setRoleId($role['id']);
 
@@ -202,7 +201,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
             // save data
             if ($aclRoleForm->getForm()->isValid()) {
                 // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
+                if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
                 }
 
@@ -220,16 +219,16 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('acl-administration', 'edit-role', array(
+                return $this->redirectTo('acl-administration', 'edit-role', [
                     'slug' => $role['id']
-                ));
+                ]);
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'role' => $role,
             'aclRoleForm' => $aclRoleForm->getForm()
-        ));
+        ]);
     }
 
     /**
@@ -240,7 +239,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         // get an acl role form
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclRole')
+            ->getInstance('Acl\Form\AclRole')
             ->setModel($this->getModel());
 
         $request  = $this->getRequest();
@@ -253,7 +252,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
             // save data
             if ($aclRoleForm->getForm()->isValid()) {
                 // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
+                if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
                 }
 
@@ -275,9 +274,9 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'aclRoleForm' => $aclRoleForm->getForm()
-        ));
+        ]);
     }
 
     /**
@@ -286,16 +285,16 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
     public function listAction()
     {
         // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
+        if (true !== ($result = $this->aclCheckPermission())) {
             return $result;
         }
 
-        $filters = array();
+        $filters = [];
 
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclRoleFilter');
+            ->getInstance('Acl\Form\AclRoleFilter');
 
         $request = $this->getRequest();
         $filterForm->getForm()->setData($request->getQuery(), false);
@@ -309,13 +308,13 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         $paginator = $this->getModel()->getRoles($this->getPage(),
                 $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
-        return new ViewModel(array(
+        return new ViewModel([
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
             'order_by' => $this->getOrderBy(),
             'order_type' => $this->getOrderType(),
             'per_page' => $this->getPerPage()
-        ));
+        ]);
     }
 
     /**
@@ -324,7 +323,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
     public function browseResourcesAction()
     {
         // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
+        if (true !== ($result = $this->aclCheckPermission())) {
             return $result;
         }
 
@@ -335,12 +334,12 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
-        $filters = array();
+        $filters = [];
 
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclResourceFilter');
+            ->getInstance('Acl\Form\AclResourceFilter');
 
         $filterForm->setModel($this->getModel());
 
@@ -356,7 +355,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         $paginator = $this->getModel()->getResources($role['id'],
                 $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
-        return new ViewModel(array(
+        return new ViewModel([
             'slug' => $role['id'],
             'roleInfo' => $role,
             'filter_form' => $filterForm->getForm(),
@@ -364,7 +363,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
             'order_by' => $this->getOrderBy(),
             'order_type' => $this->getOrderType(),
             'per_page' => $this->getPerPage()
-        ));
+        ]);
     }
 
     /**
@@ -382,7 +381,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         // get an acl resource's settings form
         $aclResourceSettingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Application\Form\AclResourceSetting');
+            ->getInstance('Acl\Form\AclResourceSetting');
 
         // fill the form with default values
         $aclResourceSettingsForm->setActionsLimit($settings['actions_limit'])
@@ -400,7 +399,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
             // save data
             if ($aclResourceSettingsForm->getForm()->isValid()) {
                 // check the permission and increase permission's actions track
-                if (true !== ($result = $this->checkPermission())) {
+                if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
                 }
 
@@ -418,15 +417,15 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('acl-administration', 'resource-settings', array(
+                return $this->redirectTo('acl-administration', 'resource-settings', [
                     'slug' => $settings['connection']
-                ));
+                ]);
             }
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'resourceSettings' => $settings,
             'aclResourceSettingsForm' => $aclResourceSettingsForm->getForm()
-        ));
+        ]);
     }
 }

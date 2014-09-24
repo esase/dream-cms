@@ -6,14 +6,14 @@ return [
             'application' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route'    => '/application'
+                    'route'    => '/pages'
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
                     'page' => [
                         'type'    => 'segment',
                         'options' => [
-                            'route'    => '/[:language[/:controller[/:action[/page/:page][/per-page/:per_page][/order-by/:order_by][/order-type/:order_type][/:category][/:slug]]]][:trailing_slash]',
+                            'route'    => '/[:language[/:controller[/:action[/_page/:page][/_per-page/:per_page][/_order-by/:order_by][/_order-type/:order_type][/_category/:category][/_id/:slug]]]][:trailing_slash]',
                             'constraints' => [
                                 'language' => '[a-z]{2}',
                                 'controller' => '[a-z][a-z0-9-]*',
@@ -54,6 +54,8 @@ return [
     ],
     'controllers' => [
         'invokables' => [
+            'settings-administration' => 'Application\Controller\ApplicationSettingAdministrationController',
+            'error' => 'Application\Controller\ApplicationErrorController'
         ]
     ],
     'controller_plugins' => [

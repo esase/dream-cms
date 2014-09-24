@@ -1,10 +1,10 @@
 <?php
 namespace User\Form;
 
+use Acl\Service\Acl as AclService;
+use Application\Form\ApplicationCustomFormBuilder;
 use Application\Form\ApplicationAbstractCustomForm;
 use User\Model\UserBase as UserBaseModel;
-use Application\Form\ApplicationCustomFormBuilder;
-use Application\Service\Service as ApplicationService;
 
 class UserFilter extends ApplicationAbstractCustomForm 
 {
@@ -24,45 +24,45 @@ class UserFilter extends ApplicationAbstractCustomForm
      * List of not validated elements
      * @var array
      */
-    protected $notValidatedElements = array('submit');
+    protected $notValidatedElements = ['submit'];
 
     /**
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'nickname' => array(
+    protected $formElements = [
+        'nickname' => [
             'name' => 'nickname',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'NickName'
-        ),
-        'email' => array(
+        ],
+        'email' => [
             'name' => 'email',
             'type' => ApplicationCustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email'
-        ),
-        'status' => array(
+        ],
+        'status' => [
             'name' => 'status',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
-            'values' => array(
+            'values' => [
                UserBaseModel::STATUS_APPROVED => 'approved',
                UserBaseModel::STATUS_DISAPPROVED => 'disapproved'
-            )
-        ),
-        'role' => array(
+            ]
+        ],
+        'role' => [
             'name' => 'role',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Role',
-            'values' => array(
-            )
-        ),
-        'submit' => array(
+            'values' => [
+            ]
+        ],
+        'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Search',
-        )
-    );
+            'label' => 'Search'
+        ]
+    ];
 
     /**
      * Get form instance
@@ -74,7 +74,7 @@ class UserFilter extends ApplicationAbstractCustomForm
         // get form builder
         if (!$this->form) {
             // get list of acl roles
-            $this->formElements['role']['values'] = ApplicationService::getAclRoles();
+            $this->formElements['role']['values'] = AclService::getAclRoles();
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    

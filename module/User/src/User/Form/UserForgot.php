@@ -28,7 +28,7 @@ class UserForgot extends ApplicationAbstractCustomForm
             'name' => 'email',
             'type' => ApplicationCustomFormBuilder::FIELD_EMAIL,
             'label' => 'Your email',
-            'required' => true,
+            'required' => true
         ],
         'captcha' => [
             'name' => 'captcha',
@@ -41,7 +41,7 @@ class UserForgot extends ApplicationAbstractCustomForm
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
+            'label' => 'Submit'
         ],
     ];
 

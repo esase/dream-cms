@@ -1,20 +1,21 @@
 <?php
 namespace User;
 
+use Acl\Event\AclEvent;
+use Acl\Model\AclBase as AclBaseModel;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Service\ApplicationSetting as SettingService;
+use Application\Service\ApplicationTimeZone as TimeZoneService;
+use Application\Service\Application as ApplicationService;
 use User\Event\UserEvent;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Model\UserBase as UserBaseModel;
+use Localization\Module as LocalizationModule;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
-use Localization\Module as LocalizationModule;
-use Acl\Event\AclEvent;
-use Acl\Model\AclBase as AclBaseModel;
-use Application\Utility\ApplicationErrorLogger;
-use Application\Service\ApplicationSetting as SettingService;
-use Application\Service\Application as ApplicationService;
 use Exception;
 
 class Module
@@ -80,11 +81,7 @@ class Module
     {
         try {
             // get list of all registered time zones
-            $timeZone  = $this->serviceManager
-                ->get('Application\Model\ModelManager')
-                ->getInstance('Application\Model\ApplicationTimeZone');
-
-            $registeredTimeZones = $timeZone->getTimeZones();
+            $registeredTimeZones = TimeZoneService::getTimeZones();
 
             // what should we use here, user's or default time zone
             $defaultTimeZone = !empty($this->userIdentity['time_zone_name'])

@@ -3,7 +3,7 @@ namespace Application\Event;
 
 use Zend\EventManager\EventManager as EventManager;
 
-use User\Service\Service as UserService;
+use User\Service\UserIdentity as UserIdentityService;
 use User\Model\UserBase as UserBaseModel;
 
 abstract class ApplicationAbstractEvent
@@ -59,6 +59,6 @@ abstract class ApplicationAbstractEvent
     {
         return $isSystemEvent
             ? UserBaseModel::DEFAULT_SYSTEM_ID
-            : UserService::getCurrentUserIdentity()->user_id;
+            : UserIdentityService::getCurrentUserIdentity()['user_id'];
     }
 }

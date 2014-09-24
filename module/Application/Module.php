@@ -288,9 +288,20 @@ class Module
                 'applicationSetting' => 'Application\View\Helper\ApplicationSetting',
                 'applicationRoute' => 'Application\View\Helper\ApplicationRoute',
                 'applicationRandId' => 'Application\View\Helper\ApplicationRandId',
-                'applicationDate' => 'Application\View\Helper\ApplicationDate'
+                'applicationDate' => 'Application\View\Helper\ApplicationDate',
+                'applicationFileSize' => 'Application\View\Helper\ApplicationFileSize'
             ],
             'factories' => [
+                'applicationBooleanValue' => function() {
+                    return new \Application\View\Helper\ApplicationBooleanValue($this->serviceManager->get('Translator'));
+                },
+                'applicationAdminMenu' => function() {
+                    $adminMenu = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Application\Model\ApplicationAdminMenu');
+
+                    return new \Application\View\Helper\ApplicationAdminMenu($adminMenu->getMenu());
+                },
                 'applicationFlashMessage' => function() {
                     $flashmessenger = $this->serviceManager
                         ->get('ControllerPluginManager')

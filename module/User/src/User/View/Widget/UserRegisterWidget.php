@@ -2,6 +2,7 @@
 namespace User\View\Widget;
 
 use User\Service\UserIdentity as UserIdentityService;
+use Application\Service\ApplicationTimeZone as TimeZoneService;
 use Application\Utility\ApplicationEmailNotification;
 use Localization\Service\Localization as LocalizationService;
 
@@ -22,7 +23,7 @@ class UserRegisterWidget extends UserAbstractWidget
                 ->get('Application\Form\FormManager')
                 ->getInstance('User\Form\User')
                 ->setModel($this->getModel())
-                ->setTimeZones($this->getTimeZoneModel()->getTimeZones())
+                ->setTimeZones(TimeZoneService::getTimeZones())
                 ->showCaptcha(true);
 
             // validate the form
