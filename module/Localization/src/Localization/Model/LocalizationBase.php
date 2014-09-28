@@ -41,13 +41,13 @@ class LocalizationBase extends ApplicationAbstractBase
         if (null === ($localizations = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('localization_list')
-                ->columns(array(
+                ->columns([
                     'language',
                     'locale',
                     'description',
                     'default',
                     'direction'
-                ))
+                ])
                 ->order('default desc');
 
             $statement = $this->prepareStatementForSqlObject($select);
@@ -69,7 +69,7 @@ class LocalizationBase extends ApplicationAbstractBase
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $localizations);
-            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_LOCALIZATIONS_DATA_TAG));
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_LOCALIZATIONS_DATA_TAG]);
         }
 
         return $localizations;

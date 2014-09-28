@@ -81,14 +81,14 @@ abstract class ApplicationAbstractBase extends Sql
             // check the slug existent
             $select = $this->select();
             $select->from($table)
-                ->columns(array(
+                ->columns([
                     $slugField
-                ))
-                ->where(array(
+                ])
+                ->where([
                     $slugField => $newSlug,
-                    new NotInPredicate($idField, array($objectId))
-                ));
-    
+                    new NotInPredicate($idField, [$objectId])
+                ]);
+
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
@@ -123,7 +123,7 @@ abstract class ApplicationAbstractBase extends Sql
         if (null === ($module = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('application_module')
-                ->columns(array(
+                ->columns([
                     'id',
                     'name',
                     'type',
@@ -133,8 +133,8 @@ abstract class ApplicationAbstractBase extends Sql
                     'vendor_email',
                     'description',
                     'dependences'
-                ))
-                ->where(array('name' => $moduleName));
+                ])
+                ->where(['name' => $moduleName]);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -155,17 +155,17 @@ abstract class ApplicationAbstractBase extends Sql
      */
     public function getActiveModulesList()
     {
-        $modulesList = array();
+        $modulesList = [];
 
         $select = $this->select();
         $select->from('application_module')
-            ->columns(array(
+            ->columns([
                 'id',
                 'name'
-            ))
-        ->where(array(
+            ])
+        ->where([
             'status' => self::MODULE_STATUS_ACTIVE
-        ))
+        ])
         ->order('id');
 
         $statement = $this->prepareStatementForSqlObject($select);

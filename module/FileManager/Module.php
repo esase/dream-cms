@@ -29,16 +29,16 @@ class Module
      */
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+        return [
+            'Zend\Loader\ClassMapAutoloader' => [
+                __DIR__ . '/autoload_classmap.php'
+            ],
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
+                ]
+            ]
+        ];
     }
 
     /**
@@ -48,8 +48,7 @@ class Module
      */
     public function getServiceConfig()
     {
-        return array(
-        );
+        return [];
     }
 
     /**
@@ -57,13 +56,13 @@ class Module
      */
     public function getViewHelperConfig()
     {
-        return array(
-            'invokables' => array(
+        return [
+            'invokables' => [
                 'fileManagerDirectoriesTree' => 'FileManager\View\Helper\FileManagerDirectoryTree',
                 'fileManagerFileUrl' => 'FileManager\View\Helper\FileManagerFileUrl',
                 'fileManagerBaseFileUrl' => 'FileManager\View\Helper\FileManagerBaseFileUrl'
-            ),
-        );
+            ],
+        ];
     }
 
     /**

@@ -20,11 +20,11 @@ class XmlRpc extends XmlRpcBase
         if (null === ($classes = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
             $select->from('xmlrpc_class')
-                ->columns(array(
+                ->columns([
                     'namespace',
                     'path',
                     'module'
-                ));
+                ]);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -33,7 +33,7 @@ class XmlRpc extends XmlRpcBase
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $classes);
-            $this->staticCacheInstance->setTags($cacheName, array(self::CACHE_XMLRPC_DATA_TAG));
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_XMLRPC_DATA_TAG]);
         }
 
         return $classes;

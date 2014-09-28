@@ -22,44 +22,44 @@ class FileManagerFileFilter extends ApplicationAbstractCustomForm
      * List of not validated elements
      * @var array
      */
-    protected $notValidatedElements = array('submit');
+    protected $notValidatedElements = ['submit'];
 
     /**
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        0 => array(
+    protected $formElements = [
+        0 => [
             'name' => 'name',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Name'
-        ),
-        1 => array(
+        ],
+        1 => [
             'name' => 'file_type',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Files type',
-            'values' => array(
+            'values' => [
                 'image' => 'Images',
                 'media' => 'Media'
-            )
-        ),
-        2 => array(
+            ]
+        ],
+        2 => [
             'name' => 'type',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Show only',
-            'values' => array(
+            'values' => [
                 'directory' => 'Directories',
                 'file' => 'Files'
-            )
-        ),
-        3 => array(
+            ]
+        ],
+        3 => [
             'name' => 'path',
             'type' => ApplicationCustomFormBuilder::FIELD_HIDDEN
-        ),
-        4 => array(
+        ],
+        4 => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Search',
-        )
-    );
+            'label' => 'Search'
+        ]
+    ];
 }

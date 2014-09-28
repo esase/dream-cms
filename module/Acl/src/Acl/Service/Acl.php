@@ -112,8 +112,8 @@ class Acl
         }
 
         // process a resource name
-        $resource = str_replace(array(' ', '-'),
-                array(self::ACL_RESOURCE_SPACE_DEVIDER, self::ACL_RESOURCE_SPACE_DEVIDER), $resource);
+        $resource = str_replace([' ', '-'],
+                [self::ACL_RESOURCE_SPACE_DEVIDER, self::ACL_RESOURCE_SPACE_DEVIDER], $resource);
 
         // init an ACL
         if (!self::$currentAcl) {

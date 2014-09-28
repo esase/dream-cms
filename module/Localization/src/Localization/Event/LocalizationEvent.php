@@ -1,9 +1,10 @@
 <?php
 namespace Localization\Event;
 
+use Application\Event\ApplicationAbstractEvent;
 use User\Service\UserIdentity as UserIdentityService;
 
-class LocalizationEvent extends AbstractEvent
+class LocalizationEvent extends ApplicationAbstractEvent
 {
     /**
      * Get localizations by xmlrpc event

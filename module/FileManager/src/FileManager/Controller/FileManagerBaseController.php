@@ -101,9 +101,9 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
         }
 
         return [
-            'fileForm' => $fileForm ? $fileForm->getForm() : null,
+            'file_form' => $fileForm ? $fileForm->getForm() : null,
             'path' => $userPath,
-            'userDirectories' => $userDirectories
+            'user_directories' => $userDirectories
         ];
     }
 
@@ -166,9 +166,9 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
         }
 
         return [
-            'directoryForm' => $directoryForm ? $directoryForm->getForm() : null,
+            'directory_form' => $directoryForm ? $directoryForm->getForm() : null,
             'path' => $userPath,
-            'userDirectories' => $userDirectories
+            'user_directories' => $userDirectories
         ];
     }
 
@@ -246,12 +246,12 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
         }
 
         return [
-            'isDirectory' => $isDirectory,
-            'editForm' => $editForm ? $editForm->getForm() : null,
+            'is_directory' => $isDirectory,
+            'edit_form' => $editForm ? $editForm->getForm() : null,
             'path' => $userPath,
-            'filePath' => $filePath,
-            'fileName' => $fileName,
-            'userDirectories' => $userDirectories
+            'file_path' => $filePath,
+            'file_name' => $fileName,
+            'user_directories' => $userDirectories
         ];
     }
 
@@ -331,8 +331,8 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
 
         // get list of files and directories in specified directory
         $userPath = $this->getUserPath();
-
         $paginator = false;
+
         if (false !== ($currentDirectory = $this->getModel()->getUserDirectory($userPath))) {
             // get data
             $paginator = $this->getModel()->getFiles($currentDirectory,
@@ -344,7 +344,7 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
             'path' => $userPath,
-            'userDirectories' => $userDirectories,
+            'user_directories' => $userDirectories,
             'paginator' => $paginator,
             'order_by' => $this->getOrderBy(),
             'order_type' => $this->getOrderType(),

@@ -69,19 +69,19 @@ class AclBase extends ApplicationAbstractBase
      */
     public function getRolesList($excludeGuest = true)
     {
-        $rolesList = array();
+        $rolesList = [];
 
         $select = $this->select();
         $select->from('acl_role')
-            ->columns(array(
+            ->columns([
                 'id',
                 'name'
-            ));
+            ]);
 
         if ($excludeGuest) {
-            $select->where(array(
-                new NotInPredicate('id', array(self::DEFAULT_ROLE_GUEST))
-            ));
+            $select->where([
+                new NotInPredicate('id', [self::DEFAULT_ROLE_GUEST])
+            ]);
         }
 
         $select->order('id');
@@ -109,25 +109,25 @@ class AclBase extends ApplicationAbstractBase
     {
         $select = $this->select();
         $select->from('acl_role')
-            ->columns(array(
+            ->columns([
                 'id',
                 'name',
                 'type'
-            ))
-            ->where(array(
+            ])
+            ->where([
                 'id' => $id
-            ));
+            ]);
 
         if ($excludeSystem) {
-            $select->where(array(
-                new NotInPredicate('type', array(self::ROLE_TYPE_SYSTEM))
-            ));
+            $select->where([
+                new NotInPredicate('type', [self::ROLE_TYPE_SYSTEM])
+            ]);
         }
 
         if ($excludeAdministration) {
-            $select->where(array(
-                new NotInPredicate('id', array(self::DEFAULT_ROLE_ADMIN))
-            ));
+            $select->where([
+                new NotInPredicate('id', [self::DEFAULT_ROLE_ADMIN])
+            ]);
         }
 
         $statement = $this->prepareStatementForSqlObject($select);
@@ -162,15 +162,15 @@ class AclBase extends ApplicationAbstractBase
             // check the track existing
             $select = $this->select();
             $select->from('acl_resource_action_track')
-                ->columns(array(
+                ->columns([
                     'id'
-                ))
-                ->where(array(
+                ])
+                ->where([
                    'connection_id' => $resource['id']
-                ));
+                ]);
 
             $userId != UserBaseModel::DEFAULT_GUEST_ID
-                ? $select->where(array('user_id' => $userId))
+                ? $select->where(['user_id' => $userId])
                 : $select->where->IsNull('user_id');
 
             $statement = $this->prepareStatementForSqlObject($select);
@@ -178,16 +178,16 @@ class AclBase extends ApplicationAbstractBase
 
             // add a new acl action track
             if (!$result->current()) {
-                $values = array(
+                $values = [
                     'connection_id' => $resource['id'],
                     'actions' => $resetActions ? $resetValue : 1,
                     'actions_last_reset' => time()
-                );
+                ];
 
                 if ($userId != UserBaseModel::DEFAULT_GUEST_ID) {
-                    $values = array_merge($values, array(
+                    $values = array_merge($values, [
                         'user_id' => $userId,
-                    ));
+                    ]);
                 }
 
                 $insert = $this->insert()
@@ -202,19 +202,19 @@ class AclBase extends ApplicationAbstractBase
                 if ($resetActions) {
                     $update = $this->update()
                         ->table('acl_resource_action_track')
-                        ->set(array(
+                        ->set([
                             'actions' => $resetValue,
                             'actions_last_reset' => time()
-                        ))
-                        ->where(array(
+                        ])
+                        ->where([
                             'connection_id' => $resource['id']
-                        ));
+                        ]);
 
                     $userId != UserBaseModel::DEFAULT_GUEST_ID
-                        ? $update->where(array('user_id' => $userId))
+                        ? $update->where(['user_id' => $userId])
                         : $update->where->IsNull('user_id');
 
-                    $update->where(array('actions_last_reset' => $resource['actions_last_reset']));
+                    $update->where(['actions_last_reset' => $resource['actions_last_reset']]);
 
                     $statement = $this->prepareStatementForSqlObject($update);
                     $result = $statement->execute();
@@ -224,15 +224,15 @@ class AclBase extends ApplicationAbstractBase
                         // just increase the action
                         $update = $this->update()
                             ->table('acl_resource_action_track')
-                            ->set(array(
+                            ->set([
                                 'actions' => new Expression('actions + 1')
-                            ))
-                            ->where(array(
+                            ])
+                            ->where([
                                 'connection_id' => $resource['id']
-                            ));
+                            ]);
 
                         $userId != UserBaseModel::DEFAULT_GUEST_ID
-                            ? $update->where(array('user_id' => $userId))
+                            ? $update->where(['user_id' => $userId])
                             : $update->where->IsNull('user_id');
 
                         $statement = $this->prepareStatementForSqlObject($update);
@@ -243,15 +243,15 @@ class AclBase extends ApplicationAbstractBase
                     // just increase the action
                     $update = $this->update()
                         ->table('acl_resource_action_track')
-                        ->set(array(
+                        ->set([
                             'actions' => new Expression('actions + 1')
-                        ))
-                        ->where(array(
+                        ])
+                        ->where([
                             'connection_id' => $resource['id']
-                        ));
+                        ]);
 
                     $userId != UserBaseModel::DEFAULT_GUEST_ID
-                        ? $update->where(array('user_id' => $userId))
+                        ? $update->where(['user_id' => $userId])
                         : $update->where->IsNull('user_id');
 
                     $statement = $this->prepareStatementForSqlObject($update);
@@ -280,7 +280,7 @@ class AclBase extends ApplicationAbstractBase
      */
     public function getAllowedAclResources($roleId, $userId)
     {
-        $allowedResources = array();
+        $allowedResources = [];
 
         // process resources
         if (null != ($resources = $this->getAclResources($roleId, $userId))) {
@@ -294,9 +294,9 @@ class AclBase extends ApplicationAbstractBase
                     }
                 }
 
-                $allowedResources[] = array(
+                $allowedResources[] = [
                     'description' => $resource['description']
-                );
+                ];
             }
         }
 
@@ -405,12 +405,12 @@ class AclBase extends ApplicationAbstractBase
         $currentTime = time();
 
         $connectionSelect = $this->select();
-        $connectionSelect->from(array('d' => 'acl_resource_connection_setting'))
-            ->columns(array(
+        $connectionSelect->from(['d' => 'acl_resource_connection_setting'])
+            ->columns([
                 'id'
-            ))
+            ])
             ->limit(1)
-            ->where(array('d.connection_id' => new Expression('a.id')))
+            ->where(['d.connection_id' => new Expression('a.id')])
             ->where
                 ->and->equalTo('d.user_id', $userId)
             ->where
@@ -422,33 +422,33 @@ class AclBase extends ApplicationAbstractBase
             : 'i.user_id = ' . (int) $userId;
 
         $mainSelect = $this->select();
-        $mainSelect->from(array('a' => 'acl_resource_connection'))
-            ->columns(array(
+        $mainSelect->from(['a' => 'acl_resource_connection'])
+            ->columns([
                 'id'
-            ))
+            ])
             ->join(
-                array('b' => 'acl_resource'),
+                ['b' => 'acl_resource'],
                 'a.resource = b.id',
-                array(
+                [
                     'resource',
                     'description'
-                )
+                ]
             )
             ->join(
-                array('c' => 'acl_resource_connection_setting'),
+                ['c' => 'acl_resource_connection_setting'],
                 new Expression('c.id = (' .$this->getSqlStringForSqlObject($connectionSelect) . ')'),
-                array(
+                [
                     'date_start',
                     'date_end',
                     'actions_limit',
                     'actions_reset'
-                ),
+                ],
                 'left'
             )
             ->join(
-                array('i' => 'acl_resource_action_track'),
+                ['i' => 'acl_resource_action_track'],
                 new Expression('i.connection_id = c.connection_id and ' . $extraTrackCondition),
-                array(
+                [
                     'actions',
                     'actions_last_reset',
                     'permission' => new Expression('if (
@@ -460,11 +460,11 @@ class AclBase extends ApplicationAbstractBase
                             and
                         (c.actions_limit IS NULL or i.actions IS NULL or c.actions_limit > i.actions), "' .
                         self::ACTION_ALLOWED . '", "' .
-                        self::ACTION_DISALLOWED . '")',array($currentTime, $currentTime))
-                ),
+                        self::ACTION_DISALLOWED . '")',[$currentTime, $currentTime])
+                ],
                 'left'
             )
-            ->where(array('role' => $roleId));
+            ->where(['role' => $roleId]);
 
         $statement = $this->prepareStatementForSqlObject($mainSelect);
         $resultSet = new ResultSet;

@@ -27,8 +27,8 @@ class UserXmlRpc extends UserBase
         }
 
         // fire the get user info via XmlRpc event
-        UserEvent::fireGetUserInfoViaXmlRpcEvent($userInfo->user_id, $userInfo->nick_name, $viewerId, $viewerNickName);
-        return (array) $userInfo;
+        UserEvent::fireGetUserInfoViaXmlRpcEvent($userInfo['user_id'], $userInfo['nick_name'], $viewerId, $viewerNickName);
+        return $userInfo;
     }
 
     /**

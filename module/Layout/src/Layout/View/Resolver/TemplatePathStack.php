@@ -45,10 +45,10 @@ class TemplatePathStack extends BaseTemplatePathStack
     public function resolve($name, Renderer $renderer = null)
     {
         // generate a cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_TEMPLATE_PATH, array(
+        $cacheName = CacheUtility::getCacheName(self::CACHE_TEMPLATE_PATH, [
             $name,
             $renderer
-        ));
+        ]);
 
         // check data in cache
         if (null === ($templatePath = $this->dynamicCacheInstance->getItem($cacheName))) {

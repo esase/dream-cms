@@ -15,12 +15,12 @@ class ApplicationFlashMessage extends AbstractHelper
  
     public function __invoke($includeCurrentMessages = false)
     {
-        $messages = array(
+        $messages = [
             FlashMessenger::NAMESPACE_ERROR => [],
             FlashMessenger::NAMESPACE_SUCCESS => [],
             FlashMessenger::NAMESPACE_INFO => [],
             FlashMessenger::NAMESPACE_DEFAULT => []
-        );
+        ];
  
         foreach ($messages as $ns => &$m) {
             $m = $this->flashMessenger->getMessagesFromNamespace($ns);

@@ -36,7 +36,6 @@ class FileManagerDirectory extends ApplicationAbstractCustomForm
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Name',
             'required' => true,
-            'category' => 'General info',
             'description' => 'New directory description',
             'description_params' => []
         ],

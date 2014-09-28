@@ -1,4 +1,4 @@
-<?php echo $this->doctype(); ?>
+<?php echo $this->doctype() ?>
 <html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
     <head>
         <meta charset="utf-8">
@@ -24,7 +24,7 @@
             <?php $this->layoutHeadLink()
                 ->appendStylesheet($this->layoutAsset('bootstrap.rtl.css', 'css'))
                 ->appendStylesheet($this->layoutAsset('administration.rtl.css', 'css'))?>
-        <?php endif; ?>
+        <?php endif ?>
 
         <?php echo $this->layoutHeadLink() ?>
 
@@ -89,13 +89,13 @@
                                 </li>
                             <?php endforeach; ?>
                         <?php endif; ?>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
                         <li>
                             <a title="<?php echo $this->escapeHtmlAttr($this->translate('Back to site')) ?>" href="<?php echo  $this->url('page', [], ['force_canonical' => true]) ?>">
                                 <img src="<?php  echo $this->layoutAsset('icon/home_menu.png', 'image') ?>" />
                             </a>
                         </li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
                         <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                             <!-- select language -->
                             <li class="dropdown">
@@ -117,23 +117,23 @@
                             </li>
                         <?php endif; ?>
                         <?php if (!$this->userIsGuest()): ?>
-                            <li class="dropdown">
+                            <li class="dropdown" id="logged-user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="<?php  echo $this->layoutAsset('icon/hello_user_menu.png', 'image', 'user') ?>" />
                                     <?php echo sprintf($this->translate('Welcome'), $this->userIdentity()['nick_name']) ?><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <?php if ($this->aclCheckPermission('users_administration_edit_user')): ?>
-                                        <li>
-                                            <a href="<?php echo  $this->url('application/page', ['controller' => 'users-administration', 'action' => 'edit-user', 'slug' => $this->userIdentity()['user_id']], ['force_canonical' => true]) ?>">
+                                        <li role="presentation">
+                                            <a role="menuitem" tabindex="-1" href="<?php echo  $this->url('application/page', ['controller' => 'users-administration', 'action' => 'edit-user', 'slug' => $this->userIdentity()['user_id']], ['force_canonical' => true]) ?>">
                                                 <img src="<?php  echo $this->layoutAsset('icon/edit_menu.png', 'image', 'user') ?>" />
                                                 <?php echo $this->translate('Edit account') ?>
                                             </a>
                                         </li>
                                     <?php endif; ?>
-                                    <li>
-                                        <a href="<?php echo  $this->url('application/page', ['controller' => 'user', 'action' => 'logout'], ['force_canonical' => true]) ?>">
-                                            <img src="<?php  echo $this->layoutAsset('icon/logout-menu.png', 'image', 'user') ?>" />
+                                    <li role="presentation">
+                                        <a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('logged-user-menu', '<?php echo $this->url('application/page', ['controller' => 'user-widget', 'action' => 'ajax-logout']) ?>', function(){location.href='<?php echo $this->url('page', [], ['force_canonical' => true]) ?>'}, 'post', {}, false)">
+                                            <img src="<?php  echo $this->layoutAsset('icon/logout-menu.png', 'image', 'user') ?>" alt="logout" />
                                             <?php echo $this->translate('Logout') ?>
                                         </a>
                                     </li>

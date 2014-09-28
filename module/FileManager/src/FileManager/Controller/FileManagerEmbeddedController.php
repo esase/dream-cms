@@ -3,7 +3,6 @@ namespace FileManager\Controller;
 
 use Zend\View\Model\ViewModel;
 use Zend\EventManager\EventManagerInterface;
-use User\Service\Service as UserService;
 
 class FileManagerEmbeddedController extends FileManagerBaseController
 {

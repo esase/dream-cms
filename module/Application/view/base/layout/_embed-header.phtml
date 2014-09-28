@@ -1,0 +1,44 @@
+<?php echo $this->doctype() ?>
+<html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle($this->applicationSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false)->setTranslatorEnabled(false) ?>
+
+        <?php echo $this->headMeta()
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            ->appendName('viewport', 'width=device-width, initial-scale=1')
+            ->appendName('generator', $this->applicationSetting('application_generator') . ' ' . $this->applicationSetting('application_generator_version'))
+            ->appendName('description', $this->applicationSetting('application_meta_description'))
+            ->appendName('keywords', $this->applicationSetting('application_meta_keywords'));
+        ?>
+
+        <!-- styles -->
+        <?php $this->layoutHeadLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->layoutAsset('icon/favicon.ico', 'image')])
+            ->prependStylesheet($this->layoutAsset('embed.css', 'css')) 
+            ->prependStylesheet($this->layoutAsset('jquery-ui.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('bootstrap-theme.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('bootstrap.css', 'css'))
+        ?>
+
+        <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
+            <?php $this->layoutHeadLink()
+                ->appendStylesheet($this->layoutAsset('bootstrap.rtl.css', 'css'))
+                ->appendStylesheet($this->layoutAsset('embed.rtl.css', 'css'))?>
+        <?php endif ?>
+
+        <?php echo $this->layoutHeadLink() ?>
+
+        <!-- scripts -->
+        <?php echo $this->layoutHeadScript()
+            ->prependFile($this->layoutAsset('functions.js'))
+            ->prependFile($this->layoutAsset('jquery.cookie.js'))
+            ->prependFile($this->layoutAsset('bootstrap.js'))
+            ->prependFile($this->layoutAsset('jquery-ui.js'))            
+            ->prependFile($this->layoutAsset('jquery.js'))
+            ->prependFile($this->layoutAsset('respond.js'), 'text/javascript', ['conditional' => 'lt IE 9'])
+            ->prependFile($this->layoutAsset('html5shiv.js'), 'text/javascript', ['conditional' => 'lt IE 9'])
+        ?>
+    </head>
+    <body>
+        <!-- container -->
+        <div class="container" id="container">

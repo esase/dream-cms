@@ -1,12 +1,11 @@
 <?php
 namespace Localization\XmlRpc;
 
+use Acl\Service\Acl as AclService;
+use Localization\Event\LocalizationEvent;
+use Localization\Service\Localization as LocalizationService;
 use XmlRpc\Handler\XmlRpcAbstractHandler;
 use XmlRpc\Exception\XmlRpcActionDenied;
-
-use Application\Service\Service as ApplicationService;
-use User\Service\Service as UserService;
-use Application\Event\ApplicationEvent;
 
 class LocalizationHandler extends XmlRpcAbstractHandler
 {
@@ -19,13 +18,13 @@ class LocalizationHandler extends XmlRpcAbstractHandler
     public function getLocalizations()
     {
         // check user permission
-        if (!UserService::checkPermission('xmlrpc_get_localizations')) {
+        if (!AclService::checkPermission('xmlrpc_get_localizations')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
         // fire the get localizations via XmlRpc event
-        ApplicationEvent::fireGetLocalizationsViaXmlRpcEvent();
+        LocalizationEvent::fireGetLocalizationsViaXmlRpcEvent();
 
-        return ApplicationService::getLocalizations();
+        return LocalizationService::getLocalizations();
     }
 }

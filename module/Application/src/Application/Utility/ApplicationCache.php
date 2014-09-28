@@ -100,7 +100,7 @@ class ApplicationCache
      * @param array $argsList
      * @return string
      */
-    public static function getCacheName($name, array $argsList = array())
+    public static function getCacheName($name, array $argsList = [])
     {
         return md5($name . self::processArgs($argsList));
     }

@@ -31,9 +31,9 @@ class ApplicationSetting extends ApplicationAbstractSetting
      */
     public function removeSettingsCache($language)
     {
-        $this->staticCacheInstance->clearByTags(array(
+        $this->staticCacheInstance->clearByTags([
             self::CACHE_SETTINGS_DATA_TAG
-        ));
+        ]);
     }
 
     /**
@@ -62,12 +62,12 @@ class ApplicationSetting extends ApplicationAbstractSetting
         // check data in cache
         if (null === ($settings = $this->staticCacheInstance->getItem($cacheName))) {
             $subQuery= $this->select();
-            $subQuery->from(array('c' => 'application_setting_value'))
-                ->columns(array(
+            $subQuery->from(['c' => 'application_setting_value'])
+                ->columns([
                     'id'
-                ))
+                ])
                 ->limit(1)
-                ->where(array('a.id' => new Expression('c.setting_id')))
+                ->where(['a.id' => new Expression('c.setting_id')])
                 ->where
                     ->and->equalTo('c.language', $language)
                 ->where
@@ -75,17 +75,15 @@ class ApplicationSetting extends ApplicationAbstractSetting
                     ->and->isNull('c.language');
     
             $mainSelect = $this->select();
-            $mainSelect->from(array('a' => 'application_setting'))
-                ->columns(array(
+            $mainSelect->from(['a' => 'application_setting'])
+                ->columns([
                     'name',
                     'type'
-                ))
+                ])
                 ->join(
-                    array('b' => 'application_setting_value'),
+                    ['b' => 'application_setting_value'],
                     new Expression('b.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
-                    array(
-                        'value'
-                    ),
+                    ['value'],
                     'left'
                 );
 
@@ -94,16 +92,16 @@ class ApplicationSetting extends ApplicationAbstractSetting
             $resultSet->initialize($statement->execute());
 
             // convert strings
-            $settings = array();
+            $settings = [];
             foreach ($resultSet as $setting) {
                 $settings[$setting['name']] = $this->convertString($setting['type'], $setting['value']);
             }
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $settings);
-            $this->staticCacheInstance->setTags($cacheName, array(
+            $this->staticCacheInstance->setTags($cacheName, [
                 self::CACHE_SETTINGS_DATA_TAG
-            ));
+            ]);
         }
 
         return $settings;

@@ -1,0 +1,10 @@
+<li>
+    <span class="folder">
+        <?php if ($this->url) : ?>
+            <a href="<?php echo $this->url ?>">
+                <?php echo $this->escapeHtml($this->name) ?>
+            </a>
+        <?php else: ?>
+            <?php echo $this->escapeHtml($this->name) ?>
+        <?php endif ?>
+    </span>

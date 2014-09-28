@@ -1,3 +1,13 @@
+div.panel-general {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+div.panel-general ul.nav-pills {
+  margin-bottom: 15px;
+}
+div.panel-general div.alert {
+  margin-top: 0;
+}
 input[type="radio"],
 input[type="checkbox"] {
   margin-right: 4px;

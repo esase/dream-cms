@@ -28,14 +28,14 @@ class ApplicationErrorLogger
             if (null != ($errorEmail = SettingService::getSetting('application_errors_notification_email'))) {
                 ApplicationEmailNotification::sendNotification($errorEmail,
                     ApplicationService::getSetting('application_error_notification_title', UserService::getDefaultLocalization()['language']),
-                    ApplicationService::getSetting('application_error_notification_message', UserService::getDefaultLocalization()['language']), array(
-                        'find' => array(
+                    ApplicationService::getSetting('application_error_notification_message', UserService::getDefaultLocalization()['language']), [
+                        'find' => [
                             'ErrorDescription'
-                        ),
-                        'replace' => array(
+                        ],
+                        'replace' => [
                             $errorMessage
-                        )
-                    ));
+                        ]
+                    ]);
             }
         }
         catch (Exception $e) {

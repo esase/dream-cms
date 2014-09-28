@@ -17,7 +17,7 @@ class ApplicationDate extends AbstractHelper
      *      string format (full, long, medium, short)
      * @return string
      */
-    public function __invoke($date, array $options = array())
+    public function __invoke($date, array $options = [])
     {
         $type = !empty($options['type']) && $options['type'] == 'date'
             ? 'date'

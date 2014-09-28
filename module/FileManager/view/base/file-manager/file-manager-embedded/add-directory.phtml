@@ -1,42 +1,40 @@
 <!-- render a breadcrumb -->
-<?php echo $this->partial('partial/breadcrumb', array(
-    'pages' => array(
-        'list' => array(
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
             'name' => $this->translate('List of files'),
-            'controller' => $this->currentRoute()->getController(),
+            'controller' => $this->applicationRoute()->getParam('controller'),
             'action' => 'list',
             'check_acl' => true,
-            'queries' => array(
+            'queries' => [
                 'path' => $this->path
-            )
-        ),
-        'add_directory' => array(
+            ]
+        ],
+        'add_directory' => [
             'name' => $this->translate('Add a directory'),
-            'controller' => $this->currentRoute()->getController(),
+            'controller' => $this->applicationRoute()->getParam('controller'),
             'action' => 'add-directory',
             'check_acl' => true
-        )
-    )
-)) ?>
+        ]
+    ]
+]) ?>
 
 <?php $this->placeholder('form')->captureStart() ?>
-    <?php if ($this->directoryForm) : ?>
-        <?php echo $this->partial('file-manager/patrial/directory-form', array(
-            'form' => $this->directoryForm,
-            'queries' => array(
-                'path' => $this->path
-            )
-        )); ?>
+    <?php if ($this->directory_form) : ?>
+        <?php echo $this->partial('file-manager/patrial/directory-form', [
+            'form' => $this->directory_form
+        ]) ?>
     <?php else: ?>
         <div class="alert alert-danger">
             <?php echo $this->translate('Directory not exists') ?>
         </div>
-    <?php endif; ?>
+    <?php endif ?>
 <?php $this->placeholder('form')->captureEnd() ?>
 
-<?php echo $this->partial('file-manager/patrial/tree', array(
-    'userDirectories' => $this->userDirectories,
+<?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
+    'user_directories' => $this->user_directories,
     'action' => $this->placeholder('form'),
+    'action_title' => $this->translate('General info'),
     'path' => $this->path,
-    'filters' => array()
-)); ?>
+    'filters' => []
+]) ?>

@@ -4,19 +4,20 @@ namespace FileManager\Model;
 use Application\Model\ApplicationAbstractBase;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Service\Application as ApplicationService;
-use User\Service\UserIdentity as UserIdentityService;
 use Application\Utility\ApplicationFileSystem as FileSystemUtility;
+use Application\Utility\ApplicationPagination as PaginationUtility;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Utility\ApplicationSlug as SlugUtility;
+use FileManager\Event\FileManagerEvent;
+use User\Service\UserIdentity as UserIdentityService;
+use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
+use Zend\Paginator\Paginator;
+
 use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use DirectoryIterator;
 use CallbackFilterIterator;
-use Zend\Paginator\Paginator;
-use Application\Utility\ApplicationPagination as PaginationUtility;
-use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
-use Application\Utility\ApplicationErrorLogger;
-use Application\Utility\ApplicationSlug as SlugUtility;
-use FileManager\Event\FileManagerEvent;
 
 class FileManagerBase extends ApplicationAbstractBase
 {
@@ -143,7 +144,7 @@ class FileManagerBase extends ApplicationAbstractBase
         $directoryPath = file_exists($directoryPath) ? $directoryPath : null;
         
         if (file_exists($directoryPath)) {
-            $result =  FileSystemUtility::deleteFiles($directoryPath, array(), false, true);
+            $result =  FileSystemUtility::deleteFiles($directoryPath, [], false, true);
         }
 
         if (true === $result) {
@@ -201,7 +202,7 @@ class FileManagerBase extends ApplicationAbstractBase
         if (false !== ($userDirectory = $this->getUserDirectory($path, false))) {
             if (false !== ($fileName = FileSystemUtility::uploadResourceFile(self::slugifyFileName($fileInfo['name']),
                     $fileInfo, $userDirectory, false))) {
-
+        
                 // fire the add file event
                 FileManagerEvent::fireAddFileEvent($this->getUserDirectory($path) . $fileName);
                 return $fileName;
@@ -315,7 +316,7 @@ class FileManagerBase extends ApplicationAbstractBase
 
         $fullPath = self::getUserBaseFilesDir() . '/' . $path . '/' . $fileName;
         $isDirectory = is_dir($fullPath);
-        $result = FileSystemUtility::deleteFiles($fullPath, array(), false, true);
+        $result = FileSystemUtility::deleteFiles($fullPath, [], false, true);
 
         // fire the event
         if ($result) {
@@ -341,14 +342,14 @@ class FileManagerBase extends ApplicationAbstractBase
      *      string type (directory, file)
      * @return array
      */
-    public function getFiles($directory, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    public function getFiles($directory, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
-        $orderFields = array(
+        $orderFields = [
             'name',
             'size',
             'type',
             'date'
-        );
+        ];
 
         $orderType = !$orderType || $orderType == 'desc'
             ? SORT_DESC
@@ -395,11 +396,13 @@ class FileManagerBase extends ApplicationAbstractBase
                             return false;
                         }
                         break;
+
                     case 'file' :
                         if ($current->isDir()) {
                             return false;
                         }
                         break;
+
                     default :
                 }
             }
@@ -408,16 +411,16 @@ class FileManagerBase extends ApplicationAbstractBase
             return (empty($filters['name']) || null != stristr($current->getFileName(), $filters['name']));
         });
 
-        $processedFiles = array();
-        $orderValues    = array();
+        $processedFiles = [];
+        $orderValues    = [];
 
         foreach($files as $data) {
-            $fileInfo = array(
+            $fileInfo = [
                 'name' => $data->getFileName(),
                 'type' => $data->isDir(),
                 'date' => $data->getMTime(),
                 'size' => !$data->isDir() ? $data->getSize() : 0
-            );
+            ];
 
             $processedFiles[] = $fileInfo;
             $orderValues[]    = $fileInfo[$orderBy];
@@ -458,7 +461,7 @@ class FileManagerBase extends ApplicationAbstractBase
         $iterator = new RecursiveDirectoryIterator($baseDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
 
-        $directories = array();
+        $directories = [];
 
         // get list of user's directories
         foreach ($files as $file) {
@@ -467,9 +470,9 @@ class FileManagerBase extends ApplicationAbstractBase
             }
 
             // PHP_EOL - fix for array_merge_recursive (values should be as strings)
-            $path = array($file->getFilename() . PHP_EOL  => array());
+            $path = [$file->getFilename() . PHP_EOL  => []];
             for ($depth = $files->getDepth() - 1; $depth >= 0; $depth--) {
-                $path = array($files->getSubIterator($depth)->current()->getFilename() . PHP_EOL => $path);
+                $path = [$files->getSubIterator($depth)->current()->getFilename() . PHP_EOL => $path];
             }
 
             $directories = array_merge_recursive($directories, $path);

@@ -1,8 +1,8 @@
 <?php
 namespace XmlRpc\Handler;
 
+use User\Service\UserIdentity as UserIdentityService;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use User\Service\Service as UserService;
 
 abstract class XmlRpcAbstractHandler
 {
@@ -14,7 +14,7 @@ abstract class XmlRpcAbstractHandler
 
     /**
      * User identity
-     * @var object
+     * @var array
      */
     protected $userIdentity;
 
@@ -46,7 +46,7 @@ abstract class XmlRpcAbstractHandler
     public function __construct(ServiceLocatorInterface $serviceManager)
     {
         $this->serviceManager = $serviceManager;
-        $this->userIdentity = UserService::getCurrentUserIdentity();
+        $this->userIdentity = UserIdentityService::getCurrentUserIdentity();
     }
 
     /**
@@ -59,13 +59,13 @@ abstract class XmlRpcAbstractHandler
     protected function isRequestAuthorized(array $args,  $requestSignature)
     {
         // check user api secret
-        if (empty($this->userIdentity->api_secret)) {
+        if (empty($this->userIdentity['api_secret'])) {
             return false;
         }
 
         asort($args);
 
         return $requestSignature ==
-                md5(implode(':', array_merge($args, array($this->userIdentity->api_secret))));
+                md5(implode(':', array_merge($args, [$this->userIdentity['api_secret']])));
     }
 }

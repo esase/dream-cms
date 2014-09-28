@@ -1,1 +1,8 @@
 @import "common.css";
+div.alert {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+ol.breadcrumb {
+  margin-bottom: 0;
+}

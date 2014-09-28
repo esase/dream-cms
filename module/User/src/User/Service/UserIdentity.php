@@ -1,6 +1,7 @@
 <?php
 namespace User\Service;
 
+use Application\Service\ApplicationServiceManager as ServiceManagerService;
 use User\Model\UserBase as UserBaseModel;
 
 class UserIdentity
@@ -41,7 +42,7 @@ class UserIdentity
      */
     public static function getUserInfo($userId, $field = null)
     {
-        return self::$serviceManager
+        return ServiceManagerService::getServiceManager()
             ->get('Application\Model\ModelManager')
             ->getInstance('User\Model\UserBase')
             ->getUserInfo($userId, $field);

@@ -1,4 +1,7 @@
-<?php echo $this->partial('partial/notification') ?>
+<?php if (!isset($this->notification) || $this->notification === true): ?>
+    <!-- notification -->
+    <?php echo $this->partial('partial/notification') ?>
+<?php endif ?>
 
 <div class="panel panel-default panel-general">
     <div class="panel-heading">

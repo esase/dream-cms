@@ -1,11 +1,12 @@
 <?php
 namespace User\XmlRpc;
 
+use Acl\Service\Acl as AclService;
+use Application\Service\ApplicationTimeZone as TimeZoneService;
+use User\Service\UserIdentity as UserIdentityService;
+use User\Event\UserEvent;
 use XmlRpc\Handler\XmlRpcAbstractHandler;
 use XmlRpc\Exception\XmlRpcActionDenied;
-
-use User\Service\Service as UserService;
-use User\Event\UserEvent;
 
 class UserHandler extends XmlRpcAbstractHandler
 {
@@ -44,25 +45,25 @@ class UserHandler extends XmlRpcAbstractHandler
     public function setUserTimeZone($timeZone, $requestSignature)
     {
         // check request signature
-        if (!$this->isRequestAuthorized(array($timeZone), $requestSignature)) {
+        if (!$this->isRequestAuthorized([$timeZone], $requestSignature)) {
             throw new XmlRpcActionDenied(self::REQUEST_UNAUTHORIZED);
         }
 
         // check an user's permission
-        if (!UserService::checkPermission('xmlrpc_set_user_timezone')) {
+        if (!AclService::checkPermission('xmlrpc_set_user_timezone')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
         // check received time zone
-        if (false === ($timeZoneId = array_search($timeZone, 
-                UserService::getTimeZones()))) {
+        if (false === ($timeZoneId =
+                array_search($timeZone,TimeZoneService::getTimeZones()))) {
 
             throw new XmlRpcActionDenied(self::REQUEST_DENIED_WRONG_TIME_ZONE);
         }
 
         // update the user's time zone
         if (true == ($result = $this->getModel()->setUserTimeZone($this->
-                userIdentity->user_id, $this->userIdentity->nick_name, $timeZoneId))) {
+                userIdentity['user_id'], $this->userIdentity['nick_name'], $timeZoneId))) {
 
             return self::SUCCESSFULLY_RESPONSE;
         }
@@ -79,21 +80,21 @@ class UserHandler extends XmlRpcAbstractHandler
     public function getUserInfo($userId)
     {
         // check user permissions
-        if (!UserService::checkPermission('xmlrpc_view_user_info')) {
+        if (!AclService::checkPermission('xmlrpc_view_user_info')) {
             throw new XmlRpcActionDenied(self::REQUEST_DENIED);
         }
 
-        $viewerNickName = !UserService::isGuest()
-            ? $this->userIdentity->nick_name
-            : '';
+        $viewerNickName = !UserIdentityService::isGuest()
+            ? $this->userIdentity['nick_name']
+            : null;
 
         // get user info
         if (false !== ($userInfo = $this->getModel()->getXmlRpcUserInfo($userId, $this->
-                userIdentity->user_id, $viewerNickName))) {
+                userIdentity['user_id'], $viewerNickName))) {
 
             return $userInfo;
         }
 
-        return array();
+        return [];
     }
 }

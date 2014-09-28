@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle', 'mainPageTitle', 'content') ?>
+<?php $this->declareVars('subPageTitle', 'mainPageTitle') ?>
 
 <?php $this->subPageTitle  = $this->translate('Add a directory') ?>
 <?php $this->mainPageTitle = $this->translate('List of files') ?>
@@ -37,9 +37,9 @@
 ]) ?>
 
 <?php $this->placeholder('form')->captureStart() ?>
-    <?php if ($this->directoryForm) : ?>
+    <?php if ($this->directory_form) : ?>
         <?php echo $this->partial('file-manager/patrial/directory-form', [
-            'form' => $this->directoryForm,
+            'form' => $this->directory_form
         ]) ?>
     <?php else: ?>
         <div class="alert alert-danger">
@@ -48,15 +48,10 @@
     <?php endif; ?>
 <?php $this->placeholder('form')->captureEnd() ?>
 
-<?php $this->content = $this->partial('file-manager/patrial/tree', [
-    'userDirectories' => $this->userDirectories,
+<?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
+    'user_directories' => $this->user_directories,
     'action' => $this->placeholder('form'),
+    'action_title' => $this->translate('General info'),
     'path' => $this->path,
     'filters' => []
-]) ?>
-
-<!-- render a form -->
-<?php echo $this->partial('administration-partial/panel', [
-    'title' => $this->translate('Directory'),
-    'body' => $this->content
 ]) ?>

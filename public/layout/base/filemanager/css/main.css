@@ -1,7 +1,7 @@
 div#files-manager-wrapper div#directories-tree-wrapper {
   background-color: #f5f5f5;
   padding: 10px;
-  overflow-x: scroll;
+  overflow: auto;
 }
 div#preview-images div#preview-image {
   background-position: center center;

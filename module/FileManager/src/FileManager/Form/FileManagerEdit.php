@@ -2,10 +2,10 @@
 namespace FileManager\Form;
 
 use Application\Form\ApplicationCustomFormBuilder;
-use Application\Service\Service as ApplicationService;
-use FileManager\Model\FileManagerBase as FileManagerBaseModel;
+use Application\Service\ApplicationSetting as SettingService;
 use Application\Form\ApplicationAbstractCustomForm;
 use Application\Utility\ApplicationFileSystem as FileSystemUtility;
+use FileManager\Model\FileManagerBase as FileManagerBaseModel;
 
 class FileManagerEdit extends ApplicationAbstractCustomForm 
 {
@@ -60,13 +60,12 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
             'name' => 'name',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Name',
-            'required' => true,
-            'category' => 'General info'
+            'required' => true
         ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
+            'label' => 'Submit'
         ],
     ];
 
@@ -93,8 +92,8 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
 
             // init the max file name length
             $this->maxFileNameLength = $this->isDirectory
-                ? (int) ApplicationService::getSetting('file_manager_file_name_length')
-                : (int) ApplicationService::getSetting('file_manager_file_name_length') - (strlen(FileSystemUtility::getFileExtension($this->fileName)) + 1);
+                ? (int) SettingService::getSetting('file_manager_file_name_length')
+                : (int) SettingService::getSetting('file_manager_file_name_length') - (strlen(FileSystemUtility::getFileExtension($this->fileName)) + 1);
 
             // init a directory or file settings
             $this->isDirectory ? $this->initDirectorySettings() : $this->initFileSettings();
