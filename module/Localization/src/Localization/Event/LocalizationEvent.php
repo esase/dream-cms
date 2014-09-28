@@ -9,7 +9,7 @@ class LocalizationEvent extends ApplicationAbstractEvent
     /**
      * Get localizations by xmlrpc event
      */
-    const GET_LOCALIZATIONS = 'get_localizations_via_xmlrpc';
+    const GET_LOCALIZATIONS = 'localization_get_localizations_via_xmlrpc';
 
     /**
      * Fire get localizations via XmlRpc event

@@ -9,32 +9,32 @@ class FileManagerEvent extends ApplicationAbstractEvent
     /**
      * Delete file event
      */
-    const DELETE_FILE = 'delete_file';
+    const DELETE_FILE = 'file_manager_delete_file';
 
     /**
      * Delete directory event
      */
-    const DELETE_DIRECTORY = 'delete_directory';
+    const DELETE_DIRECTORY = 'file_manager_delete_directory';
 
     /**
      * Add  directory event
      */
-    const ADD_DIRECTORY = 'add_directory';
+    const ADD_DIRECTORY = 'file_manager_add_directory';
 
     /**
      * Add file event
      */
-    const ADD_FILE = 'add_file';
+    const ADD_FILE = 'file_manager_add_file';
 
     /**
      * Edit file event
      */
-    const EDIT_FILE = 'edit_file';
+    const EDIT_FILE = 'file_manager_edit_file';
 
     /**
      * Edit directory event
      */
-    const EDIT_DIRECTORY = 'edit_directory';
+    const EDIT_DIRECTORY = 'file_manager_edit_directory';
 
     /**
      * Fire edit directory event

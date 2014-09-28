@@ -1,7 +1,10 @@
 <?php
 namespace User\View\Widget;
 
+use Acl\Service\Acl as AclService;
 use User\Model\UserWidget as UserWidgetModel;
+use User\Service\UserIdentity as UserIdentityService;
+use User\Event\UserEvent;
 
 class UserInfoWidget extends UserAbstractWidget
 {
@@ -12,18 +15,27 @@ class UserInfoWidget extends UserAbstractWidget
      */
     public function getContent() 
     {
-        // get the current user's info
-        if (null != ($userInfo = 
-                    $this->getModel()->getUserInfo($this->getSlug(), UserWidgetModel::USER_INFO_BY_SLUG))) {
+        // check a permission
+        if (AclService::checkPermission('users_view_profile')) {
+            // get the current user's info
+            if (null != ($userInfo = 
+                        $this->getModel()->getUserInfo($this->getSlug(), UserWidgetModel::USER_INFO_BY_SLUG))) {
 
-            //TODO: add a system event here
+                $viewerNickName = !UserIdentityService::isGuest()
+                    ? UserIdentityService::getCurrentUserIdentity()['nick_name']
+                    : null;
 
-            // breadcrumb
-            $this->getView()->pageBreadcrumb()->setCurrentPageTitle($userInfo['nick_name']);
+                // fire the get user's info event
+                UserEvent::fireGetUserInfoEvent($userInfo['user_id'],
+                        $userInfo['nick_name'], UserIdentityService::getCurrentUserIdentity()['user_id'], $viewerNickName);
 
-            return $this->getView()->partial('user/widget/info', [
-                'user' => $userInfo
-            ]);
+                // breadcrumb
+                $this->getView()->pageBreadcrumb()->setCurrentPageTitle($userInfo['nick_name']);
+    
+                return $this->getView()->partial('user/widget/info', [
+                    'user' => $userInfo
+                ]);
+            }
         }
 
         return false;

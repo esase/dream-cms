@@ -8,17 +8,17 @@ class ApplicationEvent extends ApplicationAbstractEvent
     /**
      * Change settings event
      */
-    const CHANGE_SETTINGS = 'change_settings';
+    const CHANGE_SETTINGS = 'application_change_settings';
 
     /**
      * Clear cache event
      */
-    const CLEAR_CACHE = 'clear_cache';
+    const CLEAR_CACHE = 'application_clear_cache';
 
     /**
      * Send email notification
      */
-    const SEND_EMAIL_NOTIFICATION = 'send_email_notification';
+    const SEND_EMAIL_NOTIFICATION = 'application_send_email_notification';
 
     /**
      * Fire send email notification event

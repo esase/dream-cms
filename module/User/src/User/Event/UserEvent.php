@@ -13,67 +13,72 @@ class UserEvent extends ApplicationAbstractEvent
     /**
      * Login event
      */
-    const LOGIN = 'login_user';
+    const LOGIN = 'user_login';
 
     /**
      * Login failed event
      */
-    const LOGIN_FAILED = 'login_user_failed';
+    const LOGIN_FAILED = 'user_login_failed';
 
     /**
      * Logout event
      */
-    const LOGOUT = 'logout_user';
+    const LOGOUT = 'user_logout';
 
     /**
      * Get info by xmlrpc event
      */
-    const GET_INFO_XMLRPC = 'get_user_info_via_xmlrpc';
+    const GET_INFO_XMLRPC = 'user_get_info_via_xmlrpc';
 
     /**
      * Set timezone by xmlrpc event
      */
-    const SET_TIMEZONE_XMLRPC = 'set_user_timezone_via_xmlrpc';
+    const SET_TIMEZONE_XMLRPC = 'user_set_timezone_via_xmlrpc';
 
     /**
      * Disapprove event
      */
-    const DISAPPROVE = 'disapprove_user';
+    const DISAPPROVE = 'user_disapprove';
 
     /**
      * Approve event
      */
-    const APPROVE = 'approve_user';
+    const APPROVE = 'user_approve';
 
     /**
      * Delete event
      */
-    const DELETE = 'delete_user';
+    const DELETE = 'user_delete';
 
     /**
      * Add event
      */
-    const ADD = 'add_user';
+    const ADD = 'user_add';
 
     /**
      * Edit event
      */
-    const EDIT = 'edit_user';
+    const EDIT = 'user_edit';
 
     /**
      * Reset password event
      */
-    const RESET_PASSWORD = 'reset_user_password';
+    const RESET_PASSWORD = 'user_reset_password';
 
     /**
      * Reset password request event
      */
-    const RESET_PASSWORD_REQUEST = 'reset_user_password_request';
+    const RESET_PASSWORD_REQUEST = 'user_reset_password_request';
 
     /**
      * Edit role event
      */
-    const EDIT_ROLE = 'edit_user_role';
+    const EDIT_ROLE = 'user_edit_role';
+
+    /**
+     * Get info event
+     */
+    const GET_INFO = 'user_get_info';
 
     /**
      * Fire user password reset request event
@@ -370,6 +375,29 @@ class UserEvent extends ApplicationAbstractEvent
             : [$viewerNick, $userNick];
 
         self::fireEvent(self::GET_INFO_XMLRPC, $viewerId, $userId, $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire get user info event
+     *
+     * @param integer $userId
+     * @param string $userNick
+     * @param integer $viewerId
+     * @param string $viewerNick
+     * @retun void
+     */
+    public static function fireGetUserInfoEvent($userId, $userNick, $viewerId, $viewerNick = null)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - User\'s info was obtained by guest'
+            : 'Event - User\'s info was obtained by user';
+
+        $eventDescParams = UserIdentityService::isGuest() 
+            ? [$userNick] 
+            : [$viewerNick, $userNick];
+
+        self::fireEvent(self::GET_INFO, $viewerId, $userId, $eventDesc, $eventDescParams);
     }
 
     /**

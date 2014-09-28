@@ -4,6 +4,7 @@ namespace Page\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
+use Page\Event\PageEvent;
 
 class PageController extends AbstractActionController
 {
@@ -74,7 +75,8 @@ class PageController extends AbstractActionController
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
-        // TODO: Fire an event here
+        // fire the page show event
+        PageEvent::firePageShowEvent($pageInfo['slug'], $language);
 
         // check for redirect
         if ($pageInfo['redirect_url']) {

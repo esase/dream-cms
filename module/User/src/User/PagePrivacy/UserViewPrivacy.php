@@ -3,6 +3,7 @@ namespace User\PagePrivacy;
 
 use Application\Utility\ApplicationRouteParam as RouteParamUtility;
 use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Acl\Service\Acl as AclService;
 use Page\PagePrivacy\PageAbstractPagePrivacy;
 use User\Model\UserWidget as UserWidgetModel;
 
@@ -36,6 +37,11 @@ class UserViewPrivacy extends PageAbstractPagePrivacy
      */
     public function isAllowedViewPage(array $privacyOptions = [])
     {
+        // check a permission
+        if (!AclService::checkPermission('users_view_profile', false)) {
+            return false;
+        }
+
         $userId = !empty($privacyOptions['user_id']) 
             ? $privacyOptions['user_id'] 
             : RouteParamUtility::getParam('slug', -1);
@@ -44,6 +50,7 @@ class UserViewPrivacy extends PageAbstractPagePrivacy
             ? UserWidgetModel::USER_INFO_BY_ID
             : UserWidgetModel::USER_INFO_BY_SLUG;
 
+        // check an existing user
         if (null == ($userInfo = $this->getModel()->getUserInfo($userId, $userField))) {
             return false;
         }

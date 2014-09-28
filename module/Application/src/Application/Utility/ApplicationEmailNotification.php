@@ -56,24 +56,24 @@ class ApplicationEmailNotification
             $body->setParts([$message]);
 
             $messageInstance = new Message();
-            $messageInstance->addFrom(SettingService::getSetting('notification_from'))
+            $messageInstance->addFrom(SettingService::getSetting('application_notification_from'))
                 ->addTo($email)
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setEncoding('UTF-8');
 
             // should we use SMTP?
-            if ((int) SettingService::getSetting('use_smtp')) {
+            if ((int) SettingService::getSetting('application_use_smtp')) {
                 $transport = new SmtpTransport();
                 $options = new SmtpOptions([
-                    'host' => SettingService::getSetting('smtp_host'),
+                    'host' => SettingService::getSetting('application_smtp_host'),
                     'connection_class' => 'login',
                     'connection_config' => [
                         'ssl' => 'tls',
-                        'username' => SettingService::getSetting('smtp_user'),
-                        'password' => SettingService::getSetting('smtp_password')
+                        'username' => SettingService::getSetting('application_smtp_user'),
+                        'password' => SettingService::getSetting('application_smtp_password')
                     ],
-                    'port' => SettingService::getSetting('smtp_port'),
+                    'port' => SettingService::getSetting('application_smtp_port'),
                 ]);
 
                 $transport->setOptions($options);

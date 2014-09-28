@@ -7,34 +7,34 @@ use Application\Event\ApplicationAbstractEvent;
 class AclEvent extends ApplicationAbstractEvent
 {
     /**
-     * Delete ACL role event
+     * Delete role event
      */
-    const DELETE_ACL_ROLE = 'delete_acl_role';
+    const DELETE_ROLE = 'acl_delete_role';
 
     /**
-     * Add ACL role event
+     * Add role event
      */
-    const ADD_ACL_ROLE = 'add_acl_role';
+    const ADD_ROLE = 'acl_add_role';
 
     /**
-     * ACL role edit event
+     * Edit role event
      */
-    const EDIT_ACL_ROLE = 'edit_acl_role';
+    const EDIT_ROLE = 'acl_edit_role';
  
     /**
-     * Allow ACL resource event
+     * Allow resource event
      */
-    const ALLOW_ACL_RESOURCE = 'allow_acl_resource';
+    const ALLOW_RESOURCE = 'acl_allow_resource';
  
     /**
-     * Disallow ACL resource event
+     * Disallow resource event
      */
-    const DISALLOW_ACL_RESOURCE = 'disallow_acl_resource';
+    const DISALLOW_RESOURCE = 'acl_disallow_resource';
 
     /**
-     * Edit ACL resource settings event
+     * Edit resource settings event
      */
-    const EDIT_ACL_RESOURCE_SETTINGS = 'edit_acl_resource_settings';
+    const EDIT_RESOURCE_SETTINGS = 'acl_edit_resource_settings';
 
     /**
      * Fire edit acl resource settings event
@@ -61,7 +61,7 @@ class AclEvent extends ApplicationAbstractEvent
             : (UserIdentityService::isGuest() ? [$roleId, $resourceId]
                     : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId, $resourceId]);
 
-        self::fireEvent(self::EDIT_ACL_RESOURCE_SETTINGS, 
+        self::fireEvent(self::EDIT_RESOURCE_SETTINGS, 
                 $connectionId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
@@ -83,7 +83,7 @@ class AclEvent extends ApplicationAbstractEvent
             ? [$resourceId, $roleId]
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $resourceId, $roleId];
 
-        self::fireEvent(self::DISALLOW_ACL_RESOURCE, 
+        self::fireEvent(self::DISALLOW_RESOURCE, 
                 $resourceId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
@@ -105,7 +105,7 @@ class AclEvent extends ApplicationAbstractEvent
             ? [$resourceId, $roleId]
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $resourceId, $roleId];
 
-        self::fireEvent(self::ALLOW_ACL_RESOURCE, 
+        self::fireEvent(self::ALLOW_RESOURCE, 
                 $resourceId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
@@ -126,7 +126,7 @@ class AclEvent extends ApplicationAbstractEvent
             ? [$roleId]
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId];
 
-        self::fireEvent(self::EDIT_ACL_ROLE, 
+        self::fireEvent(self::EDIT_ROLE, 
                 $roleId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
@@ -147,7 +147,7 @@ class AclEvent extends ApplicationAbstractEvent
             ? [$roleId]
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId];
 
-        self::fireEvent(self::ADD_ACL_ROLE, 
+        self::fireEvent(self::ADD_ROLE, 
                 $roleId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 
@@ -168,7 +168,7 @@ class AclEvent extends ApplicationAbstractEvent
             ? [$roleId]
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $roleId];
 
-        self::fireEvent(self::DELETE_ACL_ROLE, 
+        self::fireEvent(self::DELETE_ROLE, 
                 $roleId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

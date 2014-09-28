@@ -44,7 +44,7 @@ class Module
             attach(ModuleEvent::EVENT_LOAD_MODULES_POST, [$this, 'initApplication']);
 
         $eventManager = AclEvent::getEventManager();
-        $eventManager->attach(AclEvent::DELETE_ACL_ROLE, function ($e) use ($moduleManager) {
+        $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
             $users = $moduleManager->getEvent()->getParam('ServiceManager')
                 ->get('Application\Model\ModelManager')
                 ->getInstance('User\Model\UserBase');
