@@ -1,62 +1,49 @@
-<style>
-    body,html, .container {
-        height: 100% !important;
-        }
-    #parent {display: table;
-    height: 100%;
-    margin: 0 auto;
-    width: 350px;}
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration-login.css', 'css')) ?>
+<?php $this->declareVars('userForgotUrl', 'localizationsCount') ?>
+<?php $this->userForgotUrl = $this->pageUrl('user-forgot') ?>
+<?php $this->localizationsCount = count($this->localization()->getAllLocalizations()) ?>
 
-#child {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-#child #submit {
-    width: 100%;
-}
-</style>
-<div id="parent">
-    <div id="child">
+<div id="login-form-wrapper">
+    <div id="login-form">
         <?php $this->placeholder('extra')->captureStart() ?>
-            <div style="margin-top: 20px">
-                <?php if (false !== ($this->pageUrl = $this->pageUrl('user-forgot'))): ?>
-                    <a href="<?php echo  $this->url('page', ['page_name' => $this->pageUrl], ['force_canonical' => true]) ?>">
-                        <?php echo $this->translate('Can\'t access your account?') ?>
-                    </a>
-                    <br />
-                <?php endif ?>
-    
-                <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
-                    <!-- language switcher -->
-                    <div class="btn-group" style="margin-top: 10px">
-                        <div class="btn-group-wrapper">
-                            <div class="btn-group-item">
-                                <div class="dropdown">
-                                    <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLocalization()['description']) ?>" />
-                                    <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#"><?php echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) ?><span class="caret"></span></a>
-                                    <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-left<?php else: ?>dropdown-menu-right<?php endif ?>" role="menu">
-                                        <?php foreach ($this->localization()->getAllLocalizations() as $language): ?>
-                                            <li role="presentation" <?php if ($language['language'] == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
-                                                <a role="menuitem" tabindex="-1" href="<?php echo $this->url('application/page', ['language' => $language['language']], ['force_canonical' => true, 'query' => $this->applicationRoute()->getQuery()], true) ?>">
-                                                    <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
-                                                    <?php echo $this->escapeHtml($language['description']) ?>
-                                                </a>
-                                            </li>
-                                        <?php endforeach ?>
-                                    </ul>
+            <?php if (false !== $this->userForgotUrl || $this->localizationsCount > 1): ?>
+                <div id="extra-form-links-wrapper">
+                    <?php if (false !== $this->userForgotUrl): ?>
+                        <a href="<?php echo  $this->url('page', ['page_name' => $this->userForgotUrl], ['force_canonical' => true]) ?>">
+                            <?php echo $this->translate('Can\'t access your account?') ?>
+                        </a>
+                        <br />
+                    <?php endif ?>
+                    <?php if ($this->localizationsCount > 1): ?>
+                        <!-- language switcher -->
+                        <div class="btn-group">
+                            <div class="btn-group-wrapper">
+                                <div class="btn-group-item">
+                                    <div class="dropdown">
+                                        <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLocalization()['description']) ?>" />
+                                        <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#"><?php echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) ?><span class="caret"></span></a>
+                                        <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-left<?php else: ?>dropdown-menu-right<?php endif ?>" role="menu">
+                                            <?php foreach ($this->localization()->getAllLocalizations() as $language): ?>
+                                                <li role="presentation" <?php if ($language['language'] == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
+                                                    <a role="menuitem" tabindex="-1" href="<?php echo $this->url('application/page', ['language' => $language['language']], ['force_canonical' => true, 'query' => $this->applicationRoute()->getQuery()], true) ?>">
+                                                        <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
+                                                        <?php echo $this->escapeHtml($language['description']) ?>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach ?>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 <?php endif?>
-            </div>
+            <?php endif?>
         <?php $this->placeholder('extra')->captureEnd() ?>
         <!-- render a form -->
         <?php echo $this->partial('administration-partial/panel', [
             'title' => $this->translate('Login'),
-            'body' => $this->partial('partial/form',
-                    ['form' => $this->loginForm]) .  $this->placeholder('extra')
+            'body' => $this->partial('partial/form', ['form' => $this->loginForm]) .  $this->placeholder('extra')
         ]) ?>
     </div>
 </div>

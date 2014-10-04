@@ -80,7 +80,9 @@ class PageUrl extends AbstractHelper
      */
     protected function getPageUrl($slug, array $privacyOptions = [], $language) 
     {
-        if (!array_key_exists($slug, $this->pagesMap[$language])) {
+        if (!isset($this->pagesMap[$language])
+                || !array_key_exists($slug, $this->pagesMap[$language])) {
+
             return false;
         }
 

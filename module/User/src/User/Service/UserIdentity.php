@@ -2,9 +2,7 @@
 namespace User\Service;
 
 use Application\Service\ApplicationServiceManager as ServiceManagerService;
-use Application\Service\ApplicationSetting as SettingService;
 use User\Model\UserBase as UserBaseModel;
-use User\Event\UserEvent;
 
 class UserIdentity
 {
