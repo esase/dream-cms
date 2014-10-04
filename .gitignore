@@ -1,6 +1,7 @@
 DreamCMS.komodoproject
 .komodotools/*
 data/session/*
+data/log/*
 data/cache/application/*
 data/cache/config/*
 !data/cache/.htaccess

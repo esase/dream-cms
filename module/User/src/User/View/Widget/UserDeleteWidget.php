@@ -59,7 +59,7 @@ class UserDeleteWidget extends UserAbstractWidget
     protected function logoutUser(array $userIdentity)
     {
         // clear logged user's identity
-        $this->getAuthService()->clearIdentity();
+        UserIdentityService::getAuthService()->clearIdentity();
 
         // skip a remember me time
         $this->getServiceLocator()->get('Zend\Session\SessionManager')->rememberMe(0);

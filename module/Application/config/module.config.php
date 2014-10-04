@@ -54,6 +54,7 @@ return [
     ],
     'controllers' => [
         'invokables' => [
+            'login-administration' => 'Application\Controller\ApplicationLoginAdministrationController',
             'settings-administration' => 'Application\Controller\ApplicationSettingAdministrationController',
             'error' => 'Application\Controller\ApplicationErrorController'
         ]

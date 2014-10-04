@@ -21,7 +21,7 @@ class Acl
      * Current acl
      * @var object
      */
-    protected static $currentAcl;
+    protected static $currentAcl = null;
 
     /**
      * Current acl resources
@@ -96,6 +96,16 @@ class Acl
     }
 
     /**
+     * Clear current acl
+     *
+     * @return void
+     */
+    public static function clearCurrentAcl()
+    {
+        return self::$currentAcl = null;
+    }
+
+    /**
      * Check permission
      *
      * @param string $resource
@@ -116,7 +126,7 @@ class Acl
                 [self::ACL_RESOURCE_SPACE_DEVIDER, self::ACL_RESOURCE_SPACE_DEVIDER], $resource);
 
         // init an ACL
-        if (!self::$currentAcl) {
+        if (null === self::$currentAcl) {
             self::initAcl($currentUserIdentity);
         }
 

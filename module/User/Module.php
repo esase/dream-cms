@@ -109,8 +109,8 @@ class Module
     protected function initUserIdentity()
     {
         try {
-            $authService = $this->serviceManager->get('User\AuthService');
-    
+            $authService = UserIdentityService::getAuthService();
+
             // set identity as a site guest
             if (!$authService->hasIdentity()) {
                 $this->initGuestIdentity($authService);

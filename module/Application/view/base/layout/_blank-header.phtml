@@ -14,7 +14,7 @@
 
         <!-- styles -->
         <?php $this->layoutHeadLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->layoutAsset('icon/favicon.ico', 'image')])
-            ->prependStylesheet($this->layoutAsset('embed.css', 'css')) 
+            ->prependStylesheet($this->layoutAsset('blank.css', 'css')) 
             ->prependStylesheet($this->layoutAsset('jquery-ui.css', 'css'))
             ->prependStylesheet($this->layoutAsset('bootstrap-theme.css', 'css'))
             ->prependStylesheet($this->layoutAsset('bootstrap.css', 'css'))
@@ -23,7 +23,7 @@
         <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
             <?php $this->layoutHeadLink()
                 ->appendStylesheet($this->layoutAsset('bootstrap.rtl.css', 'css'))
-                ->appendStylesheet($this->layoutAsset('embed.rtl.css', 'css'))?>
+                ->appendStylesheet($this->layoutAsset('blank.rtl.css', 'css'))?>
         <?php endif ?>
 
         <?php echo $this->layoutHeadLink() ?>

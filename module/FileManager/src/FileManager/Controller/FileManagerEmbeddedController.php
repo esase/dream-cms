@@ -9,7 +9,7 @@ class FileManagerEmbeddedController extends FileManagerBaseController
     /**
      * Layout name
      */
-    protected $layout = 'layout/embed';
+    protected $layout = 'layout/blank';
 
     /**
      * Default action

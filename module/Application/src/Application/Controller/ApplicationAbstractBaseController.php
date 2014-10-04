@@ -272,6 +272,16 @@ abstract class ApplicationAbstractBaseController extends AbstractActionControlle
     }
 
     /**
+     * Reload page
+     *
+     * @return string
+     */
+    protected function reloadPage()
+    {
+        return $this->redirect()->toUrl($this->getRequest()->getRequestUri());
+    }
+
+    /**
      * Get order type
      *
      * @param string $default

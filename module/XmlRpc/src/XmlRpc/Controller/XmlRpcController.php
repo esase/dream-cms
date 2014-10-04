@@ -35,7 +35,7 @@ class XmlRpcController extends ApplicationAbstractBaseController
     public function indexAction()
     {
         // get user info by api key
-        if (null != ($apiKey = $this->getRequest()->getQuery()->apiKey)) {
+        if (null != ($apiKey = $this->getRequest()->getQuery()->api_key)) {
             if (null != ($userInfo = UserIdentityService::getUserInfo($apiKey,
                     UserModelBase::USER_INFO_BY_API_KEY))) {
 

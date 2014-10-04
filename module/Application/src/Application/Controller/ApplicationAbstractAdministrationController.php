@@ -1,9 +1,10 @@
 <?php
 namespace Application\Controller;
 
-use Zend\EventManager\EventManagerInterface;
 use Acl\Service\Acl as AclService;
 use Localization\Service\Localization as LocalizationService;
+use User\Service\UserIdentity as UserIdentityService;
+use Zend\EventManager\EventManagerInterface;
 
 abstract class ApplicationAbstractAdministrationController extends ApplicationAbstractBaseController
 {
@@ -26,7 +27,9 @@ abstract class ApplicationAbstractAdministrationController extends ApplicationAb
             if (!AclService::checkPermission($controller->
                     params('controller') . ' ' . $controller->params('action'), false)) {
 
-                return $controller->showErrorPage();
+                return UserIdentityService::isGuest()
+                    ? $this->redirectTo('login-administration', 'index', [], false, ['back_url' => $this->getRequest()->getRequestUri()])
+                    : $controller->showErrorPage();
             }
 
             // set an admin layout

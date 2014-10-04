@@ -2,7 +2,7 @@
 namespace User\View\Widget;
 
 use Page\View\Widget\PageAbstractWidget;
-use User\Event\UserEvent;
+use User\Utility\UserAuthenticate as UserAuthenticateUtility;
 
 abstract class UserAbstractWidget extends PageAbstractWidget
 {
@@ -11,12 +11,6 @@ abstract class UserAbstractWidget extends PageAbstractWidget
      * @var object  
      */
     protected $model;
-
-    /**
-     * Auth service
-     * @var object  
-     */
-    protected $authService;
 
     /**
      * Get model
@@ -33,41 +27,19 @@ abstract class UserAbstractWidget extends PageAbstractWidget
     }
 
     /**
-     * Get auth service
-     *
-     * @return object
-     */
-    protected function getAuthService()
-    {
-        if (!$this->authService) {
-            $this->authService = $this->getServiceLocator()->get('User\AuthService');
-        }
-
-        return $this->authService;
-    }
-
-    /**
      * Login user
      *
      * @param integer $userId
-     * @param string $userNickname
+     * @param string $nickName
      * @param boolean $rememberMe
      * @return string
      */
-    protected function loginUser($userId, $userNickname, $rememberMe = false)
+    protected function loginUser($userId, $nickName, $rememberMe = false)
     {
-        $user = [];
-        $user['user_id'] = $userId;
+        UserAuthenticateUtility::loginUser($userId, $nickName, $rememberMe);
 
-        // save user id
-        $this->getAuthService()->getStorage()->write($user);
-
-        // fire the user login event
-        UserEvent::fireLoginEvent($userId, $userNickname);
-
-        if ($rememberMe) {
-            $this->serviceLocator->
-                    get('Zend\Session\SessionManager')->rememberMe((int) $this->getSetting('user_session_time'));
+        if (null !== ($backUrl = $this->getRequest()->getQuery('back_url', null))) {
+            return $this->redirectToUrl($backUrl);
         }
 
         // check the user's dashboard url
@@ -75,6 +47,6 @@ abstract class UserAbstractWidget extends PageAbstractWidget
 
         return false !== $userDashboard
             ? $this->redirectTo(['page_name' => $userDashboard])
-            : $this->redirectTo(); // redirect to home page
+            : $this->redirectTo(); // redirect to home page        
     }
 }

@@ -221,9 +221,7 @@ class Module
 
             // change globally user's identity
             UserIdentityService::setCurrentUserIdentity($this->userIdentity);
-
-            $authService = $this->serviceManager->get('User\AuthService');
-            $authService->getStorage()->write($this->userIdentity);
+            UserIdentityService::getAuthService()->getStorage()->write($this->userIdentity);
         }
     }
 

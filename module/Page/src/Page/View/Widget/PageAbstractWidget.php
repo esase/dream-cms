@@ -135,12 +135,25 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
 
         // check the referer
         if ($useReferer && null != ($referer = $request->getHeader('Referer'))) {
-            $this->getServiceLocator()->
+            return $this->getServiceLocator()->
                     get('controllerPluginManager')->get('redirect')->toUrl($referer->uri());
         }
 
         return $this->getServiceLocator()->
                     get('controllerPluginManager')->get('redirect')->toRoute('page', $params, ['query' => $queries]); 
+    }
+
+    /**
+     * Redirect to url
+     *
+     * @param string $url
+     * @return string
+     */
+    protected function redirectToUrl($url)
+    {
+        $request = $this->getServiceLocator()->get('Request');
+        return $this->getServiceLocator()->
+                get('controllerPluginManager')->get('redirect')->toUrl($url);
     }
 
     /**

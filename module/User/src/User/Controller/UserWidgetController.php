@@ -9,24 +9,6 @@ use Zend\View\Model\ViewModel;
 class UserWidgetController extends ApplicationAbstractBaseController
 {
     /**
-     * Auth service
-     * @var object  
-     */
-    protected $authService;
-
-    /**
-     * Get auth service
-     */
-    protected function getAuthService()
-    {
-        if (!$this->authService) {
-            $this->authService = $this->getServiceLocator()->get('User\AuthService');
-        }
-
-        return $this->authService;
-    }
-
-    /**
      * Logout 
      */
     public function ajaxLogoutAction()
@@ -39,7 +21,7 @@ class UserWidgetController extends ApplicationAbstractBaseController
 
         // clear logged user's identity
         $user = UserIdentityService::getCurrentUserIdentity();
-        $this->getAuthService()->clearIdentity();
+        UserIdentityService::getAuthService()->clearIdentity();
         $this->serviceLocator->get('Zend\Session\SessionManager')->rememberMe(0);
 
         // fire the user logout event

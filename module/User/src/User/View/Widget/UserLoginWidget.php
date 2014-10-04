@@ -1,9 +1,8 @@
 <?php
 namespace User\View\Widget;
 
-use Acl\Model\AclBase as AclBaseModel;
 use User\Service\UserIdentity as UserIdentityService;
-use User\Event\UserEvent;
+use User\Utility\UserAuthenticate as UserAuthenticateUtility;
 
 class UserLoginWidget extends UserAbstractWidget
 {
@@ -25,40 +24,30 @@ class UserLoginWidget extends UserAbstractWidget
                 $loginForm->getForm()->setData($this->getRequest()->getPost());
 
                 if ($loginForm->getForm()->isValid()) {
+                    $userName = $this->getRequest()->getPost('nickname');
+                    $password = $this->getRequest()->getPost('password');
+
                     // check an authentication
-                    $this->getAuthService()
-                        ->getAdapter()
-                        ->setIdentity($this->getRequest()->getPost('nickname'))
-                        ->setCredential($this->getRequest()->getPost('password'));
+                    $authErrors = [];
+                    $result = UserAuthenticateUtility::
+                            isAuthenticateDataValid($userName, $password, $authErrors);
 
-                    $result = $this->getAuthService()->authenticate();
-
-                    if ($result->isValid()) {
-                        // get the user info
-                        $userData = $this->getAuthService()->getAdapter()->getResultRowObject([
-                            'user_id',
-                            'nick_name'
-                        ]);
-
-                        $rememberMe = null != ($result = $this->getRequest()->getPost('remember')) 
-                            ? true 
-                            : false;
-
-                        return $this->loginUser($userData->user_id, $userData->nick_name, $rememberMe);
-                    }
-                    else {
+                    if (false === $result) {
                         $this->getFlashMessenger()->setNamespace('error');
 
-                        // add error messages
-                        foreach ($result->getMessages() as $errorMessage) {
-                            $errorMessage = $this->translate($errorMessage);
-                            $this->getFlashMessenger()->addMessage($errorMessage);
+                        // add auth error messages
+                        foreach ($authErrors as $message) {
+                            $this->getFlashMessenger()->addMessage($this->translate($message));
                         }
 
-                        // fire the user login failed event
-                        UserEvent::fireLoginFailedEvent(AclBaseModel::DEFAULT_ROLE_GUEST, $this->getRequest()->getPost('nickname'));
                         return $this->reloadPage();
                     }
+
+                    $rememberMe = null != ($remember = $this->getRequest()->getPost('remember')) 
+                        ? true 
+                        : false;
+
+                    return $this->loginUser($result['user_id'], $result['nick_name'], $rememberMe);
                 }
             }
 

@@ -2,7 +2,9 @@
 namespace User\Service;
 
 use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationSetting as SettingService;
 use User\Model\UserBase as UserBaseModel;
+use User\Event\UserEvent;
 
 class UserIdentity
 {
@@ -11,7 +13,27 @@ class UserIdentity
      * @var array
      */
     protected static $currentUserIdentity;
-    
+
+    /**
+     * Auth service
+     * @var object  
+     */
+    protected static $authService;
+
+    /**
+     * Get auth service
+     *
+     * @return object
+     */
+    public static function getAuthService()
+    {
+        if (!self::$authService) {
+            self::$authService = ServiceManagerService::getServiceManager()->get('User\AuthService');
+        }
+
+        return self::$authService;
+    }
+
     /**
      * Set current user identity
      *
