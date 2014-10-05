@@ -961,7 +961,8 @@ CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
 
 INSERT INTO `application_admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'System', 1, 'system_menu.png'),
-(2, 'Modules', 1, 'module_menu.png');
+(2, 'Pages', 5, 'page_menu.png'),
+(3, 'Modules', 1, 'module_menu.png');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_category` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -979,7 +980,8 @@ INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) V
 (1, 'Site settings', 1, 'setting_menu_item.png'),
 (2, 'Access Control List', 8, 'acl_menu_item.png'),
 (3, 'Users', 2, 'user_group_menu_item.png'),
-(4, 'Files manager', 4, 'file_manager_menu_item.png');
+(4, 'Files manager', 4, 'file_manager_menu_item.png'),
+(5, 'Pages management', 5, 'page_menu_item.png');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1010,7 +1012,9 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (4, 'List of users', 'users-administration', 'list', 2, 4, 3, 1),
 (5, 'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
-(7, 'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
+(7, 'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
+(8, 'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
+(9, 'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2);
 
 CREATE TABLE IF NOT EXISTS `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1069,7 +1073,8 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`) VALUES
 (10, 'userAvatarWidget', 2, 'public'),
 (11, 'userDashboardWidget', 2, 'public'),
 (12, 'userDashboardUserInfoWidget', 2, 'public'),
-(13, 'userEditWidget', 2, 'public');
+(13, 'userEditWidget', 2, 'public'),
+(14, 'userDashboardAdministrationWidget', 2, 'public');
 
 CREATE TABLE IF NOT EXISTS `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1156,7 +1161,8 @@ INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`) VALUES
 (7, 8, 7),
 (8, 9, 8),
 (9, 7, 12),
-(10, 11, 13);
+(10, 11, 13),
+(11, 7, 14);
 
 CREATE TABLE IF NOT EXISTS `page_widget_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1179,7 +1185,8 @@ INSERT INTO `page_widget_page_depend` (`id`, `page_id`, `widget_id`) VALUES
 (5, 10, 9),
 (6, 10, 10),
 (7, 7, 11),
-(8, 7, 11);
+(8, 7, 12),
+(9, 7, 14);
 
 CREATE TABLE IF NOT EXISTS `page_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

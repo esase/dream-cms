@@ -50,6 +50,9 @@ div.panel-accordion div.panel-heading {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
   background-color: #f8f8ff;
 }
+div.panel-accordion div.list-group {
+  margin-bottom: 0;
+}
 legend {
   font-size: 14px;
   margin-bottom: 10px;

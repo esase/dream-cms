@@ -1,0 +1,18 @@
+<?php $this->declareVars('collectedMenuItems', 'processedMenuItems') ?>
+<?php $this->collectedMenuItems = $this->processedMenuItems = new ArrayObject ?>
+
+<?php foreach($this->menu as $menuParts): ?>
+    <?php foreach($menuParts['items'] as $menuItem): ?>
+        <?php $this->collectedMenuItems[$menuItem['category']][] = $menuItem ?>
+    <?php endforeach ?>
+<?php endforeach ?>
+
+<?php foreach($this->collectedMenuItems as $category => $menuItems): ?>
+    <?php $this->processedMenuItems[$category] = $this->
+            partial('partial/list-link', ['new_window' => true, 'items' => $menuItems]) ?>
+<?php endforeach ?>
+
+<?php echo $this->partial('partial/accordion', [
+    'name' => 'administration-accordion',
+    'items' => $this->processedMenuItems
+]) ?>

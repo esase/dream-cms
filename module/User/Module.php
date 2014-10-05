@@ -237,7 +237,8 @@ class Module
                 'userAvatarWidget' => 'User\View\Widget\UserAvatarWidget',
                 'userDashboardWidget' => 'User\View\Widget\UserDashboardWidget',
                 'userDashboardUserInfoWidget' => 'User\View\Widget\UserDashboardUserInfoWidget',
-                'userEditWidget' => 'User\View\Widget\UserEditWidget'
+                'userEditWidget' => 'User\View\Widget\UserEditWidget',
+                'userDashboardAdministrationWidget' => 'User\View\Widget\UserDashboardAdministrationWidget'
             ],
             'factories' => [
                 'userAvatarUrl' => function(){
