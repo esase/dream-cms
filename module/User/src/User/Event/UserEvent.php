@@ -109,7 +109,7 @@ class UserEvent extends ApplicationAbstractEvent
                 'replace' => [
                     $userInfo['nick_name'],
                     ServiceManagerService::getServiceManager()->get('viewHelperManager')->get('url')->
-                            __invoke('page', ['page_name' => 'user-password-reset', 'slug' => $userInfo['slug']], ['force_canonical' => true]),
+                            __invoke('page', ['page_name' => 'password-reset', 'slug' => $userInfo['slug']], ['force_canonical' => true]),
 
                     $activateCode
                 ]

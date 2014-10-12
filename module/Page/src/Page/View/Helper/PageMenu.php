@@ -58,13 +58,9 @@ class PageMenu extends AbstractHelper
                         }
                     }
                     else {
-                        $title = PageModel::PAGE_TYPE_SYSTEM  == $pageOptions['type']
-                            ? $this->getView()->translate($pageOptions['system_title']) 
-                            : $this->getView()->escapeHtml($pageOptions['title']);
-
                         $menu .= $this->getView()->partial('page/partial/menu-item-start', [
                             'url' => $pageUrl,
-                            'title' => $title
+                            'title' => $this->getView()->pageTitle($pageOptions)
                         ]);
 
                         // check for children

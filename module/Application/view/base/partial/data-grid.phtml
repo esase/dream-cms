@@ -63,7 +63,8 @@
     }
 
     // init data grid multiple actions
-    $this->declareVars('multipleActions', 'multipleActionsCount', 'multipleActionParams');
+    $this->declareVars('multipleActions', 'multipleActionsCount', 'multipleActionParams', 'initTooltip');
+    $this->initTooltip = false;
 
     // process multiple actions
     if (!empty($this->actions['multiple_actions'])) {
@@ -286,11 +287,19 @@
                                         }
                                     }
                                 }
-
-                                echo $this->formCheckbox($selectCheckbox);
                             ?>
+                            <?php if (null != $selectCheckbox->getAttribute('disabled')
+                                      && !empty($this->actions_extra_check['multiple_actions_message'])): ?>
+
+                                <div class="data-grid-tooltip" title="<?php echo $this->escapeHtmlAttr($this->actions_extra_check['multiple_actions_message']) ?>">
+                                    <?php echo $this->formCheckbox($selectCheckbox) ?>    
+                                </div>
+                                <?php $this->initTooltip = true ?>
+                            <?php else: ?>
+                                <?php echo $this->formCheckbox($selectCheckbox) ?>
+                            <?php endif ?>
                         </td>
-                    <?php endif; ?>
+                    <?php endif ?>
                     <?php foreach ($data as $fieldName => $fieldValue) : ?>
                         <?php if (is_array($this->skipped_fields) && in_array($fieldName, $this->skipped_fields)) : ?>
                             <?php continue ?>
@@ -386,7 +395,7 @@
     ?>
 <?php else: ?>
     <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
-<?php endif; ?>
+<?php endif ?>
 
 <?php if ($this->multipleActionsCount) : ?>
     <!-- append a data grid's js file -->
@@ -406,4 +415,13 @@
             'langDirection' : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguageDirection()) ?>'
         });
     <?php $this->inlineScript()->captureEnd() ?>
-<?php endif; ?>
+<?php endif ?>
+
+<?php if ($this->initTooltip) : ?>
+    <!-- init data grid tooltips -->
+    <?php $this->inlineScript()->captureStart() ?>
+        $('div.data-grid-tooltip').tooltip({
+            'placement' : <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>'right'<?php else: ?>'left'<?php endif ?>
+        });
+    <?php $this->inlineScript()->captureEnd() ?>
+<?php endif ?>

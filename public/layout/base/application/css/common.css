@@ -100,6 +100,7 @@ table.table th.selector-items {
 }
 table.table th {
   border-bottom: 0 !important;
+  white-space: nowrap;
 }
 table.table td.action {
   width: 24px;

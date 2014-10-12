@@ -146,7 +146,8 @@ function showPopup(url, popupId)
 
     $.ajax({
     	'type'      : "get",
-    	'url'       : url + '?_r=' + Math.random(),
+    	'url'       : url,
+		'cache' 	: false,
     	'success'   : function(data) {
     	    $(document.body).append(data);
     	    $('#' + popupId).modal('show');

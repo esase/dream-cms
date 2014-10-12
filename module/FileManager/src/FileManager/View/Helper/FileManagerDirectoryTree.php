@@ -7,6 +7,12 @@ use FileManager\Model\FileManagerBase as FileManagerBaseModel;
 class FileManagerDirectoryTree extends AbstractHelper
 {
     /**
+     * Tree cookie lifetime
+     * @var integer
+     */
+    protected $treeCookieLifetimeDays = 30;
+
+    /**
      * Generate a tree
      *
      * @param array|boolean $userDirectories
@@ -25,7 +31,8 @@ class FileManagerDirectoryTree extends AbstractHelper
         return $this->getView()->partial('file-manager/patrial/directory-tree', [
             'id' => $treeId,
             'class' => $treeClass,
-            'items' => $this->processDirectories($userDirectories, $currentPath, $filters)
+            'items' => $this->processDirectories($userDirectories, $currentPath, $filters),
+            'cookie_lifetime' => $this->treeCookieLifetimeDays
         ]);
     }
 

@@ -4,14 +4,14 @@
     'form' => $this->loginForm,
 ]) ?>
 
-<?php if (false !== ($this->pageUrl = $this->pageUrl('user-forgot'))): ?>
+<?php if (false !== ($this->pageUrl = $this->pageUrl('forgot'))): ?>
     <br />
     <a href="<?php echo  $this->url('page', ['page_name' => $this->pageUrl], ['force_canonical' => true]) ?>">
         <?php echo $this->translate('Can\'t access your account?') ?>
     </a>
 <?php endif ?>
 
-<?php if ((int) $this->applicationSetting('user_allow_register') && false !== ($this->pageUrl = $this->pageUrl('user-register'))): ?>
+<?php if ((int) $this->applicationSetting('user_allow_register') && false !== ($this->pageUrl = $this->pageUrl('register'))): ?>
     <br />
     <a href="<?php echo  $this->url('page', ['page_name' => $this->pageUrl], ['force_canonical' => true]) ?>">
         <?php echo $this->translate('Create a new account') ?>

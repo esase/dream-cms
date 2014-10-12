@@ -1,9 +1,3 @@
-<!-- include needed js and css files -->
-<?php $this->layoutHeadScript()->appendFile($this->layoutAsset('jquery.treeview.js')) ?>
-<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset(($this->localization()->isCurrentLanguageLtr()
-        ? 'jquery.treeview.css'
-        : 'jquery.treeview.rtl.css'), 'css')) ?>
-
 <?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('main.css', 'css', 'filemanager')) ?>
 
 <?php $this->declareVars('directoriesTreeId') ?>
@@ -29,7 +23,3 @@
         ]) ?>
     </div>
 </div>
-
-<?php $this->inlineScript()->captureStart() ?>
-    $("#<?php echo $this->directoriesTreeId ?>").treeview({});
-<?php $this->inlineScript()->captureEnd() ?>

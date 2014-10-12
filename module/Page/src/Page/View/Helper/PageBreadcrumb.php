@@ -1,7 +1,6 @@
 <?php
 namespace Page\View\Helper;
- 
-use Page\Model\Page as PageModel;
+
 use Zend\View\Helper\AbstractHelper;
 
 class PageBreadcrumb extends AbstractHelper
@@ -87,14 +86,9 @@ class PageBreadcrumb extends AbstractHelper
                 $pageUrl .= $page['slug'];
 
                 // process page's title
-                if ($this->currentPageTitle && $lastPage) {
-                    $pageTitle = $this->currentPageTitle;
-                }
-                else {
-                    $pageTitle = $page['type'] == PageModel::PAGE_TYPE_SYSTEM 
-                        ? $this->getView()->translate($page['system_title']) 
-                        : $this->getView()->escapeHtml($page['title']);
-                }
+                $pageTitle = $this->currentPageTitle && $lastPage
+                    ? $this->currentPageTitle
+                    : $this->getView()->pageTitle($page);
 
                 $processedBreadcrumb[] = [
                     'url' => !$lastPage ? $pageUrl : null,

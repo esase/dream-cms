@@ -2,6 +2,7 @@
 namespace Page\Model;
 
 use Application\Model\ApplicationAbstractBase;
+use Localization\Service\Localization as LocalizationService;
 use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\Db\Sql\Expression as Expression;
@@ -49,6 +50,39 @@ class PageBase extends ApplicationAbstractBase
      * @var array
      */
     protected static $pagesTree = [];
+
+    /**
+     * Get structure page info
+     *
+     * @param integer $id
+     * @param boolean $currentLanguage
+     * @return array
+     */
+    public function getStructurePageInfo($id, $currentLanguage = true)
+    {
+        $select = $this->select();
+        $select->from('page_structure')
+            ->columns([
+                'id',
+                'slug',
+                'type',
+                'parent_id'
+            ])
+            ->where([
+                'id' => $id
+            ]);
+
+        if ($currentLanguage) {
+            $select->where([
+                'language' => LocalizationService::getCurrentLocalization()['language']
+            ]);
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
 
     /**
      * Get user menu
@@ -312,7 +346,9 @@ class PageBase extends ApplicationAbstractBase
 
                 $levels[$page->level] = $page->slug;
                 $pagesMap[$page->language][$page->slug] = [
+                    'id' => $page->id,
                     'title'  => $page->title,
+                    'slug' => $page->slug,
                     'system_title'  => $page->system_title,
                     'active' => $page->active,
                     'level' => $page->level,

@@ -1,7 +1,6 @@
 <?php
 namespace Page\View\Helper;
 
-use Page\Model\Page as PageModel;
 use Zend\View\Helper\AbstractHelper;
 
 class PageUserMenu extends AbstractHelper
@@ -43,9 +42,7 @@ class PageUserMenu extends AbstractHelper
                 if (false !== ($pageUrl = $this->getView()->pageUrl($menu['slug']))) {
                     $this->processedUserMenu[] = [
                         'url' => $pageUrl,
-                        'title' => PageModel::PAGE_TYPE_SYSTEM == $menu['type'] 
-                            ? $this->getView()->translate($menu['system_title']) 
-                            : $this->getView()->escapeHtml($menu['title'])
+                        'title' => $this->getView()->pageTitle($menu)
                     ];
                 }
             }

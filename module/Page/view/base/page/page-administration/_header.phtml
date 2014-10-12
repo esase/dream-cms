@@ -1,0 +1,28 @@
+<?php $this->declareVars('pageTitle', 'baseTabs') ?>
+<?php $this->pageTitle = $this->translate('Pages management') ?>
+
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
+
+<div class="page-header">
+    <h1>
+        <img src="<?php echo $this->layoutAsset('icon/page.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->pageTitle) ?>" />
+        <?php echo $this->escapeHtml($this->pageTitle) ?>
+    </h1>
+</div>
+
+<?php
+    $this->baseTabs = [
+        'list' => [
+            'name' => $this->translate('List of pages'),
+            'controller' => 'pages-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ],
+        'settings' => [
+            'name' => $this->translate('List of settings'),
+            'controller' => 'pages-administration',
+            'action' => 'settings',
+            'check_acl' => true
+        ]
+    ]
+?>

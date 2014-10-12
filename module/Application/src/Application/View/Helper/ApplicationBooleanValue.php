@@ -33,7 +33,7 @@ class ApplicationBooleanValue extends AbstractHelper
      */
     public function __invoke($value, array $options = [])
     {
-        return (int) $value
+        return !empty($value)
             ? (!empty($options['true_string']) ? $options['true_string'] : $this->translator->translate('Yes'))
             : (!empty($options['false_string']) ? $options['false_string'] : $this->translator->translate('No'));
     }

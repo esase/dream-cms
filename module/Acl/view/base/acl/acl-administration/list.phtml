@@ -90,6 +90,7 @@
                 'condition' =>  'return "__value__" == "' . AclBaseModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
             ]
         ],
+        'multiple_actions_message' => $this->translate('You cannot delete the system roles'),
         'single_actions' => [
             'edit-role' => [
                 0 => [

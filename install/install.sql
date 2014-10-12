@@ -553,7 +553,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (36, 'files_manager_administration_add_file', 'ACL - Adding files in admin area', 4),
 (37, 'files_manager_embedded_edit', 'ACL - Editing files and dirs in embedded mode', 4),
 (38, 'files_manager_administration_edit', 'ACL - Editing files and dirs in admin area', 4),
-(39, 'users_view_profile', 'ACL - Viewing users profiles', 2);
+(39, 'users_view_profile', 'ACL - Viewing users profiles', 2),
+(40, 'pages_administration_list', 'ACL - Viewing pages in admin area', 5),
+(41, 'pages_administration_ajax_view_dependent_pages', 'ACL - Viewing dependent pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1110,17 +1112,17 @@ CREATE TABLE IF NOT EXISTS `page_system` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`, `user_menu_order`) VALUES
-(1,  'home', 'Home', 5, NULL, 1, NULL, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0),
-(2,  'user-login', 'Login', 2, NULL, 1, 1, 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(3,  'user-register', 'Register', 2, NULL, 1, 1, 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(4,  'user-forgot', 'Account recovery', 2, NULL, NULL, 1, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(5,  'user-activate', 'User activate', 2, NULL, NULL, 1, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
-(6,  'user-password-reset', 'Password reset', 2, NULL, NULL, 1, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
-(7,  'user-dashboard', 'User dashboard', 2, 1, NULL, 1, 7, NULL, 2, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(8,  'user-delete', 'Delete your account', 2, 1, NULL, 7, 8, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2),
+(1,  'home', 'Home page', 5, NULL, 1, NULL, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0),
+(2,  'login', 'Login', 2, NULL, 1, 1, 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(3,  'register', 'Register', 2, NULL, 1, 1, 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(4,  'forgot', 'Account recovery', 2, NULL, NULL, 1, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(5,  'activate', 'User activate', 2, NULL, NULL, 1, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
+(6,  'password-reset', 'Password reset', 2, NULL, NULL, 1, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
+(7,  'dashboard', 'User dashboard', 2, 1, NULL, 1, 7, NULL, 2, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(8,  'delete', 'Delete your account', 2, 1, NULL, 7, 8, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2),
 (9,  'sitemap', 'Sitemap', 5, NULL, 1, 1, 9, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0),
 (10, 'user', 'User profile', 2, NULL, NULL, 1, 10, 1, 2, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL, 0),
-(11, 'user-edit', 'Edit account', 2, 1, NULL, 7, 11, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3);
+(11, 'edit', 'Edit account', 2, 1, NULL, 7, 11, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3);
 
 CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1222,12 +1224,16 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     `left_key` INT(10) NOT NULL DEFAULT '0',
     `right_key` INT(10) NOT NULL DEFAULT '0',
     `level` INT(10) NOT NULL DEFAULT '0',
+    `parent_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `system_page` SMALLINT(5) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE `slug` (`slug`, `language`),
     KEY `node` (`left_key`, `right_key`, `language`, `active`, `level`),
     KEY `footer_menu` (`footer_menu`),
     KEY `user_menu` (`user_menu`),
+    KEY `parent_id` (`parent_id`),
+    KEY `active` (`active`),
+    KEY `redirect_url` (`redirect_url`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,

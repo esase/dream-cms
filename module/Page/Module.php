@@ -67,10 +67,20 @@ class Module
         return [
             'invokables' => [
                 'pageBreadcrumb' => 'Page\View\Helper\PageBreadcrumb',
+                'pageTitle' => 'Page\View\Helper\PageTitle',
+                'pagePosition' => 'Page\View\Helper\PagePosition',
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
-                'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'
+                'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'                
             ],
             'factories' => [
+                'pageTree' =>  function() {
+                    $model = $this->serviceManager
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Page\Model\PageBase');
+
+                    return new \Page\View\Helper\PageTree($model->
+                            getPagesTree(LocalizationService::getCurrentLocalization()['language']));
+                },
                 'pageUserMenu' =>  function() {
                     $model = $this->serviceManager
                         ->get('Application\Model\ModelManager')

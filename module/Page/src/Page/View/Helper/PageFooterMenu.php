@@ -2,7 +2,6 @@
 namespace Page\View\Helper;
 
 use Application\Service\ApplicationSetting as SettingService;
-use Page\Model\Page as PageModel;
 use Zend\View\Helper\AbstractHelper;
 
 class PageFooterMenu extends AbstractHelper
@@ -44,9 +43,7 @@ class PageFooterMenu extends AbstractHelper
             // get a page url
             if (false !== ($pageUrl = $this->getView()->pageUrl($menu['slug']))) {
                 // get the page's title
-                $pageTitle = PageModel::PAGE_TYPE_SYSTEM == $menu['type']
-                        ? $this->getView()->translate($menu['system_title']) 
-                        : $this->getView()->escapeHtml($menu['title']);
+                $pageTitle = $this->getView()->pageTitle($menu);
 
                 if ($headerLink) {
                     $footerMenu .= $this->getView()->partial('page/partial/footer-menu-header', [

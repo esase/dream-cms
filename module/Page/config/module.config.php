@@ -3,7 +3,8 @@
 return [
     'controllers' => [
         'invokables' => [
-            'page' => 'Page\Controller\PageController',
+            'pages-administration' => 'Page\Controller\PageAdministrationController',
+            'page' => 'Page\Controller\PageController'
         ]
     ],
     'home_page' => 'home',

@@ -1,0 +1,12 @@
+<?php
+    echo $this->partial('partial/popup', [
+        'popup_id' => 'popup-page-depends-window',
+        'title' => 'Dependent pages',
+        'body' => $this->partial('partial/table', [
+            'list' => $this->data,
+            'helpers' => [
+                'title' => 'translate'
+            ]
+        ])
+    ])
+?>

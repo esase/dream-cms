@@ -62,7 +62,7 @@ class UserEditWidget extends UserAbstractWidget
                                 ->addMessage($this->translate('Your account will be active after checking'));
 
                             // redirect to login page
-                            $loginUrl = $this->getView()->pageUrl('user-login');
+                            $loginUrl = $this->getView()->pageUrl('login');
                             return $this->redirectTo(['page_name' => (false !== $loginUrl ? $loginUrl : '')]);
                         }
                     }

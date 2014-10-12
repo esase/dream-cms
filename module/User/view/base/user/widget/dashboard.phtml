@@ -11,7 +11,7 @@
     <div class="list-group-item">
         <h4 class="list-group-item-heading"><?php echo $this->translate('Email') ?></h4>
         <p><?php echo $this->escapeHtml($user['email']) ?></p>
-        <?php if (false !== ($this->userEditUrl = $this->pageUrl('user-edit'))) : ?>
+        <?php if (false !== ($this->userEditUrl = $this->pageUrl('edit'))) : ?>
             <p>    
                 <a href="<?php echo  $this->url('page', ['page_name' => $this->userEditUrl], ['force_canonical' => true]) ?>">
                     <?php echo $this->translate('Edit account') ?>

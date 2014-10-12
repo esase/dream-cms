@@ -1,0 +1,163 @@
+<?php $this->declareVars('subPageTitle', 'content') ?>
+<?php $this->subPageTitle = $this->translate('List of pages') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('page/page-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+]) ?>
+
+<?php $this->content = $this->partial('partial/data-grid', [
+    'controller' => 'pages-administration',
+    'action' => 'list',
+    'queries' => [
+        'page_id' => $this->page_id
+    ],
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'position',
+    'default_order_type' => 'asc',
+    'filter_form' => $this->filter_form,
+    'headers' => [
+        0 => [
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ],
+        1 => [
+            'title' => $this->translate('Position'),
+            'order_name' => 'position'
+        ],
+        2 => [
+            'title' => $this->translate('Title')
+        ],
+        3 => [
+            'title' => $this->translate('Page is active'),
+            'order_name' => 'active'
+        ],
+        4 => [
+            'title' => $this->translate('Redirect'),
+            'order_name' => 'redirect'
+        ]
+    ],
+    'paginator' => $this->paginator,
+    'skipped_fields' => [
+        'type',
+        'system_title',
+        'left_key',
+        'right_key',
+        'depend_page',
+        'system_page'
+    ],
+    'helpers' => [
+        'position' => 'pagePosition',
+        'title' => 'pageTitle',
+        'active' => 'applicationBooleanValue',
+        'redirect' => 'applicationBooleanValue'
+    ],
+    'helpers_options' => [
+        'position' => [
+            'page_number' => $paginator->getCurrentPageNumber(),
+            'per_page' => $paginator->getItemCountPerPage(),
+            'items_count' => $paginator->getTotalItemCount(),
+            'order_type' => $this->order_type
+        ]
+    ],
+    'helpers_set_array' => [
+        'title' => true
+    ],
+    'actions' => [
+        'regular_actions' => [
+            0 => [
+                'name' => $this->translate('Add system pages'),
+                'controller' => 'pages-administration',
+                'action' => 'add-system-pages',
+                'check_acl' => true
+            ],
+            1 => [
+                'name' => $this->translate('Add a page'),
+                'controller' => 'pages-administration',
+                'action' => 'add-page',
+                'check_acl' => true
+            ],
+        ],
+        'multiple_actions' => [
+            0 => [
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'pages-administration',
+                'action' => 'delete-pages',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected pages will be deleted. Are you sure?')
+            ]
+        ],
+        'single_actions' => [
+            0 => [
+                'name' => $this->translate('View dependent pages'),
+                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-view-dependent-pages']) . '?page_id=__value__\', \'popup-page-depends-window\')',
+                'check_acl' => true,
+                'param' => 'system_page',
+                'controller' => 'pages-administration',
+                'action' => 'ajax-view-dependent-pages',
+                'image' => $this->layoutAsset('icon/depend_action.png', 'image', 'page')
+            ],
+            1 => [
+                'name' => $this->translate('Edit the page'),
+                'controller' => 'pages-administration',
+                'action' => 'edit-page',
+                'check_acl' => true,
+                'image' => $this->layoutAsset('icon/edit_action.png', 'image')
+            ],
+            2 => [
+                'name' => $this->translate('Browse widgets'),
+                'controller' => 'pages-administration',
+                'action' => 'browse-widgets',
+                'check_acl' => true,
+                'image' => $this->layoutAsset('icon/browse_action.png', 'image', 'acl')
+            ]
+        ]
+    ],
+    'actions_options' => [
+        'action_identity' => 'id',
+        'form_name' => 'pages',
+        'multiple_actions' => [
+            'items_name' => 'pages[]'
+        ]
+    ],
+    'actions_extra_check' => [
+        'multiple_actions' => [
+            'deletable' => [
+                'function' => function($data) {
+                    // check sub pages
+                    if ($data['right_key'] - $data['left_key'] == 1) {
+                        // check page depends
+                        if (!$data['depend_page']) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            ]
+        ],
+        'multiple_actions_message' => $this->translate('You have to delete subpages or dependent pages before you can delete this page'),
+        'single_actions' => [
+            'ajax-view-dependent-pages' => [
+                0 => [
+                    'param' => 'depend_page',
+                    'condition' =>  'return (int) "__value__" ? true : false;'
+                ]
+            ]
+        ]
+    ]
+]) ?>
+
+<?php echo $this->partial('page/administration-partial/page-wrapper', [
+    'filters' => $this->filters,
+    'page_id' => $this->page_id,
+    'action' => $this->content,
+    'action_title' => $this->translate('Pages')
+]) ?>

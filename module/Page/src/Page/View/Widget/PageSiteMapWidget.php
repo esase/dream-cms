@@ -87,9 +87,7 @@ class PageSiteMapWidget extends PageAbstractWidget
                 if (false !== ($pageUrl = $this->getView()->pageUrl($pageName))) {
                     $sitemap .= $this->getView()->partial('page/widget/sitemap-item-start', [
                         'url' => $pageUrl,
-                        'title' => PageModel::PAGE_TYPE_SYSTEM  
-                            ? $this->getView()->translate($pageOptions['system_title']) 
-                            : $this->getView()->escapeHtml($pageOptions['title'])
+                        'title' => $this->getView()->pageTitle($pageOptions)
                     ]);
 
                     // check for children

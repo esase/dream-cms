@@ -51,7 +51,7 @@ class UserRegisterWidget extends UserAbstractWidget
                         if (!$status) {
                             // get user activate url
                             if (false !== ($activateUrl = $this->
-                                    getView()->pageUrl('user-activate', ['user_id' => $userInfo['user_id']]))) {
+                                    getView()->pageUrl('activate', ['user_id' => $userInfo['user_id']]))) {
 
                                 // send an email activate notification
                                 EmailNotification::sendNotification($userInfo['email'],

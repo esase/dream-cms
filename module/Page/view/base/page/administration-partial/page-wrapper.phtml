@@ -1,0 +1,25 @@
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration.css', 'css', 'page')) ?>
+
+<?php $this->declareVars('pagesTreeId') ?>
+<?php $this->pagesTreeId = 'pages-tree' ?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<!-- pages wrapper -->
+<div class="row" id="pages-wrapper">
+    <div class="col-md-4">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->translate('Pages tree'),
+            'body' => $this->pageTree($this->pagesTreeId, $this->page_id, true, $this->filters)
+        ]) ?>
+    </div>
+    <div class="col-md-8">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->action_title,
+            'body' => $this->action
+        ]) ?>
+    </div>
+</div>
