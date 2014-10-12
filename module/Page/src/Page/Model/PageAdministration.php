@@ -96,7 +96,7 @@ class PageAdministration extends PageBase
                 ['c' => 'page_system_page_depend'],
                 'a.system_page = c.depend_page_id',
                 [
-                    'depend_page' => 'id'
+                    'dependent_page' => 'id'
                 ],
                 'left'
             )

@@ -50,7 +50,7 @@
         'system_title',
         'left_key',
         'right_key',
-        'depend_page',
+        'dependent_page',
         'system_page'
     ],
     'helpers' => [
@@ -131,10 +131,10 @@
         'multiple_actions' => [
             'deletable' => [
                 'function' => function($data) {
-                    // check sub pages
+                    // check subpages
                     if ($data['right_key'] - $data['left_key'] == 1) {
                         // check page depends
-                        if (!$data['depend_page']) {
+                        if (!$data['dependent_page']) {
                             return true;
                         }
                     }
@@ -147,7 +147,7 @@
         'single_actions' => [
             'ajax-view-dependent-pages' => [
                 0 => [
-                    'param' => 'depend_page',
+                    'param' => 'dependent_page',
                     'condition' =>  'return (int) "__value__" ? true : false;'
                 ]
             ]
