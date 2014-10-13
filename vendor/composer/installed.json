@@ -139,65 +139,18 @@
         ]
     },
     {
-        "name": "ezyang/htmlpurifier",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/ezyang/htmlpurifier.git",
-            "reference": "80ebd4322e3b98bc25c3ed3effe99a1653bc00fc"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/80ebd4322e3b98bc25c3ed3effe99a1653bc00fc",
-            "reference": "80ebd4322e3b98bc25c3ed3effe99a1653bc00fc",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2"
-        },
-        "time": "2014-02-04 20:17:24",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "HTMLPurifier": "library/"
-            },
-            "files": [
-                "library/HTMLPurifier.composer.php"
-            ]
-        },
-        "notification-url": "http://packagist.org/downloads/",
-        "license": [
-            "LGPL"
-        ],
-        "authors": [
-            {
-                "name": "Edward Z. Yang",
-                "email": "admin@htmlpurifier.org",
-                "homepage": "http://ezyang.com",
-                "role": "Developer"
-            }
-        ],
-        "description": "Standards compliant HTML filter written in PHP",
-        "homepage": "http://htmlpurifier.org/",
-        "keywords": [
-            "html"
-        ]
-    },
-    {
         "name": "zendframework/zendframework",
-        "version": "2.3.2",
-        "version_normalized": "2.3.2.0",
+        "version": "2.3.3",
+        "version_normalized": "2.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/zendframework/zf2.git",
-            "reference": "0b74b66dc07ff88140287bdf67d230c1bd32ee0c"
+            "reference": "88c9b6f566fc1097f64ead155625db9bdfee531e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zf2/zipball/0b74b66dc07ff88140287bdf67d230c1bd32ee0c",
-            "reference": "0b74b66dc07ff88140287bdf67d230c1bd32ee0c",
+            "url": "https://api.github.com/repos/zendframework/zf2/zipball/88c9b6f566fc1097f64ead155625db9bdfee531e",
+            "reference": "88c9b6f566fc1097f64ead155625db9bdfee531e",
             "shasum": ""
         },
         "require": {
@@ -259,7 +212,7 @@
         },
         "require-dev": {
             "doctrine/annotations": ">=1.0",
-            "fabpot/php-cs-fixer": "dev-master",
+            "fabpot/php-cs-fixer": "dev-master#fcbb09b5204",
             "ircmaxell/random-lib": "dev-master",
             "ircmaxell/security-lib": "dev-master",
             "mikey179/vfsstream": "1.2.*",
@@ -275,7 +228,7 @@
             "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
             "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
         },
-        "time": "2014-08-12 16:48:34",
+        "time": "2014-09-16 22:58:11",
         "bin": [
             "bin/classmap_generator.php",
             "bin/pluginmap_generator.php",
@@ -303,6 +256,52 @@
         "keywords": [
             "framework",
             "zf2"
+        ]
+    },
+    {
+        "name": "ezyang/htmlpurifier",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ezyang/htmlpurifier.git",
+            "reference": "cd60294ada5245c5835baebf0dbb3f44ee851317"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/cd60294ada5245c5835baebf0dbb3f44ee851317",
+            "reference": "cd60294ada5245c5835baebf0dbb3f44ee851317",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2"
+        },
+        "time": "2014-08-31 11:12:38",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "HTMLPurifier": "library/"
+            },
+            "files": [
+                "library/HTMLPurifier.composer.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL"
+        ],
+        "authors": [
+            {
+                "name": "Edward Z. Yang",
+                "email": "admin@htmlpurifier.org",
+                "homepage": "http://ezyang.com"
+            }
+        ],
+        "description": "Standards compliant HTML filter written in PHP",
+        "homepage": "http://htmlpurifier.org/",
+        "keywords": [
+            "html"
         ]
     }
 ]

@@ -9,20 +9,29 @@ Develop:
 
 ## RELEASE INFORMATION
 
-*Zend Framework 2.3.2*
+*Zend Framework 2.3.3*
 
-This is the second maintenance release for the version 2.3 series.
+This is the third maintenance release for the version 2.3 series.
 
-12 Aug 2014
+17 Sep 2014
 
-### UPDATES IN 2.3.2
+### UPDATES IN 2.3.3
 
-Notable changes include:
+**This release contains security updates:**
 
-- [#6295](https://github.com/zendframework/zf2/pull/6295) introduces a slight change to how `Zend\Form\Fieldset` handles disabled values. Previously, they were represented in the form, and still processed on submit, which allowed the possibility of changing the value. This pull request modifies the behavior to extract the original value from any bound data if present and use that value instead, which is the correct behavior.
-- [#6423](https://github.com/zendframework/zf2/pull/6423) modifies the behavior of `Zend\Validator\File\UploadFile` to only return the `FILE_NOT_FOUND` error if upload was successful; previously, it incorrectly would report this error even if an error occurred during upload.
-
-In all, over 120 issues were resolved for this release.
+- **ZF2014-05:** Due to an issue that existed in PHP's LDAP extension, it is
+  possible to perform an unauthenticated simple bind against a LDAP server by
+  using a null byte for the password, regardless of whether or not the user
+  normally requires a password. We have provided a patch in order to protect
+  users of unpatched PHP versions (PHP 5.5 <= 5.5.11, PHP 5.4 <= 5.4.27, all
+  versions of PHP 5.3 and below). If you use `Zend\Ldap` and are on an affected
+  version of PHP, we recommend upgrading immediately.
+- **ZF2014-06:** A potential SQL injection vector existed when using a SQL
+  Server adapter to manually quote values due to the fact that it was not
+  escaping null bytes. Code was added to ensure null bytes are escaped, and
+  thus mitigate the SQLi vector. We do not recommend manually quoting values,
+  but if you do, and use the SQL Server adapter without PDO, we recommend
+  upgrading immediately.
 
 Please see [CHANGELOG.md](CHANGELOG.md).
 
