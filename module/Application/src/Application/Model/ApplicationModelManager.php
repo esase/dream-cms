@@ -8,12 +8,6 @@ use Zend\Cache\Storage\StorageInterface;
 class ApplicationModelManager
 {
     /**
-     * Service manager
-     * @var object
-     */
-    protected $serviceManager;
-
-    /**
      * Adapter
      * @var object
      */
@@ -33,12 +27,12 @@ class ApplicationModelManager
 
     /**
      * Class constructor
-     * 
-     * @param object $serviceManager
+     *
+     * @param object $adapter
+     * @param object $cache
      */
-    public function __construct(AdapterInterface $adapter, StorageInterface $cache, ServiceLocatorInterface $serviceManager)
+    public function __construct(AdapterInterface $adapter, StorageInterface $cache)
     {
-        $this->serviceManager =  $serviceManager;
         $this->adapter = $adapter;
         $this->cache = $cache;
     }
@@ -59,7 +53,7 @@ class ApplicationModelManager
             return $this->instances[$modelName];
         }
 
-        $this->instances[$modelName] = new $modelName($this->adapter, $this->cache, $this->serviceManager);
+        $this->instances[$modelName] = new $modelName($this->adapter, $this->cache);
         return $this->instances[$modelName];
     }
 }

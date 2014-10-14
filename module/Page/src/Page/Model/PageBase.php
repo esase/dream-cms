@@ -15,6 +15,11 @@ class PageBase extends ApplicationAbstractBase
     const CACHE_WIDGETS_CONNECTIONS = 'Page_Widgets_Connections_';
 
     /**
+     * Cache widgets settings
+     */
+    const CACHE_WIDGETS_SETTINGS_BY_PAGE = 'Page_Widgets_Settings_By_Page_';
+
+    /**
      * Cache pages map
      */
     const CACHE_PAGES_MAP = 'Page_Pages_Map';
@@ -55,26 +60,45 @@ class PageBase extends ApplicationAbstractBase
      * Get structure page info
      *
      * @param integer $id
-     * @param boolean $currentLanguage
+     * @param boolean $useCurrentLanguage
      * @return array
      */
-    public function getStructurePageInfo($id, $currentLanguage = true)
+    public function getStructurePageInfo($id, $useCurrentLanguage = true)
     {
+        $currentLanguage = LocalizationService::getCurrentLocalization()['language'];
+
         $select = $this->select();
-        $select->from('page_structure')
+        $select->from(['a' => 'page_structure'])
             ->columns([
                 'id',
                 'slug',
                 'type',
-                'parent_id'
+                'parent_id',
+                'left_key',
+                'right_key',
+                'language'
             ])
+            ->join(
+                ['b' => 'page_system_page_depend'],
+                'a.system_page = b.depend_page_id',
+                [],
+                'left'
+            )
+            ->join(
+                ['c' => 'page_structure'],
+                new Expression('b.page_id = c.system_page and c.language = ?', [$currentLanguage]),
+                [
+                    'dependent_page' => 'id'
+                ],
+                'left'
+            )
             ->where([
-                'id' => $id
+                'a.id' => $id
             ]);
 
-        if ($currentLanguage) {
+        if ($useCurrentLanguage) {
             $select->where([
-                'language' => LocalizationService::getCurrentLocalization()['language']
+                'a.language' => $currentLanguage
             ]);
         }
 
@@ -98,7 +122,7 @@ class PageBase extends ApplicationAbstractBase
 
         // check data in a cache
         if (null === ($userMenu = $this->staticCacheInstance->getItem($cacheName))) {
-            // get the footer menu
+            // get the user menu
             $select = $this->select();
             $select->from(['a' => 'page_structure'])
                 ->columns([
@@ -213,7 +237,7 @@ class PageBase extends ApplicationAbstractBase
             $this->staticCacheInstance->setItem($cacheName, $pagesTree);
             $this->staticCacheInstance->setTags($cacheName, [self::CACHE_PAGES_DATA_TAG]);
         }
-        
+
         self::$pagesTree[$language] = $pagesTree;
         return $pagesTree;
     }

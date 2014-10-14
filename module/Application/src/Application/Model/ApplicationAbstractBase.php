@@ -1,22 +1,23 @@
 <?php
 namespace Application\Model;
 
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
+use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Cache\Storage\StorageInterface;
 use Application\Utility\ApplicationSlug as SlugUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 abstract class ApplicationAbstractBase extends Sql
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Static cache instance
@@ -51,11 +52,11 @@ abstract class ApplicationAbstractBase extends Sql
      * @param object $adapter
      * @param object $staticCacheInstance
      */
-    public function __construct(AdapterInterface $adapter, StorageInterface $staticCacheInstance, ServiceLocatorInterface $serviceManager)
+    public function __construct(AdapterInterface $adapter, StorageInterface $staticCacheInstance)
     {
         parent::__construct($adapter);
 
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = ServiceLocatorService::getServiceLocator();
         $this->staticCacheInstance = $staticCacheInstance;
     }
 

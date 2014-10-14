@@ -24,7 +24,7 @@ class Module
      * Service manager
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * User identity
@@ -38,7 +38,7 @@ class Module
     public function init(ModuleManagerInterface $moduleManager)
     {
         // get service manager
-        $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
+        $this->serviceLocator = $moduleManager->getEvent()->getParam('ServiceManager');
 
         $moduleManager->getEventManager()->
             attach(ModuleEvent::EVENT_LOAD_MODULES_POST, [$this, 'initApplication']);
@@ -120,7 +120,7 @@ class Module
 
                 // get extended user info
                 if ($authService->getIdentity()['user_id'] != UserBaseModel::DEFAULT_GUEST_ID) {
-                    $user = $this->serviceManager
+                    $user = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('User\Model\UserBase');
 
@@ -163,7 +163,7 @@ class Module
             $this->userIdentity['role'] = AclBaseModel::DEFAULT_ROLE_GUEST;
             $this->userIdentity['user_id'] = UserBaseModel::DEFAULT_GUEST_ID;
 
-            $request = $this->serviceManager->get('Request');
+            $request = $this->serviceLocator->get('Request');
 
             // get language from cookie
             if (!$request instanceof ConsoleRequest) {
@@ -207,8 +207,8 @@ class Module
     {
         return [
             'factories' => [
-                'User\AuthService' => function($serviceManager) {
-                    $authAdapter = new DbTableAuthAdapter($serviceManager->get('Zend\Db\Adapter\Adapter'), 'user_list', 
+                'User\AuthService' => function() {
+                    $authAdapter = new DbTableAuthAdapter($this->serviceLocator->get('Zend\Db\Adapter\Adapter'), 'user_list', 
                             'nick_name', 'password', 'SHA1(CONCAT(MD5(?), salt)) AND status = "' . UserBaseModel::STATUS_APPROVED . '"');
 
                     $authService = new AuthenticationService();
@@ -248,7 +248,7 @@ class Module
                     return new \User\View\Helper\UserAvatarUrl($thumbDir, $avatarDir);
                 },
                 'userMenu' => function() {
-                    $userMenu = $this->serviceManager
+                    $userMenu = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('User\Model\UserMenu');
 

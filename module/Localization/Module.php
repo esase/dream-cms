@@ -36,10 +36,10 @@ class Module
     protected $defaultLocalization;
 
     /**
-     * Service managerzend
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Module manager
@@ -60,7 +60,7 @@ class Module
     public function init(ModuleManagerInterface $moduleManager)
     {
         // get the service manager
-        $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
+        $this->serviceLocator = $moduleManager->getEvent()->getParam('ServiceManager');
 
         // get the module manager
         $this->moduleManager = $moduleManager;
@@ -74,7 +74,7 @@ class Module
      */
     public function onBootstrap(MvcEvent $e)
     {
-        $request = $this->serviceManager->get('Request');
+        $request = $this->serviceLocator->get('Request');
 
         if (!$request instanceof ConsoleRequest) {
             // init user localization
@@ -104,7 +104,7 @@ class Module
     {
         try {
             // get all registered localizations
-            $localization = $this->serviceManager
+            $localization = $this->serviceLocator
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Localization\Model\LocalizationBase');
 
@@ -122,14 +122,14 @@ class Module
                 : current($this->localizations);
 
             // init translator settings
-            $translator = $this->serviceManager->get('translator');
+            $translator = $this->serviceLocator->get('translator');
             $translator->setLocale($this->defaultLocalization['locale']);
 
             // add a cache for translator
-            $request = $this->serviceManager->get('Request');
+            $request = $this->serviceLocator->get('Request');
 
             if (!$request instanceof ConsoleRequest) {
-                $translator->setCache($this->serviceManager->get('Application\Cache\Dynamic'));
+                $translator->setCache($this->serviceLocator->get('Application\Cache\Dynamic'));
             }
 
             // init default localization
@@ -153,7 +153,7 @@ class Module
     {
         try {
             // get a router
-            $router = $this->serviceManager->get('router');
+            $router = $this->serviceLocator->get('router');
             $matches = $e->getRouteMatch();
 
             if (!$matches->getParam('language') 
@@ -174,7 +174,7 @@ class Module
 
             // init an user localization
             if ($this->defaultLocalization['language'] != $matches->getParam('language')) {
-                $this->serviceManager
+                $this->serviceLocator
                     ->get('translator')
                     ->setLocale($this->localizations[$matches->getParam('language')]['locale']);
 
@@ -203,7 +203,7 @@ class Module
         if (!$this->userIdentity['language'] || $this->userIdentity['language'] != $language) {
             // save language
             if ($this->userIdentity['role'] != AclBaseModel::DEFAULT_ROLE_GUEST) {
-                $model = $this->serviceManager
+                $model = $this->serviceLocator
                     ->get('Application\Model\ModelManager')
                     ->getInstance('User\Model\UserBase')
                     ->setUserLanguage($this->userIdentity['user_id'], $language);
@@ -216,7 +216,7 @@ class Module
                 ->setPath('/')
                 ->setExpires(time() + (int) SettingService::getSetting('application_localization_cookie_time'));
 
-            $this->serviceManager->get('Response')->getHeaders()->addHeader($header);
+            $this->serviceLocator->get('Response')->getHeaders()->addHeader($header);
             $this->userIdentity['language'] = $language;
 
             // change globally user's identity

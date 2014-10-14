@@ -555,7 +555,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (38, 'files_manager_administration_edit', 'ACL - Editing files and dirs in admin area', 4),
 (39, 'users_view_profile', 'ACL - Viewing users profiles', 2),
 (40, 'pages_administration_list', 'ACL - Viewing pages in admin area', 5),
-(41, 'pages_administration_ajax_view_dependent_pages', 'ACL - Viewing dependent pages in admin area', 5);
+(41, 'pages_administration_ajax_view_dependent_pages', 'ACL - Viewing dependent pages in admin area', 5),
+(42, 'pages_administration_delete_pages', 'ACL - Deleting pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -947,7 +948,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (29, 'file_manager_edit_file', 4, 'Event - Editing files'),
 (30, 'file_manager_edit_directory', 4, 'Event - Editing directories'),
 (31, 'page_show', 5, 'Event - Showing pages'),
-(32, 'user_get_info', 2, 'Event - Getting user\'s info');
+(32, 'user_get_info', 2, 'Event - Getting user\'s info'),
+(33, 'page_delete', 5, 'Event - Deleting pages');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1231,7 +1233,7 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
     KEY `node` (`left_key`, `right_key`, `language`, `active`, `level`),
     KEY `footer_menu` (`footer_menu`),
     KEY `user_menu` (`user_menu`),
-    KEY `parent_id` (`parent_id`),
+    KEY `parent_id` (`language`, `parent_id`),
     KEY `active` (`active`),
     KEY `redirect_url` (`redirect_url`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)

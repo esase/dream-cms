@@ -3,7 +3,6 @@ namespace User\PagePrivacy;
 
 use Page\PagePrivacy\PageAbstractPagePrivacy;
 use User\Service\UserIdentity as UserIdentityService;
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
 
 class UserForgotPrivacy extends PageAbstractPagePrivacy
 {

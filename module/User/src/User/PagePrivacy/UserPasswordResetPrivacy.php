@@ -2,7 +2,7 @@
 namespace User\PagePrivacy;
 
 use Application\Utility\ApplicationRouteParam as RouteParamUtility;
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Page\PagePrivacy\PageAbstractPagePrivacy;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Model\UserWidget as UserWidgetModel;
@@ -21,7 +21,7 @@ class UserPasswordResetPrivacy extends PageAbstractPagePrivacy
     protected function getModel()
     {
         if (!$this->model) {
-            $this->model = ServiceManagerService::getServiceManager()
+            $this->model = ServiceLocatorService::getServiceLocator()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('User\Model\UserWidget');
         }

@@ -1,7 +1,7 @@
 <?php
 namespace User\Utility;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use User\Model\UserBase as UserBaseModel;
 
 class UserCache
@@ -13,7 +13,7 @@ class UserCache
      */
     public static function clearUserCache()
     {
-        return ServiceManagerService::getServiceManager()
+        return ServiceLocatorService::getServiceLocator()
                 ->get('Application\Cache\Static')->clearByTags([UserBaseModel::CACHE_USER_DATA_TAG]);
     }
 }

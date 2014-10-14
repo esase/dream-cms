@@ -11,10 +11,10 @@ use Zend\Db\Sql\Predicate\In as InPredicate;
 class ApplicationSlugTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Model
@@ -34,10 +34,10 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = ApplicationBootstrap::getServiceManager();
+        $this->serviceLocator = ApplicationBootstrap::getServiceLocator();
 
         // get base model instance
-        $this->model = $this->serviceManager
+        $this->model = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\ApplicationBase');
     }

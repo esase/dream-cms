@@ -11,7 +11,7 @@ class ApplicationCaptcha
     public static function getCaptchaPath()
     {
         return APPLICATION_PUBLIC .
-                '/' . ApplicationServiceManager::getServiceManager()->get('Config')['paths']['captcha'] . '/';
+                '/' . ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['captcha'] . '/';
     }
 
     /**
@@ -22,8 +22,8 @@ class ApplicationCaptcha
     public static function getCaptchaFontPath()
     {
         return APPLICATION_PUBLIC . '/' .
-                ApplicationServiceManager::getServiceManager()->get('Config')['paths']['captcha'] . '/' .
-                ApplicationServiceManager::getServiceManager()->get('Config')['paths']['captcha_font'];
+                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['captcha'] . '/' .
+                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['captcha_font'];
     }
 
     /**
@@ -34,6 +34,6 @@ class ApplicationCaptcha
     public static function getCaptchaUrl()
     {
         return Application::getApplicationUrl() . '/' .
-                ApplicationServiceManager::getServiceManager()->get('Config')['paths']['captcha'] . '/';
+                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['captcha'] . '/';
     }
 }

@@ -11,10 +11,10 @@ use ReflectionProperty;
 class ServiceTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * List of settings name
@@ -34,10 +34,10 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = ApplicationBootstrap::getServiceManager();
+        $this->serviceLocator = ApplicationBootstrap::getServiceLocator();
 
         // get setting model
-        $this->settingModel = $this->serviceManager
+        $this->settingModel = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\ApplicationSetting');
 
@@ -123,7 +123,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         $currentLocalization = LocalizationService::getCurrentLocalization();
 
         // get localization model
-        $localization = $this->serviceManager
+        $localization = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('Localization\Model\LocalizationBase');
 
@@ -161,7 +161,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase
         ];
 
         // get localization model
-        $localization = $this->serviceManager
+        $localization = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('Localization\Model\LocalizationBase');
 

@@ -1,7 +1,7 @@
 <?php
 namespace Page\View\Widget;
  
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationRouteParam as RouteParamUtility;
 use Zend\Http\Response;
@@ -92,7 +92,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     protected function getServiceLocator()
     {
         if (!$this->serviceLocator) {
-            $this->serviceLocator = ServiceManagerService::getServiceManager();
+            $this->serviceLocator = ServiceLocatorService::getServiceLocator();
         }
 
         return $this->serviceLocator;

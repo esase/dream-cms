@@ -1,7 +1,7 @@
 <?php
 namespace Application\Utility;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Service\Application as ApplicationService;
 use Layout\Service\Layout as LayoutService;
 use Application\Model\ApplicationAdminMenu as AdminMenuBaseModel;
@@ -17,7 +17,7 @@ class ApplicationCache
      */
     public static function clearSettingCache()
     {
-        return ServiceManagerService::getServiceManager()->
+        return ServiceLocatorService::getServiceLocator()->
             get('Application\Cache\Static')->clearByTags([SettingBaseModel::CACHE_SETTINGS_DATA_TAG]);
     }
 
@@ -28,7 +28,7 @@ class ApplicationCache
      */
     public static function clearTimeZoneCache()
     {
-        return ServiceManagerService::getServiceManager()->
+        return ServiceLocatorService::getServiceLocator()->
             get('Application\Cache\Static')->clearByTags([TimeZoneBaseModel::CACHE_TIME_ZONES_DATA_TAG]);
     }
 
@@ -39,7 +39,7 @@ class ApplicationCache
      */
     public static function clearAdminMenuCache()
     {
-        return ServiceManagerService::getServiceManager()->
+        return ServiceLocatorService::getServiceLocator()->
             get('Application\Cache\Static')->clearByTags([AdminMenuBaseModel::CACHE_ADMIN_MENU_DATA_TAG]);
     }
 
@@ -50,7 +50,7 @@ class ApplicationCache
      */
     public static function clearStaticCache()
     {
-        return ServiceManagerService::getServiceManager()->get('Application\Cache\Static')->flush();
+        return ServiceLocatorService::getServiceLocator()->get('Application\Cache\Static')->flush();
     }
 
     /**
@@ -60,7 +60,7 @@ class ApplicationCache
      */
     public static function clearDynamicCache()
     {
-        return ServiceManagerService::getServiceManager()->get('Application\Cache\Dynamic')->flush();
+        return ServiceLocatorService::getServiceLocator()->get('Application\Cache\Dynamic')->flush();
     }
 
     /**

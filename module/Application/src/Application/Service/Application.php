@@ -10,7 +10,7 @@ class Application
      */
     public static function getApplicationUrl()
     {
-        return ApplicationServiceManager::getServiceManager()->get('Request')->getBaseUrl();
+        return ApplicationServiceLocator::getServiceLocator()->get('Request')->getBaseUrl();
     }
 
     /**
@@ -21,7 +21,7 @@ class Application
     public static function getConfigCachePath()
     {
         return APPLICATION_ROOT .
-                '/' . ApplicationServiceManager::getServiceManager()->get('Config')['paths']['config_cache'];
+                '/' . ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['config_cache'];
     }
 
     /**
@@ -32,7 +32,7 @@ class Application
     public static function getResourcesDir()
     {
         return APPLICATION_PUBLIC . '/' .
-                ApplicationServiceManager::getServiceManager()->get('Config')['paths']['resource'] . '/';
+                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['resource'] . '/';
     }
 
     /**
@@ -43,6 +43,6 @@ class Application
     public static function getResourcesUrl()
     {
         return self::getApplicationUrl() . '/' .
-                ApplicationServiceManager::getServiceManager()->get('Config')['paths']['resource'] . '/';
+                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['resource'] . '/';
     }
 }

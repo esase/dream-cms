@@ -11,10 +11,10 @@ use Acl\Model\AclBase as AclBaseModel;
 class DeleteRoleTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Model
@@ -40,10 +40,10 @@ class DeleteRoleTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = UserBootstrap::getServiceManager();
+        $this->serviceLocator = UserBootstrap::getServiceLocator();
 
         // get base user model instance
-        $this->model = $this->serviceManager
+        $this->model = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('User\Model\UserBase');
     }

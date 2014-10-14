@@ -10,7 +10,7 @@ class ApplicationTimeZone
      */
     public static function getTimeZones()
     {
-        $timeZoneModel = ApplicationServiceManager::getServiceManager()
+        $timeZoneModel = ApplicationServiceLocator::getServiceLocator()
             ->get('Application\Model\ModelManager')
             ->getInstance('Application\Model\ApplicationTimeZone');
 

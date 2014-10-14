@@ -51,6 +51,19 @@ class Page extends ApplicationAbstractNestedSet
     }
 
     /**
+     * Delete page
+     *
+     * @param integer $leftKey
+     * @param integer $rightKey
+     * @param string $language
+     * @return boolean|string
+     */
+    public function deletePage($leftKey, $rightKey, $language)
+    {
+        return $this->deleteNode($leftKey, $rightKey, ['language' => $language]);
+    }
+
+    /**
      * Get page parents
      *
      * @param integer $leftKey
@@ -62,7 +75,6 @@ class Page extends ApplicationAbstractNestedSet
      */
     public function getPageParents($leftKey, $rightKey, $userRole, $language, $excludeHome = true)
     {
-        // TODO: do we need cache here?
         return $this->getParentNodes($leftKey, 
                 $rightKey, function (Select $select) use ($userRole, $language, $excludeHome) {
 

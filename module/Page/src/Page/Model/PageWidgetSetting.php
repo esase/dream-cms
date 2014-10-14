@@ -15,11 +15,6 @@ class PageWidgetSetting extends ApplicationAbstractSetting
     protected static $settings;
 
     /**
-     * Cache widgets settings
-     */
-    const CACHE_WIDGETS_SETTINGS_BY_PAGE = 'Page_Widgets_Settings_By_Page_';
-
-    /**
      * Get widget setting value
      *
      * @param integer $pageId
@@ -50,7 +45,7 @@ class PageWidgetSetting extends ApplicationAbstractSetting
     protected function getAllSettings($pageId)
     {
         // get cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId);
+        $cacheName = CacheUtility::getCacheName(PageBaseModel::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId);
 
         // check data in cache
         if (null === ($settings = $this->staticCacheInstance->getItem($cacheName))) {

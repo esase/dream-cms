@@ -3,7 +3,7 @@ namespace Acl\Service;
 
 use User\Service\UserIdentity as UserIdentityService;
 use Acl\Model\AclBase as AclBaseModel;
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 
 use Zend\Permissions\Acl\AclInterface;
 use Zend\Permissions\Acl\Acl as AclZend;
@@ -44,7 +44,7 @@ class Acl
     public static function getAclRoles($excludeGuest = true)
     {
         if (!isset(self::$aclRoles[$excludeGuest])) {
-            self::$aclRoles[$excludeGuest] = ServiceManagerService::getServiceManager()
+            self::$aclRoles[$excludeGuest] = ServiceLocatorService::getServiceLocator()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Acl\Model\AclBase')
                 ->getRolesList($excludeGuest);
@@ -130,7 +130,7 @@ class Acl
             self::initAcl($currentUserIdentity);
         }
 
-        $aclModel = ServiceManagerService::getServiceManager()
+        $aclModel = ServiceLocatorService::getServiceLocator()
             ->get('Application\Model\ModelManager')
             ->getInstance('Acl\Model\AclBase');
 
@@ -183,7 +183,7 @@ class Acl
         $acl = new AclZend();
         $acl->addRole(new Role($currentUserIdentity['role']));
 
-        $aclModel = ServiceManagerService::getServiceManager()
+        $aclModel = ServiceLocatorService::getServiceLocator()
             ->get('Application\Model\ModelManager')
             ->getInstance('Acl\Model\AclBase');
 

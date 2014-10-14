@@ -1,7 +1,7 @@
 <?php
 namespace Application\Utility;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 
 class ApplicationRouteParam
 {
@@ -30,7 +30,7 @@ class ApplicationRouteParam
      */
     public static function getQuery()
     {
-        return ServiceManagerService::getServiceManager()->get('Request')->getQuery()->toArray();
+        return ServiceLocatorService::getServiceLocator()->get('Request')->getQuery()->toArray();
     }
 
     /**
@@ -41,8 +41,8 @@ class ApplicationRouteParam
     protected static function getRouteMatch()
     {
         if (!self::$routeMatch) {
-            self::$routeMatch = ServiceManagerService::
-                    getServiceManager()->get('Application')->getMvcEvent()->getRouteMatch();
+            self::$routeMatch = ServiceLocatorService::
+                    getServiceLocator()->get('Application')->getMvcEvent()->getRouteMatch();
         }
 
         return self::$routeMatch;

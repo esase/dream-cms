@@ -4,7 +4,7 @@ namespace User\Event;
 use Application\Event\ApplicationAbstractEvent;
 use Application\Utility\ApplicationEmailNotification as EmailNotificationUtility;
 use Application\Service\ApplicationSetting as SettingService;
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use User\Service\UserIdentity as UserIdentityService;
 use Localization\Service\Localization as LocalizationService;
 
@@ -108,7 +108,7 @@ class UserEvent extends ApplicationAbstractEvent
                 ],
                 'replace' => [
                     $userInfo['nick_name'],
-                    ServiceManagerService::getServiceManager()->get('viewHelperManager')->get('url')->
+                    ServiceLocatorService::getServiceLocator()->get('viewHelperManager')->get('url')->
                             __invoke('page', ['page_name' => 'password-reset', 'slug' => $userInfo['slug']], ['force_canonical' => true]),
 
                     $activateCode
@@ -480,7 +480,7 @@ class UserEvent extends ApplicationAbstractEvent
                     ],
                     'replace' => [
                         $user['nick_name'],
-                        ServiceManagerService::getServiceManager()->get('Translator')->
+                        ServiceLocatorService::getServiceLocator()->get('Translator')->
                                 translate($roleName, 'default', LocalizationService::getLocalizations()[$notificationLanguage]['locale'])
                     ]
                 ]);

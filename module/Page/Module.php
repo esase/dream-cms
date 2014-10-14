@@ -8,10 +8,10 @@ use Localization\Service\Localization as LocalizationService;
 class Module
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    public $serviceManager;
+    public $serviceLocator;
 
     /**
      * Init
@@ -21,7 +21,7 @@ class Module
     public function init(ModuleManagerInterface $moduleManager)
     {
         // get service manager
-        $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
+        $this->serviceLocator = $moduleManager->getEvent()->getParam('ServiceManager');
     }
 
     /**
@@ -52,8 +52,9 @@ class Module
     {
         return [
             'factories' => [
-                'Page\Model\Page' => function($serviceManager) {
-                    return new Model\Page(new TableGateway('page_structure', $serviceManager->get('Zend\Db\Adapter\Adapter')));
+                'Page\Model\Page' => function() {
+                    return new Model\Page(new
+                            TableGateway('page_structure', $this->serviceLocator->get('Zend\Db\Adapter\Adapter')));
                 }
             ]
         ];
@@ -74,7 +75,7 @@ class Module
             ],
             'factories' => [
                 'pageTree' =>  function() {
-                    $model = $this->serviceManager
+                    $model = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\PageBase');
 
@@ -82,7 +83,7 @@ class Module
                             getPagesTree(LocalizationService::getCurrentLocalization()['language']));
                 },
                 'pageUserMenu' =>  function() {
-                    $model = $this->serviceManager
+                    $model = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\PageBase');
 
@@ -90,7 +91,7 @@ class Module
                             getUserMenu(LocalizationService::getCurrentLocalization()['language']));
                 },
                 'pageFooterMenu' =>  function() {
-                    $model = $this->serviceManager
+                    $model = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\PageBase');
 
@@ -98,23 +99,23 @@ class Module
                             getFooterMenu(LocalizationService::getCurrentLocalization()['language']));
                 },
                 'pageMenu' =>  function() {
-                    $model = $this->serviceManager
+                    $model = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\PageBase');
 
                     return new \Page\View\Helper\PageMenu($model->
                             getPagesTree(LocalizationService::getCurrentLocalization()['language']));
                 },
-                'pageUrl' =>  function() {
-                    $model = $this->serviceManager
+                'pageUrl' => function() {
+                    $model = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\PageBase');
 
                     return new \Page\View\Helper\PageUrl($model->
-                            getPagesMap(), $this->serviceManager->get('Config')['home_page']);
+                            getPagesMap(), $this->serviceLocator->get('Config')['home_page']);
                 },
                 'pageInjectWidget' =>  function() {
-                    $model = $this->serviceManager
+                    $model = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\PageWidget');
 

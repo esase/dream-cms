@@ -17,10 +17,10 @@ use Acl\Service\Acl as AclService;
 class ServiceTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Acl model
@@ -52,10 +52,10 @@ class ServiceTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = AclBootstrap::getServiceManager();
+        $this->serviceLocator = AclBootstrap::getServiceLocator();
 
         // get acl model
-        $this->aclModelBase = $this->serviceManager
+        $this->aclModelBase = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('Acl\Model\AclBase');
     }

@@ -12,10 +12,10 @@ use User\Event\UserEvent;
 class DeleteUserTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * User model
@@ -29,10 +29,10 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = FileManagerBootstrap::getServiceManager();
+        $this->serviceLocator = FileManagerBootstrap::getServiceLocator();
 
         // get base user model instance
-        $this->userModel = $this->serviceManager
+        $this->userModel = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('User\Model\UserBase');
     }

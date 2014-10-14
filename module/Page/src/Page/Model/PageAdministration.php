@@ -5,12 +5,63 @@ use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
 use Localization\Service\Localization as LocalizationService;
 use Page\Model\Page as PageModel;
+use Page\Utility\PageCache as PageCacheUtility;
+use Page\Event\PageEvent;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
+use Zend\Db\Sql\Expression as Expression;
 
 class PageAdministration extends PageBase
 {
+    /**
+     * Page model instance
+     * @var object  
+     */
+    protected $pageModel;
+
+    /**
+     * Get page model
+     */
+    protected function getPageModel()
+    {
+        if (!$this->pageModel) {
+            $this->pageModel = $this->serviceLocator->get('Page\Model\Page');
+        }
+
+        return $this->pageModel;
+    }
+
+    /**
+     * Delete page
+     *
+     * @param integer $pageInfo
+     *      integer id
+     *      string slug
+     *      string type
+     *      integer parent_id
+     *      integer left_key
+     *      integer right_key
+     *      integer dependent_page
+     *      string language
+     * @return boolean|string
+     */
+    public function deletePage($pageInfo)
+    {
+        $result = $this->getPageModel()->
+                deleteNode($pageInfo['left_key'], $pageInfo['right_key'], ['language' => $pageInfo['language']]);
+
+        if (true === $result) {
+            // clear cache
+            PageCacheUtility::clearLanguageSensitivePageCaches($pageInfo['language'], $pageInfo['id']);
+
+            // fire the delete page event
+            PageEvent::fireDeletePageEvent($pageInfo['id']);
+        }
+
+        return $result;
+    }
+
     /**
      * Get dependent pages
      *
@@ -56,10 +107,12 @@ class PageAdministration extends PageBase
      */
     public function getStructurePages($parentId = null, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
+        $currentLanguage = LocalizationService::getCurrentLocalization()['language'];
+
         $orderFields = [
-            'a.id',
+            'id',
             'position',
-            'a.active',
+            'active',
             'redirect'
         ];
 
@@ -95,6 +148,12 @@ class PageAdministration extends PageBase
             ->join(
                 ['c' => 'page_system_page_depend'],
                 'a.system_page = c.depend_page_id',
+                [],
+                'left'
+            )
+            ->join(
+                ['d' => 'page_structure'],
+                new Expression('c.page_id = d.system_page and d.language = ?', [$currentLanguage]),
                 [
                     'dependent_page' => 'id'
                 ],
@@ -103,7 +162,7 @@ class PageAdministration extends PageBase
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
             ->where([
-                'a.language' => LocalizationService::getCurrentLocalization()['language']
+                'a.language' => $currentLanguage
             ]);
 
         null === $parentId
@@ -115,7 +174,7 @@ class PageAdministration extends PageBase
             switch ($filters['status']) {
                 case 'active' :
                     $select->where([
-                        'active' => PageModel::PAGE_STATUS_ACTIVE
+                        'a.active' => PageModel::PAGE_STATUS_ACTIVE
                     ]);
                     break;
                 default :

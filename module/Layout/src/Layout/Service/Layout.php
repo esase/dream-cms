@@ -1,7 +1,7 @@
 <?php
 namespace Layout\Service;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 
 class Layout
 {
@@ -19,7 +19,7 @@ class Layout
     public static function getLayoutPath()
     {
         return APPLICATION_PUBLIC . '/' .
-                ServiceManagerService::getServiceManager()->get('Config')['paths']['layout'] . '/';
+                ServiceLocatorService::getServiceLocator()->get('Config')['paths']['layout'] . '/';
     }
 
     /**
@@ -29,7 +29,7 @@ class Layout
      */
     public static function getLayoutDir()
     {
-        return ServiceManagerService::getServiceManager()->get('Config')['paths']['layout'];
+        return ServiceLocatorService::getServiceLocator()->get('Config')['paths']['layout'];
     }
 
     /**
@@ -41,8 +41,8 @@ class Layout
     public static function getLayoutCachePath($type = 'css')
     {
         return APPLICATION_PUBLIC . '/' . ($type == 'css'
-                ? ServiceManagerService::getServiceManager()->get('Config')['paths']['layout_cache_css']
-                : ServiceManagerService::getServiceManager()->get('Config')['paths']['layout_cache_js']) . '/';
+                ? ServiceLocatorService::getServiceLocator()->get('Config')['paths']['layout_cache_css']
+                : ServiceLocatorService::getServiceLocator()->get('Config')['paths']['layout_cache_js']) . '/';
     }
 
     /**
@@ -54,8 +54,8 @@ class Layout
     public static function getLayoutCacheDir($type = 'css')
     {
         return ($type == 'css'
-                ? ServiceManagerService::getServiceManager()->get('Config')['paths']['layout_cache_css']
-                : ServiceManagerService::getServiceManager()->get('Config')['paths']['layout_cache_js']);
+                ? ServiceLocatorService::getServiceLocator()->get('Config')['paths']['layout_cache_css']
+                : ServiceLocatorService::getServiceLocator()->get('Config')['paths']['layout_cache_js']);
     }
 
     /**

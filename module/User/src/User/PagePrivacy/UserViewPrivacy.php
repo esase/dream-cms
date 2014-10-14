@@ -2,7 +2,7 @@
 namespace User\PagePrivacy;
 
 use Application\Utility\ApplicationRouteParam as RouteParamUtility;
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Acl\Service\Acl as AclService;
 use Page\PagePrivacy\PageAbstractPagePrivacy;
 use User\Model\UserWidget as UserWidgetModel;
@@ -21,7 +21,7 @@ class UserViewPrivacy extends PageAbstractPagePrivacy
     protected function getModel()
     {
         if (!$this->model) {
-            $this->model = ServiceManagerService::getServiceManager()
+            $this->model = ServiceLocatorService::getServiceLocator()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('User\Model\UserWidget');
         }

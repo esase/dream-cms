@@ -1,7 +1,7 @@
 <?php
 namespace User\Utility;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Service\ApplicationSetting as SettingService;
 use Acl\Service\Acl as AclService;
 use Acl\Model\AclBase as AclBaseModel;
@@ -67,7 +67,7 @@ class UserAuthenticate
         UserEvent::fireLoginEvent($userId, $nickName);
 
         if ($rememberMe) {
-            ServiceManagerService::getServiceManager()->
+            ServiceLocatorService::getServiceLocator()->
                     get('Zend\Session\SessionManager')->rememberMe((int) SettingService::getSetting('user_session_time'));
         }
     }

@@ -27,7 +27,7 @@ class UserHandler extends XmlRpcAbstractHandler
     protected function getModel()
     {
         if (!$this->model) {
-            $this->model = $this->serviceManager
+            $this->model = $this->serviceLocator
                 ->get('Application\Model\ModelManager')
                 ->getInstance('User\Model\UserXmlRpc');
         }

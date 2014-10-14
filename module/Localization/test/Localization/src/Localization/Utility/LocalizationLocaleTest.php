@@ -10,17 +10,17 @@ use IntlDateFormatter;
 class LocalizationLocaleTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Setup
      */
     protected function setUp()
     {
-        $this->serviceManager = LocalizationBootstrap::getServiceManager();
+        $this->serviceLocator = LocalizationBootstrap::getServiceLocator();
     }
 
     /**

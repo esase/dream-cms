@@ -3,7 +3,7 @@ namespace Application\Utility;
 
 use Zend\Log\Logger as Logger;
 use Zend\Log\Writer\Stream as LogWriterStream;
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Service\ApplicationSetting as SettingService;
 use User\Service\Service as UserService;
 use Application\Utility\ApplicationEmailNotification;
@@ -19,7 +19,7 @@ class ApplicationErrorLogger
     public static function log($errorMessage)
     {
         try {
-            $writer = new LogWriterStream(ServiceManagerService::getServiceManager()->get('Config')['paths']['error_log']);
+            $writer = new LogWriterStream(ServiceLocatorService::getServiceLocator()->get('Config')['paths']['error_log']);
             $logger = new Logger();
             $logger->addWriter($writer);
             $logger->err($errorMessage);

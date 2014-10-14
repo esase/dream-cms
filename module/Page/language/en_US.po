@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-10-12 14:42+0600\n"
+"PO-Revision-Date: 2014-10-14 10:27+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Selected pages have been deleted"
+msgstr "Selected pages have been deleted"
 
 msgid "Dependent pages"
 msgstr "Dependent pages"
@@ -64,6 +67,15 @@ msgstr "Sitemap"
 msgid "Page"
 msgstr "Page"
 
+msgid "Event - Deleting pages"
+msgstr "Deleting pages"
+
+msgid "Event - Page deleted by guest"
+msgstr "Guest deleted the page with id - \"%d\""
+
+msgid "Event - Page deleteted by user"
+msgstr "\"%s\" deleted the page with id - \"%d\""
+
 msgid "Event - Showing pages"
 msgstr "Showing pages"
 
@@ -75,3 +87,6 @@ msgstr "Viewing pages in admin area"
 
 msgid "ACL - Viewing dependent pages in admin area"
 msgstr "Viewing dependent pages in admin area"
+
+msgid "ACL - Deleting pages in admin area"
+msgstr "Deleting pages in admin area"

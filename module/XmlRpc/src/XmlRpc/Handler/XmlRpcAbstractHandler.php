@@ -7,10 +7,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 abstract class XmlRpcAbstractHandler
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * User identity
@@ -41,11 +41,11 @@ abstract class XmlRpcAbstractHandler
     /**
      * Class constructor
      *
-     * @param object $serviceManager
+     * @param object $serviceLocator
      */
-    public function __construct(ServiceLocatorInterface $serviceManager)
+    public function __construct(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
         $this->userIdentity = UserIdentityService::getCurrentUserIdentity();
     }
 

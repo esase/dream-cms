@@ -1,7 +1,7 @@
 <?php
 namespace XmlRpc\Utility;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use XmlRpc\Model\XmlRpcBase as XmlRpcBaseModel;
 
 class XmlRpcCache
@@ -13,7 +13,7 @@ class XmlRpcCache
      */
     public static function clearXmlRpcCache()
     {
-        return ServiceManagerService::getServiceManager()
+        return ServiceLocatorService::getServiceLocator()
                 ->get('Application\Cache\Static')->clearByTags([XmlRpcBaseModel::CACHE_XMLRPC_DATA_TAG]);
     }
 }

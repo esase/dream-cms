@@ -14,7 +14,7 @@ class ApplicationSetting
      */
     public static function getSetting($settingName, $language = null)
     {
-        $settingsModel = ApplicationServiceManager::getServiceManager()
+        $settingsModel = ApplicationServiceLocator::getServiceLocator()
            ->get('Application\Model\ModelManager')
            ->getInstance('Application\Model\ApplicationSetting');
 

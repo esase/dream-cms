@@ -1,7 +1,7 @@
 <?php
 namespace User\Service;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use User\Model\UserBase as UserBaseModel;
 
 class UserIdentity
@@ -26,7 +26,7 @@ class UserIdentity
     public static function getAuthService()
     {
         if (!self::$authService) {
-            self::$authService = ServiceManagerService::getServiceManager()->get('User\AuthService');
+            self::$authService = ServiceLocatorService::getServiceLocator()->get('User\AuthService');
         }
 
         return self::$authService;
@@ -62,7 +62,7 @@ class UserIdentity
      */
     public static function getUserInfo($userId, $field = null)
     {
-        return ServiceManagerService::getServiceManager()
+        return ServiceLocatorService::getServiceLocator()
             ->get('Application\Model\ModelManager')
             ->getInstance('User\Model\UserBase')
             ->getUserInfo($userId, $field);

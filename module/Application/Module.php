@@ -1,7 +1,7 @@
 <?php
 namespace Application;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
@@ -21,7 +21,7 @@ class Module
      * Service managerzend
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Init
@@ -31,7 +31,7 @@ class Module
     public function init(ModuleManagerInterface $moduleManager)
     {
         // get service manager
-        $this->serviceManager = $moduleManager->getEvent()->getParam('ServiceManager');
+        $this->serviceLocator = $moduleManager->getEvent()->getParam('ServiceManager');
 
         $moduleManager->getEventManager()->
             attach(ModuleEvent::EVENT_LOAD_MODULES_POST, [$this, 'initApplication']);
@@ -49,11 +49,11 @@ class Module
             }
         });
 
-        $request = $this->serviceManager->get('Request');
+        $request = $this->serviceLocator->get('Request');
 
         if (!$request instanceof ConsoleRequest) {
             // init profiler
-            $config = $this->serviceManager->get('Config');
+            $config = $this->serviceLocator->get('Config');
             if ($config['profiler']) {
                 $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, [
                     $this, 'initProfiler'
@@ -77,7 +77,7 @@ class Module
 
             // get sql profiler
             if (null !== ($sqlProfiler = $this->
-                    serviceManager->get('Zend\Db\Adapter\Adapter')->getProfiler())) {
+                    serviceLocator->get('Zend\Db\Adapter\Adapter')->getProfiler())) {
 
                 $queriesTotalTime = 0;    
                 foreach($sqlProfiler->getProfiles() as $query) {
@@ -116,9 +116,9 @@ class Module
     public function initApplication(ModuleEvent $e)
     {
         // set the service manager
-        ServiceManagerService::setServiceManager($this->serviceManager);
+        ServiceLocatorService::setServiceLocator($this->serviceLocator);
 
-        $request = $this->serviceManager->get('Request');
+        $request = $this->serviceLocator->get('Request');
 
         if (!$request instanceof ConsoleRequest) {
             // init session
@@ -135,7 +135,7 @@ class Module
     protected function initSession()
     {
         try {
-            $session = $this->serviceManager->get('Zend\Session\SessionManager');
+            $session = $this->serviceLocator->get('Zend\Session\SessionManager');
             $session->start();
             $container = new SessionContainer('initialized');
 
@@ -154,8 +154,8 @@ class Module
     protected function initPhpSettings()
     {
         try {
-            $config = $this->serviceManager->get('Config');
-    
+            $config = $this->serviceLocator->get('Config');
+
             if (!empty($config['php_settings'])) {
                 foreach($config['php_settings'] as $settingName => $settingValue) {
                     ini_set($settingName, $settingValue);
@@ -182,9 +182,9 @@ class Module
     {
         return [
             'factories' => [
-                'Zend\Session\SessionManager' => function ($serviceManager) {
+                'Zend\Session\SessionManager' => function () {
                     // get session config
-                    $config = $serviceManager->get('config');
+                    $config = $this->serviceLocator->get('config');
                     $sessionConfig = new $config['session']['config']['class']();
                     $sessionConfig->setOptions($config['session']['config']['options']);
 
@@ -195,7 +195,7 @@ class Module
                     if (!empty($config['session']['save_handler'])) {
                         // class should be fetched from service manager since it
                         // will require constructor arguments
-                        $sessionSaveHandler = $serviceManager->get($config['session']['save_handler']);
+                        $sessionSaveHandler = $this->serviceLocator->get($config['session']['save_handler']);
                     }
 
                     // get session manager
@@ -213,7 +213,7 @@ class Module
                     SessionContainer::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },
-                'Application\Cache\Static' => function ($serviceManager) {
+                'Application\Cache\Static' => function () {
                     $cache = CacheStorageFactory::factory([
                         'adapter' => [
                             'name' => 'filesystem'
@@ -227,10 +227,10 @@ class Module
                         ]
                     ]);
     
-                    $cache->setOptions($serviceManager->get('Config')['static_cache']);
+                    $cache->setOptions($this->serviceLocator->get('Config')['static_cache']);
                     return $cache;
                 },
-                'Application\Cache\Dynamic' => function ($serviceManager) {
+                'Application\Cache\Dynamic' => function() {
                     // get an active cache engine
                     $cacheEngine = SettingService::getSetting('application_dynamic_cache');
 
@@ -247,7 +247,7 @@ class Module
                         ]
                     ]);
 
-                    $cacheOptions = array_merge($serviceManager->get('Config')['dynamic_cache'], [
+                    $cacheOptions = array_merge($this->serviceLocator->get('Config')['dynamic_cache'], [
                         'ttl' => SettingService::getSetting('application_dynamic_cache_life_time')
                     ]);
 
@@ -267,12 +267,12 @@ class Module
                     $cache->setOptions($cacheOptions);
                     return $cache;
                 },
-                'Application\Model\ModelManager' => function($serviceManager) {
-                    return new Model\ApplicationModelManager($serviceManager->
-                            get('Zend\Db\Adapter\Adapter'), $serviceManager->get('Application\Cache\Static'), $serviceManager);
+                'Application\Model\ModelManager' => function() {
+                    return new Model\ApplicationModelManager($this->serviceLocator->
+                            get('Zend\Db\Adapter\Adapter'), $this->serviceLocator->get('Application\Cache\Static'));
                 },
-                'Application\Form\FormManager' => function($serviceManager) {
-                    return new Form\ApplicationFormManager($serviceManager->get('Translator'));
+                'Application\Form\FormManager' => function() {
+                    return new Form\ApplicationFormManager($this->serviceLocator->get('Translator'));
                 }
             ]
         ];
@@ -293,22 +293,22 @@ class Module
             ],
             'factories' => [
                 'applicationBooleanValue' => function() {
-                    return new \Application\View\Helper\ApplicationBooleanValue($this->serviceManager->get('Translator'));
+                    return new \Application\View\Helper\ApplicationBooleanValue($this->serviceLocator->get('Translator'));
                 },
                 'applicationAdminMenu' => function() {
-                    $adminMenu = $this->serviceManager
+                    $adminMenu = $this->serviceLocator
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Application\Model\ApplicationAdminMenu');
 
                     return new \Application\View\Helper\ApplicationAdminMenu($adminMenu->getMenu());
                 },
                 'applicationFlashMessage' => function() {
-                    $flashmessenger = $this->serviceManager
+                    $flashMessenger = $this->serviceLocator
                         ->get('ControllerPluginManager')
-                        ->get('flashmessenger');
+                        ->get('flashMessenger');
  
                     $messages = new \Application\View\Helper\ApplicationFlashMessage();
-                    $messages->setFlashMessenger($flashmessenger);
+                    $messages->setFlashMessenger($flashMessenger);
  
                     return $messages;
                 }

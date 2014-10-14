@@ -16,10 +16,10 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     protected $formName = 'test';
 
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Setup
@@ -27,7 +27,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = ApplicationBootstrap::getServiceManager();
+        $this->serviceLocator = ApplicationBootstrap::getServiceLocator();
     }
 
     /**
@@ -43,7 +43,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -56,7 +56,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -69,7 +69,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b>some content</b>'], false);
         $this->assertTrue($form->isValid());
         $values = $form->getData();
@@ -84,7 +84,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<script>alert("test")</script>some content'], false);
         $this->assertTrue($form->isValid());
         $values = $form->getData();
@@ -104,7 +104,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -117,7 +117,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -131,7 +131,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '21 мая 2014 г.'], false);
         $this->assertTrue($form->isValid());
 
@@ -145,7 +145,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '21 мая 2014 г.'], false);
         $this->assertFalse($form->isValid());
     }
@@ -163,7 +163,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -176,7 +176,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -190,7 +190,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '21 мая 2014 г.'], false);
         $this->assertTrue($form->isValid());
 
@@ -204,7 +204,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '21 мая 2014 г'], false);
         $this->assertFalse($form->isValid());
 
@@ -218,7 +218,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '2 nov. 2013'], false);
         $this->assertTrue($form->isValid());
         $values = $form->getData();
@@ -238,7 +238,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -251,7 +251,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -264,7 +264,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'http://mail.com'], false);
         $this->assertTrue($form->isValid());
 
@@ -277,7 +277,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'mail.com'], false);
         $this->assertFalse($form->isValid());
 
@@ -290,7 +290,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b>http://mail.com</b>'], false);
         $this->assertTrue($form->isValid());
 
@@ -311,7 +311,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -324,7 +324,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
 
@@ -341,7 +341,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ['1', '2']], false);
         $this->assertTrue($form->isValid());
 
@@ -357,7 +357,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ['1', '2']], false);
         $this->assertFalse($form->isValid());
     }
@@ -375,7 +375,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -388,7 +388,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
 
@@ -401,7 +401,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '1'], false);
         $this->assertTrue($form->isValid());
 
@@ -414,7 +414,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'asdsadas'], false);
         $this->assertFalse($form->isValid());
     }
@@ -432,7 +432,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -445,7 +445,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
         
@@ -462,7 +462,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ['1', '2']], false);
         $this->assertTrue($form->isValid());
 
@@ -478,7 +478,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ['1', '2']], false);
         $this->assertFalse($form->isValid());
     }
@@ -496,7 +496,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -509,7 +509,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
         
@@ -525,7 +525,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '1'], false);
         $this->assertTrue($form->isValid());
 
@@ -541,7 +541,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '2'], false);
         $this->assertFalse($form->isValid());
     }
@@ -559,7 +559,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -572,7 +572,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => ''], false);
         $this->assertFalse($form->isValid());
 
@@ -588,7 +588,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '1'], false);
         $this->assertTrue($form->isValid());
 
@@ -604,7 +604,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '2'], false);
         $this->assertFalse($form->isValid());
     }
@@ -622,7 +622,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -635,7 +635,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -648,7 +648,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
@@ -661,7 +661,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
@@ -674,7 +674,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
@@ -695,7 +695,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -708,7 +708,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -721,7 +721,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
@@ -734,7 +734,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
@@ -747,7 +747,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
@@ -768,7 +768,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -781,7 +781,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -794,7 +794,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'tester@mail.com'], false);
         $this->assertTrue($form->isValid());
 
@@ -807,7 +807,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'testermail.com'], false);
         $this->assertFalse($form->isValid());
 
@@ -820,7 +820,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b>tester@mail.com</b>'], false);
         $this->assertTrue($form->isValid());
 
@@ -841,7 +841,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -854,7 +854,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -867,7 +867,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
@@ -880,7 +880,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
@@ -893,7 +893,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
@@ -914,7 +914,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -927,7 +927,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -940,7 +940,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'some content'], false);
         $this->assertTrue($form->isValid());
 
@@ -953,7 +953,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b></b>'], false);
         $this->assertFalse($form->isValid());
 
@@ -966,7 +966,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '<b>bbb</b>'], false);
         $this->assertTrue($form->isValid());
 
@@ -987,7 +987,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -1000,7 +1000,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -1013,7 +1013,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 1], false);
         $this->assertTrue($form->isValid());
 
@@ -1026,7 +1026,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 0.5], false);
         $this->assertFalse($form->isValid());
 
@@ -1039,7 +1039,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 'some content'], false);
         $this->assertFalse($form->isValid());
     }
@@ -1057,7 +1057,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertTrue($form->isValid());
 
@@ -1070,7 +1070,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData([], false);
         $this->assertFalse($form->isValid());
 
@@ -1084,7 +1084,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => 0.5], false);
         $this->assertTrue($form->isValid());
 
@@ -1098,7 +1098,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '0,5'], false);
         $this->assertTrue($form->isValid());
 
@@ -1112,7 +1112,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '0,5'], false);
         $this->assertFalse($form->isValid());
 
@@ -1126,7 +1126,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceManager->get('Translator'));
+        $form  = new ApplicationCustomFormBuilder($this->formName, $field, $this->serviceLocator->get('Translator'));
         $form->setData(['test' => '0,5'], false);
 
         $this->assertTrue($form->isValid());

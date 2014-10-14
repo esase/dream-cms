@@ -13,10 +13,10 @@ class LocalizationBaseTest extends PHPUnit_Framework_TestCase
     protected $localization;
 
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * Config
@@ -30,13 +30,13 @@ class LocalizationBaseTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = LocalizationBootstrap::getServiceManager();
+        $this->serviceLocator = LocalizationBootstrap::getServiceLocator();
 
         // get config
-        $this->config = $this->serviceManager->get('Config');
+        $this->config = $this->serviceLocator->get('Config');
 
         // get localization instance
-        $this->localization = $this->serviceManager
+        $this->localization = $this->serviceLocator
             ->get('Application\Model\ModelManager')
             ->getInstance('Localization\Model\LocalizationBase');
     }

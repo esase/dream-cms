@@ -1,7 +1,7 @@
 <?php
 namespace Layout\Utility;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Layout\Model\LayoutBase as LayoutBaseModel;
 
 class LayoutCache
@@ -13,7 +13,7 @@ class LayoutCache
      */
     public static function clearLayoutCache()
     {
-        return ServiceManagerService::getServiceManager()->
+        return ServiceLocatorService::getServiceLocator()->
                 get('Application\Cache\Static')->clearByTags([LayoutBaseModel::CACHE_LAYOUTS_DATA_TAG]);
     }
 }

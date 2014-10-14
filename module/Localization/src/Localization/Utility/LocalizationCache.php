@@ -1,7 +1,7 @@
 <?php
 namespace Localization\Utility;
 
-use Application\Service\ApplicationServiceManager as ServiceManagerService;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Localization\Model\LocalizationBase as LocalizationBaseModel;
 
 class LocalizationCache
@@ -13,7 +13,7 @@ class LocalizationCache
      */
     public static function clearLocalizationCache()
     {
-        return ServiceManagerService::getServiceManager()->
+        return ServiceLocatorService::getServiceLocator()->
                 get('Application\Cache\Static')->clearByTags([LocalizationBaseModel::CACHE_LOCALIZATIONS_DATA_TAG]);
     }
 }

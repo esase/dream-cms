@@ -60,6 +60,53 @@ abstract class ApplicationAbstractNestedSet
     }
 
     /**
+     * Delete node
+     *
+     * @param integer $leftKey
+     * @param integer $rightKey
+     * @param array $filter
+     * @return boolean|string
+     */
+    public function deleteNode($leftKey, $rightKey, array $filter = [])
+    {
+        try {
+            $this->tableGateway->getAdapter()->getDriver()->getConnection()->beginTransaction();
+
+            $predicate = new Predicate();
+            $this->tableGateway->delete([
+                $predicate->greaterThanOrEqualTo($this->left, $leftKey),
+                $predicate->lessThanOrEqualTo($this->right, $rightKey)
+            ] + $filter);
+
+            $predicate = new Predicate();
+            $this->tableGateway->update([
+                $this->left => new Expression('IF(' . $this->left . ' > ?, ' . $this->left . ' - (? - ? + 1), ' . $this->left . ')', [
+                    $leftKey,
+                    $rightKey,
+                    $leftKey
+                ]),
+                $this->right => new Expression($this->right . ' - (? - ? + 1)', [
+                   $rightKey,
+                   $leftKey
+                ]),
+            ],
+            [
+                $predicate->greaterThan($this->right, $rightKey),
+            ] + $filter);
+
+            $this->tableGateway->getAdapter()->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->tableGateway->getAdapter()->getDriver()->getConnection()->rollback();
+            ErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
      * Insert node
      *
      * @param integer $parentLevel

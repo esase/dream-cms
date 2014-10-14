@@ -1,6 +1,7 @@
 <?php
 namespace Page\Controller;
 
+use Localization\Service\Localization as LocalizationService;
 use Application\Controller\ApplicationAbstractAdministrationController;
 use Zend\View\Model\ViewModel;
 
@@ -51,6 +52,55 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         return new ViewModel([
             'data' => $this->getModel()->getDependentPages($pageId)
         ]);
+    }
+
+    /**
+     * Delete selected pages
+     */
+    public function deletePagesAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($pagesIds = $request->getPost('pages', null))) {
+                // delete selected pages
+                foreach ($pagesIds as $pageId) {
+                    // get a page's info
+                    $pageInfo = $this->getModel()->getStructurePageInfo($pageId);
+
+                    // page contains subpages or contains dependent pages should not be deleted
+                    if (null == $pageInfo || ($pageInfo['dependent_page']
+                                || $pageInfo['right_key'] - $pageInfo['left_key'] != 1)) {
+
+                        continue;
+                    }
+
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->aclCheckPermission())) {
+                        return $result;
+                    }
+
+                    // delete the page
+                    if (true !== ($deleteResult = $this->getModel()->deletePage($pageInfo))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
+
+                        break;
+                    }
+                }
+
+                if (true === $deleteResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected pages have been deleted'));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('pages-administration', 'list', [], true);
     }
 
     /**
