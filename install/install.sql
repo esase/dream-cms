@@ -556,7 +556,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (39, 'users_view_profile', 'ACL - Viewing users profiles', 2),
 (40, 'pages_administration_list', 'ACL - Viewing pages in admin area', 5),
 (41, 'pages_administration_ajax_view_dependent_pages', 'ACL - Viewing dependent pages in admin area', 5),
-(42, 'pages_administration_delete_pages', 'ACL - Deleting pages in admin area', 5);
+(42, 'pages_administration_delete_pages', 'ACL - Deleting pages in admin area', 5),
+(43, 'pages_administration_system_pages', 'ACL - Viewing system pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1096,7 +1097,6 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `footer_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
-    `parent` SMALLINT(5) UNSIGNED DEFAULT NULL, 
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
     `order` SMALLINT(5) NOT NULL DEFAULT '0',    
@@ -1107,30 +1107,28 @@ CREATE TABLE IF NOT EXISTS `page_system` (
         ON DELETE CASCADE,
     FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    FOREIGN KEY (`parent`) REFERENCES `page_system`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE SET NULL
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `parent`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`, `user_menu_order`) VALUES
-(1,  'home', 'Home page', 5, NULL, 1, NULL, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0),
-(2,  'login', 'Login', 2, NULL, 1, 1, 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(3,  'register', 'Register', 2, NULL, 1, 1, 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(4,  'forgot', 'Account recovery', 2, NULL, NULL, 1, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(5,  'activate', 'User activate', 2, NULL, NULL, 1, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
-(6,  'password-reset', 'Password reset', 2, NULL, NULL, 1, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
-(7,  'dashboard', 'User dashboard', 2, 1, NULL, 1, 7, NULL, 2, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(8,  'delete', 'Delete your account', 2, 1, NULL, 7, 8, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2),
-(9,  'sitemap', 'Sitemap', 5, NULL, 1, 1, 9, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0),
-(10, 'user', 'User profile', 2, NULL, NULL, 1, 10, 1, 2, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL, 0),
-(11, 'edit', 'Edit account', 2, 1, NULL, 7, 11, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`, `user_menu_order`) VALUES
+(1,  'home', 'Home page', 5, NULL, 1, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0),
+(2,  'login', 'Login', 2, NULL, 1, 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(3,  'register', 'Register', 2, NULL, 1, 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(4,  'forgot', 'Account recovery', 2, NULL, NULL, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(5,  'activate', 'User activate', 2, NULL, NULL, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
+(6,  'password-reset', 'Password reset', 2, NULL, NULL, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
+(7,  'dashboard', 'User dashboard', 2, 1, NULL, 7, NULL, 2, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(8,  'delete', 'Delete your account', 2, 1, NULL, 8, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2),
+(9,  'sitemap', 'Sitemap', 5, NULL, 1, 9, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0),
+(10, 'user', 'User profile', 2, NULL, NULL, 10, 1, 2, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL, 0),
+(11, 'edit', 'Edit account', 2, 1, NULL, 11, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3);
 
 CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `depend_page_id` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `page_depend` (`page_id`, `depend_page_id`),
     FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -1140,12 +1138,23 @@ CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `page_system_page_depend` (`id`, `page_id`, `depend_page_id`) VALUES
-(1, 4, 6);
+(1, 2, 1),
+(2, 3, 1),
+(3, 4, 1),
+(4, 4, 6),
+(5, 5, 1),
+(6, 6, 1),
+(7, 7, 1),
+(8, 8, 1),
+(9, 9, 1),
+(10, 10, 1),
+(11, 11, 1);
 
 CREATE TABLE IF NOT EXISTS `page_system_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
         ON UPDATE CASCADE
@@ -1155,18 +1164,18 @@ CREATE TABLE IF NOT EXISTS `page_system_widget_depend` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`) VALUES
-(1, 2, 2),
-(2, 3, 3),
-(3, 4, 5),
-(4, 5, 4),
-(5, 6, 6),
-(6, 7, 11),
-(7, 8, 7),
-(8, 9, 8),
-(9, 7, 12),
-(10, 11, 13),
-(11, 7, 14);
+INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`, `order`) VALUES
+(1,  2,  2,  1),
+(2,  3,  3,  1),
+(3,  4,  5,  1),
+(4,  5,  4,  1),
+(5,  6,  6,  1),
+(6,  7,  11, 1),
+(7,  8,  7,  1),
+(8,  9,  8,  1),
+(9,  7,  12, 1),
+(10, 7,  14, 2),
+(11, 11, 13, 1);
 
 CREATE TABLE IF NOT EXISTS `page_widget_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1197,6 +1206,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_depend` (
     `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
     `depend_widget_id` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `widget_depend` (`widget_id`, `depend_widget_id`),
     FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,

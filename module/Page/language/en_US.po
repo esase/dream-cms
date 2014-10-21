@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-10-14 10:27+0600\n"
+"PO-Revision-Date: 2014-10-21 10:55+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,31 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Selected system pages have been added"
+msgstr "Selected system pages have been added"
+
+msgid "Home page is not defined"
+msgstr "Home page is not defined"
+
+msgid "Add a custom page"
+msgstr "Add a custom page"
+
+msgid "Add selected"
+msgstr "Add selected"
+
+msgid ""
+"Selected pages will be added to the pages tree with all their dependencies. "
+"Are you sure?"
+msgstr ""
+"Selected pages will be added to the pages tree with all their dependencies. "
+"Are you sure?"
+
+msgid "System pages"
+msgstr "System pages"
+
+msgid "Add system pages"
+msgstr "Add system pages"
 
 msgid "Selected pages have been deleted"
 msgstr "Selected pages have been deleted"
@@ -90,3 +115,6 @@ msgstr "Viewing dependent pages in admin area"
 
 msgid "ACL - Deleting pages in admin area"
 msgstr "Deleting pages in admin area"
+
+msgid "ACL - Viewing system pages in admin area"
+msgstr "Viewing system pages in admin area"

@@ -12,6 +12,16 @@ use Closure;
 abstract class ApplicationAbstractNestedSet 
 {
     /**
+     * Root right key
+     */
+    const ROOT_RIGHT_KEY = 1;
+
+    /**
+     * Root level
+     */
+    const ROOT_LEVEl = 0;
+
+    /**
      * Left key
      * @var string
      */
@@ -111,10 +121,11 @@ abstract class ApplicationAbstractNestedSet
      *
      * @param integer $parentLevel
      * @param integer $parentRightKey
-     * @apram array $data
+     * @param array $data
+     * @param array $filter
      * @return integer|string
      */
-    public function insertNode($parentLevel = 0, $parentRightKey = 1, array $data = [])
+    public function insertNode($parentLevel, $parentRightKey, array $data = [], array $filter = [])
     {
         $insertId = 0;
 
@@ -128,7 +139,7 @@ abstract class ApplicationAbstractNestedSet
                     $this->right => new Expression($this->right . ' + 2'),
                 ], [
                     (new Predicate)->greaterThan($this->left, $parentRightKey),
-                ]);
+                ] + $filter);
             }
 
             // update parent
@@ -137,7 +148,7 @@ abstract class ApplicationAbstractNestedSet
             ], [
                 (new Predicate)->greaterThanOrEqualTo($this->right, $parentRightKey),
                 (new Predicate)->lessThan($this->left, $parentRightKey)
-            ]); 
+            ] + $filter); 
 
             // insert a new node
              $this->tableGateway->insert([

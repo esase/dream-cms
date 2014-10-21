@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-10-14 10:27+0600\n"
+"PO-Revision-Date: 2014-10-21 10:55+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,31 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Selected system pages have been added"
+msgstr "Выбранные системные страницы были добавлены"
+
+msgid "Home page is not defined"
+msgstr "Главная страница не определена"
+
+msgid "Add a custom page"
+msgstr "Добавить пользовательскую страницу"
+
+msgid "Add selected"
+msgstr "Добавить выбранное"
+
+msgid ""
+"Selected pages will be added to the pages tree with all their dependencies. "
+"Are you sure?"
+msgstr ""
+"Выбранные страницы будут добавлены в дерево страниц со всеми их "
+"зависимостями. Вы уверены?"
+
+msgid "System pages"
+msgstr "Системные страницы"
+
+msgid "Add system pages"
+msgstr "Добавить системные страницы"
 
 msgid "Selected pages have been deleted"
 msgstr "Выбранные страницы были удалены"
@@ -91,3 +116,6 @@ msgstr "Просмотр зависимостей страниц в админк
 
 msgid "ACL - Deleting pages in admin area"
 msgstr "Удаление страниц в админке"
+
+msgid "ACL - Viewing system pages in admin area"
+msgstr "Просмотр системных страниц в админке"

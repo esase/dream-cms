@@ -75,13 +75,16 @@
             0 => [
                 'name' => $this->translate('Add system pages'),
                 'controller' => 'pages-administration',
-                'action' => 'add-system-pages',
-                'check_acl' => true
+                'action' => 'system-pages',
+                'check_acl' => true,
+                'queries' => [
+                    'page_id' => $this->page_id
+                ]
             ],
             1 => [
-                'name' => $this->translate('Add a page'),
+                'name' => $this->translate('Add a custom page'),
                 'controller' => 'pages-administration',
-                'action' => 'add-page',
+                'action' => 'add-custom-page',
                 'check_acl' => true
             ],
         ],
@@ -157,6 +160,7 @@
 
 <?php echo $this->partial('page/administration-partial/page-wrapper', [
     'filters' => $this->filters,
+    'add_root' => true,
     'page_id' => $this->page_id,
     'action' => $this->content,
     'action_title' => $this->translate('Pages')

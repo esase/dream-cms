@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'profiler' => true,
+    'profiler' => false,
     'php_settings' => [
         'display_startup_errors' => false,
         'display_errors' => false
@@ -11,6 +11,6 @@ return [
         'display_exceptions' => false
     ],
     'db' => [
-        'profiler' => true
+        'profiler' => false
     ]
 ];

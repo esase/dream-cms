@@ -6,6 +6,7 @@ use Localization\Service\Localization as LocalizationService;
 use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\Db\Sql\Expression as Expression;
+use Zend\Db\Sql\Predicate;
 
 class PageBase extends ApplicationAbstractBase
 {
@@ -57,15 +58,37 @@ class PageBase extends ApplicationAbstractBase
     protected static $pagesTree = [];
 
     /**
+     * Get current language
+     *
+     * @return string
+     */
+    public function getCurrentLanguage()
+    {
+       return LocalizationService::getCurrentLocalization()['language']; 
+    }
+
+    /**
      * Get structure page info
      *
      * @param integer $id
      * @param boolean $useCurrentLanguage
+     * @param boolean $defaultHome
      * @return array
      */
-    public function getStructurePageInfo($id, $useCurrentLanguage = true)
+    public function getStructurePageInfo($id, $useCurrentLanguage = true, $defaultHome = false)
     {
-        $currentLanguage = LocalizationService::getCurrentLocalization()['language'];
+        $dependentCheckSelect = $this->select();
+        $dependentCheckSelect->from(['b' => 'page_system_page_depend'])
+            ->columns([
+                'id'
+            ])
+            ->join(
+                ['c' => 'page_structure'],
+                new Expression('b.page_id = c.system_page and c.language = ?', [$this->getCurrentLanguage()]),
+                []
+            )
+            ->where(['a.system_page' => new Expression('b.depend_page_id')])
+            ->limit(1);
 
         $select = $this->select();
         $select->from(['a' => 'page_structure'])
@@ -76,29 +99,32 @@ class PageBase extends ApplicationAbstractBase
                 'parent_id',
                 'left_key',
                 'right_key',
-                'language'
+                'level',
+                'language',
+                'dependent_page' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
             ])
-            ->join(
-                ['b' => 'page_system_page_depend'],
-                'a.system_page = b.depend_page_id',
-                [],
-                'left'
-            )
-            ->join(
-                ['c' => 'page_structure'],
-                new Expression('b.page_id = c.system_page and c.language = ?', [$currentLanguage]),
-                [
-                    'dependent_page' => 'id'
-                ],
-                'left'
-            )
-            ->where([
+            ->limit(1)
+            ->order('a.parent_id desc');
+
+        if ($defaultHome) {
+            $select->where([
+                new Predicate\PredicateSet([
+                        new Predicate\Operator('a.id', '=', $id),
+                        new Predicate\Operator('a.slug', '=', $this->serviceLocator->get('Config')['home_page']),
+                    ],
+                    Predicate\PredicateSet::COMBINED_BY_OR
+                )
+            ]);
+        }
+        else {
+            $select->where([
                 'a.id' => $id
             ]);
+        }
 
         if ($useCurrentLanguage) {
             $select->where([
-                'a.language' => $currentLanguage
+                'a.language' => $this->getCurrentLanguage()
             ]);
         }
 
