@@ -1,15 +1,16 @@
 <?php
 namespace Page\Model;
 
+use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
 use Page\Model\Page as PageModel;
-use Page\Utility\PageCache as PageCacheUtility;
 use Page\Event\PageEvent;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
+use Exception;
 
 class PageAdministration extends PageBase
 {
@@ -54,41 +55,78 @@ class PageAdministration extends PageBase
      *      integer active optional
      *      string redirect_url optional
      *      integer system_page optional
-     * @return boolean|string
+     *      array widgets optional
+     *      integer layout_default_position optional
+     *      integer widget_default_layout optional
+     * @return integer|string
      */
     public function addPage($parentLevel, $parentRightKey, $parentId, $isSystemPage, $pageInfo)
     {
-        $page = [
-            'slug' => $pageInfo['slug'],
-            'module' => $pageInfo['module'],
-            'layout' => $pageInfo['layout'],
-            'parent_id' => $parentId,
-            'title' => !empty($pageInfo['title']) ? $pageInfo['title'] : null,
-            'meta_description' => !empty($pageInfo['meta_description']) ? $pageInfo['meta_description'] : null,
-            'meta_keywords' => !empty($pageInfo['meta_keywords']) ? $pageInfo['meta_keywords'] : null,
-            'user_menu' => !empty($pageInfo['user_menu']) ? $pageInfo['user_menu'] : null,
-            'user_menu_order' => !empty($pageInfo['user_menu_order']) ? $pageInfo['user_menu_order'] : 0,
-            'menu' => !empty($pageInfo['menu']) ? $pageInfo['menu'] : null,
-            'site_map' => !empty($pageInfo['site_map']) ? $pageInfo['site_map'] : null,
-            'footer_menu' => !empty($pageInfo['footer_menu']) ? $pageInfo['footer_menu'] : null,
-            'footer_menu_order' => !empty($pageInfo['footer_menu_order']) ? $pageInfo['footer_menu_order'] : 0,
-            'active' => !empty($pageInfo['active']) ? $pageInfo['active'] : null,
-            'type' => $isSystemPage ? PageModel::PAGE_TYPE_SYSTEM : PageModel::PAGE_TYPE_CUSTOM,
-            'language' => $this->getCurrentLanguage(),
-            'redirect_url' => !empty($pageInfo['redirect_url']) ? $pageInfo['redirect_url'] : null,
-            'system_page' => !empty($pageInfo['system_page']) ? $pageInfo['system_page'] : null
-        ];
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-        $result = $this->getPageModel()->
-            insertNode($parentLevel, $parentRightKey, $page, ['language' => $this->getCurrentLanguage()]);
+            $page = [
+                'slug' => $pageInfo['slug'],
+                'module' => $pageInfo['module'],
+                'layout' => $pageInfo['layout'],
+                'parent_id' => $parentId,
+                'title' => !empty($pageInfo['title']) ? $pageInfo['title'] : null,
+                'meta_description' => !empty($pageInfo['meta_description']) ? $pageInfo['meta_description'] : null,
+                'meta_keywords' => !empty($pageInfo['meta_keywords']) ? $pageInfo['meta_keywords'] : null,
+                'user_menu' => !empty($pageInfo['user_menu']) ? $pageInfo['user_menu'] : null,
+                'user_menu_order' => !empty($pageInfo['user_menu_order']) ? $pageInfo['user_menu_order'] : 0,
+                'menu' => !empty($pageInfo['menu']) ? $pageInfo['menu'] : null,
+                'site_map' => !empty($pageInfo['site_map']) ? $pageInfo['site_map'] : null,
+                'footer_menu' => !empty($pageInfo['footer_menu']) ? $pageInfo['footer_menu'] : null,
+                'footer_menu_order' => !empty($pageInfo['footer_menu_order']) ? $pageInfo['footer_menu_order'] : 0,
+                'active' => !empty($pageInfo['active']) ? $pageInfo['active'] : null,
+                'type' => $isSystemPage ? PageModel::PAGE_TYPE_SYSTEM : PageModel::PAGE_TYPE_CUSTOM,
+                'language' => $this->getCurrentLanguage(),
+                'redirect_url' => !empty($pageInfo['redirect_url']) ? $pageInfo['redirect_url'] : null,
+                'system_page' => !empty($pageInfo['system_page']) ? $pageInfo['system_page'] : null
+            ];
 
-        // add widgets
-        if (is_numeric($result)) {
-            // TODO: add widgets
-            // TODO: add system notification
+            $pageId = $this->getPageModel()->
+                insertNode($parentLevel, $parentRightKey, $page, ['language' => $this->getCurrentLanguage()], false);
+
+            if (!is_numeric($pageId)) {
+                $this->adapter->getDriver()->getConnection()->rollback();
+                return $pageId;
+            }
+
+            // add widgets
+            if (!empty($pageInfo['widgets'])) {
+                $widgetOrder = 1;
+                foreach ($pageInfo['widgets'] as $widgetId) {
+                    $insert = $this->insert()
+                        ->into('page_widget_connection')
+                        ->values([
+                            'page_id' => $pageId,
+                            'widget_id' => $widgetId,
+                            'position_id' => $pageInfo['layout_default_position'],
+                            'order' => $widgetOrder,
+                            'layout' => $pageInfo['widget_default_layout']
+                        ]);
+
+                    $statement = $this->prepareStatementForSqlObject($insert);
+                    $statement->execute();
+                    $widgetOrder++;
+                }                
+            }
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
         }
 
-        return $result;
+        // fire the add page event
+        PageEvent::fireAddPageEvent($pageId);
+
+        return $pageId;
     }
 
     /**
@@ -112,7 +150,7 @@ class PageAdministration extends PageBase
 
         if (true === $result) {
             // clear cache
-            PageCacheUtility::clearLanguageSensitivePageCaches($pageInfo['language'], $pageInfo['id']);
+            $this->clearWidgetsSettingsCache($pageInfo['id']);
 
             // fire the delete page event
             PageEvent::fireDeletePageEvent($pageInfo['id']);
@@ -150,13 +188,27 @@ class PageAdministration extends PageBase
                 'order'
             ])
             ->join(
-                ['b' => 'page_structure'],
-                new Expression('a.slug = b.slug and b.language = ?', [$this->getCurrentLanguage()]),
+                ['b' => 'page_layout'],
+                'a.layout = b.id',
+                [
+                    'layout_default_position' => 'default_position'
+                ]
+            )
+            ->join(
+                ['c' => 'page_widget_layout'],
+                new Expression('c.default  = ?', [PageWidget::DEFAULT_WIDGET_LAYOUT]),                
+                [
+                    'widget_default_layout' => 'id'
+                ]
+            )
+            ->join(
+                ['d' => 'page_structure'],
+                new Expression('a.slug = d.slug and d.language = ?', [$this->getCurrentLanguage()]),
                 [],
                 'left'
             )
             ->where->in('a.id', $pagesIds)
-            ->where->isNull('b.id');
+            ->where->isNull('d.id');
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
@@ -174,6 +226,8 @@ class PageAdministration extends PageBase
                 'footer_menu' =>  $page->footer_menu,
                 'footer_menu_order' =>  $page->footer_menu_order,
                 'layout' =>  $page->layout,
+                'layout_default_position' =>  $page->layout_default_position,
+                'widget_default_layout' => $page->widget_default_layout,
                 'order' => $page->order,
                 'system_page' => $page->id,
                 'active' => PageModel::PAGE_STATUS_ACTIVE

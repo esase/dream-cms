@@ -465,7 +465,7 @@ CREATE TABLE IF NOT EXISTS `localization_list` (
     `language` CHAR(2) NOT NULL,
     `locale` CHAR(5) NOT NULL,
     `description` VARCHAR(50) NOT NULL,
-    `default` TINYINT(1) UNSIGNED NOT NULL,
+    `default` TINYINT(1) UNSIGNED NULL,
     `direction` ENUM('rtl','ltr') NOT NULL,
     PRIMARY KEY (`language`),
     KEY `default` (`default`)
@@ -473,7 +473,7 @@ CREATE TABLE IF NOT EXISTS `localization_list` (
 
 INSERT INTO `localization_list` (`language`, `locale`, `description`, `default`, `direction`) VALUES
 ('en', 'en_US', 'English', 1, 'ltr'),
-('ru', 'ru_RU', 'Русский', 0, 'ltr');
+('ru', 'ru_RU', 'Русский', NULL, 'ltr');
 
 CREATE TABLE IF NOT EXISTS `layout_list` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -557,7 +557,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (40, 'pages_administration_list', 'ACL - Viewing pages in admin area', 5),
 (41, 'pages_administration_ajax_view_dependent_pages', 'ACL - Viewing dependent pages in admin area', 5),
 (42, 'pages_administration_delete_pages', 'ACL - Deleting pages in admin area', 5),
-(43, 'pages_administration_system_pages', 'ACL - Viewing system pages in admin area', 5);
+(43, 'pages_administration_system_pages', 'ACL - Viewing system pages in admin area', 5),
+(45, 'pages_administration_add_system_pages', 'ACL - Adding system pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -950,7 +951,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (30, 'file_manager_edit_directory', 4, 'Event - Editing directories'),
 (31, 'page_show', 5, 'Event - Showing pages'),
 (32, 'user_get_info', 2, 'Event - Getting user\'s info'),
-(33, 'page_delete', 5, 'Event - Deleting pages');
+(33, 'page_delete', 5, 'Event - Deleting pages'),
+(35, 'page_add', 5, 'Event - Adding pages');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1117,10 +1119,10 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`,
 (4,  'forgot', 'Account recovery', 2, NULL, NULL, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
 (5,  'activate', 'User activate', 2, NULL, NULL, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
 (6,  'password-reset', 'Password reset', 2, NULL, NULL, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
-(7,  'dashboard', 'User dashboard', 2, 1, NULL, 7, NULL, 2, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(7,  'dashboard', 'User dashboard', 2, 1, NULL, 7, NULL, 1, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (8,  'delete', 'Delete your account', 2, 1, NULL, 8, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2),
 (9,  'sitemap', 'Sitemap', 5, NULL, 1, 9, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0),
-(10, 'user', 'User profile', 2, NULL, NULL, 10, 1, 2, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL, 0),
+(10, 'user', 'User profile', 2, NULL, NULL, 10, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL, 0),
 (11, 'edit', 'Edit account', 2, 1, NULL, 11, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3);
 
 CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
@@ -1278,11 +1280,13 @@ CREATE TABLE IF NOT EXISTS `page_widget_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(30) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
-    PRIMARY KEY (`id`)
+    `default` TINYINT(1) UNSIGNED NULL,
+    PRIMARY KEY (`id`),
+    KEY `default` (`default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget_layout` (`id`, `name`, `title`) VALUES
-(1, 'panel', 'Panel');
+INSERT INTO `page_widget_layout` (`id`, `name`, `title`, `default`) VALUES
+(1, 'panel', 'Panel', 1);
 
 CREATE TABLE IF NOT EXISTS `page_widget_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

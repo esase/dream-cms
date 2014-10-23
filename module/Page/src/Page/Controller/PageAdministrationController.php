@@ -56,89 +56,6 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     }
 
     /**
-     * Add system pages
-     *
-     * @param array $systemPagesMap
-     * @return string|boolean
-     */
-    protected function addSystemPages($systemPagesMap)
-    {
-        // get the page info
-        $parentPage = $this->getModel()->
-                getStructurePageInfo($this->params()->fromQuery('page_id', null), true, true);
-
-        // try to find the home page in system pages map
-        if (!$parentPage) {
-            $homePageName = $this->getServiceLocator()->get('Config')['home_page'];
-            $homePage = [];
-
-            foreach ($systemPagesMap as $index => $page) {
-                if ($page['slug'] == $homePageName) {
-                    $homePage = $page;
-                    unset($systemPagesMap[$index]);
-                    break;
-                }
-            }
-
-            if (!$homePage) {
-                return 'Home page is not defined';
-            }
-
-            // check the permission and increase permission's actions track
-            if (true !== ($result = $this->aclCheckPermission())) {
-                return $result;
-            }
-
-            // add the home page
-            $homePageId = $this->getModel()->
-                    addPage(PageModel::ROOT_LEVEl, PageModel::ROOT_RIGHT_KEY, null, true, $homePage);
-
-            if (!is_numeric($homePageId)) {
-                return $homePageId;
-            }
-
-            // add sub pages
-            foreach ($systemPagesMap as $page) {
-                // check the permission and increase permission's actions track
-                if (true !== ($result = $this->aclCheckPermission())) {
-                    return $result;
-                }
-
-                // get created page info
-                $homePage = $this->getModel()->getStructurePageInfo($homePageId);
-
-                $result = $this->getModel()->
-                    addPage($homePage['level'], $homePage['right_key'], $homePage['id'], true, $page);
-
-                if (!is_numeric($result)) {
-                    return $result;
-                }
-            }
-        }
-        else {
-            // add pages
-            foreach ($systemPagesMap as $page) {
-                // check the permission and increase permission's actions track
-                if (true !== ($result = $this->aclCheckPermission())) {
-                    return $result;
-                }
-
-                $result = $this->getModel()->
-                    addPage($parentPage['level'], $parentPage['right_key'], $parentPage['id'], true, $page);
-
-                if (!is_numeric($result)) {
-                    return $result;
-                }
-
-                // get updated parent page's info
-                $parentPage = $this->getModel()->getStructurePageInfo($parentPage['id']);
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Add selected system pages
      */
     public function addSystemPagesAction()
@@ -149,22 +66,104 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             if (null !== ($pagesIds = $request->getPost('pages', null))) {
                 // get pages map
                 if (null != ($systemPagesMap = $this->getModel()->getSystemPagesMap($pagesIds))) {
-                    if (true === ($result = $this->addSystemPages($systemPagesMap))) {
-                        //TODO:clear cache!
-                        $this->flashMessenger()
-                            ->setNamespace('success')
-                            ->addMessage($this->getTranslator()->translate('Selected system pages have been added'));
+                    // get the page info
+                    $parentPage = $this->getModel()->
+                            getStructurePageInfo($this->params()->fromQuery('page_id', null), true, true);
+
+                    // try to find the home page in system pages map
+                    if (!$parentPage) {
+                        $homePageName = $this->getServiceLocator()->get('Config')['home_page'];
+                        $homePage = [];
+
+                        foreach ($systemPagesMap as $index => $page) {
+                            if ($page['slug'] == $homePageName) {
+                                $homePage = $page;
+                                unset($systemPagesMap[$index]);
+                                break;
+                            }
+                        }
+
+                        if (!$homePage) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate('Home page is not defined'));
+
+                            return $this->redirectTo('pages-administration', 'system-pages', [], true);
+                        }
+
+                        // check the permission and increase permission's actions track
+                        if (true !== ($result = $this->aclCheckPermission())) {
+                            return $result;
+                        }
+
+                        // add the home page
+                        $homePageId = $this->getModel()->
+                                addPage(PageModel::ROOT_LEVEl, PageModel::ROOT_RIGHT_KEY, null, true, $homePage);
+
+                        if (!is_numeric($homePageId)) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate($homePageId));
+
+                            return $this->redirectTo('pages-administration', 'system-pages', [], true);
+                        }
+
+                        // add sub pages
+                        foreach ($systemPagesMap as $page) {
+                            // check the permission and increase permission's actions track
+                            if (true !== ($result = $this->aclCheckPermission())) {
+                                return $result;
+                            }
+
+                            // get created page info
+                            $homePage = $this->getModel()->getStructurePageInfo($homePageId);
+
+                            $result = $this->getModel()->
+                                addPage($homePage['level'], $homePage['right_key'], $homePage['id'], true, $page);
+
+                            if (!is_numeric($result)) {
+                                $this->flashMessenger()
+                                    ->setNamespace('error')
+                                    ->addMessage($this->getTranslator()->translate($result));
+    
+                                return $this->redirectTo('pages-administration', 'system-pages', [], true);
+                            }
+                        }
                     }
                     else {
-                        $this->flashMessenger()
-                            ->setNamespace('error')
-                            ->addMessage($this->getTranslator()->translate($result));                        
+                        // add pages
+                        foreach ($systemPagesMap as $page) {
+                            // check the permission and increase permission's actions track
+                            if (true !== ($result = $this->aclCheckPermission())) {
+                                return $result;
+                            }
+
+                            $result = $this->getModel()->
+                                addPage($parentPage['level'], $parentPage['right_key'], $parentPage['id'], true, $page);
+
+                            if (!is_numeric($result)) {
+                                $this->flashMessenger()
+                                    ->setNamespace('error')
+                                    ->addMessage($this->getTranslator()->translate($result));
+    
+                                return $this->redirectTo('pages-administration', 'system-pages', [], true);
+                            }
+
+                            // get updated parent page's info
+                            $parentPage = $this->getModel()->getStructurePageInfo($parentPage['id']);
+                        }
                     }
+
+                    // clear cache
+                    $this->getModel()->clearLanguageSensitivePageCaches();
+
+                    $this->flashMessenger()
+                            ->setNamespace('success')
+                            ->addMessage($this->getTranslator()->translate('Selected system pages have been added'));                    
                 }
             }
         }
 
-        // TODO: register the acl resource
         // redirect back
         return $this->redirectTo('pages-administration', 'system-pages', [], true);
     }
@@ -207,6 +206,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 }
 
                 if (true === $deleteResult) {
+                    // clear cache
+                    $this->getModel()->clearLanguageSensitivePageCaches();
+
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Selected pages have been deleted'));

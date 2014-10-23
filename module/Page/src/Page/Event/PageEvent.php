@@ -17,6 +17,32 @@ class PageEvent extends ApplicationAbstractEvent
     const PAGE_SHOW = 'page_show';
 
     /**
+     * Add page event
+     */
+    const PAGE_ADD = 'page_add';
+
+    /**
+     * Fire add page event
+     *
+     * @param integer $pageId
+     * @return void
+     */
+    public static function fireAddPageEvent($pageId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Page added by guest'
+            : 'Event - Page added by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$pageId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $pageId];
+
+        self::fireEvent(self::PAGE_ADD, 
+                $pageId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
      * Fire delete page event
      *
      * @param integer $pageId

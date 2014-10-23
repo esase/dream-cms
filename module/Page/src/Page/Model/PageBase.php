@@ -68,6 +68,59 @@ class PageBase extends ApplicationAbstractBase
     }
 
     /**
+     * Clear language sensitive page caches
+     *
+     * @return boolean
+     */
+    public function clearLanguageSensitivePageCaches()
+    {
+        $result = true;
+        $languageSensitiveCaches = [
+            self::CACHE_USER_MENU,
+            self::CACHE_FOOTER_MENU,
+            self::CACHE_PAGES_TREE,
+            self::CACHE_WIDGETS_CONNECTIONS
+        ];
+
+        // clear language sensitive caches
+        foreach ($languageSensitiveCaches as $cacheName) {
+            $cacheName = CacheUtility::getCacheName($cacheName . $this->getCurrentLanguage());
+
+            if ($this->staticCacheInstance->hasItem($cacheName)) {
+                if (false === ($result = $this->staticCacheInstance->removeItem($cacheName))) {
+                    return $result;
+                }
+            }
+        }
+
+        // clear the whole pages map
+        $cacheName = CacheUtility::getCacheName(self::CACHE_PAGES_MAP);
+        if ($this->staticCacheInstance->hasItem($cacheName)) {
+            $result = $this->staticCacheInstance->removeItem($cacheName);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Clear widgets settings cache
+     *
+     * @param integer $pageId
+     * @return boolean
+     */
+    public function clearWidgetsSettingsCache($pageId)
+    {
+        $cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId);
+
+        // clear a page's widgets settings cache
+        if ($this->staticCacheInstance->hasItem($cacheName)) {
+            return $this->staticCacheInstance->removeItem($cacheName);
+        }
+
+        return false;
+    }
+
+    /**
      * Get structure page info
      *
      * @param integer $id

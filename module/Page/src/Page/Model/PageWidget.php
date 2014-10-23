@@ -8,6 +8,11 @@ use Application\Utility\ApplicationCache as CacheUtility;
 class PageWidget extends PageBase
 {
     /**
+     * Default widget layout
+     */
+    const DEFAULT_WIDGET_LAYOUT = 1;
+
+    /**
      * Get widgets connections
      *
      * @param string $language

@@ -75,12 +75,15 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $leftKey
      * @param integer $rightKey
      * @param array $filter
+     * @param boolean $useTransaction
      * @return boolean|string
      */
-    public function deleteNode($leftKey, $rightKey, array $filter = [])
+    public function deleteNode($leftKey, $rightKey, array $filter = [], $useTransaction = true)
     {
         try {
-            $this->tableGateway->getAdapter()->getDriver()->getConnection()->beginTransaction();
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->beginTransaction();
+            }
 
             $predicate = new Predicate();
             $this->tableGateway->delete([
@@ -104,12 +107,16 @@ abstract class ApplicationAbstractNestedSet
                 $predicate->greaterThan($this->right, $rightKey),
             ] + $filter);
 
-            $this->tableGateway->getAdapter()->getDriver()->getConnection()->commit();
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->commit();
+            }
         }
         catch (Exception $e) {
-            $this->tableGateway->getAdapter()->getDriver()->getConnection()->rollback();
-            ErrorLogger::log($e);
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->rollback();
+            }
 
+            ErrorLogger::log($e);
             return $e->getMessage();
         }
 
@@ -123,14 +130,17 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $parentRightKey
      * @param array $data
      * @param array $filter
+     * @param boolean $useTransaction
      * @return integer|string
      */
-    public function insertNode($parentLevel, $parentRightKey, array $data = [], array $filter = [])
+    public function insertNode($parentLevel, $parentRightKey, array $data = [], array $filter = [], $useTransaction = true)
     {
         $insertId = 0;
 
         try {
-            $this->tableGateway->getAdapter()->getDriver()->getConnection()->beginTransaction();
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->beginTransaction();
+            }
 
             // update child
             if ($parentLevel) {
@@ -158,12 +168,17 @@ abstract class ApplicationAbstractNestedSet
             ] + $data);
 
             $insertId = $this->tableGateway->getLastInsertValue();
-            $this->tableGateway->getAdapter()->getDriver()->getConnection()->commit();
+
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->commit();
+            }
         }
         catch (Exception $e) {
-            $this->tableGateway->getAdapter()->getDriver()->getConnection()->rollback();
-            ApplicationErrorLogger::log($e);
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->rollback();
+            }
 
+            ApplicationErrorLogger::log($e);
             return $e->getMessage();
         }
 

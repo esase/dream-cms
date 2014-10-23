@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-10-21 10:55+0600\n"
+"PO-Revision-Date: 2014-10-23 17:56+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -92,6 +92,15 @@ msgstr "Sitemap"
 msgid "Page"
 msgstr "Page"
 
+msgid "Event - Adding pages"
+msgstr "Adding pages"
+
+msgid "Event - Page added by guest"
+msgstr "Guest added the page with id - \"%d\""
+
+msgid "Event - Page added by user"
+msgstr "\"%s\" added the page with id - \"%d\""
+
 msgid "Event - Deleting pages"
 msgstr "Deleting pages"
 
@@ -118,3 +127,6 @@ msgstr "Deleting pages in admin area"
 
 msgid "ACL - Viewing system pages in admin area"
 msgstr "Viewing system pages in admin area"
+
+msgid "ACL - Adding system pages in admin area"
+msgstr "Adding system pages in admin area"
