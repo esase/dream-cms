@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-10-23 17:56+0600\n"
+"PO-Revision-Date: 2014-10-26 14:12+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,51 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Custom page has been added"
+msgstr "Custom page has been added"
+
+msgid "Meta keywords should be separated by comma"
+msgstr "Meta keywords should be separated by comma"
+
+msgid "Page is hidden for"
+msgstr "Page is hidden for"
+
+msgid "Visibility settings"
+msgstr "Visibility settings"
+
+msgid "Redirect url"
+msgstr "Redirect url"
+
+msgid "2 columns"
+msgstr "2 columns"
+
+msgid "1 column"
+msgstr "1 column"
+
+msgid "Show in the site map"
+msgstr "Show in the site map"
+
+msgid "Show in the main menu"
+msgstr "Show in the main menu"
+
+msgid "Order in the footer menu"
+msgstr "Order in the footer menu"
+
+msgid "Show in the footer menu"
+msgstr "Show in the footer menu"
+
+msgid "Order in the user menu"
+msgstr "Order in the user menu"
+
+msgid "Show in the user menu"
+msgstr "Show in the user menu"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "New custom page"
+msgstr "New custom page"
 
 msgid "Selected system pages have been added"
 msgstr "Selected system pages have been added"
@@ -130,3 +175,6 @@ msgstr "Viewing system pages in admin area"
 
 msgid "ACL - Adding system pages in admin area"
 msgstr "Adding system pages in admin area"
+
+msgid "ACL - Adding custom pages in admin area"
+msgstr "Adding custom pages in admin area"

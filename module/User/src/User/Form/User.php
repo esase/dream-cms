@@ -10,6 +10,11 @@ use User\Model\UserBase as UserBaseModel;
 class User extends ApplicationAbstractCustomForm 
 {
     /**
+     * Slug max string length
+     */
+    const SLUG_MAX_LENGTH = 100;
+
+    /**
      * Email max string length
      */
     const EMAIL_MAX_LENGTH = 50;
@@ -94,6 +99,15 @@ class User extends ApplicationAbstractCustomForm
             'category' => 'General info',
             'description' => 'Nickname description',
             'description_params' => []
+        ],
+        'slug' => [
+            'name' => 'slug',
+            'type' => ApplicationCustomFormBuilder::FIELD_SLUG,
+            'label' => 'Display name',
+            'required' => false,
+            'max_length' => self::SLUG_MAX_LENGTH,
+            'category' => 'General info',
+            'description' => 'The display name will be displayed in the browser bar'
         ],
         'email' => [
             'name' => 'email',
@@ -223,6 +237,16 @@ class User extends ApplicationAbstractCustomForm
             ];
 
             // add extra validators
+            $this->formElements['slug']['validators'] = [
+                [
+                    'name' => 'callback',
+                    'options' => [
+                        'callback' => [$this, 'validateSlug'],
+                        'message' => 'Display name already used'
+                    ]
+                ]
+            ];
+
             $this->formElements['confirm_password']['validators'] = [
                 [
                     'name' => 'callback',
@@ -336,6 +360,18 @@ class User extends ApplicationAbstractCustomForm
     {
         $this->isCaptchaEnabled = $state;
         return $this;
+    }
+
+    /**
+     * Validate slug
+     *
+     * @param $value
+     * @param array $context
+     * @return boolean
+     */
+    public function validateSlug($value, array $context = [])
+    {
+        return $this->model->isSlugFree($value, $this->userId);
     }
 
     /**

@@ -20,8 +20,8 @@ return [
                         'page' => '[0-9]+',
                         'per_page' => '[0-9]+',
                         'order_by' => '[a-z][a-z0-9-]*',
-                        'category' => '[0-9a-zA-Z-_]+',
-                        'slug'     => '[0-9a-zA-Z-_]+',
+                        'category' => '[0-9a-zA-Z-]+',
+                        'slug'     => '[0-9a-zA-Z-]+',
                         'trailing_slash' => '/'
                         
                     ],

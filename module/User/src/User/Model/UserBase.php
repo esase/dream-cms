@@ -194,6 +194,7 @@ class UserBase extends ApplicationAbstractBase
      * @param array $userInfo
      * @param array $formData
      *      string nick_name required
+     *      string slug optional
      *      string email required
      *      string password optional
      *      string time_zone optional
@@ -208,13 +209,15 @@ class UserBase extends ApplicationAbstractBase
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            // generate a new slug
             $extraValues = [
-                'slug' => $this->generateSlug($userInfo['user_id'], 
-                        $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH),
-
-                'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED
+               'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED
             ];
+
+            // generate a new slug
+            if (empty($formData['slug'])) {
+                $extraValues['slug'] = $this->
+                        generateSlug($userInfo['user_id'], $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH);
+            }
 
             // regenerate the user's password
             if (!empty($formData['password'])) {
@@ -413,6 +416,7 @@ class UserBase extends ApplicationAbstractBase
      *
      * @param array $formData
      *      string nick_name required
+     *      string slug optional
      *      string email required
      *      string password required
      *      string time_zone optional
@@ -455,13 +459,21 @@ class UserBase extends ApplicationAbstractBase
             $statement->execute();
             $insertId = $this->adapter->getDriver()->getLastGeneratedValue();
 
-            // update an api key and generate user's slug
+            // generate a new api key
+            $updateFields = [
+                'api_key' => $insertId . '_' . $this->generateRandString()
+            ];
+
+            // generate slug automatically
+            if (empty($formData['slug'])) {
+                $updateFields['slug'] = $this->generateSlug($insertId,
+                        $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH);
+            }
+
+            // update some fields
             $update = $this->update()
                 ->table('user_list')
-                ->set([
-                    'api_key' => $insertId . '_' . $this->generateRandString(),
-                    'slug' => $this->generateSlug($insertId, $formData['nick_name'], 'user_list', 'user_id', self::USER_SLUG_LENGTH)
-                ])
+                ->set($updateFields)
                 ->where([
                     'user_id' => $insertId
                 ]);
@@ -504,6 +516,35 @@ class UserBase extends ApplicationAbstractBase
     protected function generatePassword($password, $salt)
     {
         return sha1(md5($password) . $salt);
+    }
+
+    /**
+     * Is slug free
+     *
+     * @param string $slug
+     * @param integer $userId
+     * @return boolean
+     */
+    public function isSlugFree($slug, $userId = 0)
+    {
+        $select = $this->select();
+        $select->from('user_list')
+            ->columns([
+                'user_id'
+            ])
+            ->where(['slug' => $slug]);
+
+        if ($userId) {
+            $select->where([
+                new NotInPredicate('user_id', [$userId])
+            ]);
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->current() ? false : true;
     }
 
     /**

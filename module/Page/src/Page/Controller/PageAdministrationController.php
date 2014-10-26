@@ -273,6 +273,131 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     }
 
     /**
+     * Edit page action
+     */
+    public function editPageAction()
+    {
+        // get the page info
+        if (null == ($page = $this->
+                getModel()->getStructurePageInfo($this->getSlug(), true, false, true))) {
+
+            return $this->redirectTo('pages-administration', 'list');
+        }
+
+        // get a new selected page id
+        $newPageId = $this->params()->fromQuery('page_id', null);
+
+        // get the new page info
+        if ($newPageId && $newPageId != $page['id']) {
+            if (null == ($newPage =
+                    $this->getModel()->getStructurePageInfo($newPageId, true))) {
+
+                $newPageId = null;
+            }
+        }
+
+        // get a page form
+        $pageForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Page\Form\Page')
+            ->setModel($this->getModel())
+            ->setPageId($page['id'])
+            ->setSystemPage($page['system_page'])
+            ->showMainMenu(!$page['disable_menu'])
+            ->showSiteMap(!$page['disable_site_map'])
+            ->showFooterMenu(!$page['disable_footer_menu'])
+            ->showUserMenu(!$page['disable_user_menu']);
+
+        // set default values
+        $pageForm->getForm()->setData($page);
+        $request  = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $pageForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($pageForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                echo '<br><br><br><br>update';
+            }
+        }
+
+        return new ViewModel([
+            'pageForm' => $pageForm->getForm(),
+            'page_id' => $newPageId !== null ? $newPageId : $page['id']
+        ]);
+    }
+
+    /**
+     * Add a new custom page action
+     */
+    public function addCustomPageAction()
+    {
+        // get a selected page id
+        $pageId = $this->params()->fromQuery('page_id', null);
+
+        // get the page info
+        if (null == ($page =
+                $this->getModel()->getStructurePageInfo($pageId, true, true))) {
+
+            return $this->redirectTo('pages-administration', 'list');
+        }
+
+        // get a page form
+        $pageForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Page\Form\Page')
+            ->setModel($this->getModel());
+
+        $request  = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $pageForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($pageForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // add a new custom page
+                $result = $this->getModel()->addPage($page['level'],
+                        $page['right_key'], $page['id'], false, $pageForm->getForm()->getData());
+
+                if (is_numeric($result)) {
+                    // clear cache
+                    $this->getModel()->clearLanguageSensitivePageCaches();
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Custom page has been added'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('pages-administration', 'add-custom-page');
+            }
+        }
+
+        return new ViewModel([
+            'pageForm' => $pageForm->getForm(),
+            'page_id' => $page['id']
+        ]);
+    }
+
+    /**
      * List of pages
      */
     public function listAction()
@@ -286,8 +411,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         $pageId = $this->params()->fromQuery('page_id', null);
 
         // get the page info
-        if ($pageId !== null &&
-                null == ($page = $this->getModel()->getStructurePageInfo($pageId))) {
+        if ($pageId !== null
+                && null == ($page = $this->getModel()->getStructurePageInfo($pageId))) {
 
             // show the root page
             $pageId = null;
@@ -313,6 +438,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
         return new ViewModel([
+            'pages_map' => $this->getModel()->getPagesMap($this->getModel()->getCurrentLanguage()),
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,

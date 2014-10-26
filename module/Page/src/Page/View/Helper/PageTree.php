@@ -43,7 +43,6 @@ class PageTree extends AbstractHelper
     public function __construct(array $pages = [])
     {
         $this->pages = $pages;
-
     }
 
     /**

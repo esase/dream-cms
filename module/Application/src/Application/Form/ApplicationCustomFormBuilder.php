@@ -62,6 +62,16 @@ class ApplicationCustomFormBuilder extends Form
     ];
 
     /**
+     * Slug type
+     */
+    const FIELD_SLUG = 'slug';
+
+    /**
+     * Slug pattern
+     */
+    const FIELD_SLUG_PATTERN = '0-9a-z-';
+
+    /**
      * Text type
      */
     const FIELD_TEXT = 'text';
@@ -502,6 +512,22 @@ class ApplicationCustomFormBuilder extends Form
                     $this->addCaptcha($elementName, (!empty($element['label'])
                             ? $element['label'] : null), (!empty($element['category']) ? $element['category'] : null));
                     continue(2);
+
+                case self::FIELD_SLUG :
+                    $element['filters'] = array_merge((isset($element['filters']) ? $element['filters'] : []), [
+                        ['name' => 'stringToLower']
+                    ]);
+
+                    $elementValidators[] = [
+                        'name' => 'regex',
+                        'options' => [
+                            'pattern' => '/^[' . self::FIELD_SLUG_PATTERN . ']+$/i',
+                            'message' => 'You can use only latin, numeric or dashes characters'
+                        ]
+                    ];
+
+                    $elementType  = 'Text';
+                    break;
 
                 case self::FIELD_TEXT :
                 case self::FIELD_NOTIFICATION_TITLE :

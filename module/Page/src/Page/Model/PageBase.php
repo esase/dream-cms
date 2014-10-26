@@ -7,6 +7,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\Sql\Predicate;
+use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 
 class PageBase extends ApplicationAbstractBase
 {
@@ -46,6 +47,11 @@ class PageBase extends ApplicationAbstractBase
     const CACHE_PAGES_DATA_TAG = 'Page_Data_Tag';
 
     /**
+     * Page slug lengh
+     */
+    const PAGE_SLUG_LENGTH = 40;
+
+    /**
      * Pages map
      * @var array
      */
@@ -58,6 +64,12 @@ class PageBase extends ApplicationAbstractBase
     protected static $pagesTree = [];
 
     /**
+     * Page slug pattern
+     * @var string
+     */
+    protected static $pageSlugPattern = '0-9a-z_';
+
+    /**
      * Get current language
      *
      * @return string
@@ -65,6 +77,81 @@ class PageBase extends ApplicationAbstractBase
     public function getCurrentLanguage()
     {
        return LocalizationService::getCurrentLocalization()['language']; 
+    }
+
+    /**
+     * Get page layouts
+     *
+     * @return array
+     */
+    public function getPageLayouts()
+    {
+        $select = $this->select();
+        $select->from('page_layout')
+            ->columns([
+                'id',
+                'title',
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        $layouts = [];
+        foreach ($resultSet as $layout) {
+            $layouts[$layout->id] = $layout->title;
+        }
+
+        return $layouts;
+    }
+
+    /**
+     * Is slug free
+     *
+     * @param string $slug
+     * @param integer $pageId
+     * @return boolean
+     */
+    public function isSlugFree($slug, $pageId = 0)
+    {
+        // check the slug in the list of system pages
+        $select = $this->select();
+        $select->from('page_system')
+            ->columns([
+                'id'
+            ])
+            ->where(['slug' => $slug]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        if (!$resultSet->current()) {
+            // check the slug in the pages structure
+            $select = $this->select();
+            $select->from('page_structure')
+                ->columns([
+                    'id'
+                ])
+                ->where([
+                    'slug' => $slug,
+                    'language' => $this->getCurrentLanguage()
+                ]);
+
+            if ($pageId) {
+                $select->where([
+                    new NotInPredicate('id', [$pageId])
+                ]);
+            }
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+
+            return $resultSet->current() ? false : true;
+        }
+
+        return false;
     }
 
     /**
@@ -126,9 +213,10 @@ class PageBase extends ApplicationAbstractBase
      * @param integer $id
      * @param boolean $useCurrentLanguage
      * @param boolean $defaultHome
+     * @param boolean $visibilitySettings
      * @return array
      */
-    public function getStructurePageInfo($id, $useCurrentLanguage = true, $defaultHome = false)
+    public function getStructurePageInfo($id, $useCurrentLanguage = true, $defaultHome = false, $visibilitySettings = false)
     {
         $dependentCheckSelect = $this->select();
         $dependentCheckSelect->from(['b' => 'page_system_page_depend'])
@@ -148,14 +236,39 @@ class PageBase extends ApplicationAbstractBase
             ->columns([
                 'id',
                 'slug',
+                'title',
+                'meta_description',
+                'meta_keywords',
+                'module',
+                'user_menu',
+                'user_menu_order',
+                'menu',
+                'site_map',
+                'footer_menu',
+                'footer_menu_order',
+                'active',
                 'type',
-                'parent_id',
+                'language',
+                'layout',
+                'redirect_url',
                 'left_key',
                 'right_key',
                 'level',
-                'language',
+                'parent_id',
+                'system_page',
                 'dependent_page' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
             ])
+            ->join(
+                ['d' => 'page_system'],
+                'd.id = a.system_page',
+                [
+                    'disable_menu',
+                    'disable_site_map',
+                    'disable_footer_menu',
+                    'disable_user_menu'
+                ],
+                'left'
+            )
             ->limit(1)
             ->order('a.parent_id desc');
 
@@ -184,7 +297,26 @@ class PageBase extends ApplicationAbstractBase
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
-        return $result->current();
+        // get visibility settings
+        if (null != ($page = $result->current()) && $visibilitySettings) {
+            $select = $this->select();
+            $select->from('page_visibility')
+                ->columns([
+                    'hidden'
+                ])
+                ->where([
+                    'page_id' => $page['id']    
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+
+            foreach($result as $visibility) {
+                $page['visibility_settings'][] = $visibility['hidden'];
+            }
+        }
+
+        return $page;
     }
 
     /**

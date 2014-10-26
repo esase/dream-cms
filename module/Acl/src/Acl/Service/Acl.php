@@ -41,16 +41,18 @@ class Acl
      * @param boolean $excludeGuest
      * @return array
      */
-    public static function getAclRoles($excludeGuest = true)
+    public static function getAclRoles($excludeGuest = true, $excludeAdmin = false)
     {
-        if (!isset(self::$aclRoles[$excludeGuest])) {
-            self::$aclRoles[$excludeGuest] = ServiceLocatorService::getServiceLocator()
+        $paramsKey = (int) $excludeGuest . '_' . (int) $excludeAdmin;
+
+        if (!isset(self::$aclRoles[$paramsKey])) {
+            self::$aclRoles[$paramsKey] = ServiceLocatorService::getServiceLocator()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Acl\Model\AclBase')
-                ->getRolesList($excludeGuest);
+                ->getRolesList($excludeGuest, $excludeAdmin);
         }
 
-        return self::$aclRoles[$excludeGuest];
+        return self::$aclRoles[$paramsKey];
     }
 
     /**

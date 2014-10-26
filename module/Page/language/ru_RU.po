@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-10-23 17:56+0600\n"
+"PO-Revision-Date: 2014-10-26 14:12+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,54 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Custom page has been added"
+msgstr "Пользовательская страницы была добавлена"
+
+msgid "Meta keywords should be separated by comma"
+msgstr "Мета ключевые слова должны быть разделены запятой"
+
+msgid "Page is hidden for"
+msgstr "Страница скрыта для"
+
+msgid "Visibility settings"
+msgstr "Настройки видимости"
+
+msgid "Redirect url"
+msgstr "URL перенаправления"
+
+msgid "2 columns"
+msgstr "2 колонки"
+
+msgid "1 column"
+msgstr "1 колонка"
+
+msgid "Page layout"
+msgstr "Макет страницы"
+
+msgid "Show in the site map"
+msgstr "Показать на карте сайта"
+
+msgid "Show in the main menu"
+msgstr "Показать в главном меню"
+
+msgid "Order in the footer menu"
+msgstr "Сортировка в меню подвала"
+
+msgid "Show in the footer menu"
+msgstr "Показать в меню подвала"
+
+msgid "Order in the user menu"
+msgstr "Сортировка в меню пользователя"
+
+msgid "Show in the user menu"
+msgstr "Показать в меню пользователя"
+
+msgid "Navigation"
+msgstr "Навигация"
+
+msgid "New custom page"
+msgstr "Новая пользовательская страница"
 
 msgid "Selected system pages have been added"
 msgstr "Выбранные системные страницы были добавлены"
@@ -131,3 +179,6 @@ msgstr "Просмотр системных страниц в админке"
 
 msgid "ACL - Adding system pages in admin area"
 msgstr "Добавление системных страниц в админке"
+
+msgid "ACL - Adding custom pages in admin area"
+msgstr "Добавление пользовательских страниц в админке"

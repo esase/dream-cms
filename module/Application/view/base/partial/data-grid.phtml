@@ -168,6 +168,16 @@
                     <!-- regular actions -->
                     <?php if ($this->regularActionsCount) : ?>
                         <?php foreach ($this->regularActions as $action) : ?>
+                            <?php
+                                // extra check
+                                if (!empty($this->actions_extra_check['regular_actions'][$action['action']])) {
+                                    foreach ($this->actions_extra_check['regular_actions'][$action['action']] as $check) {                                        
+                                        if (false === ($result = $check())) {
+                                            continue 2;
+                                        }                           
+                                    }
+                                }
+                            ?>
                             <li>
                                 <?php if (empty($action['js'])) : ?>
                                     <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="<?php echo $this->url('application/page', ['controller' => $action['controller'], 'action' => $action['action']], ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">

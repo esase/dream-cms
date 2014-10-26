@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-10-04 13:16+0600\n"
+"PO-Revision-Date: 2014-10-26 11:52+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,18 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Display name already used"
+msgstr "Display name already used"
+
+msgid "The display name will be displayed in the browser bar"
+msgstr "The display name will be displayed in the browser bar"
+
+msgid "Display name"
+msgstr "Display name"
+
+msgid "You can use only latin, numeric or dashes characters"
+msgstr "You can use only latin, numeric or dashes characters"
 
 msgid "There are no admin pages allowed for you!"
 msgstr "There are no admin pages allowed for you!"

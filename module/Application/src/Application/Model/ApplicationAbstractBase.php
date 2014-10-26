@@ -67,12 +67,13 @@ abstract class ApplicationAbstractBase extends Sql
      * @param string $title
      * @param string $table
      * @param string $idField
-     * @param integer $slugLength 
+     * @param integer $slugLength
+     * @param array $filters
      * @param string $slugField
      * @param string $spaceDevider
      * @return string
      */
-    public function generateSlug($objectId, $title, $table, $idField, $slugLength = 60, $slugField = 'slug', $spaceDevider = '-')
+    public function generateSlug($objectId, $title, $table, $idField, $slugLength = 60, array $filters = [], $slugField = 'slug', $spaceDevider = '-')
     {
         // generate a slug
         $newSlug  = $slug = SlugUtility::slugify($title, $slugLength, $spaceDevider);
@@ -86,9 +87,12 @@ abstract class ApplicationAbstractBase extends Sql
                     $slugField
                 ])
                 ->where([
-                    $slugField => $newSlug,
-                    new NotInPredicate($idField, [$objectId])
-                ]);
+                    $slugField => $newSlug                    
+                ] + $filters);
+
+            $select->where([
+                new NotInPredicate($idField, [$objectId])
+            ]);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;

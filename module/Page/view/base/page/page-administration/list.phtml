@@ -85,7 +85,10 @@
                 'name' => $this->translate('Add a custom page'),
                 'controller' => 'pages-administration',
                 'action' => 'add-custom-page',
-                'check_acl' => true
+                'check_acl' => true,
+                'queries' => [
+                    'page_id' => $this->page_id
+                ]
             ],
         ],
         'multiple_actions' => [
@@ -131,6 +134,13 @@
         ]
     ],
     'actions_extra_check' => [
+        'regular_actions' => [
+            'add-custom-page' => [
+                0 => function() use ($pages_map) {
+                    return count($pages_map)  > 0;
+                }
+            ]
+        ],
         'multiple_actions' => [
             'deletable' => [
                 'function' => function($data) {

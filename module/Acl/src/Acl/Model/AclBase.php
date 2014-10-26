@@ -65,9 +65,10 @@ class AclBase extends ApplicationAbstractBase
      * Get list of all roles
      *
      * @param boolean $excludeGuest
+     * @param boolean $excludeAdmin
      * @return array
      */
-    public function getRolesList($excludeGuest = true)
+    public function getRolesList($excludeGuest = true, $excludeAdmin = false)
     {
         $rolesList = [];
 
@@ -81,6 +82,12 @@ class AclBase extends ApplicationAbstractBase
         if ($excludeGuest) {
             $select->where([
                 new NotInPredicate('id', [self::DEFAULT_ROLE_GUEST])
+            ]);
+        }
+
+        if ($excludeAdmin) {
+            $select->where([
+                new NotInPredicate('id', [self::DEFAULT_ROLE_ADMIN])
             ]);
         }
 

@@ -558,7 +558,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (41, 'pages_administration_ajax_view_dependent_pages', 'ACL - Viewing dependent pages in admin area', 5),
 (42, 'pages_administration_delete_pages', 'ACL - Deleting pages in admin area', 5),
 (43, 'pages_administration_system_pages', 'ACL - Viewing system pages in admin area', 5),
-(45, 'pages_administration_add_system_pages', 'ACL - Adding system pages in admin area', 5);
+(45, 'pages_administration_add_system_pages', 'ACL - Adding system pages in admin area', 5),
+(46, 'pages_administration_add_custom_page', 'ACL - Adding custom pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1101,7 +1102,6 @@ CREATE TABLE IF NOT EXISTS `page_system` (
     `footer_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
-    `order` SMALLINT(5) NOT NULL DEFAULT '0',    
     PRIMARY KEY (`id`),
     UNIQUE (`slug`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
@@ -1112,18 +1112,18 @@ CREATE TABLE IF NOT EXISTS `page_system` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `order`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`, `user_menu_order`) VALUES
-(1,  'home', 'Home page', 5, NULL, 1, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0),
-(2,  'login', 'Login', 2, NULL, 1, 2, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(3,  'register', 'Register', 2, NULL, 1, 3, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(4,  'forgot', 'Account recovery', 2, NULL, NULL, 4, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
-(5,  'activate', 'User activate', 2, NULL, NULL, 5, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
-(6,  'password-reset', 'Password reset', 2, NULL, NULL, 6, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
-(7,  'dashboard', 'User dashboard', 2, 1, NULL, 7, NULL, 1, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(8,  'delete', 'Delete your account', 2, 1, NULL, 8, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2),
-(9,  'sitemap', 'Sitemap', 5, NULL, 1, 9, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0),
-(10, 'user', 'User profile', 2, NULL, NULL, 10, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL, 0),
-(11, 'edit', 'Edit account', 2, 1, NULL, 11, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`, `user_menu_order`) VALUES
+(1,  'home', 'Home page', 5, NULL, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0),
+(2,  'login', 'Login', 2, NULL, 1, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(3,  'register', 'Register', 2, NULL, 1, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(4,  'forgot', 'Account recovery', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0),
+(5,  'activate', 'User activate', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
+(6,  'password-reset', 'Password reset', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0),
+(7,  'dashboard', 'User dashboard', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(8,  'delete', 'Delete your account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2),
+(9,  'sitemap', 'Sitemap', 5, NULL, 1, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0),
+(10, 'user', 'User profile', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, NULL, 1, NULL, 0),
+(11, 'edit', 'Edit account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3);
 
 CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1177,7 +1177,9 @@ INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`, `order`) 
 (8,  9,  8,  1),
 (9,  7,  12, 1),
 (10, 7,  14, 2),
-(11, 11, 13, 1);
+(11, 11, 13, 1),
+(12, 10, 9, 2),
+(13, 10, 10, 1);
 
 CREATE TABLE IF NOT EXISTS `page_widget_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -21,6 +21,11 @@ class PageAdministration extends PageBase
     protected $pageModel;
 
     /**
+     * Default pages module
+     */
+    const DEFAULT_PAGES_MODULE = 'Page';
+
+    /**
      * Get page model
      */
     protected function getPageModel()
@@ -33,17 +38,59 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Get basic page fields
+     *
+     * @param array $pageInfo
+     * @return array
+     */
+    protected function getBasicPageFields(array $pageInfo)
+    {
+        $defaultValues = [
+            'slug' => '',
+            'user_menu_order' => 0,
+            'footer_menu_order' => 0
+        ];
+
+        $basicFields = [
+            'slug',
+            'module',
+            'layout',
+            'title',
+            'meta_description',
+            'meta_keywords',
+            'user_menu',
+            'user_menu_order',
+            'menu',
+            'site_map',
+            'footer_menu',
+            'footer_menu_order',
+            'active',
+            'redirect_url',
+            'system_page'
+        ];
+
+        $processedFields = [];
+        foreach ($basicFields as $name) {
+            $processedFields[$name] = !empty($pageInfo[$name])
+                ? $pageInfo[$name]
+                : (isset($defaultValues[$name]) ? $defaultValues[$name] : null);
+        }
+
+        return $processedFields;
+    }
+
+    /**
      * Add page
      *
      * @param integer $parentLevel
      * @param integer $parentRightKey
      * @param boolean $isSystemPage
      * @param string $type
-     * @param array $page
-     *      string slug required
-     *      integer module required
+     * @param array $pageInfo
      *      integer layout required
-     *      string title optional
+     *      string title optional|required for custom pages
+     *      string slug optional|required for system pages
+     *      integer module optional
      *      string meta_description optional
      *      string meta_keywords optional
      *      integer user_menu optional
@@ -56,8 +103,9 @@ class PageAdministration extends PageBase
      *      string redirect_url optional
      *      integer system_page optional
      *      array widgets optional
-     *      integer layout_default_position optional
+     *      integer layout_default_position optional|required if widgets is not empty
      *      integer widget_default_layout optional
+     *      array visibility_settings optional
      * @return integer|string
      */
     public function addPage($parentLevel, $parentRightKey, $parentId, $isSystemPage, $pageInfo)
@@ -65,27 +113,18 @@ class PageAdministration extends PageBase
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            $page = [
-                'slug' => $pageInfo['slug'],
-                'module' => $pageInfo['module'],
-                'layout' => $pageInfo['layout'],
+            $page = array_merge($this->getBasicPageFields($pageInfo), [
                 'parent_id' => $parentId,
-                'title' => !empty($pageInfo['title']) ? $pageInfo['title'] : null,
-                'meta_description' => !empty($pageInfo['meta_description']) ? $pageInfo['meta_description'] : null,
-                'meta_keywords' => !empty($pageInfo['meta_keywords']) ? $pageInfo['meta_keywords'] : null,
-                'user_menu' => !empty($pageInfo['user_menu']) ? $pageInfo['user_menu'] : null,
-                'user_menu_order' => !empty($pageInfo['user_menu_order']) ? $pageInfo['user_menu_order'] : 0,
-                'menu' => !empty($pageInfo['menu']) ? $pageInfo['menu'] : null,
-                'site_map' => !empty($pageInfo['site_map']) ? $pageInfo['site_map'] : null,
-                'footer_menu' => !empty($pageInfo['footer_menu']) ? $pageInfo['footer_menu'] : null,
-                'footer_menu_order' => !empty($pageInfo['footer_menu_order']) ? $pageInfo['footer_menu_order'] : 0,
-                'active' => !empty($pageInfo['active']) ? $pageInfo['active'] : null,
                 'type' => $isSystemPage ? PageModel::PAGE_TYPE_SYSTEM : PageModel::PAGE_TYPE_CUSTOM,
-                'language' => $this->getCurrentLanguage(),
-                'redirect_url' => !empty($pageInfo['redirect_url']) ? $pageInfo['redirect_url'] : null,
-                'system_page' => !empty($pageInfo['system_page']) ? $pageInfo['system_page'] : null
-            ];
+                'language' => $this->getCurrentLanguage()
+            ]);
 
+            // get default pages module
+            if (empty($page['module'])) {
+                $page['module'] = $this->getModuleInfo(self::DEFAULT_PAGES_MODULE)['id'];
+            }
+
+            // add a page
             $pageId = $this->getPageModel()->
                 insertNode($parentLevel, $parentRightKey, $page, ['language' => $this->getCurrentLanguage()], false);
 
@@ -94,7 +133,38 @@ class PageAdministration extends PageBase
                 return $pageId;
             }
 
-            // add widgets
+            // generate a new page slug automatically
+            if (!$isSystemPage && empty($page['slug'])) {
+                $update = $this->update()
+                    ->table('page_structure')
+                    ->set([
+                        'slug' => $this->generateSlug($pageId, $page['title'],
+                                'page_structure', 'id', self::PAGE_SLUG_LENGTH, ['language' => $this->getCurrentLanguage()])
+                    ])
+                    ->where([
+                        'id' => $pageId
+                    ]);
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();    
+            }
+
+            // add visibility settings
+            if (!empty($pageInfo['visibility_settings'])) {
+                foreach ($pageInfo['visibility_settings'] as $aclRoleId) {
+                    $insert = $this->insert()
+                        ->into('page_visibility')
+                        ->values([
+                            'page_id' => $pageId,
+                            'hidden' => $aclRoleId
+                        ]);
+
+                    $statement = $this->prepareStatementForSqlObject($insert);
+                    $statement->execute();
+                }
+            }
+
+            // add dependent widgets
             if (!empty($pageInfo['widgets'])) {
                 $widgetOrder = 1;
                 foreach ($pageInfo['widgets'] as $widgetId) {
@@ -125,7 +195,6 @@ class PageAdministration extends PageBase
 
         // fire the add page event
         PageEvent::fireAddPageEvent($pageId);
-
         return $pageId;
     }
 
@@ -164,9 +233,10 @@ class PageAdministration extends PageBase
      *
      * @param array $pagesIds
      * @param array $dependentPagesFilter
+     * @param integer $order
      * @return array
      */
-    protected function getDependentSystemPages(array $pagesIds, array $dependentPagesFilter = [])
+    protected function getDependentSystemPages(array $pagesIds, array $dependentPagesFilter = [], $order = 0)
     {
         // we need to get recursively all selected pages and their dependent pages
         $pages = [];
@@ -184,8 +254,7 @@ class PageAdministration extends PageBase
                 'site_map',
                 'footer_menu',
                 'footer_menu_order',
-                'layout',                
-                'order'
+                'layout'
             ])
             ->join(
                 ['b' => 'page_layout'],
@@ -228,7 +297,7 @@ class PageAdministration extends PageBase
                 'layout' =>  $page->layout,
                 'layout_default_position' =>  $page->layout_default_position,
                 'widget_default_layout' => $page->widget_default_layout,
-                'order' => $page->order,
+                'order' => $order,
                 'system_page' => $page->id,
                 'active' => PageModel::PAGE_STATUS_ACTIVE
             ];
@@ -271,7 +340,8 @@ class PageAdministration extends PageBase
 
             // get dependent pages
             if ($dependentPagesIds) {
-                $pages = $pages + $this->getDependentSystemPages($dependentPagesIds, $dependentPagesFilter);
+                $pages = $pages + $this->
+                        getDependentSystemPages($dependentPagesIds, $dependentPagesFilter, $order + 1);
             }
         }
 
@@ -373,7 +443,7 @@ class PageAdministration extends PageBase
                     return 0;
                 }
 
-                return ($a['order'] < $b['order']) ? -1 : 1;
+                return ($a['order'] > $b['order']) ? -1 : 1;
             });
 
             // get list of widgets
