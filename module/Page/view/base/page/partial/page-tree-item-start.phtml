@@ -1,5 +1,5 @@
 <li>
-    <?php if (!$this->active) : ?>
+    <?php if (!$this->active && !$this->disabled_tree) : ?>
         <a href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->applicationRoute()->getParam('slug')], ['force_canonical' => true, 'query' => ['page_id' => $this->page_id] + $this->filters]) ?>">
             <?php echo $this->title ?>
         </a>

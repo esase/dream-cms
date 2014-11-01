@@ -559,7 +559,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (42, 'pages_administration_delete_pages', 'ACL - Deleting pages in admin area', 5),
 (43, 'pages_administration_system_pages', 'ACL - Viewing system pages in admin area', 5),
 (45, 'pages_administration_add_system_pages', 'ACL - Adding system pages in admin area', 5),
-(46, 'pages_administration_add_custom_page', 'ACL - Adding custom pages in admin area', 5);
+(46, 'pages_administration_add_custom_page', 'ACL - Adding custom pages in admin area', 5),
+(47, 'pages_administration_edit_page', 'ACL - Editing pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -941,19 +942,20 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (18, 'user_add', 2, 'Event - Adding users'),
 (19, 'user_edit', 2, 'Event - Editing users'),
 (20, 'application_send_email_notification', 1, 'Event - Sending email notifications'),
-(22, 'user_reset_password', 2, 'Event - Resetting users passwords'),
-(23, 'user_reset_password_request', 2, 'Event - Requesting reset users passwords'),
-(24, 'user_edit_role', 2, 'Event - Editing users roles'),
-(25, 'file_manager_delete_file', 4, 'Event - Deleting files'),
-(26, 'file_manager_add_directory', 4, 'Event - Adding directories'),
-(27, 'file_manager_delete_directory', 4, 'Event - Deleting directories'),
-(28, 'file_manager_add_file', 4, 'Event - Adding files'),
-(29, 'file_manager_edit_file', 4, 'Event - Editing files'),
-(30, 'file_manager_edit_directory', 4, 'Event - Editing directories'),
-(31, 'page_show', 5, 'Event - Showing pages'),
-(32, 'user_get_info', 2, 'Event - Getting user\'s info'),
-(33, 'page_delete', 5, 'Event - Deleting pages'),
-(35, 'page_add', 5, 'Event - Adding pages');
+(21, 'user_reset_password', 2, 'Event - Resetting users passwords'),
+(22, 'user_reset_password_request', 2, 'Event - Requesting reset users passwords'),
+(23, 'user_edit_role', 2, 'Event - Editing users roles'),
+(24, 'file_manager_delete_file', 4, 'Event - Deleting files'),
+(25, 'file_manager_add_directory', 4, 'Event - Adding directories'),
+(26, 'file_manager_delete_directory', 4, 'Event - Deleting directories'),
+(27, 'file_manager_add_file', 4, 'Event - Adding files'),
+(28, 'file_manager_edit_file', 4, 'Event - Editing files'),
+(29, 'file_manager_edit_directory', 4, 'Event - Editing directories'),
+(30, 'page_show', 5, 'Event - Showing pages'),
+(31, 'user_get_info', 2, 'Event - Getting user\'s info'),
+(32, 'page_delete', 5, 'Event - Deleting pages'),
+(33, 'page_add', 5, 'Event - Adding pages'),
+(34, 'page_edit', 5, 'Event - Editing pages');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

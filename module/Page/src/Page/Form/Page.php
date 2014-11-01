@@ -1,6 +1,7 @@
 <?php
 namespace Page\Form;
 
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
 use Acl\Service\Acl as AclService;
@@ -76,16 +77,29 @@ class Page extends ApplicationAbstractCustomForm
     protected $model;
 
     /**
-     * Page id
-     * @var integer
+     * Page info
+     * @var array
      */
-    protected $pageId;
+    protected $pageInfo = [];
+
+    /**
+     * Page parent
+     * @var array
+     */
+    protected $pageParent = [];
 
     /**
      * Form elements
      * @var array
      */
     protected $formElements = [
+        'custom_validate' => [
+            'name' => 'custom_validate',
+            'type' => ApplicationCustomFormBuilder::FIELD_HIDDEN,
+            'value' => 1,
+            'required' => true,
+            'category' => 'General info'
+        ],
         'title' => [
             'name' => 'title',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
@@ -193,6 +207,26 @@ class Page extends ApplicationAbstractCustomForm
             'values' => [],
             'category' => 'Visibility settings'
         ],
+        'page_direction' => [
+            'name' => 'page_direction',
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
+            'label' => 'Direction',
+            'required' => true,
+            'value' => 'after',
+            'values' => [
+                'before' => 'Before',
+                'after' => 'After'
+            ],
+            'category' => 'Page position'
+        ],
+        'page' => [
+            'name' => 'page',
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
+            'label' => 'Page',
+            'required' => true,
+            'values' => [],
+            'category' => 'Page position'
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
@@ -246,9 +280,30 @@ class Page extends ApplicationAbstractCustomForm
                 ];
             }
 
+            if ($this->pageInfo) {
+                // add extra validators
+                $this->formElements['custom_validate']['validators'] = [
+                    [
+                        'name' => 'callback',
+                        'options' => [
+                            'callback' => [$this, 'validatePage'],
+                            'message' => 'You cannot move the page into self or into its child pages'
+                        ]
+                    ]
+                ];
+            }
+
             // fill the form with default values
             $this->formElements['layout']['values'] = $this->model->getPageLayouts();
             $this->formElements['visibility_settings']['values'] = AclService::getAclRoles(false, true);
+
+            if (null != ($pages = $this->getPages())) {
+                $this->formElements['page']['values'] = $pages;
+            }
+            else {
+                unset($this->formElements['page']);
+                unset($this->formElements['page_direction']);
+            }
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
@@ -257,6 +312,57 @@ class Page extends ApplicationAbstractCustomForm
         return $this->form;
     }
   
+    /**
+     * Get pages
+     *
+     * @return array
+     */
+    protected function getPages()
+    {
+       $pages = [];
+
+       if ($this->pageParent) {
+            if (false !== ($childrenPages =
+                    $this->model->getAllPageStructureChildren($this->pageParent['id']))) {
+
+                $activePageId = null;
+                $currentDefined = false;
+
+                foreach ($childrenPages as $children) {
+                    // don't draw current page
+                    if (!empty($this->pageInfo) && $this->pageInfo['id'] == $children['id']) {
+                        $currentDefined = true;
+                        continue;
+                    }
+
+                    $pageOptions = [
+                        'title' => $children['title'],
+                        'system_title' => $children['system_title'],
+                        'type' => $children['type']
+                    ];
+
+                    if (!$currentDefined) {
+                        $activePageId = $children['id'];
+                    }
+                    else if ($currentDefined && !$activePageId) {
+                        $activePageId = $children['id'];
+                        $this->formElements['page_direction']['value'] = 'before';
+                    }
+
+                    $pages[$children['id']] =  ServiceLocatorService::
+                            getServiceLocator()->get('viewHelperManager')->get('pageTitle')->__invoke($pageOptions);
+                }
+
+                // set dfault value
+                if ($activePageId) {
+                    $this->formElements['page']['value'] = $activePageId;
+                }
+            }
+       }
+
+       return $pages;
+    }
+
     /**
      * Set a model
      *
@@ -330,15 +436,44 @@ class Page extends ApplicationAbstractCustomForm
     }
 
     /**
-     * Set a page id
+     * Set page info
      *
-     * @param integer $userId
+     * @param array $pageInfo
      * @return object fluent interface
      */
-    public function setPageId($pageId)
+    public function setPageInfo(array $pageInfo)
     {
-        $this->pageId = $pageId;
+        $this->pageInfo = $pageInfo;
         return $this;
+    }
+
+    /**
+     * Set page parent
+     *
+     * @param array $pageParent
+     * @return object fluent interface
+     */
+    public function setPageParent(array $pageParent)
+    {
+        $this->pageParent = $pageParent;
+        return $this;
+    }
+
+    /**
+     * Validate page
+     *
+     * @param $value
+     * @param array $context
+     * @return boolean
+     */
+    public function validatePage($value, array $context = [])
+    {
+        if (!$this->pageInfo || !$this->pageParent) {
+            return true;
+        }
+
+        return $this->model->isPageMovable($this->pageInfo['left_key'],
+                $this->pageInfo['right_key'], $this->pageInfo['level'], $this->pageParent['left_key']);
     }
 
     /**
@@ -350,6 +485,6 @@ class Page extends ApplicationAbstractCustomForm
      */
     public function validateSlug($value, array $context = [])
     {
-        return $this->model->isSlugFree($value, $this->pageId);
+        return $this->model->isSlugFree($value, $this->pageInfo['id']);
     }
 }

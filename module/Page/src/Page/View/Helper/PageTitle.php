@@ -1,7 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
-use Page\Model\Page as PageModel;
+use Page\Model\PageNestedSet;
 use Zend\View\Helper\AbstractHelper;
 
 class PageTitle extends AbstractHelper
@@ -17,7 +17,7 @@ class PageTitle extends AbstractHelper
      */
     public function __invoke($options)
     {
-        return PageModel::PAGE_TYPE_SYSTEM == $options['type']
+        return PageNestedSet::PAGE_TYPE_SYSTEM == $options['type']
             ? $this->getView()->translate($options['system_title']) 
             : $this->getView()->escapeHtml($options['title']);
     }

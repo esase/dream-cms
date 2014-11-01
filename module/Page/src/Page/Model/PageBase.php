@@ -64,10 +64,33 @@ class PageBase extends ApplicationAbstractBase
     protected static $pagesTree = [];
 
     /**
-     * Page slug pattern
-     * @var string
+     * Page model instance
+     * @var object  
      */
-    protected static $pageSlugPattern = '0-9a-z_';
+    protected $pageModel;
+
+    /**
+     * Get page model
+     */
+    protected function getPageModel()
+    {
+        if (!$this->pageModel) {
+            $this->pageModel = $this->serviceLocator->get('Page\Model\PageNestedSet');
+        }
+
+        return $this->pageModel;
+    }
+
+    /**
+     * Get all page structure children
+     *
+     * @param integer $pageId
+     * @return array|boolean
+     */
+    public function getAllPageStructureChildren($pageId)
+    {
+        return $this->getPageModel()->getAllPageChildren($pageId);
+    }
 
     /**
      * Get current language
@@ -103,6 +126,47 @@ class PageBase extends ApplicationAbstractBase
         }
 
         return $layouts;
+    }
+
+    /**
+     * Get page layout
+     *
+     * @param integer $layoutId
+     * @return array|boolean
+     */
+    public function getPageLayout($layoutId)
+    {
+        $select = $this->select();
+        $select->from('page_layout')
+            ->columns([
+                'id',
+                'title',
+                'name',
+                'default_position'
+            ])
+            ->where([
+                'id' => $layoutId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->current()
+            ? (array) $resultSet->current()
+            : false;
+    }
+
+    /**
+     * Is page movable
+     *
+     * @param string $slug
+     * @param integer $pageId
+     * @return boolean
+     */
+    public function isPageMovable($leftKey, $rightKey, $level, $parentLeft)
+    {
+        return $this->getPageModel()->isNodeMovable($leftKey, $rightKey, $level, $parentLeft);
     }
 
     /**
@@ -214,7 +278,7 @@ class PageBase extends ApplicationAbstractBase
      * @param boolean $useCurrentLanguage
      * @param boolean $defaultHome
      * @param boolean $visibilitySettings
-     * @return array
+     * @return array|boolean
      */
     public function getStructurePageInfo($id, $useCurrentLanguage = true, $defaultHome = false, $visibilitySettings = false)
     {
@@ -262,6 +326,7 @@ class PageBase extends ApplicationAbstractBase
                 ['d' => 'page_system'],
                 'd.id = a.system_page',
                 [
+                    'system_title' => 'title',
                     'disable_menu',
                     'disable_site_map',
                     'disable_footer_menu',
@@ -316,7 +381,7 @@ class PageBase extends ApplicationAbstractBase
             }
         }
 
-        return $page;
+        return $page ? $page : false;
     }
 
     /**
@@ -350,7 +415,7 @@ class PageBase extends ApplicationAbstractBase
                     'left'
                 )
                 ->where([
-                    'a.user_menu' => Page::PAGE_IN_USER_MENU,
+                    'a.user_menu' => PageNestedSet::PAGE_IN_USER_MENU,
                     'a.language' => $language
                 ])
                 ->order('a.user_menu_order');
@@ -400,7 +465,7 @@ class PageBase extends ApplicationAbstractBase
                     'left'
                 )
                 ->where([
-                    'a.footer_menu' => Page::PAGE_IN_FOOTER_MENU,
+                    'a.footer_menu' => PageNestedSet::PAGE_IN_FOOTER_MENU,
                     'a.language' => $language
                 ])
                 ->order('a.footer_menu_order');

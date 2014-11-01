@@ -1,6 +1,7 @@
 <?php $this->declareVars('subPageTitle') ?>
 <?php $this->subPageTitle = $this->translate('Edit the page') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->pageTitle($this->page)) ?>
 <?php $this->headTitle($this->translate('List of pages')) ?>
 
 <!-- render a header -->
@@ -22,7 +23,7 @@
             'check_acl' => true
         ],
         'edit_page' => [
-            'name' => $this->subPageTitle,
+            'name' => $this->pageTitle($this->page) . ' - ' . $this->subPageTitle,
             'controller' => 'pages-administration',
             'action' => 'edit-page',
             'check_acl' => true
@@ -33,6 +34,7 @@
 <?php echo $this->partial('page/administration-partial/page-wrapper', [
     'filters' => [],
     'add_root' => false,
+    'tree_disabled' => $this->tree_disabled,
     'page_id' => $this->page_id,
     'action' => $this->partial('partial/form', ['form' => $this->pageForm]),
     'action_title' => $this->translate('Edit the page')

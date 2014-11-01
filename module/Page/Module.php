@@ -52,8 +52,8 @@ class Module
     {
         return [
             'factories' => [
-                'Page\Model\Page' => function() {
-                    return new Model\Page(new
+                'Page\Model\PageNestedSet' => function() {
+                    return new Model\PageNestedSet(new
                             TableGateway('page_structure', $this->serviceLocator->get('Zend\Db\Adapter\Adapter')));
                 }
             ]

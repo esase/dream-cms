@@ -458,7 +458,7 @@ class ApplicationCustomFormBuilder extends Form
 
                 case self::FIELD_INTEGER :
                     $elementValidators[] = [
-                        'name' => 'digits'
+                        'name' => 'int'
                     ];
 
                     $elementType = 'Text';

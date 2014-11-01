@@ -2,7 +2,7 @@
 namespace Page\View\Widget;
 
 use Localization\Service\Localization as LocalizationService;
-use Page\Model\Page as PageModel;
+use Page\Model\PageNestedSet;
 
 class PageSiteMapWidget extends PageAbstractWidget
 {
@@ -82,7 +82,7 @@ class PageSiteMapWidget extends PageAbstractWidget
 
         // process sitemap items
         foreach ($pages as $pageName => $pageOptions) {
-            if ($pageOptions['site_map'] == PageModel::PAGE_IN_SITEMAP) {
+            if ($pageOptions['site_map'] == PageNestedSet::PAGE_IN_SITEMAP) {
                 // get a page url
                 if (false !== ($pageUrl = $this->getView()->pageUrl($pageName))) {
                     $sitemap .= $this->getView()->partial('page/widget/sitemap-item-start', [

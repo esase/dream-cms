@@ -12,7 +12,7 @@
         <?php echo $this->partial('administration-partial/panel', [
             'notification' => false,
             'title' => $this->translate('Pages tree'),
-            'body' => $this->pageTree($this->pagesTreeId, $this->page_id, $this->add_root, $this->filters)
+            'body' => $this->pageTree($this->pagesTreeId, $this->page_id, $this->add_root, $this->filters, $this->tree_disabled)
         ]) ?>
     </div>
     <div class="col-md-8">

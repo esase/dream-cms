@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-10-26 14:12+0600\n"
+"PO-Revision-Date: 2014-11-01 16:23+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,27 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Page has been edited"
+msgstr "Page has been edited"
+
+msgid "You cannot move the page into self or into its child pages"
+msgstr "You cannot move the page into self or into its child pages"
+
+msgid "Edit the page"
+msgstr "Edit the page"
+
+msgid "Direction"
+msgstr "Direction"
+
+msgid "Before"
+msgstr "Before"
+
+msgid "After"
+msgstr "After"
+
+msgid "Page position"
+msgstr "Page position"
 
 msgid "Custom page has been added"
 msgstr "Custom page has been added"
@@ -137,6 +158,15 @@ msgstr "Sitemap"
 msgid "Page"
 msgstr "Page"
 
+msgid "Event - Editing pages"
+msgstr "Editing pages"
+
+msgid "Event - Page edited by guest"
+msgstr "Guest edited the page with id - \"%d\""
+
+msgid "Event - Page edited by user"
+msgstr "\"%s\" edited the page with id - \"%d\""
+
 msgid "Event - Adding pages"
 msgstr "Adding pages"
 
@@ -178,3 +208,6 @@ msgstr "Adding system pages in admin area"
 
 msgid "ACL - Adding custom pages in admin area"
 msgstr "Adding custom pages in admin area"
+
+msgid "ACL - Editing pages in admin area"
+msgstr "Editing pages in admin area"

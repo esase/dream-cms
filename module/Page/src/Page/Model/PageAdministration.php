@@ -4,7 +4,7 @@ namespace Page\Model;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
-use Page\Model\Page as PageModel;
+use Page\Model\PageNestedSet;
 use Page\Event\PageEvent;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Paginator;
@@ -15,27 +15,9 @@ use Exception;
 class PageAdministration extends PageBase
 {
     /**
-     * Page model instance
-     * @var object  
-     */
-    protected $pageModel;
-
-    /**
      * Default pages module
      */
     const DEFAULT_PAGES_MODULE = 'Page';
-
-    /**
-     * Get page model
-     */
-    protected function getPageModel()
-    {
-        if (!$this->pageModel) {
-            $this->pageModel = $this->serviceLocator->get('Page\Model\Page');
-        }
-
-        return $this->pageModel;
-    }
 
     /**
      * Get basic page fields
@@ -70,9 +52,13 @@ class PageAdministration extends PageBase
         ];
 
         $processedFields = [];
-        foreach ($basicFields as $name) {
-            $processedFields[$name] = !empty($pageInfo[$name])
-                ? $pageInfo[$name]
+        foreach ($pageInfo as $name => $value) {
+            if (!in_array($name, $basicFields)) {
+                continue;
+            }
+            
+            $processedFields[$name] = $value
+                ? $value
                 : (isset($defaultValues[$name]) ? $defaultValues[$name] : null);
         }
 
@@ -80,12 +66,142 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Edit page
+     *
+     * @param array $page
+     * @param array $formData
+     *      integer layout required
+     *      string title optional|required for custom pages
+     *      string slug optional|required for system pages
+     *      string meta_description optional
+     *      string meta_keywords optional
+     *      integer user_menu optional
+     *      integer user_menu_order optional
+     *      integer menu optional
+     *      integer site_map optional
+     *      integer footer_menu optional
+     *      integer footer_menu_order optional
+     *      integer active optional
+     *      string redirect_url optional
+     *      string page_direction optional
+     *      integer page optional
+     *      array visibility_settings optional
+     * @param boolean $isSystemPage
+     * @param array $parent
+     * @return boolean|string
+     */
+    public function editPage(array $page, array $formData, $isSystemPage, array $parent = [])
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            // update page info
+            $result = $this->getPageModel()->
+                    updateNode($page['id'], $this->getBasicPageFields($formData), false);
+
+            if (true !== $result) {
+                $this->adapter->getDriver()->getConnection()->rollback();
+                return $result;
+            }
+
+            // generate a new page slug automatically
+            if (!$isSystemPage && empty($formData['slug'])) {
+                $update = $this->update()
+                    ->table('page_structure')
+                    ->set([
+                        'slug' => $this->generateSlug($page['id'], $formData['title'],
+                                'page_structure', 'id', self::PAGE_SLUG_LENGTH, ['language' => $this->getCurrentLanguage()])
+                    ])
+                    ->where([
+                        'id' => $page['id']
+                    ]);
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();    
+            }
+
+            // move page 
+            if ($parent) {
+                $nearKey = !empty($formData['page'])
+                    ? $formData['page']
+                    : null;
+
+                $pageDirection = !empty($formData['page_direction'])
+                    ? $formData['page_direction']
+                    : null;
+
+                $result = $this->getPageModel()->movePage($page,
+                        $parent, $this->getCurrentLanguage(), $nearKey, $pageDirection);
+
+                if (true !== $result) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
+                    return $result;
+                }
+            }
+
+            // clear all old visibility settings
+            $delete = $this->delete()
+                ->from('page_visibility')
+                ->where([
+                    'page_id' => $page['id']
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            // add new visibility settings
+            if (!empty($formData['visibility_settings'])) {
+                foreach ($formData['visibility_settings'] as $aclRoleId) {
+                    $insert = $this->insert()
+                        ->into('page_visibility')
+                        ->values([
+                            'page_id' => $page['id'],
+                            'hidden' => $aclRoleId
+                        ]);
+
+                    $statement = $this->prepareStatementForSqlObject($insert);
+                    $statement->execute();
+                }
+            }
+
+            // move widgets
+            if ($page['layout'] != $formData['layout']) {
+                if (false !== ($layout = $this->getPageLayout($formData['layout']))) {
+                    $update = $this->update()
+                        ->table('page_widget_connection')
+                        ->set([
+                            'position_id' => $layout['default_position']
+                        ])
+                        ->where([
+                            'page_id' => $page['id']
+                        ]);
+    
+                    $statement = $this->prepareStatementForSqlObject($update);
+                    $statement->execute();  
+                }
+            }
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the edit page event
+        PageEvent::fireEditPageEvent($page['id']);
+        return true;
+    }
+
+    /**
      * Add page
      *
      * @param integer $parentLevel
+     * @param integer $parentLeftKey
      * @param integer $parentRightKey
      * @param boolean $isSystemPage
-     * @param string $type
      * @param array $pageInfo
      *      integer layout required
      *      string title optional|required for custom pages
@@ -102,20 +218,21 @@ class PageAdministration extends PageBase
      *      integer active optional
      *      string redirect_url optional
      *      integer system_page optional
+     *      string page_direction optional
+     *      integer page optional
      *      array widgets optional
      *      integer layout_default_position optional|required if widgets is not empty
      *      integer widget_default_layout optional
      *      array visibility_settings optional
      * @return integer|string
      */
-    public function addPage($parentLevel, $parentRightKey, $parentId, $isSystemPage, $pageInfo)
+    public function addPage($parentLevel, $parentLeftKey, $parentRightKey, $isSystemPage, array $pageInfo)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $page = array_merge($this->getBasicPageFields($pageInfo), [
-                'parent_id' => $parentId,
-                'type' => $isSystemPage ? PageModel::PAGE_TYPE_SYSTEM : PageModel::PAGE_TYPE_CUSTOM,
+                'type' => $isSystemPage ? PageNestedSet::PAGE_TYPE_SYSTEM : PageNestedSet::PAGE_TYPE_CUSTOM,
                 'language' => $this->getCurrentLanguage()
             ]);
 
@@ -125,9 +242,17 @@ class PageAdministration extends PageBase
             }
 
             // add a page
-            $pageId = $this->getPageModel()->
-                insertNode($parentLevel, $parentRightKey, $page, ['language' => $this->getCurrentLanguage()], false);
+            $nearKey = !empty($pageInfo['page'])
+                ? $pageInfo['page']
+                : null;
 
+            $pageDirection = !empty($pageInfo['page_direction'])
+                ? $pageInfo['page_direction']
+                : null;
+
+            $pageId = $this->getPageModel()->addPage($parentLevel,
+                    $parentLeftKey, $parentRightKey, $page, $this->getCurrentLanguage(), $nearKey, $pageDirection);
+ 
             if (!is_numeric($pageId)) {
                 $this->adapter->getDriver()->getConnection()->rollback();
                 return $pageId;
@@ -299,7 +424,7 @@ class PageAdministration extends PageBase
                 'widget_default_layout' => $page->widget_default_layout,
                 'order' => $order,
                 'system_page' => $page->id,
-                'active' => PageModel::PAGE_STATUS_ACTIVE
+                'active' => PageNestedSet::PAGE_STATUS_ACTIVE
             ];
         }
 
@@ -656,7 +781,7 @@ class PageAdministration extends PageBase
             switch ($filters['status']) {
                 case 'active' :
                     $select->where([
-                        'a.active' => PageModel::PAGE_STATUS_ACTIVE
+                        'a.active' => PageNestedSet::PAGE_STATUS_ACTIVE
                     ]);
                     break;
                 default :

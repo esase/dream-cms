@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-10-26 14:12+0600\n"
+"PO-Revision-Date: 2014-11-01 16:23+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -16,8 +16,29 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgid "Page has been edited"
+msgstr "Страница была отредактирована"
+
+msgid "You cannot move the page into self or into its child pages"
+msgstr "Вы не можете переместить страницу в себя или в ее дочерние страницы"
+
+msgid "Edit the page"
+msgstr "Редактировать страницу"
+
+msgid "Direction"
+msgstr "Направление"
+
+msgid "Before"
+msgstr "Перед"
+
+msgid "After"
+msgstr "После"
+
+msgid "Page position"
+msgstr "Положение страницы"
+
 msgid "Custom page has been added"
-msgstr "Пользовательская страницы была добавлена"
+msgstr "Пользовательская страница была добавлена"
 
 msgid "Meta keywords should be separated by comma"
 msgstr "Мета ключевые слова должны быть разделены запятой"
@@ -141,6 +162,15 @@ msgstr "Карта сайта"
 msgid "Page"
 msgstr "Страница"
 
+msgid "Event - Editing pages"
+msgstr "Редактирование страниц"
+
+msgid "Event - Page edited by guest"
+msgstr "Гость отредактировал страницу с идентификатором - \"%d\""
+
+msgid "Event - Page edited by user"
+msgstr "\"%s\" отредактировал(а) страницу с идентификатором - \"%d\""
+
 msgid "Event - Adding pages"
 msgstr "Добавление страниц"
 
@@ -182,3 +212,6 @@ msgstr "Добавление системных страниц в админке
 
 msgid "ACL - Adding custom pages in admin area"
 msgstr "Добавление пользовательских страниц в админке"
+
+msgid "ACL - Editing pages in admin area"
+msgstr "Редактирование страниц в админке"

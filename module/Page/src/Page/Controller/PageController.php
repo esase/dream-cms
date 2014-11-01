@@ -38,7 +38,7 @@ class PageController extends AbstractActionController
     protected function getModel()
     {
         if (!$this->model) {
-            $this->model = $this->getServiceLocator()->get('Page\Model\Page');
+            $this->model = $this->getServiceLocator()->get('Page\Model\PageNestedSet');
         }
 
         return $this->model;
@@ -58,14 +58,14 @@ class PageController extends AbstractActionController
 
         // get a page info
         if (!$pageName || false == ($pageInfo = $this->
-                getModel()->getPageInfo($pageName, $userRole, $language))) {
+                getModel()->getActivePageInfo($pageName, $userRole, $language))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
         // get the page's parents
         $pageParents = $pageInfo['level'] > 1
-            ? $this->getModel()->getPageParents($pageInfo['left_key'], $pageInfo['right_key'], $userRole, $language, false)
+            ? $this->getModel()->getActivePageParents($pageInfo['left_key'], $pageInfo['right_key'], $userRole, $language, false)
             : [$pageInfo];
 
         // get the page's breadcrumb

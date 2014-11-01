@@ -1,7 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
-use Page\Model\Page as PageModel;
+use Page\Model\PageNestedSet;
 use Zend\View\Helper\AbstractHelper;
 
 class PageMenu extends AbstractHelper
@@ -48,7 +48,7 @@ class PageMenu extends AbstractHelper
 
         // process menu items
         foreach ($pages as $pageName => $pageOptions) {
-            if ($pageOptions['menu'] == PageModel::PAGE_IN_MENU) {
+            if ($pageOptions['menu'] == PageNestedSet::PAGE_IN_MENU) {
                 // get a page url
                 if (false !== ($pageUrl = $this->getView()->pageUrl($pageName))) {
                     // skip the home page 

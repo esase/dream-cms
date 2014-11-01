@@ -1,7 +1,7 @@
 <?php
 namespace Page\Controller;
 
-use Page\Model\Page as PageModel;
+use Page\Model\PageNestedSet;
 use Application\Controller\ApplicationAbstractAdministrationController;
 use Zend\View\Model\ViewModel;
 
@@ -97,8 +97,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         }
 
                         // add the home page
-                        $homePageId = $this->getModel()->
-                                addPage(PageModel::ROOT_LEVEl, PageModel::ROOT_RIGHT_KEY, null, true, $homePage);
+                        $homePageId = $this->getModel()->addPage(PageNestedSet::ROOT_LEVEl,
+                                PageNestedSet::ROOT_LEFT_KEY, PageNestedSet::ROOT_RIGHT_KEY, true, $homePage);
 
                         if (!is_numeric($homePageId)) {
                             $this->flashMessenger()
@@ -119,7 +119,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                             $homePage = $this->getModel()->getStructurePageInfo($homePageId);
 
                             $result = $this->getModel()->
-                                addPage($homePage['level'], $homePage['right_key'], $homePage['id'], true, $page);
+                                    addPage($homePage['level'], $homePage['left_key'], $homePage['right_key'], true, $page);
 
                             if (!is_numeric($result)) {
                                 $this->flashMessenger()
@@ -139,7 +139,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                             }
 
                             $result = $this->getModel()->
-                                addPage($parentPage['level'], $parentPage['right_key'], $parentPage['id'], true, $page);
+                                addPage($parentPage['level'], $parentPage['left_key'], $parentPage['right_key'], true, $page);
 
                             if (!is_numeric($result)) {
                                 $this->flashMessenger()
@@ -284,15 +284,18 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             return $this->redirectTo('pages-administration', 'list');
         }
 
+        // get the parent page info
+        $parent = $this->getModel()->getStructurePageInfo($page['parent_id']);
+
         // get a new selected page id
-        $newPageId = $this->params()->fromQuery('page_id', null);
+        $newParentId = $this->params()->fromQuery('page_id', null);
 
-        // get the new page info
-        if ($newPageId && $newPageId != $page['id']) {
-            if (null == ($newPage =
-                    $this->getModel()->getStructurePageInfo($newPageId, true))) {
+        // get a new parent info
+        if ($newParentId && $newParentId != $parent['id']) {
+            if (null != ($newParentPage =
+                    $this->getModel()->getStructurePageInfo($newParentId))) {
 
-                $newPageId = null;
+                $parent = $newParentPage;
             }
         }
 
@@ -301,12 +304,17 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->get('Application\Form\FormManager')
             ->getInstance('Page\Form\Page')
             ->setModel($this->getModel())
-            ->setPageId($page['id'])
+            ->setPageInfo($page)            
             ->setSystemPage($page['system_page'])
             ->showMainMenu(!$page['disable_menu'])
             ->showSiteMap(!$page['disable_site_map'])
             ->showFooterMenu(!$page['disable_footer_menu'])
             ->showUserMenu(!$page['disable_user_menu']);
+
+        // fill the page parent info
+        if ($parent) {
+            $pageForm->setPageParent($parent);
+        }
 
         // set default values
         $pageForm->getForm()->setData($page);
@@ -324,13 +332,34 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     return $result;
                 }
 
-                echo '<br><br><br><br>update';
+                // edit a page
+                if (true === ($result = $this->getModel()->editPage($page, $pageForm->
+                        getForm()->getData(), $page['type'] == PageNestedSet::PAGE_TYPE_SYSTEM, ($parent ? $parent : [])))) {
+
+                    // clear cache
+                    $this->getModel()->clearLanguageSensitivePageCaches();
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Page has been edited'));
+                }
+                else  {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('pages-administration', 'edit-page', [
+                    'slug' => $page['id']
+                ]);
             }
         }
 
         return new ViewModel([
+            'page' => $page,
             'pageForm' => $pageForm->getForm(),
-            'page_id' => $newPageId !== null ? $newPageId : $page['id']
+            'page_id' => !empty($parent) ? $parent['id'] : null,
+            'tree_disabled' => $page['level'] - 1 == PageNestedSet::ROOT_LEVEl
         ]);
     }
 
@@ -353,6 +382,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         $pageForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Page\Form\Page')
+            ->setPageParent($page)
             ->setModel($this->getModel());
 
         $request  = $this->getRequest();
@@ -371,7 +401,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
                 // add a new custom page
                 $result = $this->getModel()->addPage($page['level'],
-                        $page['right_key'], $page['id'], false, $pageForm->getForm()->getData());
+                        $page['left_key'], $page['right_key'], false, $pageForm->getForm()->getData());
 
                 if (is_numeric($result)) {
                     // clear cache
@@ -387,7 +417,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('pages-administration', 'add-custom-page');
+                return $this->redirectTo('pages-administration', 'add-custom-page', [], false, ['page_id' => $pageId]);
             }
         }
 

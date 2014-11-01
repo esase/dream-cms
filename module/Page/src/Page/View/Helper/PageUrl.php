@@ -1,7 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
-use Page\Model\Page as PageModel;
+use Page\Model\PageNestedSet;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
 use User\Service\UserIdentity as UserIdentityService;
 use Localization\Service\Localization as LocalizationService;
@@ -90,7 +90,7 @@ class PageUrl extends AbstractHelper
         $page = $this->pagesMap[$language][$slug];
 
         // check the page's status
-        if ($page['active'] != PageModel::PAGE_STATUS_ACTIVE) {
+        if ($page['active'] != PageNestedSet::PAGE_STATUS_ACTIVE) {
             return false;
         }
 
