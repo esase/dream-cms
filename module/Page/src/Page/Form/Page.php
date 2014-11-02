@@ -130,7 +130,8 @@ class Page extends ApplicationAbstractCustomForm
             'label' => 'Page layout',
             'required' => true,
             'values' => [],
-            'category' => 'General info'
+            'category' => 'General info',
+            'description' => 'Page layout description'
         ],
         'menu' => [
             'name' => 'menu',

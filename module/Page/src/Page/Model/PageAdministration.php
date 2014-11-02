@@ -712,7 +712,6 @@ class PageAdministration extends PageBase
      * @param string $orderType
      * @param array $filters
      *      string status
-     *      string redirect
      * @return object
      */
     public function getStructurePages($parentId = null, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
@@ -721,7 +720,7 @@ class PageAdministration extends PageBase
             'id',
             'position',
             'active',
-            'redirect'
+            'widgets'
         ];
 
         $orderType = !$orderType || $orderType == 'asc'
@@ -753,7 +752,6 @@ class PageAdministration extends PageBase
                 'type',
                 'title',
                 'active',
-                'redirect' => 'redirect_url',
                 'left_key',
                 'right_key',
                 'system_page',
@@ -767,6 +765,15 @@ class PageAdministration extends PageBase
                 ],
                 'left'
             )
+            ->join(
+                ['c' => 'page_widget_connection'],
+                'a.id = c.page_id',
+                [
+                    'widgets' => new Expression('count(c.id)')
+                ],
+                'left'
+            )
+            ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
             ->where([
                 'a.language' => $this->getCurrentLanguage()
@@ -786,17 +793,6 @@ class PageAdministration extends PageBase
                     break;
                 default :
                     $select->where->IsNull('a.active');
-            }
-        }
-
-        // filter by redirect
-        if (!empty($filters['redirect'])) {
-            switch ($filters['redirect']) {
-                case 'redirected' :
-                    $select->where->IsNotNull('a.redirect_url');
-                    break;
-                default :
-                    $select->where->IsNull('a.redirect_url');
             }
         }
 

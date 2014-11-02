@@ -1,5 +1,5 @@
 <?php
-namespace Application\Test\Service;
+namespace Application\Test\Form;
 
 use Application\Test\ApplicationBootstrap;
 use PHPUnit_Framework_TestCase;

@@ -1,5 +1,5 @@
 <?php
-namespace Application\Test\Service;
+namespace Application\Test\Utility;
 
 use PHPUnit_Framework_TestCase;
 use Application\Utility\ApplicationSlug as ApplicationSlugUtility;

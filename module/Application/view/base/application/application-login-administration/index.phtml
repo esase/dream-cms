@@ -1,6 +1,6 @@
 <?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration-login.css', 'css')) ?>
 <?php $this->declareVars('userForgotUrl', 'localizationsCount') ?>
-<?php $this->userForgotUrl = $this->pageUrl('forgot') ?>
+<?php $this->userForgotUrl = $this->pageUrl('user-forgot') ?>
 <?php $this->localizationsCount = count($this->localization()->getAllLocalizations()) ?>
 
 <div id="login-form-wrapper">

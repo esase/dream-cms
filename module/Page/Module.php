@@ -114,6 +114,13 @@ class Module
                     return new \Page\View\Helper\PageUrl($model->
                             getPagesMap(), $this->serviceLocator->get('Config')['home_page']);
                 },
+                'pageMap' => function() {
+                    $model = $this->serviceLocator
+                        ->get('Application\Model\ModelManager')
+                        ->getInstance('Page\Model\PageBase');
+
+                    return new \Page\View\Helper\PageMap($model->getPagesMap());
+                },
                 'pageInjectWidget' =>  function() {
                     $model = $this->serviceLocator
                         ->get('Application\Model\ModelManager')

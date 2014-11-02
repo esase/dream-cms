@@ -61,7 +61,7 @@ abstract class ApplicationAbstractNestedSet
      * Table gateway
      * @var object
      */
-    protected $tableGateway;
+    public $tableGateway;
 
     public function __construct(TableGateway $tableGateway)
     {

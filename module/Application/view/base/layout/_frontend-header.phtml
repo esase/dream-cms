@@ -56,7 +56,7 @@
                 </div>
                 <div class="col-sm-5" id="logo-actions">
                     <?php echo $this->pageInjectWidget('logo') ?>
-                    <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
+                    <?php if (count($this->localization()->getAllLocalizations()) > 1 && count($this->pageMap()) > 1): ?>
                         <!-- language switcher -->
                         <div class="btn-group">
                             <div class="btn-group-wrapper">

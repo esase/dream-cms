@@ -111,7 +111,7 @@ class PageNestedSet extends ApplicationAbstractNestedSet
      * @param string $language
      * @param integer $nearKey
      * @param string $pageDirection
-     * @return boolean|string
+     * @return integer|string
      */
     public function addPage($level, $leftKey, $rightKey, array $page, $language, $nearKey = null, $pageDirection = null)
     {

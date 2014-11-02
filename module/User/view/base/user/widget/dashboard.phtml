@@ -1,4 +1,4 @@
-<?php $this->declareVars('userEditUrl') ?>
+<?php $this->declareVars('userEditUrl', 'userDeleteUrl') ?>
 
 <div class="thumbnail">
     <img alt="<?php echo $this->escapeHtmlAttr($user['nick_name']) ?>" src="<?php echo $this->escapeHtmlAttr($this->userAvatarUrl($user['avatar'], false)) ?>" />
@@ -11,10 +11,17 @@
     <div class="list-group-item">
         <h4 class="list-group-item-heading"><?php echo $this->translate('Email') ?></h4>
         <p><?php echo $this->escapeHtml($user['email']) ?></p>
-        <?php if (false !== ($this->userEditUrl = $this->pageUrl('edit'))) : ?>
+        <?php if (false !== ($this->userEditUrl = $this->pageUrl('user-edit'))) : ?>
             <p>    
                 <a href="<?php echo  $this->url('page', ['page_name' => $this->userEditUrl], ['force_canonical' => true]) ?>">
                     <?php echo $this->translate('Edit account') ?>
+                </a>
+            </p>    
+        <?php endif ?>
+        <?php if (false !== ($this->userDeleteUrl = $this->pageUrl('user-delete'))) : ?>
+            <p>    
+                <a href="<?php echo  $this->url('page', ['page_name' => $this->userDeleteUrl], ['force_canonical' => true]) ?>">
+                    <?php echo $this->translate('Delete your account') ?>
                 </a>
             </p>    
         <?php endif ?>
