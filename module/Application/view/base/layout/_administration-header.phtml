@@ -50,6 +50,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
+                    <a class="navbar-brand" target="_blank" href="http://dream-cms.com"><?php echo $this->escapeHtml($this->applicationSetting('application_generator')) ?> <?php echo $this->escapeHtml($this->applicationSetting('application_generator_version')) ?></a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">
@@ -120,7 +121,7 @@
                             <li class="dropdown" id="logged-user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="<?php  echo $this->layoutAsset('icon/hello_user_menu.png', 'image', 'user') ?>" />
-                                    <?php echo sprintf($this->translate('Welcome'), $this->userIdentity()['nick_name']) ?><b class="caret"></b>
+                                    <?php echo $this->escapeHtml($this->userIdentity()['nick_name']) ?><b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <?php if ($this->aclCheckPermission('users_administration_edit_user')): ?>
