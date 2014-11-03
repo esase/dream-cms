@@ -330,7 +330,9 @@ class PageBase extends ApplicationAbstractBase
                     'disable_menu',
                     'disable_site_map',
                     'disable_footer_menu',
-                    'disable_user_menu'
+                    'disable_user_menu',
+                    'forced_visibility',
+                    'disable_seo'
                 ],
                 'left'
             )

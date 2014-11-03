@@ -71,6 +71,18 @@ class Page extends ApplicationAbstractCustomForm
     protected $showUserMenu = true;
 
     /**
+     * Show visibility settings
+     * @var boolean
+     */
+    protected $showVisibilitySettings = true;
+
+    /**
+     * Show seo
+     * @var boolean
+     */
+    protected $showSeo = true;
+
+    /**
      * Model instance
      * @var object  
      */
@@ -268,6 +280,15 @@ class Page extends ApplicationAbstractCustomForm
                 unset($this->formElements['user_menu_order']);
             }
 
+            if (!$this->showVisibilitySettings) {
+                unset($this->formElements['visibility_settings']);
+            }
+
+            if (!$this->showSeo) {
+                unset($this->formElements['meta_keywords']);
+                unset($this->formElements['meta_description']);
+            }
+
             if (!$this->isSystemPage) {
                 // add extra validators
                 $this->formElements['slug']['validators'] = [
@@ -296,7 +317,10 @@ class Page extends ApplicationAbstractCustomForm
 
             // fill the form with default values
             $this->formElements['layout']['values'] = $this->model->getPageLayouts();
-            $this->formElements['visibility_settings']['values'] = AclService::getAclRoles(false, true);
+
+            if ($this->showVisibilitySettings) {
+                $this->formElements['visibility_settings']['values'] = AclService::getAclRoles(false, true);
+            }
 
             if (null != ($pages = $this->getPages())) {
                 $this->formElements['page']['values'] = $pages;
@@ -433,6 +457,30 @@ class Page extends ApplicationAbstractCustomForm
     public function showUserMenu($show)
     {
         $this->showUserMenu = $show;
+        return $this;
+    }
+
+    /**
+     * Show visibility settings
+     *
+     * @param boolean $show
+     * @return object fluent interface
+     */
+    public function showVisibilitySettings($show)
+    {
+        $this->showVisibilitySettings = $show;
+        return $this;
+    }
+
+    /**
+     * Show SEO
+     *
+     * @param boolean $show
+     * @return object fluent interface
+     */
+    public function showSeo($show)
+    {
+        $this->showSeo = $show;
         return $this;
     }
 

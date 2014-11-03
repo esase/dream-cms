@@ -1,10 +1,27 @@
-<?php $this->headMeta()->appendName('description', $this->page['meta_description'] 
-        ? $this->page['meta_description'] 
-        : $this->applicationSetting('application_meta_description')) ?>
+<?php $this->declareVars('description', 'keywords') ?>
+<?php
+    foreach ($this->headMeta()->getContainer() as $item) {
+        if ($item->type === 'name'
+                && ($item->name === 'description' || $item->name === 'keywords')) {
+    
+            $this->{$item->name} = true;
+        }
+    }
+?>
 
-<?php $this->headMeta()->appendName('keywords', $this->page['meta_keywords'] 
+<?php if (!$this->description): ?>
+    <?php $this->headMeta()->appendName('description', $this->page['meta_description'] 
+        ? $this->page['meta_description'] 
+        : $this->applicationSetting('application_meta_description'))
+    ?>
+<?php endif ?>
+
+<?php if (!$this->keywords): ?>
+    <?php $this->headMeta()->appendName('keywords', $this->page['meta_keywords'] 
         ? $this->page['meta_keywords'] 
-        : $this->applicationSetting('application_meta_keywords')) ?>
+        : $this->applicationSetting('application_meta_keywords'))
+    ?>
+<?php endif ?>
 
 <?php echo $this->pageBreadcrumb()
         ->setBreadcrumb($this->breadcrumb)->setPage($this->page)->getBreadcrumb() ?>

@@ -309,7 +309,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->showMainMenu(!$page['disable_menu'])
             ->showSiteMap(!$page['disable_site_map'])
             ->showFooterMenu(!$page['disable_footer_menu'])
-            ->showUserMenu(!$page['disable_user_menu']);
+            ->showUserMenu(!$page['disable_user_menu'])
+            ->showVisibilitySettings(!$page['forced_visibility'])
+            ->showSeo(!$page['disable_seo']);
 
         // fill the page parent info
         if ($parent) {

@@ -67,6 +67,7 @@ class Module
     {
         return [
             'invokables' => [
+                'page404' => 'Page\View\Helper\Page404',
                 'pageBreadcrumb' => 'Page\View\Helper\PageBreadcrumb',
                 'pageTitle' => 'Page\View\Helper\PageTitle',
                 'pagePosition' => 'Page\View\Helper\PagePosition',

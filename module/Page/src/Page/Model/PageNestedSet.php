@@ -11,6 +11,12 @@ use Zend\Db\Sql\Expression as Expression;
 class PageNestedSet extends ApplicationAbstractNestedSet 
 {
     /**
+     * Layout path
+     * @var string
+     */
+    protected $layoutPath = 'page/layout-page/';
+
+    /**
      * Page status active 
      */
     const PAGE_STATUS_ACTIVE = 1;
@@ -48,6 +54,16 @@ class PageNestedSet extends ApplicationAbstractNestedSet
     public function __construct(TableGateway $tableGateway)
     {
         parent::__construct($tableGateway);
+    }
+
+    /**
+     * Get layout path
+     *
+     * @return string
+     */
+    public function getLayoutPath()
+    {
+        return $this->layoutPath;
     }
 
     /**

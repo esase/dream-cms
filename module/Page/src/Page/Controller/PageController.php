@@ -21,12 +21,6 @@ class PageController extends AbstractActionController
     protected $receivedPath = null;
 
     /**
-     * Layout path
-     * @var string
-     */
-    protected $layoutPath = 'page/layout-page/';
-
-    /**
      * Home page
      * @var string
      */
@@ -93,7 +87,9 @@ class PageController extends AbstractActionController
         ]);
 
         // set a custom page layout
-        $viewModel->setTemplate($this->layoutPath . $pageInfo['layout']);
+        $viewModel->setTemplate($this->
+                getModel()->getLayoutPath() . $pageInfo['layout']);
+
         return $viewModel;
     }
 

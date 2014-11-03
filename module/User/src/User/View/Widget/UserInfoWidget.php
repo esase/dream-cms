@@ -31,7 +31,8 @@ class UserInfoWidget extends UserAbstractWidget
 
                 // breadcrumb
                 $this->getView()->pageBreadcrumb()->setCurrentPageTitle($userInfo['nick_name']);
-    
+                $this->getView()->headMeta()->setName('description', $userInfo['nick_name']);
+
                 return $this->getView()->partial('user/widget/info', [
                     'user' => $userInfo
                 ]);

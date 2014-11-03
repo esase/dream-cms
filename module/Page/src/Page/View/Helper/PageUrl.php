@@ -108,14 +108,16 @@ class PageUrl extends AbstractHelper
             return false;
         }
 
-        // check for a parent and skip the home page
-        if (!empty($page['parent']) && $this->pagesMap[$language][$page['parent']]['level'] > 1) {
+        // check for a parent and 
+        if (!empty($page['parent'])) {
             if (false === ($parentUrl = $this->getPageUrl($page['parent'], $privacyOptions, $language))) {
                 return false;
             }
 
-            // build a link
-            $slug = $parentUrl . '/' . $slug;
+            // build a link (skip the home page)
+            if ($this->pagesMap[$language][$page['parent']]['level'] > 1) {
+                $slug = $parentUrl . '/' . $slug;
+            }
         }
 
         return $slug;
