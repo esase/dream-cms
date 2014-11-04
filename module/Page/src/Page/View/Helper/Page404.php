@@ -44,7 +44,7 @@ class Page404 extends AbstractHelper
 
         // get a custom 404 page's url
         if (false !== ($page404 = $this->
-                getView()->pageUrl(self::CUSTOM_404_PAGE, [], $language))) {
+                getView()->pageUrl(self::CUSTOM_404_PAGE, ['skip_checking' => true], $language))) {
 
             $userRole = UserIdentityService::getCurrentUserIdentity()['role'];
 
