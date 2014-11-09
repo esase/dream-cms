@@ -4,6 +4,7 @@ namespace Page\Form;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
+use Localization\Utility\LocalizationLocale as LocalizationUtility;
 use Acl\Service\Acl as AclService;
 use Page\Model\PageBase as PageBaseModel;
 
@@ -35,6 +36,16 @@ class Page extends ApplicationAbstractCustomForm
     const REDIRECT_URL_MAX_LENGTH = 255;
 
     /**
+     * Min xml map priority
+     */
+    const MIN_XML_MAP_PRIORITY = 0;
+
+    /**
+     * Max xml map priority
+     */
+    const MAX_XML_MAP_PRIORITY = 1;
+
+    /**
      * Form name
      * @var string
      */
@@ -57,6 +68,12 @@ class Page extends ApplicationAbstractCustomForm
      * @var boolean
      */
     protected $showSiteMap = true;
+
+    /**
+     * Show xml map
+     * @var boolean
+     */
+    protected $showXmlMap = true;
 
     /**
      * Show footer menu
@@ -240,6 +257,40 @@ class Page extends ApplicationAbstractCustomForm
             'values' => [],
             'category' => 'Page position'
         ],
+        'xml_map' => [
+            'name' => 'xml_map',
+            'type' => ApplicationCustomFormBuilder::FIELD_CHECKBOX,
+            'label' => 'Show in the xml map',
+            'required' => false,
+            'category' => 'Xml map'
+        ],
+        'xml_map_update' => [
+            'name' => 'xml_map_update',
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
+            'label' => 'Page update frequency',
+            'required' => true,
+            'values' => [
+                'always' => 'Always',
+                'hourly' => 'Hourly',
+                'daily' => 'Daily',
+                'weekly' => 'Weekly',
+                'monthly' => 'Monthly',
+                'yearly' => 'Yearly',
+                'never' => 'Never',
+            ],
+            'value' => 'weekly',
+            'category' => 'Xml map'
+        ],
+        'xml_map_priority' => [
+            'name' => 'xml_map_priority',
+            'type' => ApplicationCustomFormBuilder::FIELD_FLOAT,
+            'label' => 'Page priority',
+            'required' => true,
+            'value' => '0.5',
+            'category' => 'Xml map',
+            'description' => 'Xml map priority description',
+            'description_params' => []
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
@@ -256,6 +307,12 @@ class Page extends ApplicationAbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
+            // add descriptions params
+            $this->formElements['xml_map_priority']['description_params'] = [
+                self::MIN_XML_MAP_PRIORITY,
+                self::MAX_XML_MAP_PRIORITY
+            ];
+
             // remove some fields
             if ($this->isSystemPage) {
                 unset($this->formElements['title']);
@@ -268,6 +325,12 @@ class Page extends ApplicationAbstractCustomForm
 
             if (!$this->showSiteMap) {
                 unset($this->formElements['site_map']);
+            }
+
+            if (!$this->showXmlMap) {
+                unset($this->formElements['xml_map']);
+                unset($this->formElements['xml_map_update']);
+                unset($this->formElements['xml_map_priority']);
             }
 
             if (!$this->showFooterMenu) {
@@ -310,6 +373,18 @@ class Page extends ApplicationAbstractCustomForm
                         'options' => [
                             'callback' => [$this, 'validatePage'],
                             'message' => 'You cannot move the page into self or into its child pages'
+                        ]
+                    ]
+                ];
+            }
+
+            if ($this->showXmlMap) {
+                $this->formElements['xml_map_priority']['validators'] = [
+                    [
+                        'name' => 'callback',
+                        'options' => [
+                            'callback' => [$this, 'validateXmlMapPriority'],
+                            'message' => 'Enter a correct priority value'
                         ]
                     ]
                 ];
@@ -437,6 +512,18 @@ class Page extends ApplicationAbstractCustomForm
     }
 
     /**
+     * Show xml map
+     *
+     * @param boolean $show
+     * @return object fluent interface
+     */
+    public function showXmlMap($show)
+    {
+        $this->showXmlMap = $show;
+        return $this;
+    }
+
+    /**
      * Show footer menu
      *
      * @param boolean $show
@@ -535,5 +622,18 @@ class Page extends ApplicationAbstractCustomForm
     public function validateSlug($value, array $context = [])
     {
         return $this->model->isSlugFree($value, $this->pageInfo['id']);
+    }
+
+    /**
+     * Validate xml map priority
+     * 
+     * @param $value
+     * @param array $context
+     * @return boolean
+     */
+    public function validateXmlMapPriority($value, array $context = [])
+    {
+        $value = (float) LocalizationUtility::convertFromLocalizedValue($value, 'float');
+        return $value >= self::MIN_XML_MAP_PRIORITY && $value <= self::MAX_XML_MAP_PRIORITY;
     }
 }

@@ -1,4 +1,7 @@
-<?php echo $this->doctype(); ?>
+<?php $this->declareVars('localizationPages') ?>
+<?php $this->localizationPages = new ArrayObject ?>
+
+<?php echo $this->doctype() ?>
 <html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
     <head>
         <?php echo $this->pageInjectWidget('head') ?>
@@ -56,39 +59,43 @@
                 </div>
                 <div class="col-sm-5" id="logo-actions">
                     <?php echo $this->pageInjectWidget('logo') ?>
-                    <?php if (count($this->localization()->getAllLocalizations()) > 1 && count($this->pageMap()) > 1): ?>
-                        <!-- language switcher -->
-                        <div class="btn-group">
-                            <div class="btn-group-wrapper">
-                                <div class="btn-group-item">
-                                    <div class="dropdown">
-                                        <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLocalization()['description']) ?>" />
-                                        <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#"><?php echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) ?><span class="caret"></span></a>
-                                        <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
-                                            <?php foreach ($this->localization()->getAllLocalizations() as $language): ?>
-                                                <li role="presentation" <?php if ($language['language'] == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
-                                                    <?php if (false !== $this->pageUrl($this->page['slug'], [], $language['language'])): ?>
-                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['language' => $language['language'], 'page_name' => $this->pageUrl($this->page['slug'], [], $language['language'])], ['force_canonical' => true, 'query' => $this->applicationRoute()->getQuery()], true) ?>">
-                                                            <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
-                                                            <?php echo $this->escapeHtml($language['description']) ?>
+                    <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
+
+                        <?php foreach($this->localization()->getAllLocalizations() as $language): ?>
+                            <?php if (false !== $this->pageUrl($this->page['slug'], [], $language['language'])): ?>
+                                <?php $this->localizationPages[$language['language']] = $this->pageUrl($this->page['slug'], [], $language['language']) ?>
+                            <?php elseif (false !== $this->pageUrl(null, [], $language['language'])): ?>
+                                <?php $this->localizationPages[$language['language']] = $this->pageUrl(null, [], $language['language']) ?>
+                            <?php endif ?>
+                        <?php endforeach ?>
+
+                        <?php if (count($this->localizationPages) > 1): ?>
+                            <!-- language switcher -->
+                            <div class="btn-group">
+                                <div class="btn-group-wrapper">
+                                    <div class="btn-group-item">
+                                        <div class="dropdown">
+                                            <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLocalization()['description']) ?>" />
+                                            <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#"><?php echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) ?><span class="caret"></span></a>
+                                            <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
+                                                <?php foreach ($this->localizationPages as $language => $page): ?>
+                                                    <li role="presentation" <?php if ($language == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
+                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['language' => $language, 'page_name' => $page], ['force_canonical' => true, 'query' => $this->applicationRoute()->getQuery()], true) ?>">
+                                                            <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getAllLocalizations()[$language]['description']) ?>" />
+                                                            <?php echo $this->escapeHtml($this->localization()->getAllLocalizations()[$language]['description']) ?>
                                                         </a>
-                                                    <?php else: ?>
-                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['language' => $language['language']], ['force_canonical' => true]) ?>">
-                                                            <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language['language']) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($language['description']) ?>" />
-                                                            <?php echo $this->escapeHtml($language['description']) ?>
-                                                        </a>
-                                                    <?php endif ?>
-                                                </li>
-                                            <?php endforeach ?>
-                                        </ul>
+                                                    </li>
+                                                <?php endforeach ?>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endif?>
+                        <?php endif ?>
+                    <?php endif ?>
                     <?php if(!$this->userIsGuest()): ?>
                         <?php $this->declareVars('userPage') ?>
-                        <?php $this->userPage = $this->pageUrl('user', ['user_id' => $this->userIdentity()['user_id']]) ?>
+                        <?php $this->userPage = $this->pageUrl('user', [], null, true) ?>
                         <div class="btn-group" id="logged-user-menu">
                             <!-- user menu -->
                             <div class="btn-group-wrapper">
@@ -96,7 +103,7 @@
                                     <div class="dropdown">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                             <?php echo $this->translate('Hello') ?>, <?php echo $this->escapeHtml($this->userIdentity()['nick_name']) ?><span class="caret"></span></a>
-                                        <?php if(false !== $this->userPage): ?>
+                                        <?php if (false !== $this->userPage): ?>
                                             <a href="<?php echo $this->url('page', ['page_name' => $this->userPage, 'slug' => $this->userIdentity()['slug']], ['force_canonical' => true]) ?>">
                                                 <img class="icon" alt="<?php echo $this->escapeHtmlAttr($this->userIdentity()['nick_name']) ?>" src="<?php echo $this->escapeHtmlAttr($this->userAvatarUrl($this->userIdentity()['avatar'])) ?>" />
                                             </a>

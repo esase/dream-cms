@@ -4,12 +4,34 @@ return [
     'controllers' => [
         'invokables' => [
             'pages-administration' => 'Page\Controller\PageAdministrationController',
-            'page' => 'Page\Controller\PageController'
+            'page' => 'Page\Controller\PageController',
+            'page-xml-sitemap' => 'Page\Controller\PageXmlSiteMapController',
+            'page-robot' => 'Page\Controller\PageRobotController'
         ]
     ],
     'home_page' => 'home',
     'router' => [
         'routes' => [
+            'xml_sitemap' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route'    => '/sitemap.xml',
+                    'defaults' => [
+                        'controller' => 'page-xml-sitemap',
+                        'action'     => 'index'
+                    ]
+                ]
+            ],
+            'robots' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route'    => '/robots.txt',
+                    'defaults' => [
+                        'controller' => 'page-robot',
+                        'action'     => 'index'
+                    ]
+                ]
+            ],
             'page' => [
                 'type'    => 'segment',
                 'options' => [

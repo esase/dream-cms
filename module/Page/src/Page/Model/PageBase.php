@@ -308,6 +308,9 @@ class PageBase extends ApplicationAbstractBase
                 'user_menu_order',
                 'menu',
                 'site_map',
+                'xml_map',
+                'xml_map_update',
+                'xml_map_priority',
                 'footer_menu',
                 'footer_menu_order',
                 'active',
@@ -329,6 +332,7 @@ class PageBase extends ApplicationAbstractBase
                     'system_title' => 'title',
                     'disable_menu',
                     'disable_site_map',
+                    'disable_xml_map',
                     'disable_footer_menu',
                     'disable_user_menu',
                     'forced_visibility',
@@ -569,7 +573,7 @@ class PageBase extends ApplicationAbstractBase
      * 
      * @return array
      */
-    protected function getAllPagesMap()
+    public function getAllPagesMap()
     {
         // TODO: CLEAR THE 'CACHE_PAGES_MAP' AFTER ANY CHANGES IN PAGES STRUCTURE FOR ALL LANGUAGES
 
@@ -616,15 +620,20 @@ class PageBase extends ApplicationAbstractBase
                     'level',
                     'active',
                     'site_map',
+                    'xml_map',
                     'menu',
                     'type',
-                    'language'
+                    'language',
+                    'date_edited',
+                    'xml_map_update',
+                    'xml_map_priority'
                 ])
                 ->join(
                     ['b' => 'page_system'],
                     'b.id = a.system_page',
                     [
                         'privacy',
+                        'pages_provider',
                         'system_title' => 'title'
                     ],
                     'left'
@@ -655,10 +664,15 @@ class PageBase extends ApplicationAbstractBase
                     'active' => $page->active,
                     'level' => $page->level,
                     'privacy' => $page->privacy,
+                    'pages_provider' => $page->pages_provider,
                     'parent' => (isset($levels[$page->level - 1]) ? $levels[$page->level - 1] : null),
                     'site_map' => $page->site_map,
+                    'xml_map' => $page->xml_map,
                     'menu' => $page->menu,
                     'type' => $page->type,
+                    'date_edited' => $page->date_edited,
+                    'xml_map_update' => $page->xml_map_update,
+                    'xml_map_priority' => $page->xml_map_priority,
                     'hidden' => isset($pagesVisibility[$page->id]) ? $pagesVisibility[$page->id] : []
                 ];
             }

@@ -17,10 +17,11 @@ class PagePrivacy
      *
      * @param string $className
      * @param array $privacyOptions
+     * @param boolean $trustedPrivacyData
      * @throws Page\Exception\PageException
      * @return boolean
      */
-    public static function checkPagePrivacy($className = null, array $privacyOptions = [])
+    public static function checkPagePrivacy($className = null, array $privacyOptions = [], $trustedPrivacyData = false)
     {
         if ($className) {
             if (!array_key_exists($className, self::$privacyInstances)) {
@@ -31,7 +32,7 @@ class PagePrivacy
                 }
             }
 
-            if (!self::$privacyInstances[$className]->isAllowedViewPage($privacyOptions)) {
+            if (!self::$privacyInstances[$className]->isAllowedViewPage($privacyOptions, $trustedPrivacyData)) {
                 return false;
             }
         }

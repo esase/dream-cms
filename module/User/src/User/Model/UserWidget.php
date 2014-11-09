@@ -27,7 +27,8 @@ class UserWidget extends UserBase
                 ->set([
                     'salt' => $passwordSalt,
                     'password' => $this->generatePassword($newPassword, $passwordSalt),
-                    'activation_code' => ''
+                    'activation_code' => '',
+                    'date_edited' => date('Y-m-d')
                 ])
                 ->where([
                     'user_id' => $userInfo['user_id']
@@ -68,7 +69,8 @@ class UserWidget extends UserBase
             $update = $this->update()
                 ->table('user_list')
                 ->set([
-                    'activation_code' => $activationCode
+                    'activation_code' => $activationCode,
+                    'date_edited' => date('Y-m-d')
                 ])
                 ->where([
                     'user_id' => $userInfo['user_id']

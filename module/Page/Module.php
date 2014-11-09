@@ -67,6 +67,7 @@ class Module
     {
         return [
             'invokables' => [
+                'pageXmlSiteMap' => 'Page\View\Helper\PageXmlSiteMap',
                 'page404' => 'Page\View\Helper\Page404',
                 'pageBreadcrumb' => 'Page\View\Helper\PageBreadcrumb',
                 'pageTitle' => 'Page\View\Helper\PageTitle',
@@ -114,13 +115,6 @@ class Module
 
                     return new \Page\View\Helper\PageUrl($model->
                             getPagesMap(), $this->serviceLocator->get('Config')['home_page']);
-                },
-                'pageMap' => function() {
-                    $model = $this->serviceLocator
-                        ->get('Application\Model\ModelManager')
-                        ->getInstance('Page\Model\PageBase');
-
-                    return new \Page\View\Helper\PageMap($model->getPagesMap());
                 },
                 'pageInjectWidget' =>  function() {
                     $model = $this->serviceLocator

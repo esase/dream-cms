@@ -43,7 +43,7 @@ abstract class UserAbstractWidget extends PageAbstractWidget
         }
 
         // check the user's dashboard url
-        $userDashboard = $this->getView()->pageUrl('dashboard', ['skip_checking' => 'true']);
+        $userDashboard = $this->getView()->pageUrl('dashboard');
 
         return false !== $userDashboard
             ? $this->redirectTo(['page_name' => $userDashboard])

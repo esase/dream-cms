@@ -10,14 +10,11 @@ class UserDashboardPrivacy extends PageAbstractPagePrivacy
      * Is allowed to view page
      *
      * @param array $privacyOptions
+     * @param boolean $trustedData
      * @return boolean
      */
-    public function isAllowedViewPage(array $privacyOptions = [])
+    public function isAllowedViewPage(array $privacyOptions = [], $trustedData = false)
     {
-        if (empty($privacyOptions['skip_checking'])) {
-            return !UserIdentityService::isGuest();
-        }
-
-        return true;
+        return !UserIdentityService::isGuest();
     }
 }

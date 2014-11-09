@@ -44,6 +44,9 @@ class PageAdministration extends PageBase
             'user_menu_order',
             'menu',
             'site_map',
+            'xml_map',
+            'xml_map_update',
+            'xml_map_priority',
             'footer_menu',
             'footer_menu_order',
             'active',
@@ -56,13 +59,15 @@ class PageAdministration extends PageBase
             if (!in_array($name, $basicFields)) {
                 continue;
             }
-            
+
             $processedFields[$name] = $value
                 ? $value
                 : (isset($defaultValues[$name]) ? $defaultValues[$name] : null);
         }
 
-        return $processedFields;
+        return array_merge($processedFields, [
+            'date_edited' => date('Y-m-d')
+        ]);
     }
 
     /**
@@ -79,6 +84,9 @@ class PageAdministration extends PageBase
      *      integer user_menu_order optional
      *      integer menu optional
      *      integer site_map optional
+     *      integer xml_map optional
+     *      string xml_map_update optional
+     *      float xml_map_priority optional
      *      integer footer_menu optional
      *      integer footer_menu_order optional
      *      integer active optional
@@ -213,6 +221,9 @@ class PageAdministration extends PageBase
      *      integer user_menu_order optional
      *      integer menu optional
      *      integer site_map optional
+     *      integer xml_map optional
+     *      string xml_map_update optional
+     *      float xml_map_priority optional
      *      integer footer_menu optional
      *      integer footer_menu_order optional
      *      integer active optional
@@ -377,6 +388,7 @@ class PageAdministration extends PageBase
                 'user_menu_order',
                 'menu',
                 'site_map',
+                'xml_map',
                 'footer_menu',
                 'footer_menu_order',
                 'layout'
@@ -417,6 +429,7 @@ class PageAdministration extends PageBase
                 'user_menu_order' =>  $page->user_menu_order,
                 'menu' =>  $page->menu,
                 'site_map' =>  $page->site_map,
+                'xml_map' =>  $page->xml_map,
                 'footer_menu' =>  $page->footer_menu,
                 'footer_menu_order' =>  $page->footer_menu_order,
                 'layout' =>  $page->layout,

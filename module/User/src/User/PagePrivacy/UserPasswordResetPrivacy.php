@@ -33,14 +33,22 @@ class UserPasswordResetPrivacy extends PageAbstractPagePrivacy
      * Is allowed to view page
      *
      * @param array $privacyOptions
+     * @param boolean $trustedData
      * @return boolean
      */
-    public function isAllowedViewPage(array $privacyOptions = [])
+    public function isAllowedViewPage(array $privacyOptions = [], $trustedData = false)
     {
-        if (!UserIdentityService::isGuest() || null == ($userInfo = $this->
-                getModel()->getUserInfo(RouteParamUtility::getParam('slug', -1), UserWidgetModel::USER_INFO_BY_SLUG))) {
-
+        if (!UserIdentityService::isGuest()) {
             return false;
+        }    
+
+        if (!$trustedData) {
+            $userInfo = $this->getModel()->
+                    getUserInfo(RouteParamUtility::getParam('slug', -1), UserWidgetModel::USER_INFO_BY_SLUG);
+
+            if (null == $userInfo) {
+                return false;
+            }
         }
 
         return true;

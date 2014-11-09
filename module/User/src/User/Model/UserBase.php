@@ -35,6 +35,11 @@ class UserBase extends ApplicationAbstractBase
     const DEFAULT_USER_ID  = 1;
 
     /**
+     * Cache active users
+     */
+    const CACHE_ACTIVE_USERS = 'User_Active';
+
+    /**
      * Cache user info
      */
     const CACHE_USER_INFO = 'User_Info_';
@@ -157,7 +162,8 @@ class UserBase extends ApplicationAbstractBase
                 ->table('user_list')
                 ->set([
                     'status' => ($approved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED),
-                    'activation_code' => ''
+                    'activation_code' => '',
+                    'date_edited' => date('Y-m-d')
                 ])
                 ->where([
                     'user_id' => $userId
@@ -169,8 +175,9 @@ class UserBase extends ApplicationAbstractBase
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
 
-            // clear a cache
+            // clear caches
             $this->removeUserCache($userId);
+            $this->clearActiveUsersCache();
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -210,7 +217,8 @@ class UserBase extends ApplicationAbstractBase
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $extraValues = [
-               'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED
+               'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED,
+               'date_edited' => date('Y-m-d')
             ];
 
             // generate a new slug
@@ -251,8 +259,9 @@ class UserBase extends ApplicationAbstractBase
             // upload the user's avatar
             $this->uploadAvatar($userInfo['user_id'], $avatar, $userInfo['avatar'], $deleteAvatar);
 
-            // clear a cache
+            // clear caches
             $this->removeUserCache($userInfo['user_id']);
+            $this->clearActiveUsersCache();
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -396,8 +405,9 @@ class UserBase extends ApplicationAbstractBase
                 }
             }
 
-            // clear a cache
+            // clear caches
             $this->removeUserCache($userId);
+            $this->clearActiveUsersCache();
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -452,7 +462,8 @@ class UserBase extends ApplicationAbstractBase
                     'api_secret' => $this->generateRandString(),
                     'activation_code' => !$statusApproved // generate an activation code
                         ? $this->generateRandString()
-                        : ''
+                        : '',
+                    'date_edited' => date('Y-m-d')
                 ]));
 
             $statement = $this->prepareStatementForSqlObject($insert);
@@ -483,6 +494,7 @@ class UserBase extends ApplicationAbstractBase
 
             // upload the user's avatar
             $this->uploadAvatar($insertId, $avatar);
+            $this->clearActiveUsersCache();
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -624,7 +636,8 @@ class UserBase extends ApplicationAbstractBase
             $update = $this->update()
                 ->table('user_list')
                 ->set([
-                    'role' => $roleId
+                    'role' => $roleId,
+                    'date_edited' => date('Y-m-d')
                 ])
                 ->where([
                     'user_id' => $userId
@@ -696,7 +709,8 @@ class UserBase extends ApplicationAbstractBase
             $update = $this->update()
                 ->table('user_list')
                 ->set([
-                    'language' => $language
+                    'language' => $language,
+                    'date_edited' => date('Y-m-d')
                 ])
                 ->where([
                     'user_id' => $userId
@@ -718,6 +732,59 @@ class UserBase extends ApplicationAbstractBase
         }
 
         return true;
+    }
+
+    /**
+     * Get all active users
+     *
+     * @return array
+     */
+    public function getAllActiveUsers()
+    {
+        // generate a cache name
+        $cacheName = CacheUtility::getCacheName(self::CACHE_ACTIVE_USERS);
+
+        // check data in cache
+        if (null === ($users = $this->staticCacheInstance->getItem($cacheName))) {
+            $select = $this->select();
+            $select->from('user_list')
+                ->columns([
+                    'user_id',
+                    'nick_name',
+                    'slug',
+                    'date_edited'
+                ])
+                ->where([
+                    'status' => self::STATUS_APPROVED
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+            $users = $resultSet->toArray();
+
+            // save data in cache
+            $this->staticCacheInstance->setItem($cacheName, $users);
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_USER_DATA_TAG]);    
+        }
+
+        return $users;
+    }
+
+    /**
+     * Clear active users cache
+     *
+     * @return boolean
+     */
+    public function clearActiveUsersCache()
+    {
+        $cacheName = CacheUtility::getCacheName(self::CACHE_ACTIVE_USERS);
+
+        if ($this->staticCacheInstance->hasItem($cacheName)) {
+            return $this->staticCacheInstance->removeItem($cacheName);
+        }
+
+        return false;
     }
 
     /**

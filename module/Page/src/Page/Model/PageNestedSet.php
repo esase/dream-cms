@@ -32,6 +32,11 @@ class PageNestedSet extends ApplicationAbstractNestedSet
     const PAGE_IN_SITEMAP = 1;
 
     /**
+     * Page in xml map
+     */
+    const PAGE_IN_XML_MAP = 1;
+
+    /**
      * Page in footer menu 
      */
     const PAGE_IN_FOOTER_MENU = 1;

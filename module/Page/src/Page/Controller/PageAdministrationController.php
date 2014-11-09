@@ -308,6 +308,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->setSystemPage($page['system_page'])
             ->showMainMenu(!$page['disable_menu'])
             ->showSiteMap(!$page['disable_site_map'])
+            ->showXmlMap(!$page['disable_xml_map'])
             ->showFooterMenu(!$page['disable_footer_menu'])
             ->showUserMenu(!$page['disable_user_menu'])
             ->showVisibilitySettings(!$page['forced_visibility'])

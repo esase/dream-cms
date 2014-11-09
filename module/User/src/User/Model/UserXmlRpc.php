@@ -47,7 +47,8 @@ class UserXmlRpc extends UserBase
             $update = $this->update()
                 ->table('user_list')
                 ->set([
-                    'time_zone' => $timeZoneId
+                    'time_zone' => $timeZoneId,
+                    'date_edited' => date('Y-m-d')
                 ])
                 ->where(['user_id' => $userId]);
 

@@ -33,26 +33,29 @@ class UserViewPrivacy extends PageAbstractPagePrivacy
      * Is allowed view page
      * 
      * @param array $privacyOptions
+     * @param boolean $trusted
      * @return boolean
      */
-    public function isAllowedViewPage(array $privacyOptions = [])
+    public function isAllowedViewPage(array $privacyOptions = [], $trustedData = false)
     {
         // check a permission
         if (!AclService::checkPermission('users_view_profile', false)) {
             return false;
         }
 
-        $userId = !empty($privacyOptions['user_id']) 
-            ? $privacyOptions['user_id'] 
-            : RouteParamUtility::getParam('slug', -1);
-
-        $userField = !empty($privacyOptions['user_id']) 
-            ? UserWidgetModel::USER_INFO_BY_ID
-            : UserWidgetModel::USER_INFO_BY_SLUG;
-
-        // check an existing user
-        if (null == ($userInfo = $this->getModel()->getUserInfo($userId, $userField))) {
-            return false;
+        if (!$trustedData) {
+            $userId = !empty($privacyOptions['user_id']) 
+                ? $privacyOptions['user_id'] 
+                : RouteParamUtility::getParam('slug', -1);
+    
+            $userField = !empty($privacyOptions['user_id']) 
+                ? UserWidgetModel::USER_INFO_BY_ID
+                : UserWidgetModel::USER_INFO_BY_SLUG;
+    
+            // check an existing user
+            if (null == ($userInfo = $this->getModel()->getUserInfo($userId, $userField))) {
+                return false;
+            }
         }
 
         return true;

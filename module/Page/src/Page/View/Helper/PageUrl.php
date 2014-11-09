@@ -45,13 +45,13 @@ class PageUrl extends AbstractHelper
      * @param string slug
      * @param array $privacyOptions
      * @param string $language
+     * @param boolean $trustedPrivacyData
      * @return string|boolean
      */
-    public function __invoke($slug, array $privacyOptions = [], $language = null)
+    public function __invoke($slug = null, array $privacyOptions = [], $language = null, $trustedPrivacyData = false)
     {
-        // compare the slug for home page 
-        if ($this->homePage == $slug) {
-            return null;
+        if (!$slug) {
+            $slug = $this->homePage;
         }
 
         if (!$language) {
@@ -64,9 +64,14 @@ class PageUrl extends AbstractHelper
             return $this->definedUrls[$language][$slug];
         }
 
-        $pageUrl = $this->getPageUrl($slug, $privacyOptions, $language);
-        $this->definedUrls[$language][$slug] = $pageUrl;
+        $pageUrl = $this->getPageUrl($slug, $privacyOptions, $language, $trustedPrivacyData);
 
+        // compare the slug for the home page 
+        if ($this->homePage == $slug && false !== $pageUrl) {
+            $pageUrl = null;
+        }
+
+        $this->definedUrls[$language][$slug] = $pageUrl;
         return $pageUrl;
     }
 
@@ -76,9 +81,10 @@ class PageUrl extends AbstractHelper
      * @param string $slug
      * @param array $privacyOptions
      * @param string $language
+     * @param boolean $trustedPrivacyData
      * @return string|boolean
      */
-    protected function getPageUrl($slug, array $privacyOptions = [], $language) 
+    protected function getPageUrl($slug, array $privacyOptions = [], $language, $trustedPrivacyData = false) 
     {
         if (!isset($this->pagesMap[$language])
                 || !array_key_exists($slug, $this->pagesMap[$language])) {
@@ -96,7 +102,7 @@ class PageUrl extends AbstractHelper
 
         // check the page's privacy
         if (false == ($result = PagePrivacyUtility::checkPagePrivacy($page['privacy'], 
-                $privacyOptions))) {
+                $privacyOptions, $trustedPrivacyData))) {
 
             return false;
         }
@@ -110,7 +116,7 @@ class PageUrl extends AbstractHelper
 
         // check for a parent and 
         if (!empty($page['parent'])) {
-            if (false === ($parentUrl = $this->getPageUrl($page['parent'], $privacyOptions, $language))) {
+            if (false === ($parentUrl = $this->getPageUrl($page['parent'], [], $language, false))) {
                 return false;
             }
 

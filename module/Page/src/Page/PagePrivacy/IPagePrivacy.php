@@ -1,15 +1,14 @@
 <?php
 namespace Page\PagePrivacy;
 
-use Zend\Mvc\Controller\AbstractController;
-
 interface IPagePrivacy
 {
     /**
      * Is allowed to view
      *
      * @param array $privacyOptions
+     * @param boolean $trustedData
      * @return boolean
      */
-    public function isAllowedViewPage(array $privacyOptions = []);
+    public function isAllowedViewPage(array $privacyOptions = [], $trustedData = false);
 }

@@ -7,11 +7,12 @@ class Page404Privacy extends PageAbstractPagePrivacy
      * Page 404 privacy
      *
      * @param array $privacyOptions
+     * @param boolean $trustedData
      * @return boolean
      */
-    public function isAllowedViewPage(array $privacyOptions = [])
+    public function isAllowedViewPage(array $privacyOptions = [], $trustedData = false)
     {
-        if (empty($privacyOptions['skip_checking'])) {
+        if (!$trustedData) {
             return false;
         }
 

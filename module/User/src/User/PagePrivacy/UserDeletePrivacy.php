@@ -10,9 +10,10 @@ class UserDeletePrivacy extends PageAbstractPagePrivacy
      * Is allowed to view page
      *
      * @param array $privacyOptions
+     * @param boolean $trustedData
      * @return boolean
      */
-    public function isAllowedViewPage(array $privacyOptions = [])
+    public function isAllowedViewPage(array $privacyOptions = [], $trustedData = false)
     {
         return !UserIdentityService::isGuest() && !UserIdentityService::isDefaultUser();
     }

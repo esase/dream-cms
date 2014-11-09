@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "cd60294ada5245c5835baebf0dbb3f44ee851317"
+                "reference": "b307f3d9ef0960b74ea8bd8d5bbdef2049368947"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/cd60294ada5245c5835baebf0dbb3f44ee851317",
-                "reference": "cd60294ada5245c5835baebf0dbb3f44ee851317",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/b307f3d9ef0960b74ea8bd8d5bbdef2049368947",
+                "reference": "b307f3d9ef0960b74ea8bd8d5bbdef2049368947",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +47,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2014-08-31 11:12:38"
+            "time": "2014-10-23 22:36:02"
         },
         {
             "name": "firephp/firephp-core",
@@ -301,12 +301,8 @@
             "time": "2014-03-05 22:25:44"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "ezyang/htmlpurifier": 20
@@ -314,7 +310,5 @@
     "platform": {
         "php": ">=5.4.0"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

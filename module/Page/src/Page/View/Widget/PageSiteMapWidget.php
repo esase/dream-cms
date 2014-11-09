@@ -3,6 +3,7 @@ namespace Page\View\Widget;
 
 use Localization\Service\Localization as LocalizationService;
 use Page\Model\PageNestedSet;
+use Page\Utility\PageProvider as PageProviderUtility;
 
 class PageSiteMapWidget extends PageAbstractWidget
 {
@@ -63,11 +64,65 @@ class PageSiteMapWidget extends PageAbstractWidget
     {
         if (null === $this->sitemap) {
             // process sitemap
-            $this->sitemap = $this->processSitemapItems($this->
-                    getModel()->getPagesTree(LocalizationService::getCurrentLocalization()['language']));
+            $this->sitemap = $this->
+                    processSitemapItems($this->getModel()->getPagesTree($this->getCurrentLanguage()));
         }
 
         return $this->sitemap;
+    }
+
+    /**
+     * Get current language
+     *
+     * @return string
+     */
+    protected function getCurrentLanguage()
+    {
+        return LocalizationService::getCurrentLocalization()['language'];
+    }
+
+    /**
+     * Process dynamic pages
+     *
+     * @param array $pageOptions
+     * @param array $dynamicPages
+     * @return array
+     */
+    protected function processDynamicPages(array $pageOptions, array $dynamicPages)
+    {
+        $sitemap = null;
+
+        foreach ($dynamicPages as $dynamicPage) {
+            // check received params
+            if (!isset($dynamicPage['url_params'], $dynamicPage['url_title'])) {
+                continue;
+            }
+
+            if (false !== ($pageUrl = $this->getView()->
+                    pageUrl($pageOptions['slug'], [], $this->getCurrentLanguage(), true))) {
+
+                $sitemap .= $this->getView()->partial('page/widget/sitemap-item-start', [
+                    'url' => $pageUrl,
+                    'title' => $dynamicPage['url_title'],
+                    'params' => $dynamicPage['url_params']
+                ]);
+
+                // check for children
+                if (!empty($dynamicPage['children'])) {
+                    if (null !== ($children =
+                            $this->processDynamicPages($pageOptions, $dynamicPage['children']))) {
+
+                        $sitemap .= $this->getView()->partial('page/widget/sitemap-item-children', [
+                            'children' => $children
+                        ]);
+                    }
+                }
+
+                $sitemap .= $this->getView()->partial('page/widget/sitemap-item-end');
+            }
+        }
+
+        return $sitemap;
     }
 
     /**
@@ -83,23 +138,34 @@ class PageSiteMapWidget extends PageAbstractWidget
         // process sitemap items
         foreach ($pages as $pageName => $pageOptions) {
             if ($pageOptions['site_map'] == PageNestedSet::PAGE_IN_SITEMAP) {
-                // get a page url
-                if (false !== ($pageUrl = $this->getView()->pageUrl($pageName))) {
-                    $sitemap .= $this->getView()->partial('page/widget/sitemap-item-start', [
-                        'url' => $pageUrl,
-                        'title' => $this->getView()->pageTitle($pageOptions)
-                    ]);
+                // get dynamic pages
+                if (!empty($pageOptions['pages_provider'])) {
+                    if (null != ($dynamicPages =
+                            PageProviderUtility::getPages($pageOptions['pages_provider'], $this->getCurrentLanguage()))) {
 
-                    // check for children
-                    if (!empty($pageOptions['children'])) {
-                        if (null !== ($children = $this->processSitemapItems($pageOptions['children']))) {
-                            $sitemap .= $this->getView()->partial('page/widget/sitemap-item-children', [
-                                'children' => $children,
-                            ]);
-                        }
+                        $sitemap .= $this->processDynamicPages($pageOptions, $dynamicPages);
                     }
-
-                    $sitemap .= $this->getView()->partial('page/widget/sitemap-item-end');
+                }
+                else {
+                    // get a page url
+                    if (false !== ($pageUrl = $this->getView()->pageUrl($pageName))) {
+                        $sitemap .= $this->getView()->partial('page/widget/sitemap-item-start', [
+                            'url' => $pageUrl,
+                            'title' => $this->getView()->pageTitle($pageOptions),
+                            'params' => []
+                        ]);
+    
+                        // check for children
+                        if (!empty($pageOptions['children'])) {
+                            if (null !== ($children = $this->processSitemapItems($pageOptions['children']))) {
+                                $sitemap .= $this->getView()->partial('page/widget/sitemap-item-children', [
+                                    'children' => $children,
+                                ]);
+                            }
+                        }
+    
+                        $sitemap .= $this->getView()->partial('page/widget/sitemap-item-end');
+                    }
                 }
             }
         }
