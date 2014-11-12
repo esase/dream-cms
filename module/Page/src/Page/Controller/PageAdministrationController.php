@@ -245,7 +245,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Page\Form\SystemPageFilter');
+            ->getInstance('Page\Form\PageSystemFilter');
 
         $filterForm->setModel($this->getModel());
 
@@ -427,6 +427,48 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         return new ViewModel([
             'pageForm' => $pageForm->getForm(),
             'page_id' => $page['id']
+        ]);
+    }
+
+    /**
+     * Browse widgets
+     */
+    public function browseWidgetsAction()
+    {
+        // get the page info
+        if (null == ($page = $this->
+                getModel()->getStructurePageInfo($this->getSlug(), true, false, true))) {
+
+            return $this->redirectTo('pages-administration', 'list');
+        }
+
+        $filters = [];
+
+        // get a filter form
+        $filterForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Page\Form\PageWidgetFilter');
+
+        $filterForm->setModel($this->getModel());
+
+        $request = $this->getRequest();
+        $filterForm->getForm()->setData($request->getQuery(), false);
+
+        // check the filter form validation
+        if ($filterForm->getForm()->isValid()) {
+            $filters = $filterForm->getForm()->getData();
+        }
+
+        // get data
+        $paginator = $this->getModel()->
+                getWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
+
+        return new ViewModel([
+            'paginator' => $paginator,
+            'filters' => $filters,
+            'filter_form' => $filterForm->getForm(),
+            'per_page' => $this->getPerPage(),
+            'page' => $page
         ]);
     }
 

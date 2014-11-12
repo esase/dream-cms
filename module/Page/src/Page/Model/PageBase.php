@@ -52,6 +52,21 @@ class PageBase extends ApplicationAbstractBase
     const PAGE_SLUG_LENGTH = 40;
 
     /**
+     * Public widget type
+     */
+    const WIDGET_TYPE_PUBLIC = 'public';
+
+    /**
+     * System widget type
+     */
+    const WIDGET_TYPE_SYSTEM = 'system';
+
+    /**
+     * Widget duplicate
+     */
+    const WIDGET_DUPLICATE = 1;
+
+    /**
      * Pages map
      * @var array
      */

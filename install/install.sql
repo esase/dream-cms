@@ -560,7 +560,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (43, 'pages_administration_system_pages', 'ACL - Viewing system pages in admin area', 5),
 (45, 'pages_administration_add_system_pages', 'ACL - Adding system pages in admin area', 5),
 (46, 'pages_administration_add_custom_page', 'ACL - Adding custom pages in admin area', 5),
-(47, 'pages_administration_edit_page', 'ACL - Editing pages in admin area', 5);
+(47, 'pages_administration_edit_page', 'ACL - Editing pages in admin area', 5),
+(48, 'pages_administration_ajax_add_widget', 'ACL - Adding widgets on pages in admin area', 5),
+(49, 'pages_administration_browse_widgets', 'ACL - Browsing widgets in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1065,27 +1067,29 @@ CREATE TABLE IF NOT EXISTS `page_widget` (
     `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `type` ENUM('system','public') NOT NULL,
+    `description` VARCHAR(100) NOT NULL,
+    `duplicate` TINYINT(1) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget` (`id`, `name`, `module`, `type`) VALUES
-(1,  'pageHtmlWidget', 5, 'public'),
-(2,  'userLoginWidget', 2, 'public'),
-(3,  'userRegisterWidget', 2, 'public'),
-(4,  'userActivateWidget', 2, 'public'),
-(5,  'userForgotWidget', 2, 'public'),
-(6,  'userPasswordResetWidget', 2, 'public'),
-(7,  'userDeleteWidget', 2, 'public'),
-(8,  'pageSiteMapWidget', 5, 'public'),
-(9,  'userInfoWidget', 2, 'public'),
-(10, 'userAvatarWidget', 2, 'public'),
-(11, 'userDashboardWidget', 2, 'public'),
-(12, 'userDashboardUserInfoWidget', 2, 'public'),
-(13, 'userEditWidget', 2, 'public'),
-(14, 'userDashboardAdministrationWidget', 2, 'public');
+INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`) VALUES
+(1,  'pageHtmlWidget', 5, 'public', 'Html', 1),
+(2,  'userLoginWidget', 2, 'public', 'Login', NULL),
+(3,  'userRegisterWidget', 2, 'public', 'Register', NULL),
+(4,  'userActivateWidget', 2, 'public', 'User activate', NULL),
+(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL),
+(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL),
+(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL),
+(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL),
+(9,  'userInfoWidget', 2, 'public', 'Account info', NULL),
+(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL),
+(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL),
+(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL),
+(13, 'userEditWidget', 2, 'public', 'Account edit', NULL),
+(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL);
 
 CREATE TABLE IF NOT EXISTS `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1160,6 +1164,40 @@ INSERT INTO `page_system_page_depend` (`id`, `page_id`, `depend_page_id`) VALUES
 (10, 10, 1),
 (11, 11, 1),
 (12, 12, 1);
+
+CREATE TABLE IF NOT EXISTS `page_system_widget_hidden` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system_widget_hidden` (`id`, `page_id`, `widget_id`) VALUES
+(1,   7,  2),
+(2,   7,  3),
+(3,   8,  2),
+(4,   8,  3),
+(5,   8,  13),
+(6,   8,  8),
+(7,   10,  13),
+(8,   11,  2),
+(9,   11,  3),
+(10,  6,  13),
+(11,  3,  13),
+(12,  4,  13),
+(13,  5,  2),
+(14,  5,  3),
+(15,  5,  13),
+(16,  2,  13),
+(17,  12,  13),
+(18,  12,  2),
+(19,  12,  3);
 
 CREATE TABLE IF NOT EXISTS `page_system_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

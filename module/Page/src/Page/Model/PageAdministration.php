@@ -7,6 +7,7 @@ use Application\Utility\ApplicationPagination as PaginationUtility;
 use Page\Model\PageNestedSet;
 use Page\Event\PageEvent;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Predicate;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
@@ -716,6 +717,90 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Get widgets
+     *
+     * @param integer $pageId
+     * @param integer $systemPageId
+     * @param integer $page
+     * @param integer $perPage
+     * @param array $filters
+     *      array modules
+     * @return object Paginator
+     */
+    public function getWidgets($pageId, $systemPageId = null, $page = 1, $perPage = 0, array $filters = [])
+    {
+        $select = $this->select();
+        $select->from(['a' => 'page_widget'])
+            ->columns([
+                'id',
+                'description'
+            ])
+            ->join(
+                ['b' => 'page_widget_page_depend'],
+                'a.id = b.widget_id',
+                [],
+                'left'
+            )
+            ->join(
+                ['c' => 'page_widget_connection'],
+                new Expression('c.page_id = ? and a.id = c.widget_id', [$pageId]),
+                [],
+                'left'
+            )
+            ->group('a.id')
+            ->order('a.id')
+            ->where([
+                'a.type' => self::WIDGET_TYPE_PUBLIC
+            ])
+            ->where
+            ->nest
+                ->isNull('c.id')
+                ->or
+                ->isNotNull('c.id')
+                ->and
+                ->equalTo('a.duplicate', self::WIDGET_DUPLICATE)
+            ->unnest;
+
+        if ($systemPageId) {
+            // don't show hidden widgets
+            $select->join(
+                ['d' => 'page_system_widget_hidden'],
+                new Expression('d.page_id = ? and a.id = d.widget_id', [$systemPageId]),
+                [],
+                'left'
+            );
+
+            $select->where->isNull('d.id');
+            $select->where([ // we need only specific widgets for the page or not specified         
+                new Predicate\PredicateSet([
+                        new Predicate\Operator('b.page_id', '=', $systemPageId),
+                        new Predicate\isNull('b.id')
+                    ],
+                    Predicate\PredicateSet::COMBINED_BY_OR
+                )
+            ]);
+        }
+        else {
+            $select->where->isNull('b.id');
+        }
+
+        // filter by modules
+        if (!empty($filters['modules']) && is_array($filters['modules'])) {
+            $select->where->in('a.module', $filters['modules']);
+        }
+
+        //echo $select->getSqlString(new \Zend\Db\Adapter\Platform\Mysql());
+        //exit;
+        
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
+
+        return $paginator;
+    }
+
+    /**
      * Get structure pages
      *
      * @param integer $parentId
@@ -725,7 +810,7 @@ class PageAdministration extends PageBase
      * @param string $orderType
      * @param array $filters
      *      string status
-     * @return object
+     * @return object Paginator
      */
     public function getStructurePages($parentId = null, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {

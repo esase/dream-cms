@@ -1,0 +1,55 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Browse widgets') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->pageTitle($this->page)) ?>
+<?php $this->headTitle($this->translate('List of pages')) ?>
+    
+<!-- render a header -->
+<?php echo $this->render('page/page-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+]) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
+            'name' => $this->translate('List of pages'),
+            'controller' => 'pages-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ],
+        'browse_widgets' => [
+            'name' => $this->pageTitle($this->page) . ' - ' . $this->subPageTitle,
+            'controller' => 'pages-administration',
+            'action' => 'browse-widgets',
+            'check_acl' => true
+        ]
+    ]
+]) ?>
+
+<div class="row">
+    <div class="col-md-4">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->translate('Widgets'),
+            'body' => $this->partial('page/administration-partial/widgets', [
+                'page' => $this->page,
+                'paginator' => $this->paginator,
+                'per_page' => $this->per_page,
+                'filter_form' => $this->filter_form,
+                'filters' => $filters
+            ])
+        ]) ?>
+    </div>
+    <div class="col-md-8">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->translate('Page layout'),
+            'body' => 'asdsa'
+        ]) ?>
+    </div>
+</div>

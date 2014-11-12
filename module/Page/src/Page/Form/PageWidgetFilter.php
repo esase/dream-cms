@@ -5,7 +5,7 @@ use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
 use Page\Model\PageBase as PageBaseModel;
 
-class SystemPageFilter extends ApplicationAbstractCustomForm 
+class PageWidgetFilter extends ApplicationAbstractCustomForm 
 {
     /**
      * Form name

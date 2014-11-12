@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-11-04 15:57+0600\n"
+"PO-Revision-Date: 2014-11-12 12:01+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,15 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Add widget"
+msgstr "Add widget"
+
+msgid "Html"
+msgstr "Html"
+
+msgid "Browse widgets"
+msgstr "Browse widgets"
 
 msgid "Enter a correct priority value"
 msgstr "Enter a correct priority value"
@@ -259,3 +268,9 @@ msgstr "Adding custom pages in admin area"
 
 msgid "ACL - Editing pages in admin area"
 msgstr "Editing pages in admin area"
+
+msgid "ACL - Adding widgets on pages in admin area"
+msgstr "Adding widgets on pages in admin area"
+
+msgid "ACL - Browsing widgets in admin area"
+msgstr "Browsing widgets in admin area"
