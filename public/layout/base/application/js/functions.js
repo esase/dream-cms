@@ -56,7 +56,7 @@ function ajaxQuery(container, url, successCallback, method, params, replaceData)
 
             // call a callback
             if (typeof successCallback != 'undefined' && successCallback) {
-                successCallback.call();
+                successCallback.call(this, data);
             }
         }
     });
@@ -153,4 +153,20 @@ function showPopup(url, popupId)
     	    $('#' + popupId).modal('show');
     	}
     });
+}
+
+/**
+ * Show loaded popup window
+ *
+ * @param string popupId
+ * @param string data
+ * @return void
+ */
+function showLoadedPopup(popupId, data)
+{
+    // remove previously opened popup
+    $('#' + popupId).remove();
+
+	$(document.body).append(data);
+	$('#' + popupId).modal('show');
 }

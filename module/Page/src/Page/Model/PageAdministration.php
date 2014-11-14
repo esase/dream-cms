@@ -190,6 +190,8 @@ class PageAdministration extends PageBase
                 }
             }
 
+            // clear cache
+            $this->clearLanguageSensitivePageCaches();
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -202,6 +204,65 @@ class PageAdministration extends PageBase
         // fire the edit page event
         PageEvent::fireEditPageEvent($page['id']);
         return true;
+    }
+
+    /**
+     * Add public widget
+     *
+     * @param integer $pageId
+     * @param integer $widgetId
+     * @param integer $layoutPosition
+     * @param integer $widgetlayout
+     * @return integer|string
+     */
+    public function addPublicWidget($pageId, $widgetId, $layoutPosition, $widgetlayout)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            // get a widget max order
+            $select = $this->select();
+            $select->from('page_widget_connection')
+                ->columns([
+                    'max_order' => new Expression('max(' .
+                            $this->adapter->platform->quoteIdentifier('order') . ')')
+                ])
+                ->where([
+                    'page_id' => $pageId,
+                    'position_id' => $layoutPosition
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+            $maxOrder = $result->current() ? $result->current()['max_order'] + 1 : 1;
+
+            $insert = $this->insert()
+                ->into('page_widget_connection')
+                ->values([
+                    'page_id' => $pageId,
+                    'widget_id' => $widgetId,
+                    'position_id' => $layoutPosition,
+                    'layout' => $widgetlayout,
+                    'order' => $maxOrder
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $connectionId = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            // clear cache
+            $this->clearWidgetsConnectionsCache();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        PageEvent::fireAddWidgetEvent($widgetId, $pageId);
+        return $connectionId;
     }
 
     /**
@@ -321,6 +382,8 @@ class PageAdministration extends PageBase
                 }                
             }
 
+            // clear cache
+            $this->clearLanguageSensitivePageCaches();
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -355,7 +418,8 @@ class PageAdministration extends PageBase
                 deleteNode($pageInfo['left_key'], $pageInfo['right_key'], ['language' => $pageInfo['language']]);
 
         if (true === $result) {
-            // clear cache
+            // clear caches
+            $this->clearLanguageSensitivePageCaches();
             $this->clearWidgetsSettingsCache($pageInfo['id']);
 
             // fire the delete page event
@@ -488,25 +552,88 @@ class PageAdministration extends PageBase
     }
 
     /**
-     * Get system pages widgets
+     * Get dependent public widgets
+     *
+     * @param integer $pageId
+     * @param integer $widgetId
+     * @return array
+     */
+    public function getDependentPublicWidgets($pageId, $widgetId)
+    {
+        $definedWidgetsIds = [
+            $widgetId
+        ];
+
+        $widgetsFilter = $definedWidgetsIds;
+
+        // get all dependent widgets
+        if ($widgetsFilter) {
+            while (true) {
+                $select = $this->select();
+                $select->from(['a' => 'page_widget_depend'])
+                    ->columns([
+                        'widget_id',
+                        'depend_widget_id',
+                    ])
+                    ->join(
+                        ['b' => 'page_widget'],
+                        new Expression('b.id = a.depend_widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                        []
+                    )
+                    ->join(
+                        ['c' => 'page_widget_connection'],
+                        new Expression('c.page_id  = ? and c.widget_id = b.id', [$pageId]),                        
+                        [],
+                        'left'
+                    )
+                    ->where->in('a.widget_id', $widgetsFilter)
+                    ->where->isNull('c.id');
+
+                $statement = $this->prepareStatementForSqlObject($select);
+                $resultSet = new ResultSet;
+                $resultSet->initialize($statement->execute());
+
+                $widgetsFilter = [];                
+                foreach ($resultSet as $widget) {                    
+                    if (!in_array($widget['depend_widget_id'], $definedWidgetsIds)) {
+                        $widgetsFilter[] = $definedWidgetsIds[] = $widget['depend_widget_id'];                        
+                    }
+                }
+
+                if (!$widgetsFilter) {
+                    break;
+                }
+            }
+        }
+
+        return array_reverse($definedWidgetsIds);
+    }
+
+    /**
+     * Get system pages public widgets
      *
      * @param array $pagesIds
      * @return array
      */
-    protected function getDependentSystemPagesWidgets($pagesIds)
+    protected function getDependentSystemPagesPublicWidgets($pagesIds)
     {
         $widgets = [];
         $definedWidgetsIds = [];
 
-        // get dependent widgets
+        // get dependent public widgets
         $select = $this->select();
-        $select->from('page_system_widget_depend')
+        $select->from(['a' => 'page_system_widget_depend'])
             ->columns([
                 'page_id',
                 'widget_id'
             ])
+            ->join(
+                ['b' => 'page_widget'],
+                new Expression('a.widget_id = b.id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                []
+            )
             ->order('order')
-            ->where->in('page_id', $pagesIds);
+            ->where->in('a.page_id', $pagesIds);
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
@@ -526,16 +653,21 @@ class PageAdministration extends PageBase
 
         $widgetsFilter = $definedWidgetsIds;
 
-        // get all dependent widgets
+        // get all dependent public widgets
         if ($widgetsFilter) {
             while (true) {
                 $select = $this->select();
-                $select->from('page_widget_depend')
+                $select->from(['a' => 'page_widget_depend'])
                     ->columns([
                         'widget_id',
                         'depend_widget_id'
                     ])
-                    ->where->in('widget_id', $widgetsFilter);
+                    ->join(
+                        ['b' => 'page_widget'],
+                        new Expression('b.id = a.depend_widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                        []
+                    )
+                    ->where->in('a.widget_id', $widgetsFilter);
 
                 $statement = $this->prepareStatementForSqlObject($select);
                 $resultSet = new ResultSet;
@@ -587,7 +719,7 @@ class PageAdministration extends PageBase
 
             // get list of widgets
             if (null != ($systemPagesWidgets =
-                    $this->getDependentSystemPagesWidgets(array_keys($systemPagesMap)))) {
+                    $this->getDependentSystemPagesPublicWidgets(array_keys($systemPagesMap)))) {
 
                 // process received widgets
                 foreach ($systemPagesWidgets as $widget) {
@@ -717,7 +849,79 @@ class PageAdministration extends PageBase
     }
 
     /**
-     * Get widgets
+     * Get public widget info
+     *
+     * @param integer $pageId
+     * @param integer $widgetId
+     * @param intger $systemPageId
+     * @return boolean|array
+     */
+    public function getPublicWidgetInfo($pageId, $widgetId, $systemPageId = null)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'page_widget'])
+            ->columns([
+                'id',
+                'description'
+            ])
+            ->join(
+                ['b' => 'page_widget_page_depend'],
+                'a.id = b.widget_id',
+                [],
+                'left'
+            )
+            ->join(
+                ['c' => 'page_widget_connection'],
+                new Expression('c.page_id = ? and a.id = c.widget_id', [$pageId]),
+                [],
+                'left'
+            )
+            ->group('a.id')
+            ->order('a.id')
+            ->where([
+                'a.id' => $widgetId,
+                'a.type' => self::WIDGET_TYPE_PUBLIC
+            ])
+            ->where
+            ->nest
+                ->isNull('c.id')
+                ->or
+                ->isNotNull('c.id')
+                ->and
+                ->equalTo('a.duplicate', self::WIDGET_DUPLICATE)
+            ->unnest;
+
+        if ($systemPageId) {
+            // don't show hidden widgets
+            $select->join(
+                ['d' => 'page_system_widget_hidden'],
+                new Expression('d.page_id = ? and a.id = d.widget_id', [$systemPageId]),
+                [],
+                'left'
+            );
+            $select->where->isNull('d.id');
+
+            $select->where([ // we need only specific widgets for the page or not specified         
+                new Predicate\PredicateSet([
+                        new Predicate\Operator('b.page_id', '=', $systemPageId),
+                        new Predicate\isNull('b.id')
+                    ],
+                    Predicate\PredicateSet::COMBINED_BY_OR
+                )
+            ]);
+        }
+        else {
+            $select->where->isNull('b.id');
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return  $result->current() ? $result->current() : false;   
+    }
+
+    /**
+     * Get public widgets
      *
      * @param integer $pageId
      * @param integer $systemPageId
@@ -727,7 +931,7 @@ class PageAdministration extends PageBase
      *      array modules
      * @return object Paginator
      */
-    public function getWidgets($pageId, $systemPageId = null, $page = 1, $perPage = 0, array $filters = [])
+    public function getPublicWidgets($pageId, $systemPageId = null, $page = 1, $perPage = 0, array $filters = [])
     {
         $select = $this->select();
         $select->from(['a' => 'page_widget'])
@@ -769,8 +973,8 @@ class PageAdministration extends PageBase
                 [],
                 'left'
             );
-
             $select->where->isNull('d.id');
+
             $select->where([ // we need only specific widgets for the page or not specified         
                 new Predicate\PredicateSet([
                         new Predicate\Operator('b.page_id', '=', $systemPageId),
@@ -789,9 +993,6 @@ class PageAdministration extends PageBase
             $select->where->in('a.module', $filters['modules']);
         }
 
-        //echo $select->getSqlString(new \Zend\Db\Adapter\Platform\Mysql());
-        //exit;
-        
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));

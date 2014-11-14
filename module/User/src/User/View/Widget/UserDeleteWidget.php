@@ -13,7 +13,7 @@ class UserDeleteWidget extends UserAbstractWidget
      */
     public function getContent() 
     {
-        if (null != ($userIdentity = UserIdentityService::getCurrentUserIdentity())) {
+        if (!UserIdentityService::isGuest()) {
             // get the user delete form
             $deleteForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')

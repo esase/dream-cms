@@ -958,7 +958,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (31, 'user_get_info', 2, 'Event - Getting user\'s info'),
 (32, 'page_delete', 5, 'Event - Deleting pages'),
 (33, 'page_add', 5, 'Event - Adding pages'),
-(34, 'page_edit', 5, 'Event - Editing pages');
+(34, 'page_edit', 5, 'Event - Editing pages'),
+(35, 'page_widget_add', 5, 'Event - Adding widgets');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

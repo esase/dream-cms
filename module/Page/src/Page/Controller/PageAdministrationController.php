@@ -154,9 +154,6 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         }
                     }
 
-                    // clear cache
-                    $this->getModel()->clearLanguageSensitivePageCaches();
-
                     $this->flashMessenger()
                             ->setNamespace('success')
                             ->addMessage($this->getTranslator()->translate('Selected system pages have been added'));                    
@@ -206,9 +203,6 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 }
 
                 if (true === $deleteResult) {
-                    // clear cache
-                    $this->getModel()->clearLanguageSensitivePageCaches();
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Selected pages have been deleted'));
@@ -339,9 +333,6 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 if (true === ($result = $this->getModel()->editPage($page, $pageForm->
                         getForm()->getData(), $page['type'] == PageNestedSet::PAGE_TYPE_SYSTEM, ($parent ? $parent : [])))) {
 
-                    // clear cache
-                    $this->getModel()->clearLanguageSensitivePageCaches();
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Page has been edited'));
@@ -407,9 +398,6 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         $page['left_key'], $page['right_key'], false, $pageForm->getForm()->getData());
 
                 if (is_numeric($result)) {
-                    // clear cache
-                    $this->getModel()->clearLanguageSensitivePageCaches();
-
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Custom page has been added'));
@@ -428,6 +416,65 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             'pageForm' => $pageForm->getForm(),
             'page_id' => $page['id']
         ]);
+    }
+
+    /**
+     * Add widget
+     */
+    public function ajaxAddWidgetAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $pageId = $request->getPost('page', -1);
+            $widgetId = $request->getPost('widget', -1);
+
+            // get a page info
+            if (false !== ($page = $this->getModel()->getStructurePageInfo($pageId))) {
+                // get a public widget info
+                if (false !== ($widget =
+                        $this->getModel()->getPublicWidgetInfo($pageId, $widgetId, $page['system_page']))) {
+
+                    // get list of dependent widgets
+                    $widgets = $this->getModel()->getDependentPublicWidgets($pageId, $widgetId);
+
+                    // add public widgets
+                    foreach ($widgets as $widgetId) {
+                        // check the permission and increase permission's actions track
+                        if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                            return $this->getResponse();
+                        }
+
+                        $result = $this->getModel()->
+                                addPublicWidget($pageId, $widgetId, $page['layout_default_position'], $page['widget_default_layout']);
+
+                        if (!is_numeric($result)) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate($result));
+
+                            return $this->getResponse();
+                        }
+                    }
+
+                    $this->flashMessenger()
+                            ->setNamespace('success')
+                            ->addMessage($this->getTranslator()->translate('Widget have been added'));
+
+                    return $this->getResponse();
+                }
+            }
+        }
+
+        $this->flashMessenger()
+            ->setNamespace('error')
+            ->addMessage($this->getTranslator()->translate('Error occurred'));
+
+        return $this->getResponse();
     }
 
     /**
@@ -461,15 +508,22 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
         // get data
         $paginator = $this->getModel()->
-                getWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
+                getPublicWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
 
-        return new ViewModel([
+        $viewModel = new ViewModel([
             'paginator' => $paginator,
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
             'per_page' => $this->getPerPage(),
-            'page' => $page
+            'page' => $this->getPage(),
+            'page_info' => $page
         ]);
+
+        if ($request->isXmlHttpRequest()) {
+            $viewModel->setTemplate('page/administration-partial/browse-widgets');
+        }
+
+        return $viewModel;
     }
 
     /**

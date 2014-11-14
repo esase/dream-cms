@@ -27,6 +27,33 @@ class PageEvent extends ApplicationAbstractEvent
     const PAGE_EDIT = 'page_edit';
 
     /**
+     * Add widget event
+     */
+    const WIDGET_ADD = 'page_widget_add';
+
+    /**
+     * Fire add widget event
+     *
+     * @param integer $widgetId
+     * @param integer $pageId
+     * @return void
+     */
+    public static function fireAddWidgetEvent($widgetId, $pageId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Widget added by guest'
+            : 'Event - Widget added by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$widgetId, $pageId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $widgetId, $pageId];
+
+        self::fireEvent(self::WIDGET_ADD, 
+                $widgetId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
      * Fire edit page event
      *
      * @param integer $pageId

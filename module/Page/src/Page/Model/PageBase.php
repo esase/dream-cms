@@ -234,6 +234,24 @@ class PageBase extends ApplicationAbstractBase
     }
 
     /**
+     * Clear widgets connections cache
+     *
+     * @return boolean
+     */
+    public function clearWidgetsConnectionsCache()
+    {
+        $cacheName = CacheUtility::
+                getCacheName(self::CACHE_WIDGETS_CONNECTIONS . $this->getCurrentLanguage());
+
+        // clear a page's widgets settings cache
+        if ($this->staticCacheInstance->hasItem($cacheName)) {
+            return $this->staticCacheInstance->removeItem($cacheName);
+        }
+
+        return false;
+    }
+
+    /**
      * Clear language sensitive page caches
      *
      * @return boolean
@@ -341,8 +359,22 @@ class PageBase extends ApplicationAbstractBase
                 'dependent_page' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
             ])
             ->join(
-                ['d' => 'page_system'],
-                'd.id = a.system_page',
+                ['d' => 'page_layout'],
+                'd.id = a.layout',
+                [
+                    'layout_default_position' => 'default_position'
+                ]
+            )
+            ->join(
+                ['i' => 'page_widget_layout'],
+                new Expression('i.default  = ?', [PageWidget::DEFAULT_WIDGET_LAYOUT]),                
+                [
+                    'widget_default_layout' => 'id'
+                ]
+            )
+            ->join(
+                ['f' => 'page_system'],
+                'f.id = a.system_page',
                 [
                     'system_title' => 'title',
                     'disable_menu',

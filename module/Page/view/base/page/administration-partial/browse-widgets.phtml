@@ -1,0 +1,46 @@
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+    <div class="col-md-4">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->translate('Widgets'),
+            'body' => $this->partial('page/administration-partial/widgets', [
+                'page_info' => $this->page_info,
+                'paginator' => $this->paginator,
+                'per_page' => $this->per_page,
+                'filter_form' => $this->filter_form,
+                'filters' => $filters
+            ])
+        ]) ?>
+    </div>
+    <div class="col-md-8">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->translate('Page layout'),
+            'body' => time()
+        ]) ?>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var pageWidget = new Widget({
+        'widgetPopupId' : 'widget-popup',
+        'widgetsWrapper' : 'widgets-wrapper',
+        'newWidgetsWrapper' : '#new-widgets-list',
+        'newWidgetLink' : 'a.list-group-item',
+        'newWidgetUrl' : '<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-add-widget'], ['force_canonical' => true]) ?>',
+        'widgetsRefreshUrl' : '<?php echo $this->url('application/page', [
+                'controller' => 'pages-administration',
+                'action' => 'browse-widgets',
+                'per_page' => $this->per_page,
+                'page' => $this->page,
+                'slug' => $this->page_info['id']
+        ], [
+            'force_canonical' => true,
+            'query' => $filters
+        ]) ?>',
+        'pageId' : '<?php echo $this->escapeJs($this->page_info['id']) ?>',
+    });
+</script>

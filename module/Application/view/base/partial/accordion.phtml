@@ -1,5 +1,5 @@
 <?php if (count($this->items) > 1): ?>
-    <?php $this->declareVars('uncategorized', 'content', 'index') ?>
+    <?php $this->declareVars('uncategorized', 'content', 'index', 'randPrefix') ?>
     <?php $this->uncategorized = null ?>
     <div class="panel-group" id="<?php echo $this->escapeHtmlAttr($this->name) ?>">
         <?php foreach ($this->items as $category => $content) : ?>
@@ -7,15 +7,16 @@
                 <?php $this->uncategorized .= $content; continue; ?>
             <?php endif; ?>
             <?php $this->index++ ?>
+            <?php $this->randPrefix = $this->escapeHtmlAttr($this->applicationRandId()) ?>
             <div class="panel panel-default panel-accordion">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#<?php echo $this->escapeHtmlAttr($this->name) ?>" href="#collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>">
+                        <a data-toggle="collapse" data-parent="#<?php echo $this->escapeHtmlAttr($this->name) ?>" href="#<?php echo $this->randPrefix ?>_collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>">
                             <?php echo $this->translate($category) ?>
                         </a>
                     </h4>
                 </div>
-                <div id="collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>" class="panel-collapse collapse <?php if (($this->index == 1 && ! (array) $this->openCategories) || (in_array($category, (array) $this->openCategories))): ?>in<?php else: ?>collapse<?php endif ?>">
+                <div id="<?php echo $this->randPrefix ?>_collapse-<?php echo $this->escapeHtmlAttr($this->index) ?>" class="panel-collapse collapse <?php if (($this->index == 1 && ! (array) $this->openCategories) || (in_array($category, (array) $this->openCategories))): ?>in<?php else: ?>collapse<?php endif ?>">
                     <div class="panel-body">
                         <?php echo $content ?>
                     </div>

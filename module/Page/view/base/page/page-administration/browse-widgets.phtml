@@ -1,7 +1,11 @@
+<!-- include needed js and css files -->
+<?php $this->layoutHeadScript()->appendFile($this->layoutAsset('widget.js', 'js', 'page')) ?>
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration.css', 'css', 'page')) ?>
+
 <?php $this->declareVars('subPageTitle') ?>
 <?php $this->subPageTitle = $this->translate('Browse widgets') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
-<?php $this->headTitle($this->pageTitle($this->page)) ?>
+<?php $this->headTitle($this->pageTitle($this->page_info)) ?>
 <?php $this->headTitle($this->translate('List of pages')) ?>
     
 <!-- render a header -->
@@ -23,7 +27,7 @@
             'check_acl' => true
         ],
         'browse_widgets' => [
-            'name' => $this->pageTitle($this->page) . ' - ' . $this->subPageTitle,
+            'name' => $this->pageTitle($this->page_info) . ' - ' . $this->subPageTitle,
             'controller' => 'pages-administration',
             'action' => 'browse-widgets',
             'check_acl' => true
@@ -31,25 +35,13 @@
     ]
 ]) ?>
 
-<div class="row">
-    <div class="col-md-4">
-        <?php echo $this->partial('administration-partial/panel', [
-            'notification' => false,
-            'title' => $this->translate('Widgets'),
-            'body' => $this->partial('page/administration-partial/widgets', [
-                'page' => $this->page,
-                'paginator' => $this->paginator,
-                'per_page' => $this->per_page,
-                'filter_form' => $this->filter_form,
-                'filters' => $filters
-            ])
-        ]) ?>
-    </div>
-    <div class="col-md-8">
-        <?php echo $this->partial('administration-partial/panel', [
-            'notification' => false,
-            'title' => $this->translate('Page layout'),
-            'body' => 'asdsa'
-        ]) ?>
-    </div>
+<div id="widgets-wrapper">
+    <?php echo $this->partial('page/administration-partial/browse-widgets', [
+        'page_info' => $this->page_info,
+        'paginator' => $this->paginator,
+        'page' => $this->page,
+        'per_page' => $this->per_page,
+        'filter_form' => $this->filter_form,
+        'filters' => $filters
+    ]) ?>
 </div>

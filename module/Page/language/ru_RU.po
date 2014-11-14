@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-11-12 12:01+0600\n"
+"PO-Revision-Date: 2014-11-14 18:34+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,9 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Widget have been added"
+msgstr "Виджет был добавлен"
 
 msgid "Add widget"
 msgstr "Добавить виджет"
@@ -218,6 +221,19 @@ msgstr "Карта сайта"
 
 msgid "Page"
 msgstr "Страница"
+
+msgid "Event - Adding widgets"
+msgstr "Добавление виджетов"
+
+msgid "Event - Widget added by guest"
+msgstr ""
+"Гость добавил виджет с идентификатором - \"%d\" на страницу - с "
+"идентификатором \"%d\""
+
+msgid "Event - Widget added by user"
+msgstr ""
+"\"%s\" добавил виджет с идентификатором - \"%d\" на страницу - с "
+"идентификатором \"%d\""
 
 msgid "Event - Editing pages"
 msgstr "Редактирование страниц"

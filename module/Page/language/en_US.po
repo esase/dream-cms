@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-11-12 12:01+0600\n"
+"PO-Revision-Date: 2014-11-14 18:34+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Widget have been added"
+msgstr "Widget have been added"
 
 msgid "Add widget"
 msgstr "Add widget"
@@ -214,6 +217,15 @@ msgstr "Sitemap"
 
 msgid "Page"
 msgstr "Page"
+
+msgid "Event - Adding widgets"
+msgstr "Adding widgets"
+
+msgid "Event - Widget added by guest"
+msgstr "Guest added the widget with id - \"%d\" on the page with id - \"%d\""
+
+msgid "Event - Widget added by user"
+msgstr "\"%s\" added the widget with id - \"%d\" on the page with id - \"%d\""
 
 msgid "Event - Editing pages"
 msgstr "Editing pages"

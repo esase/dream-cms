@@ -19,14 +19,14 @@
 
 <!-- widgets list -->
 <?php if ($this->paginator->count()): ?>
-    <div class="list-group">
+    <div class="list-group" id="new-widgets-list">
         <?php foreach ($paginator as $data) : ?>
             <?php if (false === $this->allowAddWidgets): ?>
                 <div class="list-group-item disabled">
                     <?php echo $this->translate($data->description) ?>
                 </div>
             <?php else: ?>
-                <a href="#" class="list-group-item">
+                <a href="#" class="list-group-item" widget="<?php echo $this->escapeHtmlAttr($data->id) ?>">
                    <img src="<?php echo $this->layoutAsset('icon/plus.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Add widget')) ?>" />
                    <?php echo $this->translate($data->description) ?>
                 </a>
@@ -39,7 +39,7 @@
                 'controller' => $this->applicationRoute()->getParam('controller'),
                 'action' => $this->applicationRoute()->getParam('action'),
                 'per_page' => $this->per_page,
-                'slug' => $this->page['id']
+                'slug' => $this->page_info['id']
             ],
             'queries' => $this->filters
         ])
