@@ -19,7 +19,9 @@ class UserLoginWidget extends UserAbstractWidget
                 ->get('Application\Form\FormManager')
                 ->getInstance('User\Form\UserLogin');
 
-            if ($this->getRequest()->isPost()) {
+            if ($this->getRequest()->isPost() &&
+                    $this->getRequest()->getPost('form_name') == $loginForm->getFormName()) {
+
                 // fill form with received values
                 $loginForm->getForm()->setData($this->getRequest()->getPost());
 

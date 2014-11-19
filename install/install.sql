@@ -562,7 +562,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (46, 'pages_administration_add_custom_page', 'ACL - Adding custom pages in admin area', 5),
 (47, 'pages_administration_edit_page', 'ACL - Editing pages in admin area', 5),
 (48, 'pages_administration_ajax_add_widget', 'ACL - Adding widgets on pages in admin area', 5),
-(49, 'pages_administration_browse_widgets', 'ACL - Browsing widgets in admin area', 5);
+(49, 'pages_administration_browse_widgets', 'ACL - Browsing widgets in admin area', 5),
+(50, 'pages_administration_ajax_change_widget_position', 'ACL - Changing widgets positions on pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -959,7 +960,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (32, 'page_delete', 5, 'Event - Deleting pages'),
 (33, 'page_add', 5, 'Event - Adding pages'),
 (34, 'page_edit', 5, 'Event - Editing pages'),
-(35, 'page_widget_add', 5, 'Event - Adding widgets');
+(35, 'page_widget_add', 5, 'Event - Adding widgets'),
+(36, 'page_widget_change_position', 5, 'Event - Changing widgets positions');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1050,8 +1052,8 @@ INSERT INTO `page_widget_position` (`id`, `name`) VALUES
 
 CREATE TABLE IF NOT EXISTS `page_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(30) NOT NULL,
-    `title` VARCHAR(50) NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `title` VARCHAR(150) NOT NULL,
     `default_position` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`default_position`) REFERENCES `page_widget_position`(`id`)
@@ -1060,8 +1062,40 @@ CREATE TABLE IF NOT EXISTS `page_layout` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `page_layout` (`id`, `name`, `title`, `default_position`) VALUES
-(1, 'layout_1_column', '1 column', 8),
-(2, 'layout_2_columns', '2 columns', 4);
+(1, 'layout-1-column', '1 column', 8),
+(2, 'layout-2-columns-l33-r66', '2 columns (left 33%, right 66%)', 4),
+(3, 'layout-2-columns-l66-r33', '2 columns (left 66%, right 33%)', 4),
+(4, 'layout-2-columns-l50-r50', '2 columns (left 50%, right 50%)', 4),
+(5, 'layout-3-columns-l33-m33-r33', '3 columns (left 33%, middle 33%, right 66%)', 4),
+(6, 'layout-top-area-below-2-columns-l33-r66', 'top area and 2 columns below (left 33%, right 66%)', 4);
+
+CREATE TABLE IF NOT EXISTS `page_widget_position_connection` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `position_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `layout_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`position_id`) REFERENCES `page_widget_position`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`layout_id`) REFERENCES `page_layout`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_position_connection` (`id`, `position_id`, `layout_id`) VALUES
+(1,  8, 1),
+(2,  4, 2),
+(3,  5, 2),
+(4,  4, 3),
+(5,  5, 3),
+(6,  4, 4),
+(7,  5, 4),
+(8,  4, 5),
+(9,  8, 5),
+(10, 5, 5),
+(11, 4, 6),
+(12, 5, 6),
+(13, 6, 6);
 
 CREATE TABLE IF NOT EXISTS `page_widget` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1350,6 +1384,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_connection` (
     `layout` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
+    KEY `position` (`page_id`, `position_id`, `order`),
     FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,

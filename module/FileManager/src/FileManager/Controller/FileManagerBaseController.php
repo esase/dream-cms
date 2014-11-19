@@ -222,6 +222,11 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
 
                     // save data
                     if ($editForm->getForm()->isValid()) {
+                        // check the permission and increase permission's actions track
+                        if (true !== ($result = $this->aclCheckPermission())) {
+                            return $result;
+                        }
+
                         // edit the file
                         if (false === ($newFileName = $this->getModel()->editFile($editForm->
                                 getForm()->getData()['name'], $fullFilePath, $userDirectory, $isDirectory))) {
@@ -272,8 +277,12 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                 // process files names
                 foreach ($fileNames as $file) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // delete the file or directory with nested files and dirs

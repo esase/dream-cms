@@ -92,8 +92,12 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         }
 
                         // check the permission and increase permission's actions track
-                        if (true !== ($result = $this->aclCheckPermission())) {
-                            return $result;
+                        if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                            return $this->redirectTo('pages-administration', 'system-pages', [], true);
                         }
 
                         // add the home page
@@ -111,8 +115,12 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         // add sub pages
                         foreach ($systemPagesMap as $page) {
                             // check the permission and increase permission's actions track
-                            if (true !== ($result = $this->aclCheckPermission())) {
-                                return $result;
+                            if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                                $this->flashMessenger()
+                                    ->setNamespace('error')
+                                    ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                                return $this->redirectTo('pages-administration', 'system-pages', [], true);
                             }
 
                             // get created page info
@@ -134,8 +142,12 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         // add pages
                         foreach ($systemPagesMap as $page) {
                             // check the permission and increase permission's actions track
-                            if (true !== ($result = $this->aclCheckPermission())) {
-                                return $result;
+                            if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                                $this->flashMessenger()
+                                    ->setNamespace('error')
+                                    ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                                return $this->redirectTo('pages-administration', 'system-pages', [], true);
                             }
 
                             $result = $this->getModel()->
@@ -187,8 +199,12 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     }
 
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // delete the page
@@ -419,6 +435,53 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     }
 
     /**
+     * Change widget position
+     */
+    public function ajaxChangeWidgetPositionAction()
+    {
+        $request   = $this->getRequest();
+
+        if ($request->isPost()) {
+            $widgetConnectionId = $request->getPost('widget_connection', -1);
+            $widgetOrder = (int) $request->getPost('widget_order', 0);
+            $widgetPosition = $request->getPost('widget_position');
+
+            // get widget connection info
+            if (false !== ($connectionInfo = $this->
+                    getModel()->getWidgetConnectionInfo($widgetConnectionId))) {
+
+                // check received widget position
+                if (false !== ($newWidgetPosition = $this->getModel()->
+                        getWidgetPositionInfo($widgetPosition, $connectionInfo['page_layout']))) {
+
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->aclCheckPermission())) {
+                        return $result;
+                    }
+
+                    // change the widget's position
+                    $result = $this->getModel()->
+                            changePublicWidgetPosition($connectionInfo, $widgetOrder + 1, $newWidgetPosition['id']);
+
+                    if (true !== $result) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate($result));                       
+                    }
+
+                    return $this->getResponse();
+                }
+            }
+        }
+
+        $this->flashMessenger()
+            ->setNamespace('error')
+            ->addMessage($this->getTranslator()->translate('Error occurred'));
+
+        return $this->getResponse();
+    }
+
+    /**
      * Add widget
      */
     public function ajaxAddWidgetAction()
@@ -482,6 +545,11 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
      */
     public function browseWidgetsAction()
     {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->aclCheckPermission())) {
+            return $result;
+        }
+
         // get the page info
         if (null == ($page = $this->
                 getModel()->getStructurePageInfo($this->getSlug(), true, false, true))) {
@@ -490,7 +558,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         $filters = [];
-
+        $paginator = false;
+ 
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
@@ -507,8 +576,10 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         // get data
-        $paginator = $this->getModel()->
-                getPublicWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
+        if (true === $this->aclCheckPermission('pages_administration_ajax_add_widget', false, false)) {
+            $paginator = $this->getModel()->
+                    getPublicWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
+        }
 
         $viewModel = new ViewModel([
             'paginator' => $paginator,
@@ -516,7 +587,10 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             'filter_form' => $filterForm->getForm(),
             'per_page' => $this->getPerPage(),
             'page' => $this->getPage(),
-            'page_info' => $page
+            'page_info' => $page,
+            'manage_layout' => $this->getModel()->getManageLayoutPath(),
+            'widgets_connections' => $this->getModel()->
+                    getWidgetsConnections($this->getModel()->getCurrentLanguage())
         ]);
 
         if ($request->isXmlHttpRequest()) {

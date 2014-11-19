@@ -58,6 +58,16 @@ abstract class ApplicationAbstractCustomForm implements ApplicationCustomFormInt
     }
 
     /**
+     * Get form name
+     *
+     * @return string
+     */
+    public function getFormName()
+    {
+       return $this->formName;
+    }
+
+    /**
      * Get form instance
      *
      * @return object

@@ -1,4 +1,5 @@
 <?php use Application\Form\ApplicationCustomFormBuilder ?>
+<?php use Zend\Form\Element ?>
 
 <?php $this->declareVars('category', 'formCategories', 'openCategories') ?>
 <?php $this->declareVars('initCalendar', 'initWysiwyg', 'filePreview') ?>
@@ -72,12 +73,16 @@
 ?>
 
 <?php
+    $formName = new Element\Hidden('form_name');
+    $formName->setValue($this->form->getAttribute('name'));
+
     echo $this->form()->openTag($this->form);
-    echo $this->partial('partial/accordion', [
-        'name' => 'form-accordion',
-        'items' => $this->formCategories,
-        'openCategories' => $this->openCategories
-    ]);
+        echo $this->formHidden($formName);
+        echo $this->partial('partial/accordion', [
+            'name' => 'form-accordion',
+            'items' => $this->formCategories,
+            'openCategories' => $this->openCategories
+        ]);
     echo $this->form()->closeTag();
 ?>
 

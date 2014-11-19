@@ -17,6 +17,12 @@ class PageNestedSet extends ApplicationAbstractNestedSet
     protected $layoutPath = 'page/layout-page/';
 
     /**
+     * Manage layout path
+     * @var string
+     */
+    protected $manageLayoutPath = 'page/manage-layout-page/';
+
+    /**
      * Page status active 
      */
     const PAGE_STATUS_ACTIVE = 1;
@@ -69,6 +75,16 @@ class PageNestedSet extends ApplicationAbstractNestedSet
     public function getLayoutPath()
     {
         return $this->layoutPath;
+    }
+
+    /**
+     * Get manage layout path
+     *
+     * @return string
+     */
+    public function getManageLayoutPath()
+    {
+        return $this->manageLayoutPath;
     }
 
     /**

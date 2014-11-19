@@ -1,0 +1,20 @@
+<!-- include needed js and css files -->
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration-layout-1-column.css', 'css', 'page')) ?>
+
+<table id="manage-widgets">
+    <tbody>
+        <tr>
+            <td>
+                <ul class="connected-sortable default-widget-column" position="content-middle">
+                    <?php if (!empty($this->widgets_connections[$this->page_info['id']]['content-middle'])): ?>
+                        <?php foreach($this->widgets_connections[$this->page_info['id']]['content-middle'] as $widget): ?>
+                            <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
+                                <?php echo $this->translate($widget['widget_description']) ?>
+                            </li>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>

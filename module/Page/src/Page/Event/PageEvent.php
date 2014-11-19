@@ -32,6 +32,33 @@ class PageEvent extends ApplicationAbstractEvent
     const WIDGET_ADD = 'page_widget_add';
 
     /**
+     * Change widget position event
+     */
+    const WIDGET_CHANGE_POSITION = 'page_widget_change_position';
+
+    /**
+     * Fire change widget position event
+     *
+     * @param integer $widgetId
+     * @param integer $pageId
+     * @return void
+     */
+    public static function fireChangeWidgetPositionEvent($widgetId, $pageId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Widget position changed by guest'
+            : 'Event - Widget position changed by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$widgetId, $pageId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $widgetId, $pageId];
+
+        self::fireEvent(self::WIDGET_CHANGE_POSITION, 
+                $widgetId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
      * Fire add widget event
      *
      * @param integer $widgetId

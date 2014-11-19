@@ -36,18 +36,20 @@ class XmlRpcController extends ApplicationAbstractBaseController
     {
         // get user info by api key
         if (null != ($apiKey = $this->getRequest()->getQuery()->api_key)) {
-            if (null != ($userInfo = UserIdentityService::getUserInfo($apiKey,
-                    UserModelBase::USER_INFO_BY_API_KEY))) {
+            if (null != ($userInfo =
+                    UserIdentityService::getUserInfo($apiKey, UserModelBase::USER_INFO_BY_API_KEY))) {
 
                 // fill the user's info
-                $userIdentity = [];
-
-                foreach($userInfo as $fieldName => $value) {
-                    $userIdentity[$fieldName] = $value;
+                if ($userInfo['status'] == UserModelBase::STATUS_APPROVED) {
+                    $userIdentity = [];
+    
+                    foreach($userInfo as $fieldName => $value) {
+                        $userIdentity[$fieldName] = $value;
+                    }
+    
+                    // init user identity
+                    UserIdentityService::setCurrentUserIdentity($userIdentity);
                 }
-
-                // init user identity
-                UserIdentityService::setCurrentUserIdentity($userIdentity);
             }
         }
 

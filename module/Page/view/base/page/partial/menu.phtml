@@ -1,6 +1,11 @@
 <nav>
     <div id="main-menu-wrapper">
         <ul id="main-menu" class="sm sm-simple<?php if (!$this->localization()->isCurrentLanguageLtr()): ?> sm-rtl<?php endif ?>">
+            <li>
+                <a href="<?php echo $this->url('page') ?>">
+                    <img src="<?php echo $this->layoutAsset('icon/home_menu.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Home')) ?>" />
+                </a>
+            </li>
             <?php echo $this->menu_items ?>
         </ul>
     </div>

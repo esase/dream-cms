@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-11-14 18:34+0600\n"
+"PO-Revision-Date: 2014-11-19 11:48+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -111,8 +111,20 @@ msgstr "Visibility settings"
 msgid "Redirect url"
 msgstr "Redirect url"
 
-msgid "2 columns"
-msgstr "2 columns"
+msgid "top area and 2 columns below (left 33%, right 66%)"
+msgstr "top area and 2 columns below (left 33%, right 66%)"
+
+msgid "3 columns (left 33%, middle 33%, right 66%)"
+msgstr "3 columns (left 33%, middle 33%, right 66%)"
+
+msgid "2 columns (left 50%, right 50%)"
+msgstr "2 columns (left 50%, right 50%)"
+
+msgid "2 columns (left 66%, right 33%)"
+msgstr "2 columns (left 66%, right 33%)"
+
+msgid "2 columns (left 33%, right 66%)"
+msgstr "2 columns (left 33%, right 66%)"
 
 msgid "1 column"
 msgstr "1 column"
@@ -218,6 +230,19 @@ msgstr "Sitemap"
 msgid "Page"
 msgstr "Page"
 
+msgid "Event - Changing widgets positions"
+msgstr "Changing widgets positions"
+
+msgid "Event - Widget position changed by guest"
+msgstr ""
+"Guest changed the widget position with id - \"%d\" on the page with id - \"%d"
+"\""
+
+msgid "Event - Widget position changed by user"
+msgstr ""
+"\"%s\" changed the widget position with id - \"%d\" on the page with id - "
+"\"%d\""
+
 msgid "Event - Adding widgets"
 msgstr "Adding widgets"
 
@@ -286,3 +311,6 @@ msgstr "Adding widgets on pages in admin area"
 
 msgid "ACL - Browsing widgets in admin area"
 msgstr "Browsing widgets in admin area"
+
+msgid "ACL - Changing widgets positions on pages in admin area"
+msgstr "Changing widgets positions on pages in admin area"

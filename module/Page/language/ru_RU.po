@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-11-14 18:34+0600\n"
+"PO-Revision-Date: 2014-11-19 11:48+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -112,8 +112,20 @@ msgstr "Настройки видимости"
 msgid "Redirect url"
 msgstr "URL перенаправления"
 
-msgid "2 columns"
-msgstr "2 колонки"
+msgid "top area and 2 columns below (left 33%, right 66%)"
+msgstr "верхняя область и 2 колонки ниже (слева 33%, справа 66%)"
+
+msgid "3 columns (left 33%, middle 33%, right 66%)"
+msgstr "3 колонки (слева 33%, середина 33%, справа 33%)"
+
+msgid "2 columns (left 50%, right 50%)"
+msgstr "2 колонки (слева 50%, справа 50%)"
+
+msgid "2 columns (left 66%, right 33%)"
+msgstr "2 колонки (слева 66%, справа 33%)"
+
+msgid "2 columns (left 33%, right 66%)"
+msgstr "2 колонки (слева 33%, справа 66%)"
 
 msgid "1 column"
 msgstr "1 колонка"
@@ -222,6 +234,19 @@ msgstr "Карта сайта"
 msgid "Page"
 msgstr "Страница"
 
+msgid "Event - Changing widgets positions"
+msgstr "Изменение позиции виджетов"
+
+msgid "Event - Widget position changed by guest"
+msgstr ""
+"Гость изменил положение виджета с идентификатором - \"%d\" на странице с "
+"идентификатором - \"%d\""
+
+msgid "Event - Widget position changed by user"
+msgstr ""
+"\"%s\" изменил положение виджета с идентификатором - \"%d\" на странице с "
+"идентификатором - \"%d\""
+
 msgid "Event - Adding widgets"
 msgstr "Добавление виджетов"
 
@@ -294,3 +319,6 @@ msgstr "Добавление виджетов на страницы в адми�
 
 msgid "ACL - Browsing widgets in admin area"
 msgstr "Просмотр виджетов в админке"
+
+msgid "ACL - Changing widgets positions on pages in admin area"
+msgstr "Изменение позициий виджетов на страницах в админке"

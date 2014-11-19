@@ -2,6 +2,7 @@
 namespace User\View\Widget;
 
 use User\Model\UserWidget as UserWidgetModel;
+use User\Service\UserIdentity as UserIdentityService;
 
 class UserForgotWidget extends UserAbstractWidget
 {
@@ -22,7 +23,9 @@ class UserForgotWidget extends UserAbstractWidget
             $request = $this->getRequest();
     
             // validate the form
-            if ($request->isPost()) {
+            if ($request->isPost() &&
+                    $this->getRequest()->getPost('form_name') == $forgotForm->getFormName()) {
+
                 // fill the form with received values
                 $forgotForm->getForm()->setData($request->getPost(), false);
     

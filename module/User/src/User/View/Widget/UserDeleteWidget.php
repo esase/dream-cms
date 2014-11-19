@@ -22,13 +22,17 @@ class UserDeleteWidget extends UserAbstractWidget
             $request = $this->getRequest();
 
             // validate the form
-            if ($request->isPost()) {
+            if ($request->isPost() &&
+                    $this->getRequest()->getPost('form_name') == $deleteForm->getFormName()) {
+
                 // fill the form with received values
                 $deleteForm->getForm()->setData($request->getPost(), false);
 
                 // delete the user's account
                 if ($deleteForm->getForm()->isValid()) {
-                    if (true !== ($deleteResult = $this->getModel()->deleteUser($userIdentity, false))) {
+                    if (true !== ($deleteResult = $this->
+                            getModel()->deleteUser(UserIdentityService::getCurrentUserIdentity(), false))) {
+
                         $this->getFlashMessenger()
                             ->setNamespace('error')
                             ->addMessage($this->translate('Error occurred'));
@@ -37,7 +41,7 @@ class UserDeleteWidget extends UserAbstractWidget
                     }
 
                     // clear user's identity
-                    $this->logoutUser($userIdentity);
+                    $this->logoutUser(UserIdentityService::getCurrentUserIdentity());
                     return $this->redirectTo();
                 }
             }

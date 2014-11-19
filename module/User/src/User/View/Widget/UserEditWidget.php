@@ -28,7 +28,9 @@ class UserEditWidget extends UserAbstractWidget
             $userForm->getForm()->setData(UserIdentityService::getCurrentUserIdentity());
 
             // validate the form
-            if ($this->getRequest()->isPost()) {
+            if ($this->getRequest()->isPost() &&
+                    $this->getRequest()->getPost('form_name') == $userForm->getFormName()) {
+
                 // make certain to merge the files info!
                 $post = array_merge_recursive(
                     $this->getRequest()->getPost()->toArray(),

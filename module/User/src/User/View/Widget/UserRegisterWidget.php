@@ -3,7 +3,7 @@ namespace User\View\Widget;
 
 use User\Service\UserIdentity as UserIdentityService;
 use Application\Service\ApplicationTimeZone as TimeZoneService;
-use Application\Utility\ApplicationEmailNotification;
+use Application\Utility\ApplicationEmailNotification as EmailNotificationUtility;
 use Localization\Service\Localization as LocalizationService;
 
 class UserRegisterWidget extends UserAbstractWidget
@@ -27,7 +27,9 @@ class UserRegisterWidget extends UserAbstractWidget
                 ->showCaptcha(true);
 
             // validate the form
-            if ($this->getRequest()->isPost()) {
+            if ($this->getRequest()->isPost() &&
+                    $this->getRequest()->getPost('form_name') == $userForm->getFormName()) {
+
                 // make certain to merge the files info!
                 $post = array_merge_recursive(
                     $this->getRequest()->getPost()->toArray(),
@@ -54,7 +56,7 @@ class UserRegisterWidget extends UserAbstractWidget
                                     getView()->pageUrl('user-activate', ['user_id' => $userInfo['user_id']]))) {
 
                                 // send an email activate notification
-                                EmailNotification::sendNotification($userInfo['email'],
+                                EmailNotificationUtility::sendNotification($userInfo['email'],
                                     $this->getSetting('user_email_confirmation_title'),
                                     $this->getSetting('user_email_confirmation_message'), [
                                         'find' => [

@@ -54,8 +54,12 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 // allow recources
                 foreach ($resourcesIds as $resourceId) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // allow the resource
@@ -103,8 +107,12 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 // disallow recources
                 foreach ($resourcesIds as $resourceId) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // disallow the resource
@@ -145,8 +153,12 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 // delete selected roles
                 foreach ($rolesIds as $roleId) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // delete the role

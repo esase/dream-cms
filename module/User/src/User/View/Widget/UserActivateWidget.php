@@ -25,7 +25,9 @@ class UserActivateWidget extends UserAbstractWidget
             $request = $this->getRequest();
 
             // validate the form
-            if ($request->isPost()) {
+            if ($request->isPost() &&
+                    $this->getRequest()->getPost('form_name') == $activateForm->getFormName()) {
+
                 // fill the form with received values
                 $activateForm->getForm()->setData($request->getPost(), false);
 

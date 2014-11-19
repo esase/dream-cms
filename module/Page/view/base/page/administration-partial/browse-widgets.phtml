@@ -2,35 +2,56 @@
 <?php echo $this->partial('partial/notification') ?>
 
 <div class="row">
-    <div class="col-md-4">
-        <?php echo $this->partial('administration-partial/panel', [
-            'notification' => false,
-            'title' => $this->translate('Widgets'),
-            'body' => $this->partial('page/administration-partial/widgets', [
-                'page_info' => $this->page_info,
-                'paginator' => $this->paginator,
-                'per_page' => $this->per_page,
-                'filter_form' => $this->filter_form,
-                'filters' => $filters
-            ])
-        ]) ?>
-    </div>
-    <div class="col-md-8">
-        <?php echo $this->partial('administration-partial/panel', [
-            'notification' => false,
-            'title' => $this->translate('Page layout'),
-            'body' => time()
-        ]) ?>
-    </div>
+    <?php if (false === $this->paginator): ?>
+        <div class="col-md-12">
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Page layout'),
+                'body' => $this->partial($this->manage_layout . $this->page_info['layout_name'], [
+                    'page_info' => $this->page_info,
+                    'widgets_connections' => $this->widgets_connections
+                ])
+            ]) ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-4">
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Widgets'),
+                'body' => $this->partial('page/administration-partial/widgets', [
+                    'page_info' => $this->page_info,
+                    'paginator' => $this->paginator,
+                    'per_page' => $this->per_page,
+                    'filter_form' => $this->filter_form,
+                    'filters' => $filters
+                ])
+            ]) ?>
+        </div>
+        <div class="col-md-8">
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Page layout'),
+                'body' => $this->partial($this->manage_layout . $this->page_info['layout_name'], [
+                    'page_info' => $this->page_info,
+                    'widgets_connections' => $this->widgets_connections
+                ])
+            ]) ?>
+        </div>
+    <?php endif ?>
 </div>
 
 <script type="text/javascript">
     var pageWidget = new Widget({
+        'initSortable' : <?php echo false === $this->aclCheckPermission('pages_administration_ajax_change_widget_position') ? 'false' : 'true' ?>,
+        'sortableWidgtesWrapper' : 'ul.connected-sortable',
+        'sortableWidgtesPlaceholder' : 'ui-state-highlight',
         'widgetPopupId' : 'widget-popup',
         'widgetsWrapper' : 'widgets-wrapper',
+        'initNewWidgets' : <?php echo false === $this->paginator ? 'false' : 'true' ?>,
         'newWidgetsWrapper' : '#new-widgets-list',
         'newWidgetLink' : 'a.list-group-item',
         'newWidgetUrl' : '<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-add-widget'], ['force_canonical' => true]) ?>',
+        'changeWidgetPositionUrl' : '<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-change-widget-position'], ['force_canonical' => true]) ?>',
         'widgetsRefreshUrl' : '<?php echo $this->url('application/page', [
                 'controller' => 'pages-administration',
                 'action' => 'browse-widgets',

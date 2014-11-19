@@ -27,7 +27,7 @@ class UserWidget extends UserBase
                 ->set([
                     'salt' => $passwordSalt,
                     'password' => $this->generatePassword($newPassword, $passwordSalt),
-                    'activation_code' => '',
+                    'activation_code' => null,
                     'date_edited' => date('Y-m-d')
                 ])
                 ->where([

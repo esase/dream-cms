@@ -399,8 +399,12 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                     }
 
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // delete the user
@@ -446,8 +450,12 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                     }
 
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // approve the user
@@ -492,8 +500,12 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                     }
 
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->aclCheckPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // disapprove the user

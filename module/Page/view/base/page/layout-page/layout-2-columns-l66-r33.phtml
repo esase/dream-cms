@@ -1,0 +1,17 @@
+<?php $this->placeholder('content')->captureStart() ?>
+    <div class="row">
+        <div class="col-sm-6 col-md-8">
+            <?php echo $this->pageInjectWidget('content-left', $this->page['id']) ?>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <?php echo $this->pageInjectWidget('content-right', $this->page['id']) ?>
+        </div>
+    </div>
+<?php $this->placeholder('content')->captureEnd() ?>
+
+<?php echo $this->partial('page/layout-page/_header', [
+    'breadcrumb' => $this->breadcrumb, 
+    'page' => $this->page
+]) ?>
+
+<?php echo $this->placeholder('content') ?>

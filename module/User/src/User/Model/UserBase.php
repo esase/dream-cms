@@ -162,7 +162,7 @@ class UserBase extends ApplicationAbstractBase
                 ->table('user_list')
                 ->set([
                     'status' => ($approved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED),
-                    'activation_code' => '',
+                    'activation_code' => null,
                     'date_edited' => date('Y-m-d')
                 ])
                 ->where([
@@ -462,7 +462,7 @@ class UserBase extends ApplicationAbstractBase
                     'api_secret' => $this->generateRandString(),
                     'activation_code' => !$statusApproved // generate an activation code
                         ? $this->generateRandString()
-                        : '',
+                        : null,
                     'date_edited' => date('Y-m-d')
                 ]));
 

@@ -21,6 +21,16 @@ class PageAdministration extends PageBase
     const DEFAULT_PAGES_MODULE = 'Page';
 
     /**
+     * Get manage layout path
+     *
+     * @return string
+     */
+    public function getManageLayoutPath()
+    {
+        return $this->getPageModel()->getManageLayoutPath();   
+    }
+
+    /**
      * Get basic page fields
      *
      * @param array $pageInfo
@@ -176,17 +186,35 @@ class PageAdministration extends PageBase
             // move widgets
             if ($page['layout'] != $formData['layout']) {
                 if (false !== ($layout = $this->getPageLayout($formData['layout']))) {
-                    $update = $this->update()
-                        ->table('page_widget_connection')
-                        ->set([
-                            'position_id' => $layout['default_position']
+                    $select = $this->select();
+                    $select->from('page_widget_connection')
+                        ->columns([
+                            'id'
                         ])
+                        ->order('order')
                         ->where([
                             'page_id' => $page['id']
                         ]);
-    
-                    $statement = $this->prepareStatementForSqlObject($update);
-                    $statement->execute();  
+
+                    $statement = $this->prepareStatementForSqlObject($select);
+                    $result = $statement->execute();
+
+                    $index = 1;
+                    foreach ($result as $widgetConnection) {
+                        $update = $this->update()
+                            ->table('page_widget_connection')
+                            ->set([
+                                'order' => $index,
+                                'position_id' => $layout['default_position']
+                            ])
+                            ->where([
+                                'id' => $widgetConnection['id']
+                            ]);
+
+                        $statement = $this->prepareStatementForSqlObject($update);
+                        $statement->execute();
+                        $index++;
+                    }
                 }
             }
 
@@ -207,6 +235,143 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Update structure page edited date
+     *
+     * @param integer @pageId
+     * @return void
+     */
+    protected function updateStructurePageEditedDate($pageId)
+    {
+        // update the page's date edited
+        $update = $this->update()
+            ->table('page_structure')
+            ->set([
+                'date_edited' => date('Y-m-d')
+            ])
+            ->where([
+                'id' => $pageId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($update);
+        $statement->execute();
+    }
+
+    /**
+     * Change public widget position
+     *
+     * @param array $oldConnectionInfo
+     *      integer id
+     *      integer page_id
+     *      integer position_id
+     *      integer page_layout
+     *      integer order
+     *      integer widget_id
+     * @param integer $newOrder
+     * @param integer $newPositionId
+     * @return boolean|string
+     */
+    public function changePublicWidgetPosition(array $oldConnectionInfo, $newOrder, $newPositionId)
+    {
+        if ($newOrder == $oldConnectionInfo['order']
+                && $newPositionId == $oldConnectionInfo['position_id']) {
+
+            return true;
+        }
+
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $this->updateStructurePageEditedDate($oldConnectionInfo['page_id']);
+
+            // move a widget to another position
+            if ($newPositionId != $oldConnectionInfo['position_id']) {
+                $update = $this->update()
+                    ->table('page_widget_connection')
+                    ->set([
+                        'order' => new Expression($this->adapter->platform->quoteIdentifier('order') . ' + 1')
+                    ])
+                    ->where([
+                        'page_id' => $oldConnectionInfo['page_id'],
+                        'position_id' => $newPositionId
+                    ]);
+
+                $update->where->greaterThanOrEqualTo('order', $newOrder);
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+
+                $update = $this->update()
+                    ->table('page_widget_connection')
+                    ->set([
+                        'order' => new Expression($this->adapter->platform->quoteIdentifier('order') . ' - 1')
+                    ])
+                    ->where([
+                        'page_id' => $oldConnectionInfo['page_id'],
+                        'position_id' => $oldConnectionInfo['position_id']
+                    ]);
+
+                $update->where->greaterThanOrEqualTo('order', $oldConnectionInfo['order']);
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+            else {
+                // get move direction
+                $queryExpression = $newOrder < $oldConnectionInfo['order']
+                    ? new Expression($this->adapter->platform->quoteIdentifier('order') . ' + 1')
+                    : new Expression($this->adapter->platform->quoteIdentifier('order') . ' - 1');
+
+                $update = $this->update()
+                    ->table('page_widget_connection')
+                    ->set([
+                        'order' => $queryExpression
+                    ])
+                    ->where([
+                        'page_id' => $oldConnectionInfo['page_id'],
+                        'position_id' => $newPositionId
+                    ]);
+
+                    if ($newOrder < $oldConnectionInfo['order']) {
+                        $update->where->greaterThanOrEqualTo('order', $newOrder);
+                        $update->where->lessThanOrEqualTo('order', $oldConnectionInfo['order']);
+                    }
+                    else {
+                        $update->where->greaterThanOrEqualTo('order', $oldConnectionInfo['order']);
+                        $update->where->lessThanOrEqualTo('order', $newOrder);
+                    }
+
+                    $statement = $this->prepareStatementForSqlObject($update);
+                    $statement->execute();
+            }
+
+            // change the widget's position
+            $update = $this->update()
+                ->table('page_widget_connection')
+                ->set([
+                    'order' => $newOrder,
+                    'position_id' => $newPositionId
+                ])
+                ->where([
+                    'id' => $oldConnectionInfo['id']
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // clear cache
+            $this->clearLanguageSensitivePageCaches();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        PageEvent::fireChangeWidgetPositionEvent($oldConnectionInfo['widget_id'], $oldConnectionInfo['page_id']);
+        return true;
+    }
+
+    /**
      * Add public widget
      *
      * @param integer $pageId
@@ -219,6 +384,8 @@ class PageAdministration extends PageBase
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $this->updateStructurePageEditedDate($pageId);
 
             // get a widget max order
             $select = $this->select();
@@ -251,7 +418,7 @@ class PageAdministration extends PageBase
             $connectionId = $this->adapter->getDriver()->getLastGeneratedValue();
 
             // clear cache
-            $this->clearWidgetsConnectionsCache();
+            $this->clearLanguageSensitivePageCaches();
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -607,6 +774,69 @@ class PageAdministration extends PageBase
         }
 
         return array_reverse($definedWidgetsIds);
+    }
+
+    /**
+     * Get widget position info
+     *
+     * @param string $positionName
+     * @param integer $layoutId
+     * @return array|boolean
+     */
+    public function getWidgetPositionInfo($positionName, $layoutId)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'page_widget_position'])
+            ->columns([
+                'id'
+            ])
+            ->join(
+                ['b' => 'page_widget_position_connection'],
+                new Expression('b.position_id = a.id and b.layout_id = ?', [$layoutId]),
+                []
+            )
+            ->where([
+                'name' => $positionName
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return  $result->current() ? $result->current() : false;
+    }
+
+    /**
+     * Get widget connection info
+     *
+     * @param integer $connectionId
+     * @return array|boolean
+     */
+    public function getWidgetConnectionInfo($connectionId)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'page_widget_connection'])
+            ->columns([
+                'id',
+                'page_id',
+                'position_id',
+                'widget_id',
+                'order'
+            ])
+            ->join(
+                ['b' => 'page_structure'],
+                'a.page_id = b.id',
+                [
+                    'page_layout' => 'layout'
+                ]
+            )
+            ->where([
+                'a.id' => $connectionId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return  $result->current() ? $result->current() : false;
     }
 
     /**

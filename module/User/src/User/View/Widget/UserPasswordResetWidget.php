@@ -25,7 +25,9 @@ class UserPasswordResetWidget extends UserAbstractWidget
             $request  = $this->getRequest();
 
             // validate the form
-            if ($request->isPost()) {
+            if ($request->isPost() &&
+                    $this->getRequest()->getPost('form_name') == $resetForm->getFormName()) {
+
                 // fill the form with received values
                 $resetForm->getForm()->setData($request->getPost(), false);
 

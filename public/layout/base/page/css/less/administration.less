@@ -4,3 +4,49 @@
 div#widgets-wrapper {
     position: relative;
 }
+
+// manage widgets
+table#manage-widgets {
+    width: 100%;
+
+    tbody > tr {
+        height: 100%;
+
+        > td {
+            vertical-align:top;
+            height: 100%;
+
+            > ul.connected-sortable {
+                width:100%;
+                list-style-type: none;
+                margin:0;
+                padding: 0;
+                position: relative;
+                height: 100%;
+                background-color: @manage-widgets-connected-sortable-background-color;
+
+                > li.ui-state-default:first-child {
+                    margin-top:0;
+                }
+
+                > li.ui-state-default {
+                    padding: @manage-widgets-ui-state-default-padding-top-bottom @manage-widgets-ui-state-default-padding-left-right;
+                    margin-top: @manage-widgets-ui-state-default-margin-top;
+                    cursor: move;
+                }
+
+                >li.ui-state-highlight {
+                    height: @manage-widgets-ui-state-highlight-height;
+                }
+            }
+
+            >ul.default-widget-column {
+                min-height: @manage-widgets-default-widget-column;
+            }
+
+            >ul.default-widget-row {
+                min-height: @manage-widgets-default-widget-row;
+            }
+        }
+    }
+}

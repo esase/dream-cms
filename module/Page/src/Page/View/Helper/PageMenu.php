@@ -29,11 +29,9 @@ class PageMenu extends AbstractHelper
      */
     public function __invoke()
     {
-        if (null !== ($menuItems = $this->processMenuItems($this->pagesTree))) {
-            return $this->getView()->partial('page/partial/menu', [
-                'menu_items' => $this->processMenuItems($this->pagesTree)
-            ]);
-        }
+        return $this->getView()->partial('page/partial/menu', [
+            'menu_items' => $this->processMenuItems($this->pagesTree)
+        ]);
     }
 
     /**
