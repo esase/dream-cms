@@ -5,6 +5,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
 use Page\Event\PageEvent;
+use Zend\Http\Response;
 
 class PageController extends AbstractActionController
 {
@@ -74,7 +75,10 @@ class PageController extends AbstractActionController
 
         // check for redirect
         if ($pageInfo['redirect_url']) {
-            return $this->redirect()->toUrl($pageInfo['redirect_url']);
+            $response = $this->redirect()->toUrl($pageInfo['redirect_url']);
+            $response->setStatusCode(Response::STATUS_CODE_301);
+
+            return $response;
         }
 
         // passing the current page info to the layout

@@ -1062,12 +1062,17 @@ CREATE TABLE IF NOT EXISTS `page_layout` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `page_layout` (`id`, `name`, `title`, `default_position`) VALUES
-(1, 'layout-1-column', '1 column', 8),
-(2, 'layout-2-columns-l33-r66', '2 columns (left 33%, right 66%)', 4),
-(3, 'layout-2-columns-l66-r33', '2 columns (left 66%, right 33%)', 4),
-(4, 'layout-2-columns-l50-r50', '2 columns (left 50%, right 50%)', 4),
-(5, 'layout-3-columns-l33-m33-r33', '3 columns (left 33%, middle 33%, right 66%)', 4),
-(6, 'layout-top-area-below-2-columns-l33-r66', 'top area and 2 columns below (left 33%, right 66%)', 4);
+(1,  'layout-1-column', '1 column', 8),
+(2,  'layout-2-columns-l33-r66', '2 columns (left 33%, right 66%)', 4),
+(3,  'layout-2-columns-l66-r33', '2 columns (left 66%, right 33%)', 4),
+(4,  'layout-2-columns-l50-r50', '2 columns (left 50%, right 50%)', 4),
+(5,  'layout-3-columns-l33-m33-r33', '3 columns (left 33%, middle 33%, right 66%)', 4),
+(6,  'layout-top-area-below-2-columns-l33-r66', 'top area and 2 columns below (left 33%, right 66%)', 4),
+(7,  'layout-top-area-below-2-columns-l66-r33', 'top area and 2 columns below (left 66%, right 33%)', 4),
+(8,  'layout-top-area-below-2-columns-l50-r50', 'top area and 2 columns below (left 50%, right 50%)', 4),
+(9,  'layout-top-area-below-3-columns-l33-m33-r33', 'top area and 3 columns below (left 33%, middle 33%, right 33%)', 4),
+(10, 'layout-top-bottom-areas-between-2-columns-l50-r50', 'top and bottom areas and 2 columns between them (left 50%, right 50%)', 4),
+(11, 'layout-2-columns-l50-r50-below-bottom-area', '2 columns (left 50%, right 50%) below bottom area', 4);
 
 CREATE TABLE IF NOT EXISTS `page_widget_position_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1095,7 +1100,24 @@ INSERT INTO `page_widget_position_connection` (`id`, `position_id`, `layout_id`)
 (10, 5, 5),
 (11, 4, 6),
 (12, 5, 6),
-(13, 6, 6);
+(13, 6, 6),
+(14, 4, 7),
+(15, 5, 7),
+(16, 6, 7),
+(17, 4, 8),
+(18, 5, 8),
+(19, 6, 8),
+(20, 4, 9),
+(21, 8, 9),
+(22, 5, 9),
+(23, 6, 9),
+(24, 4, 10),
+(25, 5, 10),
+(26, 6, 10),
+(27, 7, 10),
+(28, 4, 11),
+(29, 5, 11),
+(30, 7, 11);
 
 CREATE TABLE IF NOT EXISTS `page_widget` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

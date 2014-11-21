@@ -61,7 +61,7 @@ class Page404 extends AbstractHelper
             if ($pageInfo['redirect_url']) {
                 $response = ServiceLocatorService::getServiceLocator()->get('Response');
                 $response->getHeaders()->addHeaderLine('Location', $pageInfo['redirect_url']);
-                $response->setStatusCode(Response::STATUS_CODE_302);
+                $response->setStatusCode(Response::STATUS_CODE_301);
                 $response->sendHeaders();
 
                 return false;

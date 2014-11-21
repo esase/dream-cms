@@ -244,7 +244,8 @@ class PageBase extends ApplicationAbstractBase
             ->columns([
                 'id',
                 'title',
-            ]);
+            ])
+            ->order('name');
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;

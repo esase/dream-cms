@@ -1,0 +1,11 @@
+td.left-widgets-column {
+  width: 50%;
+  padding-right: 5px;
+}
+td.right-widgets-column {
+  width: 50%;
+  padding-left: 10px;
+}
+td.bottom-widgets-row {
+  padding-top: 15px;
+}

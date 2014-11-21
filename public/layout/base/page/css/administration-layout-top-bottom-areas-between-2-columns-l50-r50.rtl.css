@@ -1,0 +1,8 @@
+td.left-widgets-column {
+  padding-right: 0;
+  padding-left: 5px;
+}
+td.right-widgets-column {
+  padding-left: 0;
+  padding-right: 10px;
+}

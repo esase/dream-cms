@@ -1,0 +1,62 @@
+<!-- include needed js and css files -->
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration-layout-top-bottom-areas-between-2-columns-l50-r50.css', 'css', 'page')) ?>
+
+<?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
+    <?php $this->layoutHeadLink()->
+            appendStylesheet($this->layoutAsset('administration-layout-top-bottom-areas-between-2-columns-l50-r50.rtl.css', 'css', 'page')) ?>
+<?php endif ?>
+
+<table id="manage-widgets">
+    <tbody>
+        <tr>
+            <td colspan="2" class="top-widgets-row">
+                <ul class="connected-sortable default-widget-row" position="content-top">
+                    <?php if (!empty($this->widgets_connections[$this->page_info['id']]['content-top'])): ?>
+                        <?php foreach($this->widgets_connections[$this->page_info['id']]['content-top'] as $widget): ?>
+                            <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
+                                <?php echo $this->translate($widget['widget_description']) ?>
+                            </li>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td class="left-widgets-column">
+                <ul class="connected-sortable default-widget-column" position="content-left">
+                    <?php if (!empty($this->widgets_connections[$this->page_info['id']]['content-left'])): ?>
+                        <?php foreach($this->widgets_connections[$this->page_info['id']]['content-left'] as $widget): ?>
+                            <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
+                                <?php echo $this->translate($widget['widget_description']) ?>
+                            </li>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </td>
+            <td class="right-widgets-column">
+                <ul class="connected-sortable default-widget-column" position="content-right">
+                    <?php if (!empty($this->widgets_connections[$this->page_info['id']]['content-right'])): ?>
+                        <?php foreach($this->widgets_connections[$this->page_info['id']]['content-right'] as $widget): ?>
+                            <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
+                                <?php echo $this->translate($widget['widget_description']) ?>
+                            </li>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="bottom-widgets-row">
+                <ul class="connected-sortable default-widget-row" position="content-bottom">
+                    <?php if (!empty($this->widgets_connections[$this->page_info['id']]['content-bottom'])): ?>
+                        <?php foreach($this->widgets_connections[$this->page_info['id']]['content-bottom'] as $widget): ?>
+                            <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
+                                <?php echo $this->translate($widget['widget_description']) ?>
+                            </li>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>

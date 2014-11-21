@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-11-19 11:48+0600\n"
+"PO-Revision-Date: 2014-11-21 16:46+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -15,8 +15,8 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Widget have been added"
-msgstr "Widget have been added"
+msgid "Widget has been added"
+msgstr "Widget has been added"
 
 msgid "Add widget"
 msgstr "Add widget"
@@ -111,11 +111,26 @@ msgstr "Visibility settings"
 msgid "Redirect url"
 msgstr "Redirect url"
 
+msgid "top and bottom areas and 2 columns between them (left 50%, right 50%)"
+msgstr "top and bottom areas and 2 columns between them (left 50%, right 50%)"
+
+msgid "top area and 3 columns below (left 33%, middle 33%, right 33%)"
+msgstr "top area and 3 columns below (left 33%, middle 33%, right 33%)"
+
+msgid "top area and 2 columns below (left 50%, right 50%)"
+msgstr "top area and 2 columns below (left 50%, right 50%)"
+
+msgid "top area and 2 columns below (left 66%, right 33%)"
+msgstr "top area and 2 columns below (left 66%, right 33%)"
+
 msgid "top area and 2 columns below (left 33%, right 66%)"
 msgstr "top area and 2 columns below (left 33%, right 66%)"
 
 msgid "3 columns (left 33%, middle 33%, right 66%)"
 msgstr "3 columns (left 33%, middle 33%, right 66%)"
+
+msgid "2 columns (left 50%, right 50%) below bottom area"
+msgstr "2 columns (left 50%, right 50%) below bottom area"
 
 msgid "2 columns (left 50%, right 50%)"
 msgstr "2 columns (left 50%, right 50%)"

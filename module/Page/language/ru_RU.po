@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-11-19 11:48+0600\n"
+"PO-Revision-Date: 2014-11-21 16:46+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgid "Widget have been added"
+msgid "Widget has been added"
 msgstr "Виджет был добавлен"
 
 msgid "Add widget"
@@ -112,11 +112,27 @@ msgstr "Настройки видимости"
 msgid "Redirect url"
 msgstr "URL перенаправления"
 
+msgid "top and bottom areas and 2 columns between them (left 50%, right 50%)"
+msgstr ""
+"верхняя и нижняя область и 2 колонки между ними (слева 50%, справа 50%)"
+
+msgid "top area and 3 columns below (left 33%, middle 33%, right 33%)"
+msgstr "верхняя область и 3 колонки ниже (слева 33%, середина 33%, справа 33%)"
+
+msgid "top area and 2 columns below (left 50%, right 50%)"
+msgstr "верхняя область и 2 колонки ниже (слева 50%, справа 50%)"
+
+msgid "top area and 2 columns below (left 66%, right 33%)"
+msgstr "верхняя область и 2 колонки ниже (слева 66%, справа 33%)"
+
 msgid "top area and 2 columns below (left 33%, right 66%)"
 msgstr "верхняя область и 2 колонки ниже (слева 33%, справа 66%)"
 
 msgid "3 columns (left 33%, middle 33%, right 66%)"
 msgstr "3 колонки (слева 33%, середина 33%, справа 33%)"
+
+msgid "2 columns (left 50%, right 50%) below bottom area"
+msgstr "2 колонки (слева 50%, справа 50%) и нижняя область"
 
 msgid "2 columns (left 50%, right 50%)"
 msgstr "2 колонки (слева 50%, справа 50%)"

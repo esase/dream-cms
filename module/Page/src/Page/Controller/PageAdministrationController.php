@@ -526,7 +526,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
                     $this->flashMessenger()
                             ->setNamespace('success')
-                            ->addMessage($this->getTranslator()->translate('Widget have been added'));
+                            ->addMessage($this->getTranslator()->translate('Widget has been added'));
 
                     return $this->getResponse();
                 }
