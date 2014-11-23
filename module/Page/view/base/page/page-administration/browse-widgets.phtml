@@ -36,14 +36,15 @@
 ]) ?>
 
 <div id="widgets-wrapper">
-    <?php echo $this->partial('page/administration-partial/browse-widgets', [
+    <?php echo $this->partial('page/administration-partial/browse-widgets-wrapper', [
+        'page' => $this->page,
         'page_info' => $this->page_info,
         'paginator' => $this->paginator,
-        'page' => $this->page,
         'per_page' => $this->per_page,
         'filter_form' => $this->filter_form,
         'filters' => $filters,
-        'widgets_connections' => $this->widgets_connections,
-        'manage_layout' => $this->manage_layout
+        'layouts' => $this->layouts,
+        'manage_layout' => $this->manage_layout,
+        'widgets_connections' => $this->widgets_connections
     ]) ?>
 </div>

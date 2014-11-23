@@ -1,0 +1,16 @@
+<div class="btn-group">
+    <div class="btn-group-wrapper">
+        <div class="btn-group-item">
+            <div class="dropdown">
+                <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#">
+                    <img src="<?php echo $this->layoutAsset('icon/setting.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" title="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" />
+                </a>
+                <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-left<?php else: ?>dropdown-menu-right<?php endif ?>" role="menu">
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="#">Delete</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

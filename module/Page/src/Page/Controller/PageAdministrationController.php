@@ -435,11 +435,58 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     }
 
     /**
+     * Change page layout
+     */
+    public function ajaxChangePageLayoutAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            // get page info
+            if (false !== ($pageInfo = $this->getModel()->getStructurePageInfo($this->getSlug()))) {
+                $layoutId = $this->params()->fromQuery('layout', -1);
+
+                // get layout info
+                if (null != ($layoutInfo = $this->getModel()->getPageLayout($layoutId))) {
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->aclCheckPermission())) {
+                        return $result;
+                    }
+
+                    // change the widget's position
+                    $result = $this->getModel()->
+                            changePageLayout($layoutId, $pageInfo['id'], $layoutInfo['default_position'], $pageInfo['layout']);
+
+                    if (true !== $result) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate($result));
+
+                        return $this->getResponse();
+                    }
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Layout has been changed'));
+
+                    return $this->getResponse();
+                }
+            }
+        }
+
+        $this->flashMessenger()
+            ->setNamespace('error')
+            ->addMessage($this->getTranslator()->translate('Error occurred'));
+
+        return $this->getResponse();
+    }
+
+    /**
      * Change widget position
      */
     public function ajaxChangeWidgetPositionAction()
     {
-        $request   = $this->getRequest();
+        $request = $this->getRequest();
 
         if ($request->isPost()) {
             $widgetConnectionId = $request->getPost('widget_connection', -1);
@@ -489,8 +536,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            $pageId = $request->getPost('page', -1);
-            $widgetId = $request->getPost('widget', -1);
+            $pageId = $this->params()->fromQuery('page', -1);
+            $widgetId = $this->params()->fromQuery('widget', -1);
 
             // get a page info
             if (false !== ($page = $this->getModel()->getStructurePageInfo($pageId))) {
@@ -558,7 +605,6 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         $filters = [];
-        $paginator = false;
  
         // get a filter form
         $filterForm = $this->getServiceLocator()
@@ -576,25 +622,24 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         // get data
-        if (true === $this->aclCheckPermission('pages_administration_ajax_add_widget', false, false)) {
-            $paginator = $this->getModel()->
-                    getPublicWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
-        }
+        $paginator = $this->getModel()->
+                getPublicWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
 
         $viewModel = new ViewModel([
-            'paginator' => $paginator,
-            'filters' => $filters,
-            'filter_form' => $filterForm->getForm(),
-            'per_page' => $this->getPerPage(),
             'page' => $this->getPage(),
             'page_info' => $page,
+            'paginator' => $paginator,
+            'per_page' => $this->getPerPage(),
+            'filter_form' => $filterForm->getForm(),
+            'filters' => $filters,
+            'layouts' => $this->getModel()->getPageLayouts(false),
             'manage_layout' => $this->getModel()->getManageLayoutPath(),
-            'widgets_connections' => $this->getModel()->
-                    getWidgetsConnections($this->getModel()->getCurrentLanguage())
+            'widgets_connections' => $this->
+                    getModel()->getWidgetsConnections($this->getModel()->getCurrentLanguage())
         ]);
 
         if ($request->isXmlHttpRequest()) {
-            $viewModel->setTemplate('page/administration-partial/browse-widgets');
+            $viewModel->setTemplate('page/administration-partial/browse-widgets-wrapper');
         }
 
         return $viewModel;

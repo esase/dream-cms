@@ -1,0 +1,18 @@
+<?php $this->placeholder('content')->captureStart() ?>
+    <?php echo $this->partial('page/administration-partial/_widgets-page-actions', [
+        'layouts' => $this->layouts,
+        'page_info' => $this->page_info
+    ]) ?>
+
+    <?php echo $this->partial($this->manage_layout . $this->page_info['layout_name'], [
+        'layouts' => $this->layouts,
+        'page_info' => $this->page_info,
+        'widgets_connections' => $this->widgets_connections
+    ])?>
+<?php $this->placeholder('content')->captureEnd() ?>
+
+<?php echo $this->partial('administration-partial/panel', [
+    'notification' => false,
+    'title' => $this->translate('Page layout'),
+    'body' => $this->placeholder('content')
+]) ?>

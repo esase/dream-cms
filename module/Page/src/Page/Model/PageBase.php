@@ -181,7 +181,8 @@ class PageBase extends ApplicationAbstractBase
                     'a.widget_id = c.id',
                     [
                         'widget_name' => 'name',
-                        'widget_description' => 'description'
+                        'widget_description' => 'description',
+                        'widget_type' => 'type'
                     ]
                 )
                 ->join(
@@ -215,6 +216,7 @@ class PageBase extends ApplicationAbstractBase
             foreach ($resultSet as $connection) {
                 $widgetConnections[$connection->page_id][$connection->widget_position][] = [
                     'widget_name' => $connection->widget_name,
+                    'widget_system' => $connection->widget_type == self::WIDGET_TYPE_SYSTEM ? true : false,
                     'widget_description' => $connection->widget_description,
                     'widget_layout' => $connection->widget_layout,
                     'widget_connection_id' => $connection->widget_connection_id,
@@ -235,15 +237,17 @@ class PageBase extends ApplicationAbstractBase
     /**
      * Get page layouts
      *
-     * @return array
+     * @param boolean $process
+     * @return array|object ResultSet
      */
-    public function getPageLayouts()
+    public function getPageLayouts($process = true)
     {
         $select = $this->select();
         $select->from('page_layout')
             ->columns([
                 'id',
                 'title',
+                'image'
             ])
             ->order('name');
 
@@ -251,12 +255,16 @@ class PageBase extends ApplicationAbstractBase
         $resultSet = new ResultSet;
         $resultSet->initialize($statement->execute());
 
-        $layouts = [];
-        foreach ($resultSet as $layout) {
-            $layouts[$layout->id] = $layout->title;
+        if ($process) {
+            $layouts = [];
+            foreach ($resultSet as $layout) {
+                $layouts[$layout->id] = $layout->title;
+            }
+    
+            return $layouts;
         }
 
-        return $layouts;
+        return $resultSet;
     }
 
     /**

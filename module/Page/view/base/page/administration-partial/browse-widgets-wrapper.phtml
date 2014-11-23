@@ -1,0 +1,67 @@
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+   <?php if (false === $this->aclCheckPermission('pages_administration_ajax_add_widget')): ?> 
+        <div class="col-md-12">
+            <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
+                'layouts' => $this->layouts,
+                'page_info' => $this->page_info,
+                'manage_layout' => $this->manage_layout,
+                'widgets_connections' => $this->widgets_connections
+            ]) ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-4">
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Widgets'),
+                'body' => $this->partial('page/administration-partial/_add-widgets', [
+                    'page_info' => $this->page_info,
+                    'paginator' => $this->paginator,
+                    'per_page' => $this->per_page,
+                    'filter_form' => $this->filter_form,
+                    'filters' => $filters
+                ])
+            ]) ?>
+        </div>
+        <div class="col-md-8">
+            <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
+                'layouts' => $this->layouts,
+                'page_info' => $this->page_info,
+                'manage_layout' => $this->manage_layout,
+                'widgets_connections' => $this->widgets_connections
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>
+
+<script type="text/javascript">
+    var pageWidget = new Widget({
+        'widgetsWrapper' : 'widgets-wrapper',
+        'widgetsRefreshUrl' : '<?php echo $this->url('application/page', [
+                'controller' => 'pages-administration',
+                'action' => 'browse-widgets',
+                'per_page' => $this->per_page,
+                'page' => $this->page,
+                'slug' => $this->page_info['id']], ['force_canonical' => true, 'query' => $filters]) ?>'
+    });
+
+    <?php if ($this->aclCheckPermission('pages_administration_ajax_change_widget_position')): ?>
+        <!-- init sortable -->
+        $('ul.connected-sortable').sortable({
+            connectWith: 'ul.connected-sortable',
+            placeholder: 'ui-state-highlight',
+            stop: function (e, ui) {
+                params = {
+                    'widget_order' : $(ui.item).index(),
+                    'widget_connection'  : $(ui.item).attr('widget-connection'),
+                    'widget_position' : $(ui.item).parent().attr('position')
+                };
+
+                // save a selected widget's position
+                pageWidget.getPage('<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-change-widget-position'], ['force_canonical' => true]) ?>', params);
+            }
+        }).disableSelection();
+    <?php endif ?>
+</script>

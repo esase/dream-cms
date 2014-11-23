@@ -82,6 +82,144 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Get max public widget order
+     *
+     * @param integer $pageId
+     * @param integer $positionId
+     * @return integer
+     */
+    protected function getMaxPublicWidgetOrder($pageId, $positionId)
+    {
+        // get a widget max order
+        $select = $this->select();
+        $select->from(['a' => 'page_widget_connection'])
+            ->columns([
+                'max_order' => new Expression('max(' .
+                        $this->adapter->platform->quoteIdentifier('order') . ')')
+            ])
+            ->join(
+                ['b' => 'page_widget'],
+                new Expression('b.id = a.widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),
+                []
+            )
+            ->where([
+                'a.page_id' => $pageId,
+                'a.position_id' => $positionId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current() ? $result->current()['max_order'] + 1 : 1;
+    }
+
+    /**
+     * Change public widgets position
+     *
+     * @param integer $pageId
+     * @param integer $newlayoutId
+     * @param integer $defaultPosition
+     * @return void
+     */
+    protected function changePublicWidgetsPosition($pageId, $newlayoutId, $defaultPosition)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'page_widget_connection'])
+            ->columns([
+                'id'
+            ])
+            ->join(
+                ['b' => 'page_widget'],
+                new Expression('b.id = a.widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                []
+            )
+            ->join(
+                ['c' => 'page_widget_position_connection'],
+                new Expression('a.position_id = c.position_id and c.layout_id = ?', [$newlayoutId]),
+                [],
+                'left'
+            )
+            ->order('order')
+            ->where([
+                'a.page_id' => $pageId
+            ])
+            ->where->isNull('c.id');
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if (count($result)) {
+            $maxOrder = $this->getMaxPublicWidgetOrder($pageId, $defaultPosition);
+
+            foreach ($result as $widgetConnection) {
+                $update = $this->update()
+                    ->table('page_widget_connection')
+                    ->set([
+                        'order' => $maxOrder,
+                        'position_id' => $defaultPosition
+                    ])
+                    ->where([
+                        'id' => $widgetConnection['id']
+                    ]);
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+                $maxOrder++;
+            }
+        }
+    }
+
+    /**
+     * Change page layout
+     *
+     * @param integer $newLayoutId
+     * @param integer $pageId
+     * @param integer $defaultPosition
+     * @param integer $oldLayoutId
+     * @return boolean|string
+     */
+    public function changePageLayout($newLayoutId, $pageId, $defaultPosition, $oldLayoutId)
+    {
+        if ($newLayoutId == $oldLayoutId) {
+            return true;
+        }
+
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('page_structure')
+                ->set([
+                    'layout' => $newLayoutId,
+                    'date_edited' => date('Y-m-d')
+                ])
+                ->where([
+                    'id' => $pageId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // change public widgets position
+            $this->changePublicWidgetsPosition($pageId, $newLayoutId, $defaultPosition);
+
+            // clear cache
+            $this->clearLanguageSensitivePageCaches();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the edit page event
+        PageEvent::fireEditPageEvent($pageId);
+        return true;
+    }
+
+    /**
      * Edit page
      *
      * @param array $page
@@ -183,38 +321,10 @@ class PageAdministration extends PageBase
                 }
             }
 
-            // move widgets
+            // change public widgets position
             if ($page['layout'] != $formData['layout']) {
                 if (false !== ($layout = $this->getPageLayout($formData['layout']))) {
-                    $select = $this->select();
-                    $select->from('page_widget_connection')
-                        ->columns([
-                            'id'
-                        ])
-                        ->order('order')
-                        ->where([
-                            'page_id' => $page['id']
-                        ]);
-
-                    $statement = $this->prepareStatementForSqlObject($select);
-                    $result = $statement->execute();
-
-                    $index = 1;
-                    foreach ($result as $widgetConnection) {
-                        $update = $this->update()
-                            ->table('page_widget_connection')
-                            ->set([
-                                'order' => $index,
-                                'position_id' => $layout['default_position']
-                            ])
-                            ->where([
-                                'id' => $widgetConnection['id']
-                            ]);
-
-                        $statement = $this->prepareStatementForSqlObject($update);
-                        $statement->execute();
-                        $index++;
-                    }
+                    $this->changePublicWidgetsPosition($page['id'], $formData['layout'], $layout['default_position']);
                 }
             }
 
@@ -387,22 +497,6 @@ class PageAdministration extends PageBase
 
             $this->updateStructurePageEditedDate($pageId);
 
-            // get a widget max order
-            $select = $this->select();
-            $select->from('page_widget_connection')
-                ->columns([
-                    'max_order' => new Expression('max(' .
-                            $this->adapter->platform->quoteIdentifier('order') . ')')
-                ])
-                ->where([
-                    'page_id' => $pageId,
-                    'position_id' => $layoutPosition
-                ]);
-
-            $statement = $this->prepareStatementForSqlObject($select);
-            $result = $statement->execute();
-            $maxOrder = $result->current() ? $result->current()['max_order'] + 1 : 1;
-
             $insert = $this->insert()
                 ->into('page_widget_connection')
                 ->values([
@@ -410,7 +504,7 @@ class PageAdministration extends PageBase
                     'widget_id' => $widgetId,
                     'position_id' => $layoutPosition,
                     'layout' => $widgetlayout,
-                    'order' => $maxOrder
+                    'order' => $this->getMaxPublicWidgetOrder($pageId, $layoutPosition)
                 ]);
 
             $statement = $this->prepareStatementForSqlObject($insert);
@@ -827,7 +921,8 @@ class PageAdministration extends PageBase
                 'a.page_id = b.id',
                 [
                     'page_layout' => 'layout'
-                ]
+                ],
+                'left'
             )
             ->where([
                 'a.id' => $connectionId
@@ -1297,8 +1392,14 @@ class PageAdministration extends PageBase
             ->join(
                 ['c' => 'page_widget_connection'],
                 'a.id = c.page_id',
+                [],
+                'left'
+            )
+            ->join(
+                ['d' => 'page_widget'],
+                new Expression('c.widget_id = d.id and d.type = ?', [self::WIDGET_TYPE_PUBLIC]),
                 [
-                    'widgets' => new Expression('count(c.id)')
+                    'widgets' => new Expression('count(d.id)') 
                 ],
                 'left'
             )

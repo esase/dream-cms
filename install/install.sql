@@ -563,7 +563,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (47, 'pages_administration_edit_page', 'ACL - Editing pages in admin area', 5),
 (48, 'pages_administration_ajax_add_widget', 'ACL - Adding widgets on pages in admin area', 5),
 (49, 'pages_administration_browse_widgets', 'ACL - Browsing widgets in admin area', 5),
-(50, 'pages_administration_ajax_change_widget_position', 'ACL - Changing widgets positions on pages in admin area', 5);
+(50, 'pages_administration_ajax_change_widget_position', 'ACL - Changing widgets positions on pages in admin area', 5),
+(51, 'pages_administration_ajax_change_page_layout', 'ACL - Changing page layout on the widgets page in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1055,24 +1056,25 @@ CREATE TABLE IF NOT EXISTS `page_layout` (
     `name` VARCHAR(100) NOT NULL,
     `title` VARCHAR(150) NOT NULL,
     `default_position` SMALLINT(5) UNSIGNED NOT NULL,
+    `image` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`default_position`) REFERENCES `page_widget_position`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_layout` (`id`, `name`, `title`, `default_position`) VALUES
-(1,  'layout-1-column', '1 column', 8),
-(2,  'layout-2-columns-l33-r66', '2 columns (left 33%, right 66%)', 4),
-(3,  'layout-2-columns-l66-r33', '2 columns (left 66%, right 33%)', 4),
-(4,  'layout-2-columns-l50-r50', '2 columns (left 50%, right 50%)', 4),
-(5,  'layout-3-columns-l33-m33-r33', '3 columns (left 33%, middle 33%, right 66%)', 4),
-(6,  'layout-top-area-below-2-columns-l33-r66', 'top area and 2 columns below (left 33%, right 66%)', 4),
-(7,  'layout-top-area-below-2-columns-l66-r33', 'top area and 2 columns below (left 66%, right 33%)', 4),
-(8,  'layout-top-area-below-2-columns-l50-r50', 'top area and 2 columns below (left 50%, right 50%)', 4),
-(9,  'layout-top-area-below-3-columns-l33-m33-r33', 'top area and 3 columns below (left 33%, middle 33%, right 33%)', 4),
-(10, 'layout-top-bottom-areas-between-2-columns-l50-r50', 'top and bottom areas and 2 columns between them (left 50%, right 50%)', 4),
-(11, 'layout-2-columns-l50-r50-below-bottom-area', '2 columns (left 50%, right 50%) below bottom area', 4);
+INSERT INTO `page_layout` (`id`, `name`, `title`, `default_position`, `image`) VALUES
+(1,  'layout-1-column', '1 column', 8, 'layout-1-column.png'),
+(2,  'layout-2-columns-l33-r66', '2 columns (left 33%, right 66%)', 4, 'layout-2-columns-l33-r66.png'),
+(3,  'layout-2-columns-l66-r33', '2 columns (left 66%, right 33%)', 4, 'layout-2-columns-l66-r33.png'),
+(4,  'layout-2-columns-l50-r50', '2 columns (left 50%, right 50%)', 4, 'layout-2-columns-l50-r50.png'),
+(5,  'layout-3-columns-l33-m33-r33', '3 columns (left 33%, middle 33%, right 33%)', 4, 'layout-3-columns-l33-m33-r33.png'),
+(6,  'layout-top-area-below-2-columns-l33-r66', 'top area and 2 columns below (left 33%, right 66%)', 4, 'layout-top-area-below-2-columns-l33-r66.png'),
+(7,  'layout-top-area-below-2-columns-l66-r33', 'top area and 2 columns below (left 66%, right 33%)', 4, 'layout-top-area-below-2-columns-l66-r33.png'),
+(8,  'layout-top-area-below-2-columns-l50-r50', 'top area and 2 columns below (left 50%, right 50%)', 4, 'layout-top-area-below-2-columns-l50-r50.png'),
+(9,  'layout-top-area-below-3-columns-l33-m33-r33', 'top area and 3 columns below (left 33%, middle 33%, right 33%)', 4, 'layout-top-area-below-3-columns-l33-m33-r33.png'),
+(10, 'layout-top-bottom-areas-between-2-columns-l50-r50', 'top and bottom areas and 2 columns between them (left 50%, right 50%)', 4, 'layout-top-bottom-areas-between-2-columns-l50-r50.png'),
+(11, 'layout-2-columns-l50-r50-below-bottom-area', '2 columns (left 50%, right 50%) below bottom area', 4, 'layout-2-columns-l50-r50-below-bottom-area.png');
 
 CREATE TABLE IF NOT EXISTS `page_widget_position_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -1,0 +1,20 @@
+<?php if (false !== $this->aclCheckPermission('pages_administration_ajax_change_page_layout')): ?> 
+    <ul class="nav nav-pills">
+        <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-left<?php else: ?>pull-right<?php endif ?>">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <?php echo $this->translate('Change page layout') ?>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+            <?php foreach($this->layouts as $layout): ?>
+                <li class="<?php if ($this->page_info['layout'] == $layout->id): ?>disabled<?php endif ?>">
+                    <a onclick="pageWidget.getPage($(this).attr('href')); return false" href="<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-change-page-layout', 'slug' => $this->page_info['id']], ['query' => ['layout' => $layout->id], 'force_canonical' => true]) ?>">
+                        <img src="<?php echo $this->layoutAsset($layout->image, 'image', 'page') ?>" />
+                        <?php echo $this->translate($layout->title) ?>
+                    </a>
+                </li>
+            <?php endforeach ?>
+            </ul>
+        </li>
+    </ul>
+<?php endif ?>
