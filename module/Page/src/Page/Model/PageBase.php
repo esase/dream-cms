@@ -161,12 +161,28 @@ class PageBase extends ApplicationAbstractBase
                 $visibilityOptions[$visibility->widget_connection][] = $visibility->hidden;
             }
 
+            // check widgets dependents
+            $dependentCheckSelect = $this->select();
+            $dependentCheckSelect->from(['j' => 'page_widget_depend'])
+                ->columns([])
+                ->join(
+                    ['h' => 'page_widget_connection'],
+                    ('h.widget_id = j.depend_widget_id'),
+                    [
+                        'id'
+                    ]
+                )
+                ->where(['a.widget_id' => new Expression('j.widget_id')])
+                ->where(['a.page_id' => new Expression('h.page_id')])
+                ->limit(1);
+
             // get widgets connections
             $select = $this->select();
             $select->from(['a' => 'page_widget_connection'])
                 ->columns([
                     'widget_connection_id' => 'id',
-                    'widget_id'                    
+                    'widget_id',
+                    'widget_depend_connection_id' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
                 ])
                 ->join(
                     ['b' => 'page_structure'],
@@ -203,7 +219,7 @@ class PageBase extends ApplicationAbstractBase
                     ],
                     'left'
                 )
-                ->order('order')
+                ->order('a.order')
                 ->where->IsNull('a.page_id')
                     ->or->where->IsNotNull('a.page_id')
                     ->and->where->IsNotNull('b.id');
@@ -220,6 +236,7 @@ class PageBase extends ApplicationAbstractBase
                     'widget_description' => $connection->widget_description,
                     'widget_layout' => $connection->widget_layout,
                     'widget_connection_id' => $connection->widget_connection_id,
+                    'widget_depend_connection_id' => $connection->widget_depend_connection_id,
                     'hidden' => !empty($visibilityOptions[$connection->widget_connection_id])
                         ? $visibilityOptions[$connection->widget_connection_id]
                         : []

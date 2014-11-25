@@ -564,7 +564,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (48, 'pages_administration_ajax_add_widget', 'ACL - Adding widgets on pages in admin area', 5),
 (49, 'pages_administration_browse_widgets', 'ACL - Browsing widgets in admin area', 5),
 (50, 'pages_administration_ajax_change_widget_position', 'ACL - Changing widgets positions on pages in admin area', 5),
-(51, 'pages_administration_ajax_change_page_layout', 'ACL - Changing page layout on the widgets page in admin area', 5);
+(51, 'pages_administration_ajax_change_page_layout', 'ACL - Changing page layout on the widgets page in admin area', 5),
+(52, 'pages_administration_ajax_delete_widget', 'ACL - Deleting widgets on pages in admin area', 5);
 
 CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -962,7 +963,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (33, 'page_add', 5, 'Event - Adding pages'),
 (34, 'page_edit', 5, 'Event - Editing pages'),
 (35, 'page_widget_add', 5, 'Event - Adding widgets'),
-(36, 'page_widget_change_position', 5, 'Event - Changing widgets positions');
+(36, 'page_widget_change_position', 5, 'Event - Changing widgets positions'),
+(37, 'page_widget_delete', 5, 'Event - Deleting widgets');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

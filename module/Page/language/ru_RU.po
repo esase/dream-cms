@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-11-23 15:35+0600\n"
+"PO-Revision-Date: 2014-11-25 18:42+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,27 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Widget has been deleted"
+msgstr "Виджет был удален"
+
+msgid "Widget will be deleted. Are you sure?"
+msgstr "Виджет будет удален. Вы уверены?"
+
+msgid "Edit widget settings"
+msgstr "Изменить настройки виджета"
+
+msgid "View widget dependents"
+msgstr "Просмотреть зависимости виджета"
+
+msgid "Delete widget"
+msgstr "Удалить виджет"
+
+msgid ""
+"You have to delete all dependent widgets before you can delete this widget"
+msgstr ""
+"Вы должны удалить все зависимые виджеты прежде чем вы сможете удалить этот "
+"виджет"
 
 msgid "Layout has been changed"
 msgstr "Макет был изменен"
@@ -269,8 +290,21 @@ msgstr ""
 
 msgid "Event - Widget position changed by user"
 msgstr ""
-"\"%s\" изменил положение виджета с идентификатором - \"%d\" на странице с "
+"\"%s\" изменил(а) положение виджета с идентификатором - \"%d\" на странице с "
 "идентификатором - \"%d\""
+
+msgid "Event - Deleting widgets"
+msgstr "Удаление виджетов"
+
+msgid "Event - Widget deleted by guest"
+msgstr ""
+"Гость удалил виджет с идентификатором - \"%d\" из страницы - с "
+"идентификатором \"%d\""
+
+msgid "Event - Widget deleted by user"
+msgstr ""
+"\"%s\" удалил(а) виджет с идентификатором - \"%d\" из страницы - с "
+"идентификатором \"%d\""
 
 msgid "Event - Adding widgets"
 msgstr "Добавление виджетов"
@@ -282,7 +316,7 @@ msgstr ""
 
 msgid "Event - Widget added by user"
 msgstr ""
-"\"%s\" добавил виджет с идентификатором - \"%d\" на страницу - с "
+"\"%s\" добавил(а) виджет с идентификатором - \"%d\" на страницу - с "
 "идентификатором \"%d\""
 
 msgid "Event - Editing pages"
@@ -350,3 +384,6 @@ msgstr "Изменение позициий виджетов на страниц
 
 msgid "ACL - Changing page layout on the widgets page in admin area"
 msgstr "Изменение макета страницы на странице виджетов в админке"
+
+msgid "ACL - Deleting widgets on pages in admin area"
+msgstr "Удаление виджетов из страниц в админки"

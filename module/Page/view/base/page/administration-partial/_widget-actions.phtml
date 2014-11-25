@@ -1,16 +1,46 @@
-<div class="btn-group">
-    <div class="btn-group-wrapper">
-        <div class="btn-group-item">
-            <div class="dropdown">
-                <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#">
-                    <img src="<?php echo $this->layoutAsset('icon/setting.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" title="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" />
-                </a>
-                <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-left<?php else: ?>dropdown-menu-right<?php endif ?>" role="menu">
-                    <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#">Delete</a>
-                    </li>
-                </ul>
+<?php if ($this->allow_delete || ($this->allow_view_dependents &&
+        $this->widget['widget_depend_connection_id']) || $this->allow_edit_settings): ?>
+
+    <div class="btn-group widget-actions">
+        <div class="btn-group-wrapper">
+            <div class="btn-group-item">
+                <div class="dropdown">
+                    <a class="dropdown-toggle text-capitalize" data-toggle="dropdown" href="#">
+                        <img src="<?php echo $this->layoutAsset('icon/setting.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" title="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" />
+                    </a>
+                    <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-left<?php else: ?>dropdown-menu-right<?php endif ?>" role="menu">
+                        <?php if ($this->allow_delete): ?>
+                            <?php if (!$this->widget['widget_depend_connection_id']): ?>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" href="<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-delete-widget', 'slug' => $this->widget['widget_connection_id']], ['force_canonical' => true]) ?>" class="confirm-handler" confirm="<?php echo $this->escapeHtmlAttr($this->translate('Widget will be deleted. Are you sure?')) ?>">
+                                        <?php echo $this->translate('Delete widget') ?>
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li role="presentation" class="disabled">
+                                    <a role="menuitem" tabindex="-1" href="#" onclick="return false" class="tooltip-handler" title="<?php echo $this->escapeHtmlAttr($this->translate('You have to delete all dependent widgets before you can delete this widget')) ?>">
+                                        <?php echo $this->translate('Delete widget') ?>
+                                    </a>
+                                </li>
+                            <?php endif ?>
+                        <?php endif ?>
+                        <?php if ($this->allow_view_dependents && $this->widget['widget_depend_connection_id']): ?>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <?php echo $this->translate('View widget dependents') ?>
+                                </a>
+                            </li>
+                        <?php endif ?>
+                        <?php if ($this->allow_edit_settings): ?>
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <?php echo $this->translate('Edit widget settings') ?>
+                                </a>
+                            </li>
+                        <?php endif ?>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
+<?php endif ?>

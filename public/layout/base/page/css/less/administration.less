@@ -32,7 +32,15 @@ table#manage-widgets {
                 > li.ui-state-default {
                     padding: @manage-widgets-ui-state-default-padding-top-bottom @manage-widgets-ui-state-default-padding-left-right;
                     margin-top: @manage-widgets-ui-state-default-margin-top;
-                    cursor: move;
+
+                    > div.widget-actions {
+                        padding-left: @manage-widgets-widget-actions-padding-left;
+                        padding-right: @manage-widgets-widget-actions-padding-right;
+                    }
+
+                    > span.sortable-handler {
+                        cursor: move;
+                    }
                 }
 
                 >li.ui-state-highlight {

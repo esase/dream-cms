@@ -32,9 +32,36 @@ class PageEvent extends ApplicationAbstractEvent
     const WIDGET_ADD = 'page_widget_add';
 
     /**
+     * Delete widget event
+     */
+    const WIDGET_DELETE = 'page_widget_delete';
+
+    /**
      * Change widget position event
      */
     const WIDGET_CHANGE_POSITION = 'page_widget_change_position';
+
+    /**
+     * Fire delete widget event
+     *
+     * @param integer $widgetId
+     * @param integer $pageId
+     * @return void
+     */
+    public static function fireDeleteWidgetEvent($widgetId, $pageId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Widget deleted by guest'
+            : 'Event - Widget deleted by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$widgetId, $pageId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $widgetId, $pageId];
+
+        self::fireEvent(self::WIDGET_DELETE, 
+                $widgetId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
 
     /**
      * Fire change widget position event

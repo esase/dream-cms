@@ -482,6 +482,63 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Delete widget connection
+     *
+     * @param array $widget
+     *      integer id
+     *      integer page_id
+     *      integer position_id
+     *      integer widget_id
+     *      integer order
+     * @return boolean|string
+     */
+    public function deleteWidgetConnection(array $widget)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $this->updateStructurePageEditedDate($widget['page_id']);
+
+            $delete = $this->delete()
+                ->from('page_widget_connection')
+                ->where([
+                    'id' => $widget['id']
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            // move up next widgets
+            $update = $this->update()
+                ->table('page_widget_connection')
+                ->set([
+                    'order' => new Expression($this->adapter->platform->quoteIdentifier('order') . ' - 1')
+                ])
+                ->where([
+                    'page_id' => $widget['page_id'],
+                    'position_id' => $widget['position_id']
+                ]);
+            $update->where->greaterThan('order', $widget['order']);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // clear cache
+            $this->clearLanguageSensitivePageCaches();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        PageEvent::fireDeleteWidgetEvent($widget['widget_id'], $widget['page_id']);
+        return true;
+    }
+
+    /**
      * Add public widget
      *
      * @param integer $pageId
@@ -907,6 +964,21 @@ class PageAdministration extends PageBase
      */
     public function getWidgetConnectionInfo($connectionId)
     {
+        // check widgets dependents
+        $dependentCheckSelect = $this->select();
+        $dependentCheckSelect->from(['c' => 'page_widget_depend'])
+            ->columns([])
+            ->join(
+                ['d' => 'page_widget_connection'],
+                ('d.widget_id = c.depend_widget_id'),
+                [
+                    'id'
+                ]
+            )
+            ->where(['a.widget_id' => new Expression('c.widget_id')])
+            ->where(['a.page_id' => new Expression('d.page_id')])
+            ->limit(1);
+
         $select = $this->select();
         $select->from(['a' => 'page_widget_connection'])
             ->columns([
@@ -914,15 +986,15 @@ class PageAdministration extends PageBase
                 'page_id',
                 'position_id',
                 'widget_id',
-                'order'
+                'order',
+                'widget_depend_connection_id' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
             ])
             ->join(
                 ['b' => 'page_structure'],
-                'a.page_id = b.id',
+                new Expression('a.page_id = b.id and b.language = ?', [$this->getCurrentLanguage()]),                
                 [
                     'page_layout' => 'layout'
-                ],
-                'left'
+                ]
             )
             ->where([
                 'a.id' => $connectionId

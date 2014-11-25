@@ -529,6 +529,52 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     }
 
     /**
+     * Delete widget
+     */
+    public function ajaxDeleteWidgetAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $widgetConnectionId = $this->getSlug();
+
+            // get widget connection info
+            if (false !== ($widget = $this->
+                    getModel()->getWidgetConnectionInfo($widgetConnectionId))) {
+
+                // check the widget depends
+                if (!$widget['widget_depend_connection_id']) {
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->aclCheckPermission())) {
+                        return $result;
+                    }
+
+                    // delete the widget connection
+                    if (true !== ($deleteResult = $this->getModel()->deleteWidgetConnection($widget))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate($deleteResult));
+
+                        return $this->getResponse();
+                    }
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Widget has been deleted'));
+
+                    return $this->getResponse();
+                }
+            }
+        }
+
+        $this->flashMessenger()
+            ->setNamespace('error')
+            ->addMessage($this->getTranslator()->translate('Error occurred'));
+
+        return $this->getResponse();
+    }
+
+    /**
      * Add widget
      */
     public function ajaxAddWidgetAction()

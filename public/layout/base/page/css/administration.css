@@ -26,6 +26,12 @@ table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-defau
 table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-default {
   padding: 10px 15px;
   margin-top: 5px;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-default > div.widget-actions {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-default > span.sortable-handler {
   cursor: move;
 }
 table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-highlight {

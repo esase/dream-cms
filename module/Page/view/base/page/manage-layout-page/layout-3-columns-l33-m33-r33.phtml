@@ -17,8 +17,13 @@
                         <?php foreach($this->widgets_connections[$this->page_info['id']]['content-left'] as $widget): ?>
                             <?php if (!$widget['widget_system']): ?>
                                 <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
-                                    <?php echo $this->partial('page/administration-partial/_widget-actions', []) ?>
-                                    <?php echo $this->translate($widget['widget_description']) ?>
+                                    <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'widget' => $widget,
+                                        'allow_delete' => $this->allow_delete,
+                                        'allow_view_dependents' => $this->allow_view_dependents,
+                                        'allow_edit_settings' => $this->allow_edit_settings
+                                    ]) ?>
+                                    <span class="sortable-handler"><?php echo $this->translate($widget['widget_description']) ?></span>
                                 </li>
                             <?php endif ?>
                         <?php endforeach ?>
@@ -31,8 +36,13 @@
                         <?php foreach($this->widgets_connections[$this->page_info['id']]['content-middle'] as $widget): ?>
                             <?php if (!$widget['widget_system']): ?>
                                 <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
-                                    <?php echo $this->partial('page/administration-partial/_widget-actions', []) ?>
-                                    <?php echo $this->translate($widget['widget_description']) ?>
+                                    <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'widget' => $widget,
+                                        'allow_delete' => $this->allow_delete,
+                                        'allow_view_dependents' => $this->allow_view_dependents,
+                                        'allow_edit_settings' => $this->allow_edit_settings
+                                    ]) ?>
+                                    <span class="sortable-handler"><?php echo $this->translate($widget['widget_description']) ?></span>
                                 </li>
                             <?php endif ?>
                         <?php endforeach ?>
@@ -45,8 +55,13 @@
                         <?php foreach($this->widgets_connections[$this->page_info['id']]['content-right'] as $widget): ?>
                             <?php if (!$widget['widget_system']): ?>
                                 <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
-                                    <?php echo $this->partial('page/administration-partial/_widget-actions', []) ?>
-                                    <?php echo $this->translate($widget['widget_description']) ?>
+                                    <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'widget' => $widget,
+                                        'allow_delete' => $this->allow_delete,
+                                        'allow_view_dependents' => $this->allow_view_dependents,
+                                        'allow_edit_settings' => $this->allow_edit_settings
+                                    ]) ?>
+                                    <span class="sortable-handler"><?php echo $this->translate($widget['widget_description']) ?></span>
                                 </li>
                             <?php endif ?>
                         <?php endforeach ?>

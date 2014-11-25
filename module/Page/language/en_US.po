@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-11-23 15:35+0600\n"
+"PO-Revision-Date: 2014-11-25 18:42+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,26 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Widget has been deleted"
+msgstr "Widget has been deleted"
+
+msgid "Widget will be deleted. Are you sure?"
+msgstr "Widget will be deleted. Are you sure?"
+
+msgid "Edit widget settings"
+msgstr "Edit widget settings"
+
+msgid "View widget dependents"
+msgstr "View widget dependents"
+
+msgid "Delete widget"
+msgstr "Delete widget"
+
+msgid ""
+"You have to delete all dependent widgets before you can delete this widget"
+msgstr ""
+"You have to delete all dependent widgets before you can delete this widget"
 
 msgid "Layout has been changed"
 msgstr "Layout has been changed"
@@ -267,6 +287,16 @@ msgstr ""
 "\"%s\" changed the widget position with id - \"%d\" on the page with id - "
 "\"%d\""
 
+msgid "Event - Deleting widgets"
+msgstr "Deleting widgets"
+
+msgid "Event - Widget deleted by guest"
+msgstr "Guest deleted the widget with id - \"%d\" on the page with id - \"%d\""
+
+msgid "Event - Widget deleted by user"
+msgstr ""
+"\"%s\" deleted the widget with id - \"%d\" on the page with id - \"%d\""
+
 msgid "Event - Adding widgets"
 msgstr "Adding widgets"
 
@@ -341,3 +371,6 @@ msgstr "Changing widgets positions on pages in admin area"
 
 msgid "ACL - Changing page layout on the widgets page in admin area"
 msgstr "Changing page layout on the widgets page in admin area"
+
+msgid "ACL - Deleting widgets on pages in admin area"
+msgstr "Deleting widgets on pages in admin area"

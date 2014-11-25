@@ -431,7 +431,8 @@
     <!-- init data grid tooltips -->
     <?php $this->inlineScript()->captureStart() ?>
         $('div.data-grid-tooltip').tooltip({
-            'placement' : <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>'right'<?php else: ?>'left'<?php endif ?>
+            'placement' : <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>'left'<?php else: ?>'right'<?php endif ?>,
+            'html' : true
         });
     <?php $this->inlineScript()->captureEnd() ?>
 <?php endif ?>

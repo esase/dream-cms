@@ -50,9 +50,10 @@
     <?php if ($this->aclCheckPermission('pages_administration_ajax_change_widget_position')): ?>
         <!-- init sortable -->
         $('ul.connected-sortable').sortable({
-            connectWith: 'ul.connected-sortable',
-            placeholder: 'ui-state-highlight',
-            stop: function (e, ui) {
+            'connectWith' : 'ul.connected-sortable',
+            'placeholder' : 'ui-state-highlight',
+            'handle' : '.sortable-handler',
+            'stop' : function (e, ui) {
                 params = {
                     'widget_order' : $(ui.item).index(),
                     'widget_connection'  : $(ui.item).attr('widget-connection'),
@@ -64,4 +65,21 @@
             }
         }).disableSelection();
     <?php endif ?>
+
+    <!-- init widgets actions tooltips -->
+    $('div#widgets-wrapper div.widget-actions .tooltip-handler').tooltip({
+        'placement' : <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>'left'<?php else: ?>'right'<?php endif ?>,
+        'html' : true
+    });
+
+    <!-- init confirm -->
+    $('div#widgets-wrapper div.widget-actions .confirm-handler').bind('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var $link = $(this);
+
+        showConfirmPopup('<?php echo $this->escapeJs($this->translate('Yes')) ?>', '<?php echo $this->escapeJs($this->translate('No')) ?>', this, function (){
+            pageWidget.getPage($link.attr('href'));
+        })
+    });
 </script>

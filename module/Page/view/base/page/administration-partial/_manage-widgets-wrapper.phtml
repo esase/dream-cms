@@ -7,7 +7,10 @@
     <?php echo $this->partial($this->manage_layout . $this->page_info['layout_name'], [
         'layouts' => $this->layouts,
         'page_info' => $this->page_info,
-        'widgets_connections' => $this->widgets_connections
+        'widgets_connections' => $this->widgets_connections,
+        'allow_delete' => $this->aclCheckPermission('pages_administration_ajax_delete_widget'),
+        'allow_view_dependents' => $this->aclCheckPermission('pages_administration_ajax_view_dependent_widgets'),
+        'allow_edit_settings' => $this->aclCheckPermission('pages_administration_edit_widget_settings')
     ])?>
 <?php $this->placeholder('content')->captureEnd() ?>
 
