@@ -1,20 +1,14 @@
 <?php
 namespace Page\View\Widget;
 
-interface IPageWidget {
+interface IPageWidget
+{
     /**
      * Get widget content
      *
      * @return string|boolean
      */
     public function getContent();
-
-    /**
-     * Get widget title
-     *
-     * @return string
-     */
-    public function getTitle();
 
     /**
      * Set current page id

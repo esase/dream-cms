@@ -51,6 +51,7 @@ class PageAdministration extends PageBase
             'title',
             'meta_description',
             'meta_keywords',
+            'meta_robots',
             'user_menu',
             'user_menu_order',
             'menu',
@@ -130,7 +131,7 @@ class PageAdministration extends PageBase
             ])
             ->join(
                 ['b' => 'page_widget'],
-                new Expression('b.id = a.widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                new Expression('b.id = a.widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),
                 []
             )
             ->join(
@@ -229,6 +230,7 @@ class PageAdministration extends PageBase
      *      string slug optional|required for system pages
      *      string meta_description optional
      *      string meta_keywords optional
+     *      string meta_robots optional
      *      integer user_menu optional
      *      integer user_menu_order optional
      *      integer menu optional
@@ -523,8 +525,9 @@ class PageAdministration extends PageBase
             $statement = $this->prepareStatementForSqlObject($update);
             $statement->execute();
 
-            // clear cache
+            // clear caches
             $this->clearLanguageSensitivePageCaches();
+            $this->clearWidgetsSettingsCache($widget['page_id']);
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -597,6 +600,7 @@ class PageAdministration extends PageBase
      *      integer module optional
      *      string meta_description optional
      *      string meta_keywords optional
+     *      string meta_robots optional
      *      integer user_menu optional
      *      integer user_menu_order optional
      *      integer menu optional
@@ -957,12 +961,114 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Save widget settings
+     *
+     * @param integer $widgetId
+     * @param integer $pageId
+     * @param integer $widgetConnectionId
+     * @param array $settingsList
+     * @param array $formData
+     * @return boolean|string
+     */
+    public function saveWidgetSettings($widgetId, $pageId, $widgetConnectionId, array $settingsList, array $formData)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $this->updateStructurePageEditedDate($pageId);
+
+            // update primary widget settings
+            $update = $this->update()
+                ->table('page_widget_connection')
+                ->set([
+                    'title' => !empty($formData['title']) ? $formData['title'] : null,
+                    'layout' => !empty($formData['layout']) ? $formData['layout'] : null
+                ])
+                ->where([
+                    'id' => $widgetConnectionId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // update extra widget settings
+            foreach ($settingsList as $setting) {
+                if (array_key_exists($setting['name'], $formData)) {
+                    // remove previously value
+                    $query = $this->delete('page_widget_setting_value')
+                        ->where([
+                            'setting_id' => $setting['id'],
+                            'widget_connection' => $widgetConnectionId
+                        ]);
+
+                    $statement = $this->prepareStatementForSqlObject($query);
+                    $statement->execute();
+
+                    $value = is_array($formData[$setting['name']])
+                        ? implode(PageWidgetSetting::SETTINGS_ARRAY_DEVIDER, $formData[$setting['name']])
+                        : (null != $formData[$setting['name']] ? $formData[$setting['name']] : '');
+
+                    $query = $this->insert('page_widget_setting_value')
+                        ->values([
+                           'setting_id' => $setting['id'],
+                           'value' => $value,
+                           'widget_connection' => $widgetConnectionId
+                        ]);
+
+                    $statement = $this->prepareStatementForSqlObject($query);
+                    $statement->execute();
+                }
+            }
+
+            // clear all widget old visibility settings
+            $delete = $this->delete()
+                ->from('page_widget_visibility')
+                ->where([
+                    'widget_connection' => $widgetConnectionId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            // add new widget visibility settings
+            if (!empty($formData['visibility_settings'])) {
+                foreach ($formData['visibility_settings'] as $aclRoleId) {
+                    $insert = $this->insert()
+                        ->into('page_widget_visibility')
+                        ->values([
+                            'widget_connection' => $widgetConnectionId,
+                            'hidden' => $aclRoleId
+                        ]);
+
+                    $statement = $this->prepareStatementForSqlObject($insert);
+                    $statement->execute();
+                }
+            }
+
+            // clear caches
+            $this->clearLanguageSensitivePageCaches();
+            $this->clearWidgetsSettingsCache($pageId);
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        PageEvent::fireEditWidgetSettingsEvent($widgetId, $pageId);
+        return true;
+    }
+
+    /**
      * Get widget connection info
      *
      * @param integer $connectionId
+     * @param boolean $visibilitySettings
      * @return array|boolean
      */
-    public function getWidgetConnectionInfo($connectionId)
+    public function getWidgetConnectionInfo($connectionId, $visibilitySettings = false)
     {
         // check widgets dependents
         $dependentCheckSelect = $this->select();
@@ -983,6 +1089,8 @@ class PageAdministration extends PageBase
         $select->from(['a' => 'page_widget_connection'])
             ->columns([
                 'id',
+                'widget_title' => 'title',
+                'layout',
                 'page_id',
                 'position_id',
                 'widget_id',
@@ -996,14 +1104,50 @@ class PageAdministration extends PageBase
                     'page_layout' => 'layout'
                 ]
             )
+            ->join(
+                ['i' => 'page_widget'],
+                'a.widget_id = i.id',
+                [
+                    'widget_description' => 'description',
+                    'widget_forced_visibility' => 'forced_visibility'
+                ]
+            )
+            ->join(
+                ['f' => 'page_system_widget_depend'],
+                'b.system_page = f.page_id and f.widget_id = a.widget_id',
+                [
+                    'widget_page_depend_connection_id' => 'id'
+                ],
+                'left'
+            )
             ->where([
                 'a.id' => $connectionId
             ]);
 
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();
+        $widget = $result->current() ? $result->current() : false;
 
-        return  $result->current() ? $result->current() : false;
+        // get visibility settings
+        if (false !== $widget && $visibilitySettings) {
+            $select = $this->select();
+            $select->from('page_widget_visibility')
+                ->columns([
+                    'hidden'
+                ])
+                ->where([
+                    'widget_connection' => $connectionId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+
+            foreach($result as $visibility) {
+                $widget['visibility_settings'][] = $visibility['hidden'];
+            }
+        }
+
+        return $widget;
     }
 
     /**
@@ -1129,10 +1273,47 @@ class PageAdministration extends PageBase
     }
 
     /**
+     * Get dependent widgets
+     *
+     * @param integer $widgetId
+     * @return object ResultSet
+     */
+    public function getDependentWidgets($widgetId, $pageId)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'page_widget_depend'])
+            ->columns([
+            ])
+            ->join(
+                ['b' => 'page_widget_connection'],
+                new Expression('b.widget_id = a.depend_widget_id and b.page_id = ?', [$pageId]),
+                [
+                    'widget_title' => 'title'
+                ]
+            )
+            ->join(
+                ['c' => 'page_widget'],
+                'b.widget_id = c.id',
+                [
+                    'widget_description' => 'description'
+                ]
+            )
+            ->where([
+                'a.widget_id' => $widgetId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet;
+    }
+
+    /**
      * Get dependent pages
      *
      * @param integer $pageId
-     * @return object
+     * @return object ResultSet
      */
     public function getDependentPages($pageId, $checkInStructure = true)
     {
@@ -1145,13 +1326,15 @@ class PageAdministration extends PageBase
             $select->join(
                 ['b' => 'page_structure'],
                 new Expression('a.page_id = b.system_page and b.language = ?', [$this->getCurrentLanguage()]),
-                []
+                [
+                    'title'
+                ]
             )
             ->join(
                 ['c' => 'page_system'],
                 'b.system_page = c.id',
                 [
-                    'title'
+                    'system_title' => 'title'
                 ]
             );
         }
@@ -1160,7 +1343,7 @@ class PageAdministration extends PageBase
                 ['b' => 'page_system'],
                 'a.page_id = b.id',
                 [
-                    'title'
+                    'system_title' => 'title'
                 ]
             );
         }

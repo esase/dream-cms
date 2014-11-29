@@ -1,8 +1,8 @@
-<?php $this->declareVars('description', 'keywords') ?>
+<?php $this->declareVars('description', 'keywords', 'robots') ?>
 <?php
     foreach ($this->headMeta()->getContainer() as $item) {
         if ($item->type === 'name'
-                && ($item->name === 'description' || $item->name === 'keywords')) {
+                && ($item->name === 'description' || $item->name === 'keywords' || $item->name === 'robots')) {
     
             $this->{$item->name} = true;
         }
@@ -21,6 +21,10 @@
         ? $this->page['meta_keywords'] 
         : $this->applicationSetting('application_meta_keywords'))
     ?>
+<?php endif ?>
+
+<?php if (!$this->robots && $this->page['meta_robots']): ?>
+    <?php $this->headMeta()->appendName('robots', $this->page['meta_robots']) ?>
 <?php endif ?>
 
 <?php echo $this->pageBreadcrumb()

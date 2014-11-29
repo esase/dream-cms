@@ -42,6 +42,33 @@ class PageEvent extends ApplicationAbstractEvent
     const WIDGET_CHANGE_POSITION = 'page_widget_change_position';
 
     /**
+     * Edit widget settings event
+     */
+    const WIDGET_EDIT_SETTINGS = 'page_widget_edit_settings';
+
+    /**
+     * Fire edit widget settings event
+     *
+     * @param integer $widgetId
+     * @param integer $pageId
+     * @return void
+     */
+    public static function fireEditWidgetSettingsEvent($widgetId, $pageId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Widget settings edited by guest'
+            : 'Event - Widget settings edited by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$widgetId, $pageId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $widgetId, $pageId];
+
+        self::fireEvent(self::WIDGET_EDIT_SETTINGS, 
+                $widgetId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
      * Fire delete widget event
      *
      * @param integer $widgetId

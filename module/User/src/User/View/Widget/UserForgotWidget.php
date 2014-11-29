@@ -57,14 +57,4 @@ class UserForgotWidget extends UserAbstractWidget
 
         return false;
     }
-
-    /**
-     * Get widget title
-     *
-     * @return string
-     */
-    public function getTitle() 
-    {
-        return $this->translate('Have you forgotten your password or nickname?');
-    }
 }

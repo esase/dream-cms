@@ -107,14 +107,4 @@ class UserRegisterWidget extends UserAbstractWidget
 
         return false;
     }
-
-    /**
-     * Get widget title
-     *
-     * @return string
-     */
-    public function getTitle() 
-    {
-        return $this->translate('Register');
-    }
 }

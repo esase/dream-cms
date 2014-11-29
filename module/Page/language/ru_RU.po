@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2014-11-25 18:42+0600\n"
+"PO-Revision-Date: 2014-11-29 15:06+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -16,6 +16,41 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgid "Standard commands for search engine robots"
+msgstr ""
+"Стандартные команды для роботов поисковых систем.<br />Пример: noindex, "
+"nofollow"
+
+msgid "Meta robots"
+msgstr "Meta robots"
+
+msgid "Max rows in footer menu per column"
+msgstr "Максимальное количество строк в каждом столбце в нижнем меню"
+
+msgid "The page uses the system default title"
+msgstr "Страница использует системный заголовок по умолчанию - \"%s\""
+
+msgid "Widget is hidden for"
+msgstr "Виджет скрыт для"
+
+msgid "Panel"
+msgstr "Панель"
+
+msgid "Widget layout"
+msgstr "Макет виджета"
+
+msgid "The widget uses the system default title"
+msgstr "Виджет использует системный заголовок по умолчанию - \"%s\""
+
+msgid "Widget title"
+msgstr "Название виджета"
+
+msgid "Html content"
+msgstr "Html содержание"
+
+msgid "Dependent widgets"
+msgstr "Зависимые виджеты"
+
 msgid "Widget has been deleted"
 msgstr "Виджет был удален"
 
@@ -26,7 +61,7 @@ msgid "Edit widget settings"
 msgstr "Изменить настройки виджета"
 
 msgid "View widget dependents"
-msgstr "Просмотреть зависимости виджета"
+msgstr "Просмотреть зависимые виджеты"
 
 msgid "Delete widget"
 msgstr "Удалить виджет"
@@ -280,6 +315,19 @@ msgstr "Карта сайта"
 msgid "Page"
 msgstr "Страница"
 
+msgid "Event - Editing widgets settings"
+msgstr "Редактирование настроек виджетов"
+
+msgid "Event - Widget settings edited by guest"
+msgstr ""
+"Гость отредактировал(а) настройки виджета с идентификатором - \"%d\" на "
+"странице с идентификатором - \"%d\""
+
+msgid "Event - Widget settings edited by user"
+msgstr ""
+"\"%s\" отредактировал(а) настройки виджета с идентификатором - \"%d\" на "
+"странице с идентификатором - \"%d\""
+
 msgid "Event - Changing widgets positions"
 msgstr "Изменение позиции виджетов"
 
@@ -387,3 +435,12 @@ msgstr "Изменение макета страницы на странице �
 
 msgid "ACL - Deleting widgets on pages in admin area"
 msgstr "Удаление виджетов из страниц в админки"
+
+msgid "ACL - Viewing dependent widgets in admin area"
+msgstr "Просмотр зависимостей виджетов в админке"
+
+msgid "ACL - Editing widgets settings in admin area"
+msgstr "Редактирование настроек виджетов в админке"
+
+msgid "ACL - Editing pages settings in admin area"
+msgstr "Редактирование настроек страниц в админке"

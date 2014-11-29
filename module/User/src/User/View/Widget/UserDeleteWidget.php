@@ -71,14 +71,4 @@ class UserDeleteWidget extends UserAbstractWidget
         // fire the user logout event
         UserEvent::fireLogoutEvent($userIdentity['user_id'], $userIdentity['nick_name']);
     }
-
-    /**
-     * Get widget title
-     *
-     * @return string
-     */
-    public function getTitle() 
-    {
-        return $this->translate('Deleting');
-    }
 }

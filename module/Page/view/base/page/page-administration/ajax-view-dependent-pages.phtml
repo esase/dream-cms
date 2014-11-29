@@ -1,12 +1,16 @@
+<?php $this->declareVars('processedPages') ?>
+<?php $this->processedPages = new ArrayObject ?>
+
+<?php foreach($this->data as $page): ?>
+    <?php $this->processedPages[] = [$this->pageTitle($page)] ?>
+<?php endforeach ?>
+
 <?php
     echo $this->partial('partial/popup', [
         'popup_id' => 'popup-page-depends-window',
         'title' => 'Dependent pages',
         'body' => $this->partial('partial/table', [
-            'list' => $this->data,
-            'helpers' => [
-                'title' => 'translate'
-            ]
+            'list' => $this->processedPages
         ])
     ])
 ?>

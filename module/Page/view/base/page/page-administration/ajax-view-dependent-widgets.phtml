@@ -1,0 +1,15 @@
+<?php $this->declareVars('processedWidgets') ?>
+<?php $this->processedWidgets = new ArrayObject ?>
+
+<?php foreach($this->data as $widet): ?>
+    <?php $this->processedWidgets[] = [$this->pageWidgetTitle($widet)] ?>
+<?php endforeach ?>
+
+<?php echo $this->partial('partial/popup', [
+        'popup_id' => 'popup-widget-depends-window',
+        'title' => 'Dependent widgets',
+        'body' => $this->partial('partial/table', [
+            'list' => $this->processedWidgets
+        ])
+    ])
+?>

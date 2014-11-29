@@ -28,6 +28,16 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     }
 
     /**
+     * Settings
+     */
+    public function settingsAction()
+    {
+        return new ViewModel([
+            'settingsForm' => parent::settingsForm('page', 'pages-administration', 'settings')
+        ]);
+    }
+
+    /**
      * Default action
      */
     public function indexAction()
@@ -48,10 +58,35 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
         // get a selected page id
         $pageId = $this->params()->fromQuery('page_id', -1);
-        $checkInStructure = $this->params()->fromQuery('check_structure', 1);
+        $checkInStructure = (int) $this->params()->fromQuery('check_structure', 1);
 
         return new ViewModel([
-            'data' => $this->getModel()->getDependentPages($pageId, (int) $checkInStructure > 0)
+            'data' => $this->getModel()->getDependentPages($pageId, $checkInStructure > 0)
+        ]);
+    }
+
+    /**
+     * View dependent widgets
+     */
+    public function ajaxViewDependentWidgetsAction()
+    {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->aclCheckPermission())) {
+            return $result;
+        }
+
+        $request = $this->getRequest();
+
+        // get a widget info
+        if (null == ($connectionInfo =
+                $this->getModel()->getWidgetConnectionInfo($this->getSlug()))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        return new ViewModel([
+            'data' => $this->getModel()->
+                    getDependentWidgets($connectionInfo['widget_id'], $connectionInfo['page_id'])
         ]);
     }
 
@@ -314,7 +349,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->get('Application\Form\FormManager')
             ->getInstance('Page\Form\Page')
             ->setModel($this->getModel())
-            ->setPageInfo($page)            
+            ->setPageInfo($page)
             ->setSystemPage($page['system_page'])
             ->showMainMenu(!$page['disable_menu'])
             ->showSiteMap(!$page['disable_site_map'])
@@ -322,7 +357,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->showFooterMenu(!$page['disable_footer_menu'])
             ->showUserMenu(!$page['disable_user_menu'])
             ->showVisibilitySettings(!$page['forced_visibility'])
-            ->showSeo(!$page['disable_seo']);
+            ->showSeo(!$page['disable_seo'])
+            ->setPageSystemTitle($this->getTranslator()->translate($page['system_title']));
 
         // fill the page parent info
         if ($parent) {
@@ -543,7 +579,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     getModel()->getWidgetConnectionInfo($widgetConnectionId))) {
 
                 // check the widget depends
-                if (!$widget['widget_depend_connection_id']) {
+                if (!$widget['widget_depend_connection_id'] && !$widget['widget_page_depend_connection_id']) {
                     // check the permission and increase permission's actions track
                     if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
@@ -689,6 +725,86 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         return $viewModel;
+    }
+
+    /**
+     * Edit widget settings
+     */
+    public function editWidgetSettingsAction()
+    {
+        $request = $this->getRequest();
+
+        // get a widget info
+        if (null == ($widget =$this->getModel()->
+                getWidgetConnectionInfo($this->getSlug(), true))) {
+
+            return $this->redirectTo('pages-administration', 'list');
+        }
+
+        // get settings model
+        $settings = $this->getServiceLocator()
+            ->get('Application\Model\ModelManager')
+            ->getInstance('Page\Model\PageWidgetSetting');
+
+        // get settings form
+        $settingsForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Page\Form\PageWidgetSetting')
+            ->showVisibilitySettings(!$widget['widget_forced_visibility'])
+            ->setModel($settings)
+            ->setWidgetDescription($this->getTranslator()->translate($widget['widget_description']));
+
+        // get settings list
+        $settingsList = $settings->getSettingsList($widget['id'], $widget['widget_id']);
+        if (false !== $settingsList) {
+            // add extra settings on the form
+            $settingsForm->addFormElements($settingsList);
+        }
+
+        // set default values
+        $settingsForm->getForm()->setData([
+            'title' => $widget['widget_title'],
+            'layout' => $widget['layout'],
+            'visibility_settings' => !empty($widget['visibility_settings'])
+                ? $widget['visibility_settings']
+                : null
+        ]);
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $settingsForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($settingsForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                if (true === ($result = $this->getModel()->saveWidgetSettings($widget['widget_id'],
+                        $widget['page_id'], $widget['id'], $settingsList, $settingsForm->getForm()->getData()))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Settings have been saved'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                // redirect back
+                return $this->redirectTo('pages-administration', 'widget-settings', [], true);
+            }
+        }
+
+        return new ViewModel([
+            'settings_form' => $settingsForm->getForm(),
+            'page_info' => $this->getModel()->getStructurePageInfo($widget['page_id']),
+            'widget_info' => $widget
+        ]);
     }
 
     /**

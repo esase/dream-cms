@@ -9,7 +9,7 @@
                         <img src="<?php echo $this->layoutAsset('icon/setting.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" title="<?php echo $this->escapeHtmlAttr($this->translate('Settings')) ?>" />
                     </a>
                     <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-left<?php else: ?>dropdown-menu-right<?php endif ?>" role="menu">
-                        <?php if ($this->allow_delete): ?>
+                        <?php if ($this->allow_delete && !$this->widget['widget_page_depend_connection_id']): ?>
                             <?php if (!$this->widget['widget_depend_connection_id']): ?>
                                 <li role="presentation">
                                     <a role="menuitem" tabindex="-1" href="<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-delete-widget', 'slug' => $this->widget['widget_connection_id']], ['force_canonical' => true]) ?>" class="confirm-handler" confirm="<?php echo $this->escapeHtmlAttr($this->translate('Widget will be deleted. Are you sure?')) ?>">
@@ -26,14 +26,14 @@
                         <?php endif ?>
                         <?php if ($this->allow_view_dependents && $this->widget['widget_depend_connection_id']): ?>
                             <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="#" onclick="showPopup('<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-view-dependent-widgets', 'slug' => $this->widget['widget_connection_id']]) ?>', 'popup-widget-depends-window'); return false">
                                     <?php echo $this->translate('View widget dependents') ?>
                                 </a>
                             </li>
                         <?php endif ?>
                         <?php if ($this->allow_edit_settings): ?>
                             <li role="presentation">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'edit-widget-settings', 'slug' => $this->widget['widget_connection_id']]) ?>">
                                     <?php echo $this->translate('Edit widget settings') ?>
                                 </a>
                             </li>

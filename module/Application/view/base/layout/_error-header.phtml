@@ -28,6 +28,7 @@
         <!-- scripts -->
         <?php echo $this->layoutHeadScript()
             ->prependFile($this->layoutAsset('jquery.cookie.js'))
+            ->prependFile($this->layoutAsset('require.js'))
             ->prependFile($this->layoutAsset('bootstrap.js'))
             ->prependFile($this->layoutAsset('jquery-ui.js'))            
             ->prependFile($this->layoutAsset('jquery.js'))

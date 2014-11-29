@@ -90,7 +90,7 @@ abstract class ApplicationAbstractCustomForm implements ApplicationCustomFormInt
      */
     public function addFormElements(array $elements)
     {
-        $this->formElements = array_merge($elements, $this->formElements);
+        $this->formElements = array_merge($this->formElements, $elements);
     }
 
     /**

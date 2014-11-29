@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-11-25 18:42+0600\n"
+"PO-Revision-Date: 2014-11-29 15:06+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,40 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Standard commands for search engine robots"
+msgstr ""
+"Standard commands for search engine robots.<br />Example: noindex, nofollow"
+
+msgid "Meta robots"
+msgstr "Meta robots"
+
+msgid "Max rows in footer menu per column"
+msgstr "Max rows in footer menu per column"
+
+msgid "The page uses the system default title"
+msgstr "The page uses the system default title - \"%s\""
+
+msgid "Widget is hidden for"
+msgstr "Widget is hidden for"
+
+msgid "Panel"
+msgstr "Panel"
+
+msgid "Widget layout"
+msgstr "Widget layout"
+
+msgid "The widget uses the system default title"
+msgstr "The widget uses the system default title - \"%s\""
+
+msgid "Widget title"
+msgstr "Widget title"
+
+msgid "Html content"
+msgstr "Html content"
+
+msgid "Dependent widgets"
+msgstr "Dependent widgets"
 
 msgid "Widget has been deleted"
 msgstr "Widget has been deleted"
@@ -274,6 +308,19 @@ msgstr "Sitemap"
 msgid "Page"
 msgstr "Page"
 
+msgid "Event - Editing widgets settings"
+msgstr "Editing widgets settings"
+
+msgid "Event - Widget settings edited by guest"
+msgstr ""
+"Guest edited the widget settings with id - \"%d\" on the page with id - \"%d"
+"\""
+
+msgid "Event - Widget settings edited by user"
+msgstr ""
+"\"%s\" edited the widget settings with id - \"%d\" on the page with id - \"%d"
+"\""
+
 msgid "Event - Changing widgets positions"
 msgstr "Changing widgets positions"
 
@@ -374,3 +421,12 @@ msgstr "Changing page layout on the widgets page in admin area"
 
 msgid "ACL - Deleting widgets on pages in admin area"
 msgstr "Deleting widgets on pages in admin area"
+
+msgid "ACL - Viewing dependent widgets in admin area"
+msgstr "Viewing dependent widgets in admin area"
+
+msgid "ACL - Editing widgets settings in admin area"
+msgstr "Editing widgets settings in admin area"
+
+msgid "ACL - Editing pages settings in admin area"
+msgstr "Editing pages settings in admin area"

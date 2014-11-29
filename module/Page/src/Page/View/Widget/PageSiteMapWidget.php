@@ -46,16 +46,6 @@ class PageSiteMapWidget extends PageAbstractWidget
     }
 
     /**
-     * Get widget title
-     *
-     * @return string
-     */
-    public function getTitle() 
-    {
-       return $this->translate('Sitemap');
-    }
-
-    /**
      * Get sitemap
      *
      * @return string

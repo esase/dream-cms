@@ -180,6 +180,7 @@ class PageBase extends ApplicationAbstractBase
             $select = $this->select();
             $select->from(['a' => 'page_widget_connection'])
                 ->columns([
+                    'widget_title' => 'title',
                     'widget_connection_id' => 'id',
                     'widget_id',
                     'widget_depend_connection_id' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
@@ -218,6 +219,13 @@ class PageBase extends ApplicationAbstractBase
                         'widget_layout' => 'name'
                     ],
                     'left'
+                )->join(
+                    ['j' => 'page_system_widget_depend'],
+                    'b.system_page = j.page_id and j.widget_id = a.widget_id',
+                    [
+                        'widget_page_depend_connection_id' => 'id'
+                    ],
+                    'left'
                 )
                 ->order('a.order')
                 ->where->IsNull('a.page_id')
@@ -232,11 +240,14 @@ class PageBase extends ApplicationAbstractBase
             foreach ($resultSet as $connection) {
                 $widgetConnections[$connection->page_id][$connection->widget_position][] = [
                     'widget_name' => $connection->widget_name,
+                    'widget_title' => $connection->widget_title,
+                    'widget_id' => $connection->widget_id,
                     'widget_system' => $connection->widget_type == self::WIDGET_TYPE_SYSTEM ? true : false,
                     'widget_description' => $connection->widget_description,
                     'widget_layout' => $connection->widget_layout,
                     'widget_connection_id' => $connection->widget_connection_id,
                     'widget_depend_connection_id' => $connection->widget_depend_connection_id,
+                    'widget_page_depend_connection_id' => $connection->widget_page_depend_connection_id,
                     'hidden' => !empty($visibilityOptions[$connection->widget_connection_id])
                         ? $visibilityOptions[$connection->widget_connection_id]
                         : []
@@ -459,6 +470,7 @@ class PageBase extends ApplicationAbstractBase
                 'title',
                 'meta_description',
                 'meta_keywords',
+                'meta_robots',
                 'module',
                 'user_menu',
                 'user_menu_order',

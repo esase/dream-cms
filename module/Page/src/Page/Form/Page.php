@@ -31,6 +31,11 @@ class Page extends ApplicationAbstractCustomForm
     const META_DESCRIPTION_MAX_LENGTH = 150;
 
     /**
+     * Meta robots max string length
+     */
+    const META_ROBOTS_MAX_LENGTH = 50;
+
+    /**
      * Redirect url max string length
      */
     const REDIRECT_URL_MAX_LENGTH = 255;
@@ -106,6 +111,12 @@ class Page extends ApplicationAbstractCustomForm
     protected $model;
 
     /**
+     * Page system title
+     * @var string
+     */
+    protected $systemTitle;
+
+    /**
      * Page info
      * @var array
      */
@@ -133,6 +144,7 @@ class Page extends ApplicationAbstractCustomForm
             'name' => 'title',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Title',
+            'description_params' => [],
             'required' => true,
             'max_length' => self::TITLE_MAX_LENGTH,
             'category' => 'General info'
@@ -229,6 +241,15 @@ class Page extends ApplicationAbstractCustomForm
             'max_length' => self::META_DESCRIPTION_MAX_LENGTH,
             'category' => 'SEO'
         ],
+        'meta_robots' => [
+            'name' => 'meta_robots',
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
+            'label' => 'Meta robots',
+            'required' => false,
+            'max_length' => self::META_ROBOTS_MAX_LENGTH,
+            'category' => 'SEO',
+            'description' => 'Standard commands for search engine robots',
+        ],
         'visibility_settings' => [
             'name' => 'visibility_settings',
             'type' => ApplicationCustomFormBuilder::FIELD_MULTI_CHECKBOX,
@@ -313,9 +334,15 @@ class Page extends ApplicationAbstractCustomForm
                 self::MAX_XML_MAP_PRIORITY
             ];
 
-            // remove some fields
             if ($this->isSystemPage) {
-                unset($this->formElements['title']);
+                $this->formElements['title']['description'] = 'The page uses the system default title';
+                $this->formElements['title']['required'] = false;
+
+                // add descriptions params
+                $this->formElements['title']['description_params'] = [
+                    $this->systemTitle
+                ];
+
                 unset($this->formElements['slug']);
             }
 
@@ -592,6 +619,18 @@ class Page extends ApplicationAbstractCustomForm
     public function setPageParent(array $pageParent)
     {
         $this->pageParent = $pageParent;
+        return $this;
+    }
+
+    /**
+     * Set page system title
+     *
+     * @param string $systemTitle
+     * @return object fluent interface
+     */
+    public function setPageSystemTitle($systemTitle)
+    {
+        $this->systemTitle = $systemTitle;
         return $this;
     }
 

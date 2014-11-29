@@ -1,10 +1,11 @@
 <?php
 namespace Page\View\Helper;
  
-use Zend\View\Helper\AbstractHelper;
+use Acl\Model\AclBase as AclBaseModel;
 use Page\Exception\PageException;
 use Page\View\Widget\IPageWidget;
 use User\Service\UserIdentity as UserIdentityService;
+use Zend\View\Helper\AbstractHelper;
 
 class PageInjectWidget extends AbstractHelper
 {
@@ -43,13 +44,15 @@ class PageInjectWidget extends AbstractHelper
 
         // get widgets by specified position
         if (!empty($this->widgets[$pageId][$position])) {
+            $userRole = UserIdentityService::getCurrentUserIdentity()['role'];
+
             // call widgets
             foreach ($this->widgets[$pageId][$position] as $widgetInfo) {
                 // check a widget visibility
-                if (!empty($widgetInfo['hidden']) 
-                        && in_array(UserIdentityService::getCurrentUserIdentity()['role'], $widgetInfo['hidden'])) {
-
-                    continue;
+                if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {
+                    if (!empty($widgetInfo['hidden']) && in_array($userRole, $widgetInfo['hidden'])) {
+                        continue;
+                    }
                 }
 
                 // call the widget
@@ -68,7 +71,7 @@ class PageInjectWidget extends AbstractHelper
                     // add the widget's layout
                     if (!empty($widgetInfo['widget_layout'])) {
                         $result .= $this->getView()->partial($this->layoutPath . $widgetInfo['widget_layout'], [
-                            'title' => $widget->getTitle(), 
+                            'title' => $this->getView()->pageWidgetTitle($widgetInfo),
                             'content' => $widgetContent
                         ]);
 

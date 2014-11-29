@@ -71,6 +71,7 @@ class Module
                 'page404' => 'Page\View\Helper\Page404',
                 'pageBreadcrumb' => 'Page\View\Helper\PageBreadcrumb',
                 'pageTitle' => 'Page\View\Helper\PageTitle',
+                'pageWidgetTitle' => 'Page\View\Helper\PageWidgetTitle',
                 'pagePosition' => 'Page\View\Helper\PagePosition',
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
                 'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'                

@@ -20,14 +20,4 @@ class UserDashboardUserInfoWidget extends UserAbstractWidget
 
         return false;
     }
-
-    /**
-     * Get widget title
-     *
-     * @return string
-     */
-    public function getTitle() 
-    {
-        return $this->translate('User information');
-    }
 }

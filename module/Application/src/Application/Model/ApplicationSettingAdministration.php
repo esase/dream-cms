@@ -10,11 +10,6 @@ use Application\Event\ApplicationEvent;
 class ApplicationSettingAdministration extends ApplicationSetting
 {
     /**
-     * Setting value max string length
-     */
-    const SETTING_VALUE_MAX_LENGTH = 65535;
-
-    /**
      * Save settings
      *
      * @param array $settingsList

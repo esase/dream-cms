@@ -10,16 +10,10 @@ class PageHtmlWidget extends PageAbstractWidget
      */
     public function getContent() 
     {
-        return $this->getWidgetSetting('content');
-    }
+        if (null != ($content = trim($this->getWidgetSetting('page_html_content')))) {
+            return $content;
+        }
 
-    /**
-     * Get widget title
-     *
-     * @return string
-     */
-    public function getTitle() 
-    {
-        return $this->getWidgetSetting('title');
+        return false;
     }
 }

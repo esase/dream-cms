@@ -88,10 +88,13 @@
 
 <?php if ($this->initWysiwyg): ?>
     <?php echo $this->partial('partial/_init-wysiwyg', [
+        'form_name' => $this->form->getAttribute('name'),
         'mode' => !empty($this->wysiwygMode) ? $this->wysiwygMode : null,
     ]);?>
 <?php endif; ?>
 
 <?php if ($this->initCalendar): ?>
-    <?php echo $this->partial('partial/_init-calendar') ?>
+    <?php echo $this->partial('partial/_init-calendar', [
+        'form_name' => $this->form->getAttribute('name')
+    ]) ?>
 <?php endif; ?>

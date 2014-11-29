@@ -20,6 +20,11 @@ abstract class ApplicationAbstractSetting extends ApplicationBase
     const SETTINGS_ARRAY_DEVIDER = ';';
 
     /**
+     * Setting value max string length
+     */
+    const SETTING_VALUE_MAX_LENGTH = 65535;
+
+    /**
      * Convert string
      *
      * @param string $type

@@ -265,32 +265,13 @@ class ApplicationCustomFormBuilder extends Form
             // list of default element validators
             $elementValidators = [];
             $extraOptions = [];
-
-            // add a string max length validator
-            if (!empty($element['max_length'])) {
-                $elementValidators[] = [
-                    'name' => 'StringLength',
-                    'options' => [
-                        'max' => (int) $element['max_length']
-                    ]
-                ];
-
-                $elementAttrs = array_merge(['maxlength' => (int) $element['max_length']], $elementAttrs);
-            }
-
-            // add a string min length validator
-            if (!empty($element['min_length'])) {
-                $elementValidators[] = [
-                    'name' => 'StringLength',
-                    'options' => [
-                        'min' => (int) $element['min_length']
-                    ]
-                ];
-            }
+            $applyLengthValidator = false;
 
             switch ($elementType) {
                 case self::FIELD_NOTIFICATION_MESSAGE :
                 case self::FIELD_HTML_AREA :
+                    $applyLengthValidator = true;
+
                     // add custom filters
                     $element['filters'] = array_merge((isset($element['filters']) ? $element['filters'] : []), [
                         ['name' => 'StringTrim'],
@@ -425,6 +406,7 @@ class ApplicationCustomFormBuilder extends Form
                     break;
 
                 case self::FIELD_HIDDEN :
+                    $applyLengthValidator = true;
                     $elementType  = 'Hidden';
                     break;
 
@@ -474,6 +456,7 @@ class ApplicationCustomFormBuilder extends Form
                     break;
 
                 case self::FIELD_URL :
+                    $applyLengthValidator = true;
                     $elementValidators[] = [
                         'name' => 'uri',
                         'options' => [
@@ -485,6 +468,7 @@ class ApplicationCustomFormBuilder extends Form
                     break;
 
                 case self::FIELD_EMAIL :
+                    $applyLengthValidator = true;
                     $elementValidators[] = [
                         'name' => 'emailAddress'
                     ];
@@ -493,10 +477,12 @@ class ApplicationCustomFormBuilder extends Form
                     break;
 
                 case self::FIELD_TEXT_AREA :
+                    $applyLengthValidator = true;
                     $elementType  = 'Textarea';
                     break;
 
                 case self::FIELD_PASSWORD :
+                    $applyLengthValidator = true;
                     $elementType  = 'Password';
                     break;
 
@@ -514,6 +500,7 @@ class ApplicationCustomFormBuilder extends Form
                     continue(2);
 
                 case self::FIELD_SLUG :
+                    $applyLengthValidator = true;
                     $element['filters'] = array_merge((isset($element['filters']) ? $element['filters'] : []), [
                         ['name' => 'stringToLower']
                     ]);
@@ -532,6 +519,7 @@ class ApplicationCustomFormBuilder extends Form
                 case self::FIELD_TEXT :
                 case self::FIELD_NOTIFICATION_TITLE :
                 default :
+                    $applyLengthValidator = true;
                     $elementType = 'Text';
             }
 
@@ -565,6 +553,28 @@ class ApplicationCustomFormBuilder extends Form
 
             if ($useFilters) {
                 $filters = isset($element['filters']) ? $element['filters'] : $this->defaultFilters;
+            }
+
+            // add a string max length validator
+            if (!empty($element['max_length']) && $applyLengthValidator) {
+                $elementValidators[] = [
+                    'name' => 'StringLength',
+                    'options' => [
+                        'max' => (int) $element['max_length']
+                    ]
+                ];
+
+                $elementAttrs = array_merge(['maxlength' => (int) $element['max_length']], $elementAttrs);
+            }
+
+            // add a string min length validator
+            if (!empty($element['min_length']) && $applyLengthValidator) {
+                $elementValidators[] = [
+                    'name' => 'StringLength',
+                    'options' => [
+                        'min' => (int) $element['min_length']
+                    ]
+                ];
             }
 
             // add validators
