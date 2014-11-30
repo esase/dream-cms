@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS \"localization\" module\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-09-01 14:04+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: Русский\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Localization"
+msgstr "Локализация"
+
+msgid "Localization's cookie time"
+msgstr "Время куки локализации"
+
+msgid "The storage time of the selected language"
+msgstr "Время хранения выбранного языка"
+
+msgid "Localizations"
+msgstr "Локализации"
+
+msgid "Select language"
+msgstr "Выбор языка"
+
+msgid "Event - Getting localizations via XmlRpc"
+msgstr "Получение локализаций через XmlRpc"
+
+msgid "Event - Localizations were got by guest via XmlRpc"
+msgstr "Гость получил локализации через XmlRpc"
+
+msgid "Event - Localizations were got by user via XmlRpc"
+msgstr "\"%s\" получил(а) локализации через XmlRpc"
+
+msgid "ACL - Getting site's localizations via XmlRpc"
+msgstr "Получение локализации сайта через XMLRPC"

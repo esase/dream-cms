@@ -1,12 +1,12 @@
 <?php
 namespace User\Form;
 
-use Application\Form\AbstractCustomForm;
-use User\Model\Base as UserBaseModel;
-use Application\Form\CustomFormBuilder;
-use Application\Service\Service as ApplicationService;
+use Acl\Service\Acl as AclService;
+use Application\Form\ApplicationCustomFormBuilder;
+use Application\Form\ApplicationAbstractCustomForm;
+use User\Model\UserBase as UserBaseModel;
 
-class UserFilter extends AbstractCustomForm 
+class UserFilter extends ApplicationAbstractCustomForm 
 {
     /**
      * Form name
@@ -24,45 +24,45 @@ class UserFilter extends AbstractCustomForm
      * List of not validated elements
      * @var array
      */
-    protected $notValidatedElements = array('submit');
+    protected $notValidatedElements = ['submit'];
 
     /**
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'nickname' => array(
+    protected $formElements = [
+        'nickname' => [
             'name' => 'nickname',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'NickName'
-        ),
-        'email' => array(
+        ],
+        'email' => [
             'name' => 'email',
-            'type' => CustomFormBuilder::FIELD_EMAIL,
+            'type' => ApplicationCustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email'
-        ),
-        'status' => array(
+        ],
+        'status' => [
             'name' => 'status',
-            'type' => CustomFormBuilder::FIELD_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Status',
-            'values' => array(
+            'values' => [
                UserBaseModel::STATUS_APPROVED => 'approved',
                UserBaseModel::STATUS_DISAPPROVED => 'disapproved'
-            )
-        ),
-        'role' => array(
+            ]
+        ],
+        'role' => [
             'name' => 'role',
-            'type' => CustomFormBuilder::FIELD_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Role',
-            'values' => array(
-            )
-        ),
-        'submit' => array(
+            'values' => [
+            ]
+        ],
+        'submit' => [
             'name' => 'submit',
-            'type' => CustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Search',
-        )
-    );
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
+            'label' => 'Search'
+        ]
+    ];
 
     /**
      * Get form instance
@@ -74,9 +74,9 @@ class UserFilter extends AbstractCustomForm
         // get form builder
         if (!$this->form) {
             // get list of acl roles
-            $this->formElements['role']['values'] = ApplicationService::getAclRoles();
+            $this->formElements['role']['values'] = AclService::getAclRoles();
 
-            $this->form = new CustomFormBuilder($this->formName,
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 

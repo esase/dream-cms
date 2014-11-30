@@ -11,10 +11,10 @@ use Zend\Stdlib\ArrayUtils;
 class UnitTestBootstrap
 {
     /**
-     * Service manager
+     * Service locator
      * var @object
      */
-    protected static $serviceManager;
+    protected static $serviceLocator;
 
     /**
      * Config
@@ -55,18 +55,18 @@ class UnitTestBootstrap
         $serviceManager->setService('ApplicationConfig', $config);
         $serviceManager->get('ModuleManager')->loadModules();
 
-        static::$serviceManager = $serviceManager;
+        static::$serviceLocator = $serviceManager;
         static::$config = $config;
     }
 
     /**
-     * Get service manager
+     * Get service locator
      *
      * @return object
      */
-    public static function getServiceManager()
+    public static function getServiceLocator()
     {
-        return static::$serviceManager;
+        return static::$serviceLocator;
     }
 
     /**

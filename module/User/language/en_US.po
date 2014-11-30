@@ -1,19 +1,55 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Dream CMS \"users\" module\n"
+"Project-Id-Version: Dream CMS \"user\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-06-29 20:36+0600\n"
+"PO-Revision-Date: 2014-11-11 18:48+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Account avatar"
+msgstr "Account avatar"
+
+msgid "Account info"
+msgstr "Account info"
+
+msgid "Account edit"
+msgstr "Account edit"
+
+msgid "Account delete"
+msgstr "Account delete"
+
+msgid "You cannot delete, approve or disapprove the default user"
+msgstr "You cannot delete, approve or disapprove the default user"
+
+msgid "My account"
+msgstr "My account"
+
+msgid "User dashboard"
+msgstr "User dashboard"
+
+msgid "User information"
+msgstr "User information"
+
+msgid "Registration date"
+msgstr "Registration date"
+
+msgid "User profile"
+msgstr "User profile"
+
+msgid "Hello"
+msgstr "Hello"
+
+msgid "Your profile will be activated after checking"
+msgstr "Your profile will be activated after checking"
 
 msgid "Phone"
 msgstr "Phone"
@@ -432,6 +468,15 @@ msgstr ""
 "\"%s\" edited the ACL resource's settings with role id - \"%d\" and resource "
 "id - \"%d\" for user with id - \"%d\""
 
+msgid "Event - Getting user's info"
+msgstr "Getting user's info"
+
+msgid "Event - User's info was obtained by guest"
+msgstr "Guest got info about \"%s\""
+
+msgid "Event - User's info was obtained by user"
+msgstr "\"%s\" got info about \"%s\""
+
 msgid "ACL - Viewing users in admin area"
 msgstr "Viewing users in admin area"
 
@@ -467,3 +512,6 @@ msgstr "Browsing allowed users ACL resources in admin area"
 
 msgid "ACL - Editing allowed users ACL resources settings in admin area"
 msgstr "Editing allowed users ACL resources settings in admin area"
+
+msgid "ACL - Viewing users profiles"
+msgstr "Viewing users profiles"

@@ -1,7 +1,7 @@
 <?php
 namespace FileManager;
 
-use User\Event\Event as UserEvent;
+use User\Event\UserEvent;
 use Zend\ModuleManager\ModuleManagerInterface;
 
 class Module
@@ -17,7 +17,7 @@ class Module
             // get a model instance
             $model = $moduleManager->getEvent()->getParam('ServiceManager')
                 ->get('Application\Model\ModelManager')
-                ->getInstance('FileManager\Model\Base')
+                ->getInstance('FileManager\Model\FileManagerBase')
                 ->deleteUserHomeDirectory($e->getParam('object_id'));
         });
     }
@@ -29,16 +29,16 @@ class Module
      */
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+        return [
+            'Zend\Loader\ClassMapAutoloader' => [
+                __DIR__ . '/autoload_classmap.php'
+            ],
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
+                ]
+            ]
+        ];
     }
 
     /**
@@ -48,8 +48,7 @@ class Module
      */
     public function getServiceConfig()
     {
-        return array(
-        );
+        return [];
     }
 
     /**
@@ -57,13 +56,13 @@ class Module
      */
     public function getViewHelperConfig()
     {
-        return array(
-            'invokables' => array(
-                'filesManagerDirectoriesTree' => 'FileManager\View\Helper\FileManagerDirectoryTree',
-                'fileUrl' => 'FileManager\View\Helper\FileUrl',
-                'baseFileUrl' => 'FileManager\View\Helper\BaseFileUrl'
-            ),
-        );
+        return [
+            'invokables' => [
+                'fileManagerDirectoriesTree' => 'FileManager\View\Helper\FileManagerDirectoryTree',
+                'fileManagerFileUrl' => 'FileManager\View\Helper\FileManagerFileUrl',
+                'fileManagerBaseFileUrl' => 'FileManager\View\Helper\FileManagerBaseFileUrl'
+            ],
+        ];
     }
 
     /**

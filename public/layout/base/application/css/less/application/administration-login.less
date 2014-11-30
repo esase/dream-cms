@@ -1,0 +1,34 @@
+@import "variables/administration-login.less";
+
+// document
+body,
+html,
+div#container {
+    height: 100% !important;
+}
+
+// container
+div#container {
+    div#login-form-wrapper {
+        display: table;
+        height: 100%;
+        margin: 0 auto;
+        width: @login-form-width;
+
+        // login form
+        div#login-form {
+            display: table-cell;
+            vertical-align: middle;
+
+            // extra form  links wrapper
+            div#extra-form-links-wrapper {
+                padding-top: @login-form-extra-links-padding-top;
+            }
+        }
+
+        // form submit button
+        #submit {
+            width: 100%;
+        }
+    }
+}

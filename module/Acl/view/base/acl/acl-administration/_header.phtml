@@ -1,0 +1,24 @@
+<?php $this->declareVars('pageTitle') ?>
+<?php $this->pageTitle = $this->translate('Access Control List') ?>
+
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
+
+<div class="page-header">
+    <h1>
+        <img src="<?php  echo $this->layoutAsset('icon/acl.png', 'image', 'acl') ?>" alt="<?php echo $this->escapeHtmlAttr($this->pageTitle) ?>" />    
+        <?php echo $this->escapeHtml($this->pageTitle) ?>
+    </h1>
+</div>
+
+<?php $this->declareVars('baseTabs') ?>
+
+<?php
+    $this->baseTabs = [
+        'list' => [
+            'name' => $this->translate('List of roles'),
+            'controller' => 'acl-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ] 
+    ];
+?>

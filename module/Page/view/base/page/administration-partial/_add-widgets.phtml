@@ -1,0 +1,40 @@
+<ul class="nav nav-pills">
+    <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-left<?php else: ?>pull-right<?php endif ?><?php if (!$this->filter_form->isValid()) : ?> open<?php endif ?>">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <?php echo $this->translate('Filter') ?>
+            <span class="caret"></span>
+        </a>
+        <div class="dropdown-menu">
+            <div class="filter-form">
+                <?php echo $this->partial('partial/form', [
+                    'form' => $this->filter_form
+                ]) ?>
+            </div>
+        </div>
+    </li>
+</ul>
+
+<!-- widgets list -->
+<?php if ($this->paginator->count()): ?>
+    <div class="list-group" id="new-widgets-list">
+        <?php foreach ($paginator as $data) : ?>
+            <a title="<?php echo $this->escapeHtmlAttr($this->translate('Add widget')) ?>" onclick="pageWidget.getPage($(this).attr('href')); return false" href="<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-add-widget'], ['query' => ['page' => $this->page_info['id'], 'widget' => $data->id], 'force_canonical' => true]) ?>" class="list-group-item">
+               <img src="<?php echo $this->layoutAsset('icon/plus.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Add widget')) ?>"  />
+               <?php echo $this->translate($data->description) ?>
+            </a>          
+        <?php endforeach ?>
+    </div>
+    <?php
+        echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', [
+            'params' => [
+                'controller' => $this->applicationRoute()->getParam('controller'),
+                'action' => $this->applicationRoute()->getParam('action'),
+                'per_page' => $this->per_page,
+                'slug' => $this->page_info['id']
+            ],
+            'queries' => $this->filters
+        ])
+    ?>
+<?php else: ?>
+    <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
+<?php endif ?>

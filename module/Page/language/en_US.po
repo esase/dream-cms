@@ -1,0 +1,432 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS \"page\" module\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-11-29 15:06+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Standard commands for search engine robots"
+msgstr ""
+"Standard commands for search engine robots.<br />Example: noindex, nofollow"
+
+msgid "Meta robots"
+msgstr "Meta robots"
+
+msgid "Max rows in footer menu per column"
+msgstr "Max rows in footer menu per column"
+
+msgid "The page uses the system default title"
+msgstr "The page uses the system default title - \"%s\""
+
+msgid "Widget is hidden for"
+msgstr "Widget is hidden for"
+
+msgid "Panel"
+msgstr "Panel"
+
+msgid "Widget layout"
+msgstr "Widget layout"
+
+msgid "The widget uses the system default title"
+msgstr "The widget uses the system default title - \"%s\""
+
+msgid "Widget title"
+msgstr "Widget title"
+
+msgid "Html content"
+msgstr "Html content"
+
+msgid "Dependent widgets"
+msgstr "Dependent widgets"
+
+msgid "Widget has been deleted"
+msgstr "Widget has been deleted"
+
+msgid "Widget will be deleted. Are you sure?"
+msgstr "Widget will be deleted. Are you sure?"
+
+msgid "Edit widget settings"
+msgstr "Edit widget settings"
+
+msgid "View widget dependents"
+msgstr "View widget dependents"
+
+msgid "Delete widget"
+msgstr "Delete widget"
+
+msgid ""
+"You have to delete all dependent widgets before you can delete this widget"
+msgstr ""
+"You have to delete all dependent widgets before you can delete this widget"
+
+msgid "Layout has been changed"
+msgstr "Layout has been changed"
+
+msgid "Change page layout"
+msgstr "Change page layout"
+
+msgid "View the page"
+msgstr "View the page"
+
+msgid "Widget has been added"
+msgstr "Widget has been added"
+
+msgid "Add widget"
+msgstr "Add widget"
+
+msgid "Html"
+msgstr "Html"
+
+msgid "Browse widgets"
+msgstr "Browse widgets"
+
+msgid "Enter a correct priority value"
+msgstr "Enter a correct priority value"
+
+msgid "Xml map priority description"
+msgstr "Priority should be more or equal %d and less or equal %d"
+
+msgid "Never"
+msgstr "Never"
+
+msgid "Yearly"
+msgstr "Yearly"
+
+msgid "Monthly"
+msgstr "Monthly"
+
+msgid "Weekly"
+msgstr "Weekly"
+
+msgid "Daily"
+msgstr "Daily"
+
+msgid "Hourly"
+msgstr "Hourly"
+
+msgid "Always"
+msgstr "Always"
+
+msgid "Page priority"
+msgstr "Page priority"
+
+msgid "Page update frequency"
+msgstr "Page update frequency"
+
+msgid "Xml map"
+msgstr "Xml map"
+
+msgid "Show in the xml map"
+msgstr "Show in the xml map"
+
+msgid "404 error"
+msgstr "404 error"
+
+msgid "Page layout description"
+msgstr ""
+"Page layout allows you put widgets into the page using different positions."
+"<br />Also you can change the page's location select another page in the "
+"pages tree"
+
+msgid "Page has been edited"
+msgstr "Page has been edited"
+
+msgid "You cannot move the page into self or into its child pages"
+msgstr "You cannot move the page into self or into its child pages"
+
+msgid "Edit the page"
+msgstr "Edit the page"
+
+msgid "Direction"
+msgstr "Direction"
+
+msgid "Before"
+msgstr "Before"
+
+msgid "After"
+msgstr "After"
+
+msgid "Page position"
+msgstr "Page position"
+
+msgid "Custom page has been added"
+msgstr "Custom page has been added"
+
+msgid "Meta keywords should be separated by comma"
+msgstr "Meta keywords should be separated by comma"
+
+msgid "Page is hidden for"
+msgstr "Page is hidden for"
+
+msgid "Visibility settings"
+msgstr "Visibility settings"
+
+msgid "Redirect url"
+msgstr "Redirect url"
+
+msgid "top and bottom areas and 2 columns between them (left 50%, right 50%)"
+msgstr "top and bottom areas and 2 columns between them (left 50%, right 50%)"
+
+msgid "top area and 3 columns below (left 33%, middle 33%, right 33%)"
+msgstr "top area and 3 columns below (left 33%, middle 33%, right 33%)"
+
+msgid "top area and 2 columns below (left 50%, right 50%)"
+msgstr "top area and 2 columns below (left 50%, right 50%)"
+
+msgid "top area and 2 columns below (left 66%, right 33%)"
+msgstr "top area and 2 columns below (left 66%, right 33%)"
+
+msgid "top area and 2 columns below (left 33%, right 66%)"
+msgstr "top area and 2 columns below (left 33%, right 66%)"
+
+msgid "3 columns (left 33%, middle 33%, right 33%)"
+msgstr "3 columns (left 33%, middle 33%, right 33%)"
+
+msgid "2 columns (left 50%, right 50%) below bottom area"
+msgstr "2 columns (left 50%, right 50%) below bottom area"
+
+msgid "2 columns (left 50%, right 50%)"
+msgstr "2 columns (left 50%, right 50%)"
+
+msgid "2 columns (left 66%, right 33%)"
+msgstr "2 columns (left 66%, right 33%)"
+
+msgid "2 columns (left 33%, right 66%)"
+msgstr "2 columns (left 33%, right 66%)"
+
+msgid "1 column"
+msgstr "1 column"
+
+msgid "Show in the site map"
+msgstr "Show in the site map"
+
+msgid "Show in the main menu"
+msgstr "Show in the main menu"
+
+msgid "Order in the footer menu"
+msgstr "Order in the footer menu"
+
+msgid "Show in the footer menu"
+msgstr "Show in the footer menu"
+
+msgid "Order in the user menu"
+msgstr "Order in the user menu"
+
+msgid "Show in the user menu"
+msgstr "Show in the user menu"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "New custom page"
+msgstr "New custom page"
+
+msgid "Selected system pages have been added"
+msgstr "Selected system pages have been added"
+
+msgid "Home page is not defined"
+msgstr "Home page is not defined"
+
+msgid "Add a custom page"
+msgstr "Add a custom page"
+
+msgid "Add selected"
+msgstr "Add selected"
+
+msgid ""
+"Selected pages will be added to the pages tree with all their dependencies. "
+"Are you sure?"
+msgstr ""
+"Selected pages will be added to the pages tree with all their dependencies. "
+"Are you sure?"
+
+msgid "System pages"
+msgstr "System pages"
+
+msgid "Add system pages"
+msgstr "Add system pages"
+
+msgid "Selected pages have been deleted"
+msgstr "Selected pages have been deleted"
+
+msgid "Dependent pages"
+msgstr "Dependent pages"
+
+msgid "View dependent pages"
+msgstr "View dependent pages"
+
+msgid "Selected pages will be deleted. Are you sure?"
+msgstr "Selected pages will be deleted. Are you sure?"
+
+msgid ""
+"You have to delete subpages or dependent pages before you can delete this "
+"page"
+msgstr ""
+"You have to delete subpages or dependent pages before you can delete this "
+"page"
+
+msgid "Page is active"
+msgstr "Page is active"
+
+msgid "Position"
+msgstr "Position"
+
+msgid "Widgets"
+msgstr "Widgets"
+
+msgid "Site"
+msgstr "Site"
+
+msgid "Home page"
+msgstr "Home page"
+
+msgid "Pages tree"
+msgstr "Pages tree"
+
+msgid "List of pages"
+msgstr "List of pages"
+
+msgid "Pages"
+msgstr "Pages"
+
+msgid "Pages management"
+msgstr "Pages management"
+
+msgid "Sitemap"
+msgstr "Sitemap"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Event - Editing widgets settings"
+msgstr "Editing widgets settings"
+
+msgid "Event - Widget settings edited by guest"
+msgstr ""
+"Guest edited the widget settings with id - \"%d\" on the page with id - \"%d"
+"\""
+
+msgid "Event - Widget settings edited by user"
+msgstr ""
+"\"%s\" edited the widget settings with id - \"%d\" on the page with id - \"%d"
+"\""
+
+msgid "Event - Changing widgets positions"
+msgstr "Changing widgets positions"
+
+msgid "Event - Widget position changed by guest"
+msgstr ""
+"Guest changed the widget position with id - \"%d\" on the page with id - \"%d"
+"\""
+
+msgid "Event - Widget position changed by user"
+msgstr ""
+"\"%s\" changed the widget position with id - \"%d\" on the page with id - "
+"\"%d\""
+
+msgid "Event - Deleting widgets"
+msgstr "Deleting widgets"
+
+msgid "Event - Widget deleted by guest"
+msgstr "Guest deleted the widget with id - \"%d\" on the page with id - \"%d\""
+
+msgid "Event - Widget deleted by user"
+msgstr ""
+"\"%s\" deleted the widget with id - \"%d\" on the page with id - \"%d\""
+
+msgid "Event - Adding widgets"
+msgstr "Adding widgets"
+
+msgid "Event - Widget added by guest"
+msgstr "Guest added the widget with id - \"%d\" on the page with id - \"%d\""
+
+msgid "Event - Widget added by user"
+msgstr "\"%s\" added the widget with id - \"%d\" on the page with id - \"%d\""
+
+msgid "Event - Editing pages"
+msgstr "Editing pages"
+
+msgid "Event - Page edited by guest"
+msgstr "Guest edited the page with id - \"%d\""
+
+msgid "Event - Page edited by user"
+msgstr "\"%s\" edited the page with id - \"%d\""
+
+msgid "Event - Adding pages"
+msgstr "Adding pages"
+
+msgid "Event - Page added by guest"
+msgstr "Guest added the page with id - \"%d\""
+
+msgid "Event - Page added by user"
+msgstr "\"%s\" added the page with id - \"%d\""
+
+msgid "Event - Deleting pages"
+msgstr "Deleting pages"
+
+msgid "Event - Page deleted by guest"
+msgstr "Guest deleted the page with id - \"%d\""
+
+msgid "Event - Page deleteted by user"
+msgstr "\"%s\" deleted the page with id - \"%d\""
+
+msgid "Event - Showing pages"
+msgstr "Showing pages"
+
+msgid "Event - Page was shown by the system"
+msgstr "Page \"%s\" for language \"%s\" was shown by the system"
+
+msgid "ACL - Viewing pages in admin area"
+msgstr "Viewing pages in admin area"
+
+msgid "ACL - Viewing dependent pages in admin area"
+msgstr "Viewing dependent pages in admin area"
+
+msgid "ACL - Deleting pages in admin area"
+msgstr "Deleting pages in admin area"
+
+msgid "ACL - Viewing system pages in admin area"
+msgstr "Viewing system pages in admin area"
+
+msgid "ACL - Adding system pages in admin area"
+msgstr "Adding system pages in admin area"
+
+msgid "ACL - Adding custom pages in admin area"
+msgstr "Adding custom pages in admin area"
+
+msgid "ACL - Editing pages in admin area"
+msgstr "Editing pages in admin area"
+
+msgid "ACL - Adding widgets on pages in admin area"
+msgstr "Adding widgets on pages in admin area"
+
+msgid "ACL - Browsing widgets in admin area"
+msgstr "Browsing widgets in admin area"
+
+msgid "ACL - Changing widgets positions on pages in admin area"
+msgstr "Changing widgets positions on pages in admin area"
+
+msgid "ACL - Changing page layout on the widgets page in admin area"
+msgstr "Changing page layout on the widgets page in admin area"
+
+msgid "ACL - Deleting widgets on pages in admin area"
+msgstr "Deleting widgets on pages in admin area"
+
+msgid "ACL - Viewing dependent widgets in admin area"
+msgstr "Viewing dependent widgets in admin area"
+
+msgid "ACL - Editing widgets settings in admin area"
+msgstr "Editing widgets settings in admin area"
+
+msgid "ACL - Editing pages settings in admin area"
+msgstr "Editing pages settings in admin area"

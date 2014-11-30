@@ -1,0 +1,19 @@
+<?php $this->declareVars(['pageUrl']) ?>
+
+<?php echo $this->partial('partial/form', [
+    'form' => $this->login_form,
+]) ?>
+
+<?php if (false !== ($this->pageUrl = $this->pageUrl('user-forgot'))): ?>
+    <br />
+    <a href="<?php echo  $this->url('page', ['page_name' => $this->pageUrl], ['force_canonical' => true]) ?>">
+        <?php echo $this->translate('Can\'t access your account?') ?>
+    </a>
+<?php endif ?>
+
+<?php if ((int) $this->applicationSetting('user_allow_register') && false !== ($this->pageUrl = $this->pageUrl('user-register'))): ?>
+    <br />
+    <a href="<?php echo  $this->url('page', ['page_name' => $this->pageUrl], ['force_canonical' => true]) ?>">
+        <?php echo $this->translate('Create a new account') ?>
+    </a>
+<?php endif ?>

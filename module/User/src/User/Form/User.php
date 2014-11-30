@@ -1,13 +1,19 @@
 <?php
 namespace User\Form;
 
-use Application\Form\AbstractCustomForm;
-use Application\Form\CustomFormBuilder;
-use User\Model\Base as UserBaseModel;
-use Application\Service\Service as ApplicationService;
+use Application\Service\ApplicationSetting as SettingService;
+use Application\Service\Application as ApplicationService;
+use Application\Form\ApplicationAbstractCustomForm;
+use Application\Form\ApplicationCustomFormBuilder;
+use User\Model\UserBase as UserBaseModel;
 
-class User extends AbstractCustomForm 
+class User extends ApplicationAbstractCustomForm 
 {
+    /**
+     * Slug max string length
+     */
+    const SLUG_MAX_LENGTH = 100;
+
     /**
      * Email max string length
      */
@@ -48,13 +54,19 @@ class User extends AbstractCustomForm
      * List of ignored elements
      * @var array
      */
-    protected $ignoredElements = array('confirm_password', 'captcha', 'avatar');
+    protected $ignoredElements = ['confirm_password', 'captcha', 'avatar'];
 
     /**
      * Model instance
      * @var object  
      */
     protected $model;
+
+    /**
+     * Time zones
+     * @var array
+     */
+    protected $timeZones;
 
     /**
      * User id
@@ -78,108 +90,117 @@ class User extends AbstractCustomForm
      * Form elements
      * @var array
      */
-    protected $formElements = array(
-        'nick_name' => array(
+    protected $formElements = [
+        'nick_name' => [
             'name' => 'nick_name',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'NickName',
             'required' => true,
             'category' => 'General info',
             'description' => 'Nickname description',
-            'description_params' => array()
-        ),
-        'email' => array(
+            'description_params' => []
+        ],
+        'slug' => [
+            'name' => 'slug',
+            'type' => ApplicationCustomFormBuilder::FIELD_SLUG,
+            'label' => 'Display name',
+            'required' => false,
+            'max_length' => self::SLUG_MAX_LENGTH,
+            'category' => 'General info',
+            'description' => 'The display name will be displayed in the browser bar'
+        ],
+        'email' => [
             'name' => 'email',
-            'type' => CustomFormBuilder::FIELD_EMAIL,
+            'type' => ApplicationCustomFormBuilder::FIELD_EMAIL,
             'label' => 'Email',
             'required' => true,
             'category' => 'General info',
             'max_length' => self::EMAIL_MAX_LENGTH
-        ),
-        'password' => array(
+        ],
+        'password' => [
             'name' => 'password',
-            'type' => CustomFormBuilder::FIELD_PASSWORD,
+            'type' => ApplicationCustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Password',
             'required' => true,
             'category' => 'General info',
             'max_length' => self::PASSWORD_MAX_LENGTH
-        ),
-        'confirm_password' => array(
+        ],
+        'confirm_password' => [
             'name' => 'confirm_password',
-            'type' => CustomFormBuilder::FIELD_PASSWORD,
+            'type' => ApplicationCustomFormBuilder::FIELD_PASSWORD,
             'label' => 'Confirm password',
             'required' => true,
             'category' => 'General info',
             'max_length' => self::PASSWORD_MAX_LENGTH
-        ),
-        'captcha' => array(
+        ],
+        'captcha' => [
             'name' => 'captcha',
-            'type' => CustomFormBuilder::FIELD_CAPTCHA,
+            'type' => ApplicationCustomFormBuilder::FIELD_CAPTCHA,
             'category' => 'General info'
-        ),
-        'phone' => array(
+        ],
+        'phone' => [
             'name' => 'phone',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Phone',
             'required' => false,
             'category' => 'Miscellaneous info',
             'max_length' => self::PHONE_MAX_LENGTH
-        ),
-        'first_name' => array(
+        ],
+        'first_name' => [
             'name' => 'first_name',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'First Name',
             'required' => false,
             'category' => 'Miscellaneous info',
             'max_length' => self::FIRST_NAME_MAX_LENGTH
-        ),
-        'last_name' => array(
+        ],
+        'last_name' => [
             'name' => 'last_name',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Last Name',
             'required' => false,
             'category' => 'Miscellaneous info',
             'max_length' => self::LAST_NAME_MAX_LENGTH
-        ),
-        'address' => array(
+        ],
+        'address' => [
             'name' => 'address',
-            'type' => CustomFormBuilder::FIELD_TEXT,
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Address',
             'required' => false,
             'category' => 'Miscellaneous info',
             'max_length' => self::ADDRESS_MAX_LENGTH
-        ),
-        'time_zone' => array(
+        ],
+        'time_zone' => [
             'name' => 'time_zone',
-            'type' => CustomFormBuilder::FIELD_SELECT,
+            'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Time zone',
             'required' => false,
-            'values' => array(),
+            'values' => [],
             'category' => 'Miscellaneous info',
             'description' => 'Timezone description'
-        ),
-        'avatar' => array(
+        ],
+        'avatar' => [
             'name' => 'avatar',
-            'type' => CustomFormBuilder::FIELD_IMAGE,
+            'type' => ApplicationCustomFormBuilder::FIELD_IMAGE,
             'label' => 'Avatar',
             'required' => false,
-            'extra_options' => array(
+            'extra_options' => [
                 'file_url' => null,
                 'preview' => false,
                 'delete_option' => true
-            ),
+            ],
             'category' => 'Miscellaneous info'
-        ),
-        'csrf' => array(
+        ],
+        'csrf' => [
             'name' => 'csrf',
-            'type' => CustomFormBuilder::FIELD_CSRF
-        ),
-        'submit' => array(
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
+        'submit' => [
             'name' => 'submit',
-            'type' => CustomFormBuilder::FIELD_SUBMIT,
-            'label' => 'Submit',
-        ),
-    );
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
+            'label' => 'Submit'
+        ],
+    ];
 
     /**
      * Get form instance
@@ -210,61 +231,71 @@ class User extends AbstractCustomForm
             }
 
             // add descriptions params
-            $this->formElements['nick_name']['description_params'] = array(
-                ApplicationService::getSetting('user_nickname_min'),
-                ApplicationService::getSetting('user_nickname_max'),
-            );
+            $this->formElements['nick_name']['description_params'] = [
+                SettingService::getSetting('user_nickname_min'),
+                SettingService::getSetting('user_nickname_max'),
+            ];
 
             // add extra validators
-            $this->formElements['confirm_password']['validators'] = array(
-                array(
+            $this->formElements['slug']['validators'] = [
+                [
                     'name' => 'callback',
-                    'options' => array(
-                        'callback' => array($this, 'validatePassword'),
-                        'message' => 'Passwords do not match'
-                    )
-                )
-            );
+                    'options' => [
+                        'callback' => [$this, 'validateSlug'],
+                        'message' => 'Display name already used'
+                    ]
+                ]
+            ];
 
-            $this->formElements['password']['validators'] = array(
-                array(
+            $this->formElements['confirm_password']['validators'] = [
+                [
                     'name' => 'callback',
-                    'options' => array(
-                        'callback' => array($this, 'validatePassword'),
+                    'options' => [
+                        'callback' => [$this, 'validatePassword'],
                         'message' => 'Passwords do not match'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
+
+            $this->formElements['password']['validators'] = [
+                [
+                    'name' => 'callback',
+                    'options' => [
+                        'callback' => [$this, 'validatePassword'],
+                        'message' => 'Passwords do not match'
+                    ]
+                ]
+            ];
 
             // validate email
-            $this->formElements['email']['validators'] = array(
-                array(
+            $this->formElements['email']['validators'] = [
+                [
                     'name' => 'callback',
-                    'options' => array(
-                        'callback' => array($this, 'validateEmail'),
+                    'options' => [
+                        'callback' => [$this, 'validateEmail'],
                         'message' => 'Email already used'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
 
             // validate nickname
-            $this->formElements['nick_name']['validators'] = array(
-                array(
+            $this->formElements['nick_name']['validators'] = [
+                [
                     'name' => 'callback',
-                    'options' => array(
-                        'callback' => array($this, 'validateNickname'),
+                    'options' => [
+                        'callback' => [$this, 'validateNickname'],
                         'message' => 'Nickname already used'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
 
-            $this->formElements['nick_name']['max_length'] = (int) ApplicationService::getSetting('user_nickname_max');
-            $this->formElements['nick_name']['min_length'] = (int) ApplicationService::getSetting('user_nickname_min');
-            
+            $this->formElements['nick_name']['max_length'] = (int) SettingService::getSetting('user_nickname_max');
+            $this->formElements['nick_name']['min_length'] = (int) SettingService::getSetting('user_nickname_min');
+
             // fill the form with default values
-            $this->formElements['time_zone']['values'] = ApplicationService::getTimeZones();
+            $this->formElements['time_zone']['values'] = $this->timeZones;
 
-            $this->form = new CustomFormBuilder($this->formName,
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
@@ -280,6 +311,18 @@ class User extends AbstractCustomForm
     public function setModel(UserBaseModel $model)
     {
         $this->model = $model;
+        return $this;
+    }
+
+    /**
+     * Set time zones
+     *
+     * @param array $timeZones
+     * @return object fluent interface
+     */
+    public function setTimeZones(array $timeZones)
+    {
+        $this->timeZones = $timeZones;
         return $this;
     }
 
@@ -320,13 +363,25 @@ class User extends AbstractCustomForm
     }
 
     /**
+     * Validate slug
+     *
+     * @param $value
+     * @param array $context
+     * @return boolean
+     */
+    public function validateSlug($value, array $context = [])
+    {
+        return $this->model->isSlugFree($value, $this->userId);
+    }
+
+    /**
      * Validate password
      *
      * @param $value
      * @param array $context
      * @return boolean
      */
-    public function validatePassword($value, array $context = array())
+    public function validatePassword($value, array $context = [])
     {
         return isset($context['confirm_password'],
                 $context['password']) && $context['confirm_password'] == $context['password'];
@@ -339,7 +394,7 @@ class User extends AbstractCustomForm
      * @param array $context
      * @return boolean
      */
-    public function validateEmail($value, array $context = array())
+    public function validateEmail($value, array $context = [])
     {
         return $this->model->isEmailFree($value, $this->userId);
     }
@@ -351,7 +406,7 @@ class User extends AbstractCustomForm
      * @param array $context
      * @return boolean
      */
-    public function validateNickname($value, array $context = array())
+    public function validateNickname($value, array $context = [])
     {
         return $this->model->isNickNameFree($value, $this->userId);
     }

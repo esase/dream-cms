@@ -1,0 +1,54 @@
+<!-- include needed js and css files -->
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration-layout-2-columns-l33-r66.css', 'css', 'page')) ?>
+
+<?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
+    <?php $this->layoutHeadLink()->
+            appendStylesheet($this->layoutAsset('administration-layout-2-columns-l33-r66.rtl.css', 'css', 'page')) ?>
+<?php endif ?>
+
+<?php echo $this->layoutHeadLink() ?>
+
+<table id="manage-widgets">
+    <tbody>
+        <tr>
+            <td class="left-widgets-column">
+                <ul class="connected-sortable default-widget-column" position="content-left">
+                    <?php if (!empty($this->widgets_connections[$this->page_info['id']]['content-left'])): ?>
+                        <?php foreach($this->widgets_connections[$this->page_info['id']]['content-left'] as $widget): ?>
+                            <?php if (!$widget['widget_system']): ?>
+                                <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
+                                    <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'widget' => $widget,
+                                        'allow_delete' => $this->allow_delete,
+                                        'allow_view_dependents' => $this->allow_view_dependents,
+                                        'allow_edit_settings' => $this->allow_edit_settings
+                                    ]) ?>
+                                    <span class="sortable-handler"><?php echo $this->pageWidgetTitle($widget) ?></span>
+                                </li>
+                            <?php endif ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </td>
+            <td class="right-widgets-column">
+                <ul class="connected-sortable default-widget-column" position="content-right">
+                    <?php if (!empty($this->widgets_connections[$this->page_info['id']]['content-right'])): ?>
+                        <?php foreach($this->widgets_connections[$this->page_info['id']]['content-right'] as $widget): ?>
+                            <?php if (!$widget['widget_system']): ?>
+                                <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
+                                    <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'widget' => $widget,
+                                        'allow_delete' => $this->allow_delete,
+                                        'allow_view_dependents' => $this->allow_view_dependents,
+                                        'allow_edit_settings' => $this->allow_edit_settings
+                                    ]) ?>
+                                    <span class="sortable-handler"><?php echo $this->pageWidgetTitle($widget) ?></span>
+                                </li>
+                            <?php endif ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>

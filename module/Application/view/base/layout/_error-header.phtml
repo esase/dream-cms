@@ -2,40 +2,40 @@
 <html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
     <head>
         <meta charset="utf-8">
-        <?php echo $this->headTitle($this->getSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle($this->applicationSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false)->setTranslatorEnabled(false) ?>
 
         <?php echo $this->headMeta()
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
             ->appendName('viewport', 'width=device-width, initial-scale=1')
-            ->appendName('generator', $this->getSetting('application_generator') . ' ' . $this->getSetting('application_generator_version'))
-            ->appendName('description', $this->getSetting('application_meta_description'))
-            ->appendName('keywords', $this->getSetting('application_meta_keywords'));
+            ->appendName('generator', $this->applicationSetting('application_generator'))
+            ->appendName('description', $this->applicationSetting('application_meta_description'))
+            ->appendName('keywords', $this->applicationSetting('application_meta_keywords'));
         ?>
 
-        <!-- Le styles -->
-        <?php $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->asset('icon/favicon.ico', 'image')))
-            ->prependStylesheet($this->asset('jquery-ui.css', 'css'))
-            ->prependStylesheet($this->asset('bootstrap-theme.css', 'css'))
-            ->prependStylesheet($this->asset('bootstrap.css', 'css'))
+        <!-- styles -->
+        <?php $this->layoutHeadLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->layoutAsset('icon/favicon.ico', 'image')])
+            ->prependStylesheet($this->layoutAsset('jquery-ui.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('bootstrap-theme.css', 'css'))
+            ->prependStylesheet($this->layoutAsset('bootstrap.css', 'css'))
         ?>
 
         <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
-            <?php $this->headLink()->appendStylesheet($this->asset('bootstrap.rtl.css', 'css')) ?>
+            <?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('bootstrap.rtl.css', 'css')) ?>
         <?php endif; ?>
 
-        <?php echo $this->headLink() ?>
+        <?php echo $this->layoutHeadLink() ?>
 
-        <!-- Scripts -->
-        <?php echo $this->headScript()
-            ->prependFile($this->asset('jquery.cookie.js'))
-            ->prependFile($this->asset('bootstrap.js'))
-            ->prependFile($this->asset('jquery-ui.js'))            
-            ->prependFile($this->asset('jquery.js'))
-            ->prependFile($this->asset('respond.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
-            ->prependFile($this->asset('html5shiv.js'), 'text/javascript', array('conditional' => 'lt IE 9'))
+        <!-- scripts -->
+        <?php echo $this->layoutHeadScript()
+            ->prependFile($this->layoutAsset('jquery.cookie.js'))
+            ->prependFile($this->layoutAsset('require.js'))
+            ->prependFile($this->layoutAsset('bootstrap.js'))
+            ->prependFile($this->layoutAsset('jquery-ui.js'))            
+            ->prependFile($this->layoutAsset('jquery.js'))
+            ->prependFile($this->layoutAsset('respond.js'), 'text/javascript', ['conditional' => 'lt IE 9'])
+            ->prependFile($this->layoutAsset('html5shiv.js'), 'text/javascript', ['conditional' => 'lt IE 9'])
         ?>
     </head>
     <body>
-
         <!-- container -->
         <div class="container" id="container">

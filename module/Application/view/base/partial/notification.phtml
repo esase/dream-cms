@@ -1,4 +1,4 @@
-<?php foreach ($this->flashMessage() as $namespace => $messages) : ?>
+<?php foreach ($this->applicationFlashMessage() as $namespace => $messages) : ?>
     <?php if (count($messages)) : ?>
         <?php foreach ($messages as $message) : ?>
         <div class="alert alert-<?php echo ($namespace == 'error' ? 'danger' : $namespace) ?>">

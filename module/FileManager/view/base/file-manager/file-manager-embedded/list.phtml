@@ -1,17 +1,5 @@
-<!-- render a breadcrumb -->
-<?php echo $this->partial('partial/breadcrumb', array(
-    'pages' => array(
-        'list' => array(
-            'name' => $this->translate('List of files'),
-            'controller' => $this->currentRoute()->getController(),
-            'action' => 'list',
-            'check_acl' => true
-        )
-    )
-)) ?>
-
 <?php $this->placeholder('filesList')->captureStart() ?>
-    <?php echo $this->partial('file-manager/patrial/files-list', array(
+    <?php echo $this->partial('file-manager/patrial/file-list', [
         'current_directory' => $this->current_directory,
         'paginator' => $this->paginator,
         'path' => $this->path,
@@ -20,18 +8,19 @@
         'per_page' => $this->per_page,
         'filter_form' => $this->filter_form,
         'filters' => $this->filters
-    )); ?>
+    ]) ?>
 <?php $this->placeholder('filesList')->captureEnd() ?>
 
-<?php echo $this->partial('file-manager/patrial/tree', array(
-    'userDirectories' => $this->userDirectories,
+<?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
+    'user_directories' => $this->user_directories,
     'action' => $this->placeholder('filesList'),
+    'action_title' => $this->translate('Files and directories'),
     'path' => $this->path,
     'filters' => $this->filters
-)); ?>
+]) ?>
 
 <?php $this->inlineScript()->captureStart() ?>
-    $('div#files-manager-wrapper div#action-wrapper').find('a.file').bind("click", function(e) {
+    $('div#files-manager-wrapper a.file').bind('click', function(e) {
         e.preventDefault();
 
         // insert selected url to tinyMce

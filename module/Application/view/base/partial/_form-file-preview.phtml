@@ -1,6 +1,4 @@
-<?php
-    use Zend\Form\Element;
-?>
+<?php use Zend\Form\Element ?>
 
 <div class="preview-file-wrapper">
     <div class="row">
@@ -10,12 +8,14 @@
     </div>
     <?php if ($this->delete_option): ?>
         <p class="help-block">
-            <?php
-                $deletePreview = new Element\Checkbox($this->name . '_delete');
-                $deletePreview->setUseHiddenElement(false);
-                echo $this->formCheckbox($deletePreview);                    
-            ?>
-            <?php echo $this->escapeHtml($this->translate('Delete file')) ?>
+            <label>
+                <?php
+                    $deletePreview = new Element\Checkbox($this->name . '_delete');
+                    $deletePreview->setUseHiddenElement(false);
+                    echo $this->formCheckbox($deletePreview);                    
+                ?>
+                <?php echo $this->escapeHtml($this->translate('Delete file')) ?>
+            </label>
         </p>
     <?php endif; ?>
 </div>

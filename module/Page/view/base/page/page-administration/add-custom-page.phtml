@@ -1,0 +1,39 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Add a custom page') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->translate('List of pages')) ?>
+
+<!-- render a header -->
+<?php echo $this->render('page/page-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+]) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
+            'name' => $this->translate('List of pages'),
+            'controller' => 'pages-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ],
+        'add_custom_page' => [
+            'name' => $this->subPageTitle,
+            'controller' => 'pages-administration',
+            'action' => 'add-custom-page',
+            'check_acl' => true
+        ]
+    ]
+]) ?>
+
+<?php echo $this->partial('page/administration-partial/page-wrapper', [
+    'filters' => [],
+    'add_root' => false,
+    'page_id' => $this->page_id,
+    'action' => $this->partial('partial/form', ['form' => $this->pageForm]),
+    'action_title' => $this->translate('New custom page')
+]) ?>

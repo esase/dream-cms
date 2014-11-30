@@ -1,0 +1,45 @@
+div#widgets-wrapper {
+  position: relative;
+}
+table#manage-widgets {
+  width: 100%;
+}
+table#manage-widgets tbody > tr {
+  height: 100%;
+}
+table#manage-widgets tbody > tr > td {
+  vertical-align: top;
+  height: 100%;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable {
+  width: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  height: 100%;
+  background-color: #f5f5f5;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-default:first-child {
+  margin-top: 0;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-default {
+  padding: 10px 15px;
+  margin-top: 5px;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-default > div.widget-actions {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-default > span.sortable-handler {
+  cursor: move;
+}
+table#manage-widgets tbody > tr > td > ul.connected-sortable > li.ui-state-highlight {
+  height: 42px;
+}
+table#manage-widgets tbody > tr > td > ul.default-widget-column {
+  min-height: 418px;
+}
+table#manage-widgets tbody > tr > td > ul.default-widget-row {
+  min-height: 42px;
+}

@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle') ?>
+<?php $this->declareVars('subPageTitle', 'content') ?>
 <?php $this->subPageTitle = $this->translate('List of files') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
 
@@ -6,25 +6,13 @@
 <?php echo $this->render('file-manager/file-manager-administration/_header') ?>
 
 <!-- render tabs -->
-<?php echo $this->partial('partial/tab', array(
+<?php echo $this->partial('administration-partial/tab', [
     'tabs' => $this->baseTabs,
     'active' => 'list' // selected action is "list"
-)) ?>
-
-<!-- render a breadcrumb -->
-<?php echo $this->partial('partial/breadcrumb', array(
-    'pages' => array(
-        'list' => array(
-            'name' => $this->subPageTitle,
-            'controller' => 'files-manager-administration',
-            'action' => 'list',
-            'check_acl' => true
-        )
-    )
-)) ?>
+]) ?>
 
 <?php $this->placeholder('filesList')->captureStart() ?>
-    <?php echo $this->partial('file-manager/patrial/files-list', array(
+    <?php echo $this->partial('file-manager/patrial/file-list', [
         'current_directory' => $this->current_directory,
         'paginator' => $this->paginator,
         'path' => $this->path,
@@ -33,12 +21,14 @@
         'per_page' => $this->per_page,
         'filter_form' => $this->filter_form,
         'filters' => $this->filters
-    )); ?>
+    ]) ?>
 <?php $this->placeholder('filesList')->captureEnd() ?>
 
-<?php echo $this->partial('file-manager/patrial/tree', array(
-    'userDirectories' => $this->userDirectories,
+<?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
+    'user_directories' => $this->user_directories,
     'action' => $this->placeholder('filesList'),
+    'action_title' => $this->translate('Files and directories'),
     'path' => $this->path,
     'filters' => $this->filters
-)); ?>
+]) ?>
+

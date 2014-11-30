@@ -1,2 +1,34 @@
 @import "common.rtl.css";
 @import "variables/frontend.rtl.less";
+
+// logo wrapper
+div#logo-wrapper {
+    div#logo-image {
+        h1 {
+            margin:0;
+
+            img {
+                margin-left: 0;
+                margin-right: @logo-img-margin-right;
+            }
+        }
+    }
+
+    div#logo-actions {
+        text-align:left;
+
+        div.btn-group {
+            margin-right: 0;
+            margin-left: @logo-btn-group-margin-left;
+        }
+    }
+}
+
+// footer
+footer {
+    .links {
+        ul {
+            padding-right: 0px;
+        }
+    }
+}

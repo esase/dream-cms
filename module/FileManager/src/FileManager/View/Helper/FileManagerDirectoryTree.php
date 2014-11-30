@@ -2,10 +2,16 @@
 namespace FileManager\View\Helper;
  
 use Zend\View\Helper\AbstractHelper;
-use FileManager\Model\Base as FileManagerBaseModel;
+use FileManager\Model\FileManagerBase as FileManagerBaseModel;
 
 class FileManagerDirectoryTree extends AbstractHelper
 {
+    /**
+     * Tree cookie lifetime
+     * @var integer
+     */
+    protected $treeCookieLifetimeDays = 30;
+
     /**
      * Generate a tree
      *
@@ -16,16 +22,18 @@ class FileManagerDirectoryTree extends AbstractHelper
      * @param string $treeClass
      * @return string
      */
-    public function __invoke($userDirectories = array(), $treeId, $currentPath, array $filters = array(), $treeClass = 'filetree')
+    public function __invoke($userDirectories = [], $treeId, $currentPath, array $filters = [], $treeClass = 'filetree')
     {
         $currentPath = $currentPath
             ? FileManagerBaseModel::processDirectoryPath($currentPath)
             : FileManagerBaseModel::getHomeDirectoryName();
 
-        return  $userDirectories
-            ? '<ul id="' . $treeId . '" class="' . $treeClass . '">' .
-                    $this->processDirectories($userDirectories, $currentPath, $filters) . '</ul>'
-            : null;
+        return $this->getView()->partial('file-manager/patrial/directory-tree', [
+            'id' => $treeId,
+            'class' => $treeClass,
+            'items' => $this->processDirectories($userDirectories, $currentPath, $filters),
+            'cookie_lifetime' => $this->treeCookieLifetimeDays
+        ]);
     }
 
     /**
@@ -44,24 +52,31 @@ class FileManagerDirectoryTree extends AbstractHelper
         foreach ($userDirectories as $directoryName => $subDirectories) {
             $directoryName = str_replace(PHP_EOL, null, $directoryName);
 
-            // get directory's url
+            // get a directory's url
             $path = $parentDirectory ? $parentDirectory . '/' . $directoryName : $directoryName;
-            $urlParams = array('path' => $path) + $filters;
+            $urlParams = ['path' => $path] + $filters;
+            $url = null;
 
-            $url = $this->getView()->url('application', array(
-                'controller' => $this->getView()->currentRoute()->getController(),
-                'action' => $this->getView()->currentRoute()->getAction()), array('query' => $urlParams));
+            if ($currentPath != $path) {
+                $url = $this->getView()->url('application/page', [
+                    'controller' => $this->getView()->applicationRoute()->getParam('controller'),
+                    'action' => $this->getView()->applicationRoute()->getParam('action')
+                ], ['force_canonical' => true, 'query' => $urlParams]);
+            }
 
-            $content .= $currentPath == $path
-                ? '<li><span class="folder">' . $directoryName . '</span>'
-                : '<li><span class="folder"><a href="' . $url . '">' . $directoryName . '</a></span>';
+            $content .= $this->getView()->partial('file-manager/patrial/directory-tree-item-start', [
+                'url' => $url,
+                'name' => $directoryName
+            ]);
 
             // process subdirectories
             if ($subDirectories) {
-                $content .= '<ul>' . $this->processDirectories($subDirectories, $currentPath, $filters, $path) . '</ul>';
+                $content .= $this->getView()->partial('file-manager/patrial/directory-tree-item-children', [
+                    'children' => $this->processDirectories($subDirectories, $currentPath, $filters, $path)
+                ]);
             }
 
-            $content .= '</li>';
+            $content .= $this->getView()->partial('file-manager/patrial/directory-tree-item-end');
         }
 
         return $content;

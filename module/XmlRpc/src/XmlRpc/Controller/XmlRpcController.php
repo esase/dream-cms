@@ -1,14 +1,13 @@
 <?php
 namespace XmlRpc\Controller;
 
-use Application\Controller\AbstractBaseController;
+use Application\Controller\ApplicationAbstractBaseController;
+use User\Service\UserIdentity as UserIdentityService;
+use User\Model\UserBase as UserModelBase;
 use Zend\XmlRpc\Server as XmlRpcServer;
 use Zend\XmlRpc\Server\Fault as XmlRpcServerFault;
-use User\Service\Service as UserService;
-use stdClass;
-use User\Model\Base as UserModelBase;
 
-class XmlRpcController extends AbstractBaseController
+class XmlRpcController extends ApplicationAbstractBaseController
 {
     /**
      * Model instance
@@ -36,17 +35,21 @@ class XmlRpcController extends AbstractBaseController
     public function indexAction()
     {
         // get user info by api key
-        if (null != ($apiKey = $this->getRequest()->getQuery()->apiKey)) {
-            if (null != ($userInfo = UserService::getUserInfo($apiKey, UserModelBase::USER_INFO_BY_API_KEY))) {
+        if (null != ($apiKey = $this->getRequest()->getQuery()->api_key)) {
+            if (null != ($userInfo =
+                    UserIdentityService::getUserInfo($apiKey, UserModelBase::USER_INFO_BY_API_KEY))) {
+
                 // fill the user's info
-                $userIdentity = new stdClass();
-
-                foreach($userInfo as $fieldName => $value) {
-                    $userIdentity->$fieldName = $value;
+                if ($userInfo['status'] == UserModelBase::STATUS_APPROVED) {
+                    $userIdentity = [];
+    
+                    foreach($userInfo as $fieldName => $value) {
+                        $userIdentity[$fieldName] = $value;
+                    }
+    
+                    // init user identity
+                    UserIdentityService::setCurrentUserIdentity($userIdentity);
                 }
-
-                // init user identity
-                UserService::setCurrentUserIdentity($userIdentity);
             }
         }
 

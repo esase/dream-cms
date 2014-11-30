@@ -1,9 +1,28 @@
 @import "variables/common.less";
 
+// panel general
+div.panel-general {
+    margin-top: @panel-general-margin-top;
+    margin-bottom:0;
+
+    ul.nav-pills {
+        margin-bottom: @panel-general-nav-pills-margin-bottom;
+    }
+
+    div.alert {
+        margin-top:0;
+    }
+}
+
 // inputs
 input[type="radio"], 
 input[type="checkbox"] {
     margin-right: @radio-checkbox-margin-right;
+}
+
+// pagination
+ul.pagination {
+    margin-bottom: 0;
 }
 
 // loading ajax
@@ -38,6 +57,26 @@ div.filter-form {
 
     form {
         margin: 0;
+    }
+}
+
+// panel
+div.panel {
+    div.panel-group {
+        margin-bottom:0;
+    }
+}
+
+// accordion
+div.panel-accordion {
+    div.panel-heading {
+        background-image: none;
+        filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+        background-color: @panel-accordion-background-color;
+    }
+
+    div.list-group {
+        margin-bottom: 0;
     }
 }
 
@@ -101,7 +140,8 @@ div.data-list {
 
 // table grid
 table.table {
-    margin-top:@table-grid-margin-top;
+    margin-top:0;
+    margin-bottom:0;
 
     th.selector-items {
         width: @table-grid-selector-items-width;
@@ -109,6 +149,7 @@ table.table {
 
     th {
         border-bottom: 0 !important;
+        white-space: nowrap;
     }
 
     td.action {

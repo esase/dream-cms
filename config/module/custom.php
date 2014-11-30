@@ -1,6 +1,6 @@
 <?php
 
-return array(
-    'Payment',
-    'Membership'
-);
+return [
+    //'Payment',
+   // 'Membership'
+];

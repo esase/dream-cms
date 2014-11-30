@@ -1,0 +1,37 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Edit the role') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->translate('List of roles')) ?>
+
+<!-- render a header -->
+<?php echo $this->render('acl/acl-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+]) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
+            'name' => $this->translate('List of roles'),
+            'controller' => 'acl-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ],
+        'edit_role' => [
+            'name' => $this->subPageTitle,
+            'controller' => 'acl-administration',
+            'action' => 'edit-role',
+            'check_acl' => true
+        ]
+    ]
+]) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('General info'),
+    'body' => $this->partial('partial/form', ['form' => $this->aclRoleForm])
+]) ?>

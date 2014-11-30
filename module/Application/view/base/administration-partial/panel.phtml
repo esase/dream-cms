@@ -1,0 +1,13 @@
+<?php if (!isset($this->notification) || $this->notification === true): ?>
+    <!-- notification -->
+    <?php echo $this->partial('partial/notification') ?>
+<?php endif ?>
+
+<div class="panel panel-default panel-general">
+    <div class="panel-heading">
+        <h4 class="panel-title"><?php echo $this->title ?></h4>
+    </div>
+    <div class="panel-body">
+        <?php echo $this->body ?>
+    </div>
+</div>

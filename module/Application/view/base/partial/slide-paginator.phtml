@@ -2,43 +2,40 @@
     $this->declareVars('queries');
 
     if(!isset($this->params)) {
-        $this->params = array();
+        $this->params = [];
     }
 
-    $this->queries = !empty($this->queries) && is_array($this->queries)
-        ? $this->queries
-        : array();
+    $this->queries = !empty($this->queries) && is_array($this->queries) ? $this->queries : [];
 ?>
 
 <?php if ($this->pageCount > 1): ?>
     <ul class="pagination">
-        <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif; ?>>
+        <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif ?>>
             <?php if (isset($this->previous)): ?>
-                <a href="<?php echo $this->url($this->route, array('page' => $this->previous) + $this->params, array('query' => $this->queries)); ?>">&lt;</a>
+                <a href="<?php echo $this->url('application/page', ['page' => $this->previous] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">&lt;</a>
             <?php else: ?>
                 <span>&lt;</span>
-            <?php endif; ?>
+            <?php endif ?>
         </li>
 
         <?php foreach ($this->pagesInRange as $page): ?>
             <li <?php if ($page == $this->current): ?>class="active"<?php endif; ?>>
                 <?php if ($page != $this->current): ?>
-                    <a href="<?php echo $this->url($this->route, array('page' => $page) + $this->params, array('query' => $this->queries)); ?>">
-                        <?php echo $page; ?>
+                    <a href="<?php echo $this->url('application/page', ['page' => $page] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">
+                        <?php echo $page ?>
                     </a>
                 <?php else: ?>
-                    <span><?php echo $page; ?></span>
+                    <span><?php echo $page ?></span>
                 <?php endif; ?>
             </li>
-        <?php endforeach; ?>
+        <?php endforeach ?>
 
-        <!-- Next page link -->
-        <li <?php if (!isset($this->next)): ?>class="disabled"<?php endif; ?>>
+        <li <?php if (!isset($this->next)): ?>class="disabled"<?php endif ?>>
             <?php if (isset($this->next)): ?>
-                <a href="<?php echo $this->url($this->route, array('page' => $this->next) + $this->params, array('query' => $this->queries)); ?>">&gt;</a>
+                <a href="<?php echo $this->url('application/page', ['page' => $this->next] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">&gt;</a>
             <?php else: ?>
                 <span>&gt;</span>
-            <?php endif; ?>
+            <?php endif ?>
         </li>
     </ul>
-<?php endif; ?>
+<?php endif ?>

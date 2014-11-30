@@ -1,0 +1,18 @@
+<?php $this->declareVars('baseTabs', 'subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Clear cache') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('application/application-setting-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'clear-cache' // selected action is "clear_cache"
+]) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Cache types'),
+    'body' => $this->partial('partial/form', ['form' => $this->cacheForm])
+]) ?>

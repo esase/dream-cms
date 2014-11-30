@@ -1,16 +1,16 @@
 <?php
 
-return array(
+return [
     'profiler' => false,
-    'php_settings' => array(
+    'php_settings' => [
         'display_startup_errors' => false,
         'display_errors' => false
-    ), 
-    'view_manager' => array(
+    ], 
+    'view_manager' => [
         'display_not_found_reason' => false,
         'display_exceptions' => false
-    ),
-    'db' => array(
+    ],
+    'db' => [
         'profiler' => false
-    )
-);
+    ]
+];

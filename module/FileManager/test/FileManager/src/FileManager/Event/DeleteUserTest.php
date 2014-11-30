@@ -4,18 +4,18 @@ namespace FileManager\Test\Event;
 use FileManager\Test\FileManagerBootstrap;
 use PHPUnit_Framework_TestCase;
 use Zend\Math\Rand;
-use Application\Model\Acl as AclModel;
-use FileManager\Model\Base as BaseFileManagerModel;
-use Application\Utility\FileSystem as FileSystemUtility;
-use User\Event\Event as UserEvent;
+use Acl\Model\AclBase as AclModelBase;
+use FileManager\Model\FileManagerBase as FileManagerBaseModel;
+use Application\Utility\ApplicationFileSystem as FileSystemUtility;
+use User\Event\UserEvent;
 
 class DeleteUserTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Service manager
+     * Service locator
      * @var object
      */
-    protected $serviceManager;
+    protected $serviceLocator;
 
     /**
      * User model
@@ -29,12 +29,12 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         // get service manager
-        $this->serviceManager = FileManagerBootstrap::getServiceManager();
+        $this->serviceLocator = FileManagerBootstrap::getServiceLocator();
 
         // get base user model instance
-        $this->userModel = $this->serviceManager
+        $this->userModel = $this->serviceLocator
             ->get('Application\Model\ModelManager')
-            ->getInstance('User\Model\Base');
+            ->getInstance('User\Model\UserBase');
     }
 
     /**
@@ -49,13 +49,13 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
     public function testDeleteUserHomeDirectory()
     {
         // test user data
-        $data = array(
+        $data = [
             'nick_name' => Rand::getString(32),
             'email' => Rand::getString(32),
             'api_key' => Rand::getString(32),
-            'role' => AclModel::DEFAULT_ROLE_MEMBER,
+            'role' => AclModelBase::DEFAULT_ROLE_MEMBER,
             'language' => null
-        );
+        ];
 
         // create a test user
         $query = $this->userModel->insert()
@@ -67,8 +67,8 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
         $testUserId = $this->userModel->getAdapter()->getDriver()->getLastGeneratedValue();
 
         // create a test user's home directory
-        $homeUserDirectory = BaseFileManagerModel::getUserBaseFilesDir($testUserId) . '/' .
-                BaseFileManagerModel::getHomeDirectoryName();
+        $homeUserDirectory = FileManagerBaseModel::getUserBaseFilesDir($testUserId) . '/' .
+                FileManagerBaseModel::getHomeDirectoryName();
 
         FileSystemUtility::createDir($homeUserDirectory);
 
@@ -78,7 +78,7 @@ class DeleteUserTest extends PHPUnit_Framework_TestCase
         // delete the created user
         $query = $this->userModel->delete()
             ->from('user_list')
-            ->where(array('user_id' => $testUserId));
+            ->where(['user_id' => $testUserId]);
 
         $statement = $this->userModel->prepareStatementForSqlObject($query);
         $statement->execute();

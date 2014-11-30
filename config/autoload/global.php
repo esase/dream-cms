@@ -11,52 +11,52 @@
  * file.
  */
 
-return array(
-    'php_settings' => array(
+return [
+    'php_settings' => [
         'mbstring.internal_encoding' => 'UTF-8'
-    ),
-    'session' => array(
-        'config' => array(
+    ],
+    'session' => [
+        'config' => [
             'class' => 'Zend\Session\Config\SessionConfig',
-            'options' => array(
+            'options' => [
                 'savePath' => APPLICATION_ROOT . '/data/session',
                 'cookieSecure' => false,
                 'cookieHttpOnly' => true
-            )
-        ),
+            ]
+        ],
         'storage' => 'Zend\Session\Storage\SessionArrayStorage',
-        'validators' => array(
+        'validators' => [
             'Zend\Session\Validator\RemoteAddr',
             'Zend\Session\Validator\HttpUserAgent',
-        ),
+        ],
         'save_handler' => null
-    ),
-    'static_cache' => array(
+    ],
+    'static_cache' => [
         'writable' => true,
         'readable' => true,
         'cache_dir' => APPLICATION_ROOT . '/data/cache/application',
         'dir_level' => 1,
         'ttl' => 0 // cache never will be expired
-    ),
-    'view_manager' => array(
+    ],
+    'view_manager' => [
         'layout' => 'layout/frontend'
-    ),
-    'dynamic_cache' => array(
+    ],
+    'dynamic_cache' => [
         'writable' => true,
         'readable' => true
-    ),
-    'db' => array(
+    ],
+    'db' => [
         'driver' => 'Pdo',
-        'driver_options' => array(
+        'driver_options' => [
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
-        ),
-    ),
-    'service_manager' => array(
-        'factories' => array(
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory'
-        )
-    ),
-    'paths' => array(
+        ]
+    ],
+    'paths' => [
         'error_log' => APPLICATION_ROOT . '/data/log/log',
         'layout_cache_css' => 'layout_cache/css',
         'layout_cache_js' => 'layout_cache/js',
@@ -65,5 +65,5 @@ return array(
         'captcha_font' => 'font/captcha.ttf',
         'resource' => 'resource',
         'layout' => 'layout',
-    )
-);
+    ]
+];

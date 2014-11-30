@@ -1,0 +1,7 @@
+<div class="list-group">
+    <?php foreach ($this->items as $item): ?>
+        <a class="list-group-item" <?php if(isset($this->new_window) && true === $this->new_window): ?>target="_blank"<?php endif ?> href="<?php echo $this->url('application/page', ['controller' => $item['controller'], 'action' => $item['action']], ['force_canonical' => true]) ?>">
+            <?php echo $this->translate($item['name']) ?>
+        </a>
+    <?php endforeach ?>     
+</div>

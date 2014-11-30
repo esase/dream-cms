@@ -1,0 +1,10 @@
+<?php $this->declareVars('imageUrl') ?>
+<?php $this->imageUrl = $this->layoutAsset($this->file_extension . '.png', 'image/icon', 'filemanager') ?>
+<?php if (false === $this->imageUrl): ?>
+    <?php $this->imageUrl = $this->layoutAsset('file.png', 'image/icon', 'filemanager') ?>
+<?php endif ?>
+
+<img src="<?php echo $this->imageUrl ?>" alt="file" />
+<a class="file" target="_blank" href="<?php echo $this->url ?>">
+    <?php echo $this->escapeHtml($this->name) ?>
+</a>

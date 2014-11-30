@@ -1,6 +1,19 @@
+div.panel-general {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+div.panel-general ul.nav-pills {
+  margin-bottom: 15px;
+}
+div.panel-general div.alert {
+  margin-top: 0;
+}
 input[type="radio"],
 input[type="checkbox"] {
   margin-right: 4px;
+}
+ul.pagination {
+  margin-bottom: 0;
 }
 div.loading-ajax-wrapper {
   height: 64px;
@@ -28,6 +41,17 @@ div.filter-form {
 }
 div.filter-form form {
   margin: 0;
+}
+div.panel div.panel-group {
+  margin-bottom: 0;
+}
+div.panel-accordion div.panel-heading {
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  background-color: #f8f8ff;
+}
+div.panel-accordion div.list-group {
+  margin-bottom: 0;
 }
 legend {
   font-size: 14px;
@@ -68,13 +92,15 @@ div.data-list ul.nav {
   margin-bottom: 15px;
 }
 table.table {
-  margin-top: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 table.table th.selector-items {
   width: 20px;
 }
 table.table th {
   border-bottom: 0 !important;
+  white-space: nowrap;
 }
 table.table td.action {
   width: 24px;

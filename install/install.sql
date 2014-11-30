@@ -5,15 +5,15 @@ CREATE TABLE IF NOT EXISTS `application_time_zone` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_time_zone` (`id`, `name`) VALUES
-(1, 'Africa/Abidjan'),
-(2, 'Africa/Accra'),
-(3, 'Africa/Addis_Ababa'),
-(4, 'Africa/Algiers'),
-(5, 'Africa/Asmara'),
-(6, 'Africa/Bamako'),
-(7, 'Africa/Bangui'),
-(8, 'Africa/Banjul'),
-(9, 'Africa/Bissau'),
+(1,  'Africa/Abidjan'),
+(2,  'Africa/Accra'),
+(3,  'Africa/Addis_Ababa'),
+(4,  'Africa/Algiers'),
+(5,  'Africa/Asmara'),
+(6,  'Africa/Bamako'),
+(7,  'Africa/Bangui'),
+(8,  'Africa/Banjul'),
+(9,  'Africa/Bissau'),
 (10, 'Africa/Blantyre'),
 (11, 'Africa/Brazzaville'),
 (12, 'Africa/Bujumbura'),
@@ -430,18 +430,22 @@ CREATE TABLE IF NOT EXISTS `application_module` (
     `version` VARCHAR(20) NOT NULL,
     `vendor` VARCHAR(50) NOT NULL,
     `vendor_email` VARCHAR(50) NOT NULL,
-    `description` VARCHAR(255) NOT NULL,
-    `dependences` VARCHAR(255) NOT NULL,
+    `description` VARCHAR(255) DEFAULT NULL,
+    `dependences` VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `type` (`type`, `status`),
     UNIQUE `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(2, 'User', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(3, 'XmlRpc', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', ''),
-(4, 'FileManager', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', '', '');
+(1, 'Application', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(2, 'User', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(3, 'XmlRpc', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(4, 'FileManager', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(5, 'Page', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(6, 'Layout', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(7, 'Localization', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(8, 'Acl', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL);
 
 CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
     `namespace` VARCHAR(20) NOT NULL,
@@ -454,24 +458,24 @@ CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `xmlrpc_class` (`namespace`, `path`, `module`) VALUES
-('application', 'Application\\XmlRpc\\Handler', 1),
-('user', 'User\\XmlRpc\\Handler', 2);
+('localization', 'Localization\\XmlRpc\\LocalizationHandler', 1),
+('user', 'User\\XmlRpc\\UserHandler', 2);
 
-CREATE TABLE IF NOT EXISTS `application_localization` (
+CREATE TABLE IF NOT EXISTS `localization_list` (
     `language` CHAR(2) NOT NULL,
     `locale` CHAR(5) NOT NULL,
     `description` VARCHAR(50) NOT NULL,
-    `default` TINYINT(1) UNSIGNED NOT NULL,
+    `default` TINYINT(1) UNSIGNED NULL,
     `direction` ENUM('rtl','ltr') NOT NULL,
     PRIMARY KEY (`language`),
     KEY `default` (`default`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `application_localization` (`language`, `locale`, `description`, `default`, `direction`) VALUES
+INSERT INTO `localization_list` (`language`, `locale`, `description`, `default`, `direction`) VALUES
 ('en', 'en_US', 'English', 1, 'ltr'),
-('ru', 'ru_RU', 'Русский', 0, 'ltr');
+('ru', 'ru_RU', 'Русский', NULL, 'ltr');
 
-CREATE TABLE IF NOT EXISTS `application_layout` (
+CREATE TABLE IF NOT EXISTS `layout_list` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
@@ -486,22 +490,22 @@ CREATE TABLE IF NOT EXISTS `application_layout` (
     KEY `type` (`type`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `application_layout` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 'active', 'Base layout', 'Default base layout', '1.0.0', 'eSASe', 'alexermashev@gmail.com');
+INSERT INTO `layout_list` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
+('base', 'system', 'active', 'Base layout', 'Default base layout', '2.0.0', 'eSASe', 'alexermashev@gmail.com');
 
-CREATE TABLE IF NOT EXISTS `application_acl_role` (
+CREATE TABLE IF NOT EXISTS `acl_role` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `application_acl_role` (`id`, `name`, `type`) VALUES
+INSERT INTO `acl_role` (`id`, `name`, `type`) VALUES
 (1, 'admin', 'system'),
 (2, 'guest', 'system'),
 (3, 'member', 'system');
 
-CREATE TABLE IF NOT EXISTS `application_acl_resource` (
+CREATE TABLE IF NOT EXISTS `acl_resource` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `resource` VARCHAR(50) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
@@ -513,20 +517,20 @@ CREATE TABLE IF NOT EXISTS `application_acl_resource` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `application_acl_resource` (`id`, `resource`, `description`, `module`) VALUES
-(1,  'xmlrpc_get_localizations', 'ACL - Getting site\'s localizations via XmlRpc', 1),
+INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
+(1,  'xmlrpc_get_localizations', 'ACL - Getting site\'s localizations via XmlRpc', 7),
 (2,  'xmlrpc_view_user_info', 'ACL - Getting user\'s info via XmlRpc', 2),
 (3,  'xmlrpc_set_user_timezone', 'ACL - Editing user\'s timezone via XmlRpc', 2),
 (5,  'settings_administration_index', 'ACL - Editing site\'s settings in admin area', 1),
 (8,  'users_administration_list', 'ACL - Viewing users in admin area', 2),
-(9,  'acl_administration_list', 'ACL - Viewing ACL roles in admin area', 1),
-(10, 'acl_administration_add_role', 'ACL - Adding ACL roles in admin area', 1),
-(11, 'acl_administration_delete_roles', 'ACL - Deleting ACL roles in admin area', 1),
-(12, 'acl_administration_edit_role', 'ACL - Editing ACL roles in admin area', 1),
-(13, 'acl_administration_browse_resources', 'ACL - Browsing ACL resources in admin area', 1),
-(14, 'acl_administration_allow_resources', 'ACL - Allowing ACL resources in admin area', 1),
-(15, 'acl_administration_disallow_resources', 'ACL - Disallowing ACL resources in admin area', 1),
-(16, 'acl_administration_resource_settings', 'ACL - Editing ACL resources settings in admin area', 1),
+(9,  'acl_administration_list', 'ACL - Viewing ACL roles in admin area', 8),
+(10, 'acl_administration_add_role', 'ACL - Adding ACL roles in admin area', 8),
+(11, 'acl_administration_delete_roles', 'ACL - Deleting ACL roles in admin area', 8),
+(12, 'acl_administration_edit_role', 'ACL - Editing ACL roles in admin area', 8),
+(13, 'acl_administration_browse_resources', 'ACL - Browsing ACL resources in admin area',8),
+(14, 'acl_administration_allow_resources', 'ACL - Allowing ACL resources in admin area', 8),
+(15, 'acl_administration_disallow_resources', 'ACL - Disallowing ACL resources in admin area', 8),
+(16, 'acl_administration_resource_settings', 'ACL - Editing ACL resources settings in admin area', 8),
 (17, 'settings_administration_clear_cache', 'ACL - Clearing site\'s cache in admin area', 1),
 (18, 'users_administration_approve', 'ACL - Approving users in admin area', 2),
 (19, 'users_administration_disapprove', 'ACL - Disapproving users in admin area', 2),
@@ -548,21 +552,41 @@ INSERT INTO `application_acl_resource` (`id`, `resource`, `description`, `module
 (35, 'files_manager_embedded_add_file', 'ACL - Adding files in embedded mode', 4),
 (36, 'files_manager_administration_add_file', 'ACL - Adding files in admin area', 4),
 (37, 'files_manager_embedded_edit', 'ACL - Editing files and dirs in embedded mode', 4),
-(38, 'files_manager_administration_edit', 'ACL - Editing files and dirs in admin area', 4);
+(38, 'files_manager_administration_edit', 'ACL - Editing files and dirs in admin area', 4),
+(39, 'users_view_profile', 'ACL - Viewing users profiles', 2),
+(40, 'pages_administration_list', 'ACL - Viewing pages in admin area', 5),
+(41, 'pages_administration_ajax_view_dependent_pages', 'ACL - Viewing dependent pages in admin area', 5),
+(42, 'pages_administration_delete_pages', 'ACL - Deleting pages in admin area', 5),
+(43, 'pages_administration_system_pages', 'ACL - Viewing system pages in admin area', 5),
+(45, 'pages_administration_add_system_pages', 'ACL - Adding system pages in admin area', 5),
+(46, 'pages_administration_add_custom_page', 'ACL - Adding custom pages in admin area', 5),
+(47, 'pages_administration_edit_page', 'ACL - Editing pages in admin area', 5),
+(48, 'pages_administration_ajax_add_widget', 'ACL - Adding widgets on pages in admin area', 5),
+(49, 'pages_administration_browse_widgets', 'ACL - Browsing widgets in admin area', 5),
+(50, 'pages_administration_ajax_change_widget_position', 'ACL - Changing widgets positions on pages in admin area', 5),
+(51, 'pages_administration_ajax_change_page_layout', 'ACL - Changing page layout on the widgets page in admin area', 5),
+(52, 'pages_administration_ajax_delete_widget', 'ACL - Deleting widgets on pages in admin area', 5),
+(53, 'pages_administration_ajax_view_dependent_widgets', 'ACL - Viewing dependent widgets in admin area', 5),
+(54, 'pages_administration_edit_widget_settings', 'ACL - Editing widgets settings in admin area', 5),
+(55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5);
 
-CREATE TABLE IF NOT EXISTS `application_acl_resource_connection` (
+CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `role` SMALLINT(5) UNSIGNED NOT NULL,
     `resource` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`role`, `resource`),
-    FOREIGN KEY (`role`) REFERENCES `application_acl_role`(`id`)
+    FOREIGN KEY (`role`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`resource`) REFERENCES `application_acl_resource`(`id`)
+    FOREIGN KEY (`resource`) REFERENCES `acl_resource`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `acl_resource_connection` (`id`, `role`, `resource`) VALUES
+(1,  3, 39),
+(2,  2, 39);
 
 CREATE TABLE IF NOT EXISTS `user_list` (
     `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -570,10 +594,10 @@ CREATE TABLE IF NOT EXISTS `user_list` (
     `slug` VARCHAR(100) NOT NULL DEFAULT '',
     `status` ENUM('approved','disapproved') NOT NULL,
     `email` VARCHAR(50) NOT NULL DEFAULT '',
-    `phone` VARCHAR(50) NOT NULL DEFAULT '',
-    `first_name` VARCHAR(100) NOT NULL DEFAULT '',
-    `last_name` VARCHAR(100) NOT NULL DEFAULT '',
-    `address` VARCHAR(100) NOT NULL DEFAULT '',
+    `phone` VARCHAR(50) DEFAULT NULL,
+    `first_name` VARCHAR(100) DEFAULT NULL,
+    `last_name` VARCHAR(100) DEFAULT NULL,
+    `address` VARCHAR(100) DEFAULT NULL,
     `password` VARCHAR(40) NOT NULL DEFAULT '',
     `salt` VARCHAR(20) NOT NULL DEFAULT '',
     `role` SMALLINT(5) UNSIGNED DEFAULT NULL,
@@ -582,25 +606,26 @@ CREATE TABLE IF NOT EXISTS `user_list` (
     `layout` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `api_key` VARCHAR(50) NOT NULL DEFAULT '',
     `api_secret` VARCHAR(50) NOT NULL DEFAULT '',
-    `registered` INT(10) UNSIGNED NOT NULL,
-    `activation_code` VARCHAR(20) NOT NULL,
-    `avatar` VARCHAR(100) NOT NULL,
+    `registered` INT(10) UNSIGNED DEFAULT NULL,
+    `activation_code` VARCHAR(20) DEFAULT NULL,
+    `avatar` VARCHAR(100) DEFAULT NULL,
+    `date_edited` DATE DEFAULT NULL,
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `nick_name` (`nick_name`),
     UNIQUE KEY `email` (`email`),
     UNIQUE KEY `api_key` (`api_key`),
     UNIQUE KEY `slug` (`slug`),
     KEY `status` (`status`),
-    FOREIGN KEY (`role`) REFERENCES `application_acl_role`(`id`)
+    FOREIGN KEY (`role`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
-    FOREIGN KEY (`language`) REFERENCES `application_localization`(`language`)
+    FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
     FOREIGN KEY (`time_zone`) REFERENCES `application_time_zone`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL,
-    FOREIGN KEY (`layout`) REFERENCES `application_layout`(`id`)
+    FOREIGN KEY (`layout`) REFERENCES `layout_list`(`id`)
         ON UPDATE CASCADE
         ON DELETE SET NULL       
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -608,35 +633,17 @@ CREATE TABLE IF NOT EXISTS `user_list` (
 INSERT INTO `user_list` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
 (1, 'esase', 'esase', 'approved', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
 
-CREATE TABLE IF NOT EXISTS `user_menu` (
-    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
-    `controller` VARCHAR(50) NOT NULL,
-    `action` VARCHAR(50) NOT NULL,
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `order` SMALLINT(5) NOT NULL,
-    `check` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `user_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `check`) VALUES
-(1, 'Edit account', 'user', 'edit', 2, 1, ''),
-(2, 'Delete your account', 'user', 'delete', 2, 2, 'return User\\Service\\Service::isDefaultUser() ? false : true;');
-
-CREATE TABLE IF NOT EXISTS `application_acl_resource_connection_setting` (
+CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
     `user_id` INT(10) UNSIGNED DEFAULT NULL,
-    `date_start` INT(10) UNSIGNED NOT NULL,
-    `date_end` INT(10) UNSIGNED NOT NULL,
-    `actions_limit` MEDIUMINT(5) UNSIGNED NOT NULL,
-    `actions_reset` MEDIUMINT(5) UNSIGNED NOT NULL,
+    `date_start` INT(10) UNSIGNED DEFAULT NULL,
+    `date_end` INT(10) UNSIGNED DEFAULT NULL,
+    `actions_limit` MEDIUMINT(5) UNSIGNED DEFAULT NULL,
+    `actions_reset` MEDIUMINT(5) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `setting` (`connection_id`, `user_id`),
-    FOREIGN KEY (`connection_id`) REFERENCES `application_acl_resource_connection`(`id`)
+    FOREIGN KEY (`connection_id`) REFERENCES `acl_resource_connection`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `user_list`(`user_id`)
@@ -644,7 +651,7 @@ CREATE TABLE IF NOT EXISTS `application_acl_resource_connection_setting` (
       ON DELETE CASCADE  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `application_acl_resource_action_track` (
+CREATE TABLE IF NOT EXISTS `acl_resource_action_track` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
     `user_id` INT(10) UNSIGNED DEFAULT NULL,
@@ -652,7 +659,7 @@ CREATE TABLE IF NOT EXISTS `application_acl_resource_action_track` (
     `actions_last_reset` INT(10) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     KEY `actions_last_reset` (`actions_last_reset`),
-    FOREIGN KEY (`connection_id`) REFERENCES `application_acl_resource_connection`(`id`)
+    FOREIGN KEY (`connection_id`) REFERENCES `acl_resource_connection`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `user_list`(`user_id`)
@@ -672,38 +679,39 @@ CREATE TABLE IF NOT EXISTS `application_setting_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
-(1,  'Main settings', 1),
-(2,  'Cache', 1),
-(3,  'Captcha', 1),
-(4,  'Calendar', 1),
-(5,  'SEO', 1),
-(6,  'Pagination', 1),
-(7,  'Email notifications settings', 1),
-(8,  'Main settings', 2),
-(9,  'Email notifications', 2),
-(10, 'Avatar', 2),
-(11, 'Errors logging', 1),
+(1,   'Main settings', 1),
+(2,   'Cache', 1),
+(3,   'Captcha', 1),
+(4,   'Calendar', 1),
+(5,   'SEO', 1),
+(6,   'Pagination', 1),
+(7,   'Email notifications settings', 1),
+(8,   'Main settings', 2),
+(9,   'Email notifications', 2),
+(10,  'Avatar', 2),
+(11,  'Errors logging', 1),
 (12,  'Main settings', 4),
 (14,  'Filters', 4),
 (15,  'Embedded mode', 4),
 (16,  'View images', 4),
-(17,  'Localization', 1);
+(17,  'Localization', 1),
+(18,  'Main settings', 5);
 
 CREATE TABLE IF NOT EXISTS `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
-    `label` VARCHAR(150) NOT NULL,
-    `description` VARCHAR(255) NOT NULL,
-    `description_helper` TEXT NOT NULL,
+    `label` VARCHAR(150) DEFAULT NULL,
+    `description` VARCHAR(255) DEFAULT NULL,
+    `description_helper` TEXT DEFAULT NULL,
     `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
-    `required` TINYINT(1) UNSIGNED NOT NULL,
-    `order` SMALLINT(5) NOT NULL,
+    `required` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `language_sensitive` TINYINT(1) NOT NULL DEFAULT '1',
-    `values_provider` VARCHAR(255) NOT NULL,
-    `check` TEXT NOT NULL,
-    `check_message` VARCHAR(150) NOT NULL,
+    `language_sensitive` TINYINT(1) NULL DEFAULT '1',
+    `values_provider` VARCHAR(255) DEFAULT NULL,
+    `check` TEXT DEFAULT NULL,
+    `check_message` VARCHAR(150) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`),
     FOREIGN KEY (`category`) REFERENCES `application_setting_category`(`id`)
@@ -715,80 +723,81 @@ CREATE TABLE IF NOT EXISTS `application_setting` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES
-(1,  'application_generator', '', '', 'system', 0, 0, NULL, 1, 0, '', '', ''),
-(2,  'application_generator_version', '', '', 'system', 0, 0, NULL, 1, 0, '', '', ''),
-(3,  'application_site_name', 'Site name', 'This value will be visible in a browser title', 'text', 1, 1, 1, 1, 1, '', '', ''),
-(4,  'application_site_email', 'Site email', '', 'email', 1, 1, 1, 1, 0, '', '', ''),
-(5,  'application_meta_description', 'Meta description', '', 'text', 1, 3, 5, 1, 1, '', '', ''),
-(6,  'application_meta_keywords', 'Meta keywords', '', 'text', 1, 4, 5, 1, 1, '', '', ''),
-(7,  'application_js_cache', 'Enable js cache', '', 'checkbox', 0, 5, 2, 1, 0, '', '', ''),
-(8,  'application_js_cache_gzip', 'Enable gzip for js cache', '', 'checkbox', 0, 6, 2, 1, 0, '', '', ''),
-(9,  'application_css_cache', 'Enable css cache', '', 'checkbox', 0, 7, 2, 1, 0, '', '', ''),
-(10, 'application_css_cache_gzip', 'Enable gzip for css cache', '', 'checkbox', 0, 8, 2, 1, 0, '', '', ''),
-(11, 'application_captcha_width', 'Captcha width', '', 'integer', 1, 9, 3, 1, 0, '', '', ''),
-(12, 'application_captcha_height', 'Captcha height', '', 'integer', 1, 10, 3, 1, 0, '', '', ''),
-(13, 'application_captcha_dot_noise', 'Captcha dot noise level', '', 'integer', 1, 11, 3, 1, 0, '', '', ''),
-(14, 'application_captcha_line_noise', 'Captcha line noise level', '', 'integer', 1, 12, 3, 1, 0, '', '', ''),
-(15, 'application_calendar_min_year', 'Min year in calendar', '', 'integer', 1, 1, 4, 1, 0, '', 'return intval(''__value__'') >= 1902 and intval(''__value__'') <= 2037;', 'Year should be in range from 1902 to 2037'),
-(16, 'application_calendar_max_year', 'Max year in calendar', '', 'integer', 1, 2, 4, 1, 0, '', 'return intval(''__value__'') >= 1902 and intval(''__value__'') <= 2037;', 'Year should be in range from 1902 to 2037'),
-(17, 'application_default_date_format', 'Default date format', '', 'select', 1, 3, 1, 1, 1, '', '', ''),
-(18, 'application_default_time_zone', 'Default time zone', '', 'select', 1, 4, 1, 1, 0, '$timeZones = Application\\Service\\Service::getTimeZones(); return array_combine($timeZones, $timeZones);', '', ''),
-(19, 'application_per_page', 'Default per page value', '', 'integer', 1, 1, 6, 1, 0, '', 'return intval(''__value__'') > 0;', 'Default per page value should be greater than 0'),
-(20, 'application_min_per_page_range', 'Min per page range', '', 'integer', 1, 2, 6, 1, 0, '', 'return intval(''__value__'') > 0;', 'Min per page range should be greater than 0'),
-(21, 'application_max_per_page_range', 'Max per page range', '', 'integer', 1, 3, 6, 1, 0, '', 'return intval(''__value__'') > 0;', 'Max per page range should be greater than 0'),
-(22, 'application_per_page_step', 'Per page step', '', 'integer', 1, 4, 6, 1, 0, '', 'return intval(''__value__'') > 0;', 'Per page step should be greater than 0'),
-(23, 'application_page_range', 'Page range', '', 'integer', 1, 5, 6, 1, 0, '', 'return intval(''__value__'') > 0;', 'Page range should be greater than 0'),
-(24, 'application_dynamic_cache', 'Dynamic cache engine', 'It used for caching  template paths, language translations, etc', 'select', 1, 1, 2, 1, 0, '', 'switch(''__value__'') {\r\n    case ''xcache'' :\r\n        return extension_loaded(''xcache'');\r\n    case ''wincache'' :\r\n        return extension_loaded(''wincache'');\r\n    case ''apc'' :\r\n        return (version_compare(''3.1.6'', phpversion(''apc'')) > 0) || !ini_get(''apc.enabled'') ? false : true;\r\n    default :\r\n        $v = (string) phpversion(''memcached'');\r\n        $extMemcachedMajorVersion = ($v !== '''') ? (int) $v[0] : 0;\r\n\r\n        return $extMemcachedMajorVersion < 1 ? false : true;\r\n}', 'Extension is not loaded'),
-(25, 'application_dynamic_cache_life_time', 'Dynamic cache life time', '', 'integer', 1, 2, 2, 1, 0, '', '', ''),
-(26, 'application_memcache_host', 'Memcache host', '', 'text', 1, 3, 2, 1, 0, '', '', ''),
-(27, 'application_memcache_port', 'Memcache port', '', 'integer', 1, 4, 2, 1, 0, '', '', ''),
-(28, 'notification_from', 'From', '', 'email', 1, 1, 7, 1, 0, '', '', ''),
-(29, 'use_smtp', 'Use SMTP', '', 'checkbox', 0, 2, 7, 1, 0, '', '', ''),
-(30, 'smtp_host', 'SMTP host', '', 'text', 0, 3, 7, 1, 0, '', '', ''),
-(31, 'smtp_port', 'SMTP port', '', 'integer', 0, 4, 7, 1, 0, '', '', ''),
-(32, 'smtp_user', 'SMTP user', '', 'text', 0, 5, 7, 1, 0, '', '', ''),
-(33, 'smtp_password', 'SMTP password', '', 'text', 0, 6, 7, 1, 0, '', '', ''),
-(34, 'user_nickname_min', 'User\'s min nickname length', '', 'integer', 1, 1, 8, 2, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(35, 'user_nickname_max', 'User\'s max nickname length', '', 'integer', 1, 2, 8, 2, 0, '', 'return intval(''__value__'') > 0 && intval(''__value__'') <= 40;', 'Nickname should be greater than 0 and less or equal than 40'),
-(36, 'user_approved_title', 'User approved title', 'An account approve notification', 'notification_title', 1, 1, 9, 2, 1, '', '', ''),
-(37, 'user_approved_message', 'User approved message', '', 'notification_message', 1, 2, 9, 2, 1, '', '', ''),
-(38, 'user_disapproved_title', 'User disapproved title', 'An account disapprove notification', 'notification_title', 1, 3, 9, 2, 1, '', '', ''),
-(39, 'user_disapproved_message', 'User disapproved message', '', 'notification_message', 1, 4, 9, 2, 1, '', '', ''),
-(40, 'user_deleted_title', 'User deleted title', 'An account delete notification', 'notification_title', 1, 6, 9, 2, 1, '', '', ''),
-(41, 'user_deleted_message', 'User deleted message', '', 'notification_message', 1, 7, 9, 2, 1, '', '', ''),
-(42, 'user_allow_register', 'Allow users register', '', 'checkbox', 0, 3, 8, 2, 0, '', '', ''),
-(43, 'user_auto_confirm', 'Users auto confirm registrations', '', 'checkbox', 0, 4, 8, 2, 0, '', '', ''),
-(44, 'user_email_confirmation_title', 'Email confirmation title', 'An account confirm email notification', 'notification_title', 1, 8, 9, 2, 1, '', '', ''),
-(45, 'user_email_confirmation_message', 'Email confirmation message', '', 'notification_message', 1, 9, 9, 2, 1, '', '', ''),
-(46, 'user_registered_send', 'Send notification about users registrations', '', 'checkbox', 0, 10, 9, 2, 0, '', '', ''),
-(47, 'user_registered_title', 'Register a new user title', 'An account register email notification', 'notification_title', 1, 11, 9, 2, 1, '', '', ''),
-(48, 'user_registered_message', 'Register a new user message', '', 'notification_message', 1, 12, 9, 2, 1, '', '', ''),
-(49, 'user_deleted_send', 'Send notification about users deletions', '', 'checkbox', 0, 5, 9, 2, 0, '', '', ''),
-(50, 'user_reset_password_title', 'Reset password confirmation title', 'An account confirm reset password notification', 'notification_title', 1, 13, 9, 2, 1, '', '', ''),
-(51, 'user_reset_password_message', 'Reset password confirmation message', '', 'notification_message', 1, 14, 9, 2, 1, '', '', ''),
-(52, 'user_password_reseted_title', 'Password reseted title', 'An account password reseted notification', 'notification_title', 1, 15, 9, 2, 1, '', '', ''),
-(53, 'user_password_reseted_message', 'Password reseted message', '', 'notification_message', 1, 16, 9, 2, 1, '', '', ''),
-(54, 'user_avatar_width', 'Avatar width', '', 'integer', 1, 1, 10, 2, 0, '', '', ''),
-(55, 'user_avatar_height', 'Avatar height', '', 'integer', 1, 2, 10, 2, 0, '', '', ''),
-(56, 'user_thumbnail_width', 'Thumbnail width', '', 'integer', 1, 3, 10, 2, 0, '', '', ''),
-(57, 'user_thumbnail_height', 'Thumbnail height', '', 'integer', 1, 4, 10, 2, 0, '', '', ''),
-(58, 'application_errors_notification_email', 'Errors notification email', '', 'email', 0, 1, 11, 1, 0, '', '', ''),
-(59, 'application_error_notification_title', 'Error notification title', 'An error email notification', 'notification_title', 1, 2, 11, 1, 1, '', '', ''),
-(60, 'application_error_notification_message', 'Error notification message', '', 'notification_message', 1, 3, 11, 1, 1, '', '', ''),
-(61, 'file_manager_allowed_extensions', 'Allowed file extensions', 'You should separate values by a comma', 'textarea', 1, 1, 12, 4, 0, '', '', ''),
-(62, 'file_manager_allowed_size', 'Allowed file size', 'You should enter size in bytes', 'integer', 1, 2, 12, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(64, 'file_manager_file_name_length', 'The maximum length of the file name and directory', '', 'integer', 1, 2, 12, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(65, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. You should separate values by a comma', 'textarea', 1, 1, 14, 4, 0, '', '', ''),
-(66, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. You should separate values by a comma', 'textarea', 1, 2, 14, 4, 0, '', '', ''),
-(67, 'file_manager_window_width', 'Window width', '', 'integer', 1, 1, 15, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(68, 'file_manager_window_height', 'Window height', '', 'integer', 1, 2, 15, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(69, 'file_manager_window_image_width', 'Window width', '', 'integer', 1, 1, 16, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(70, 'file_manager_window_image_height', 'Window height', '', 'integer', 1, 2, 16, 4, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 5, 8, 2, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, 0, '', 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(73, 'user_role_edited_send', 'Send notifications about editing users roles', '', 'checkbox', 0, 17, 9, 2, 0, '', '', ''),
-(74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, '', '', ''),
-(75, 'user_role_edited_message', 'User role edited message', '', 'notification_message', 1, 18, 9, 2, 1, '', '', '');
+(1,  'application_generator', NULL, NULL, 'system', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL),
+(2,  'application_generator_version', NULL, NULL, 'system', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL),
+(3,  'application_site_name', 'Site name', 'This value will be visible in a browser title', 'text', 1, 1, 1, 1, 1, NULL, NULL, NULL),
+(4,  'application_site_email', 'Site email', NULL, 'email', 1, 1, 1, 1, NULL, NULL, NULL, NULL),
+(5,  'application_meta_description', 'Meta description', NULL, 'text', 1, 3, 5, 1, 1, NULL, NULL, NULL),
+(6,  'application_meta_keywords', 'Meta keywords', NULL, 'text', 1, 4, 5, 1, 1, NULL, NULL, NULL),
+(7,  'application_js_cache', 'Enable js cache', NULL, 'checkbox', NULL, 5, 2, 1, NULL, NULL, NULL, NULL),
+(8,  'application_js_cache_gzip', 'Enable gzip for js cache', NULL, 'checkbox', NULL, 6, 2, 1, NULL, NULL, NULL, NULL),
+(9,  'application_css_cache', 'Enable css cache', NULL, 'checkbox', NULL, 7, 2, 1, NULL, NULL, NULL, NULL),
+(10, 'application_css_cache_gzip', 'Enable gzip for css cache', NULL, 'checkbox', NULL, 8, 2, 1, NULL, NULL, NULL, NULL),
+(11, 'application_captcha_width', 'Captcha width', NULL, 'integer', 1, 9, 3, 1, NULL, NULL, NULL, NULL),
+(12, 'application_captcha_height', 'Captcha height', NULL, 'integer', 1, 10, 3, 1, NULL, NULL, NULL, NULL),
+(13, 'application_captcha_dot_noise', 'Captcha dot noise level', NULL, 'integer', 1, 11, 3, 1, NULL, NULL, NULL, NULL),
+(14, 'application_captcha_line_noise', 'Captcha line noise level', NULL, 'integer', 1, 12, 3, 1, NULL, NULL, NULL, NULL),
+(15, 'application_calendar_min_year', 'Min year in calendar', NULL, 'integer', 1, 1, 4, 1, NULL, NULL, 'return intval(''__value__'') >= 1902 and intval(''__value__'') <= 2037;', 'Year should be in range from 1902 to 2037'),
+(16, 'application_calendar_max_year', 'Max year in calendar', NULL, 'integer', 1, 2, 4, 1, NULL, NULL, 'return intval(''__value__'') >= 1902 and intval(''__value__'') <= 2037;', 'Year should be in range from 1902 to 2037'),
+(17, 'application_default_date_format', 'Default date format', NULL, 'select', 1, 3, 1, 1, 1, NULL, NULL, NULL),
+(18, 'application_default_time_zone', 'Default time zone', NULL, 'select', 1, 4, 1, 1, NULL, '$timeZones = Application\\Service\\ApplicationTimeZone::getTimeZones(); return array_combine($timeZones, $timeZones);', NULL, NULL),
+(19, 'application_per_page', 'Default per page value', NULL, 'integer', 1, 1, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Default per page value should be greater than 0'),
+(20, 'application_min_per_page_range', 'Min per page range', NULL, 'integer', 1, 2, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Min per page range should be greater than 0'),
+(21, 'application_max_per_page_range', 'Max per page range', NULL, 'integer', 1, 3, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Max per page range should be greater than 0'),
+(22, 'application_per_page_step', 'Per page step', NULL, 'integer', 1, 4, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Per page step should be greater than 0'),
+(23, 'application_page_range', 'Page range', NULL, 'integer', 1, 5, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Page range should be greater than 0'),
+(24, 'application_dynamic_cache', 'Dynamic cache engine', 'It used for caching  template paths, language translations, etc', 'select', 1, 1, 2, 1, NULL, NULL, 'switch(''__value__'') {\r\n    case ''xcache'' :\r\n        return extension_loaded(''xcache'');\r\n    case ''wincache'' :\r\n        return extension_loaded(''wincache'');\r\n    case ''apc'' :\r\n        return (version_compare(''3.1.6'', phpversion(''apc'')) > 0) || !ini_get(''apc.enabled'') ? false : true;\r\n    default :\r\n        $v = (string) phpversion(''memcached'');\r\n        $extMemcachedMajorVersion = ($v !== '''') ? (int) $v[0] : 0;\r\n\r\n        return $extMemcachedMajorVersion < 1 ? false : true;\r\n}', 'Extension is not loaded'),
+(25, 'application_dynamic_cache_life_time', 'Dynamic cache life time', NULL, 'integer', 1, 2, 2, 1, NULL, NULL, NULL, NULL),
+(26, 'application_memcache_host', 'Memcache host', NULL, 'text', 1, 3, 2, 1, NULL, NULL, NULL, NULL),
+(27, 'application_memcache_port', 'Memcache port', NULL, 'integer', 1, 4, 2, 1, NULL, NULL, NULL, NULL),
+(28, 'application_notification_from', 'From', NULL, 'email', 1, 1, 7, 1, NULL, NULL, NULL, NULL),
+(29, 'application_use_smtp', 'Use SMTP', NULL, 'checkbox', NULL, 2, 7, 1, NULL, NULL, NULL, NULL),
+(30, 'application_smtp_host', 'SMTP host', NULL, 'text', NULL, 3, 7, 1, NULL, NULL, NULL, NULL),
+(31, 'application_smtp_port', 'SMTP port', NULL, 'integer', NULL, 4, 7, 1, NULL, NULL, NULL, NULL),
+(32, 'application_smtp_user', 'SMTP user', NULL, 'text', NULL, 5, 7, 1, NULL, NULL, NULL, NULL),
+(33, 'application_smtp_password', 'SMTP password', NULL, 'text', NULL, 6, 7, 1, NULL, NULL, NULL, NULL),
+(34, 'user_nickname_min', 'User\'s min nickname length', NULL, 'integer', 1, 1, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(35, 'user_nickname_max', 'User\'s max nickname length', NULL, 'integer', 1, 2, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0 && intval(''__value__'') <= 40;', 'Nickname should be greater than 0 and less or equal than 40'),
+(36, 'user_approved_title', 'User approved title', 'An account approve notification', 'notification_title', 1, 1, 9, 2, 1, NULL, NULL, NULL),
+(37, 'user_approved_message', 'User approved message', NULL, 'notification_message', 1, 2, 9, 2, 1, NULL, NULL, NULL),
+(38, 'user_disapproved_title', 'User disapproved title', 'An account disapprove notification', 'notification_title', 1, 3, 9, 2, 1, NULL, NULL, NULL),
+(39, 'user_disapproved_message', 'User disapproved message', NULL, 'notification_message', 1, 4, 9, 2, 1, NULL, NULL, NULL),
+(40, 'user_deleted_title', 'User deleted title', 'An account delete notification', 'notification_title', 1, 6, 9, 2, 1, NULL, NULL, NULL),
+(41, 'user_deleted_message', 'User deleted message', NULL, 'notification_message', 1, 7, 9, 2, 1, NULL, NULL, NULL),
+(42, 'user_allow_register', 'Allow users register', NULL, 'checkbox', NULL, 3, 8, 2, NULL, NULL, NULL, NULL),
+(43, 'user_auto_confirm', 'Users auto confirm registrations', NULL, 'checkbox', NULL, 4, 8, 2, NULL, NULL, NULL, NULL),
+(44, 'user_email_confirmation_title', 'Email confirmation title', 'An account confirm email notification', 'notification_title', 1, 8, 9, 2, 1, NULL, NULL, NULL),
+(45, 'user_email_confirmation_message', 'Email confirmation message', NULL, 'notification_message', 1, 9, 9, 2, 1, NULL, NULL, NULL),
+(46, 'user_registered_send', 'Send notification about users registrations', NULL, 'checkbox', NULL, 10, 9, 2, NULL, NULL, NULL, NULL),
+(47, 'user_registered_title', 'Register a new user title', 'An account register email notification', 'notification_title', 1, 11, 9, 2, 1, NULL, NULL, NULL),
+(48, 'user_registered_message', 'Register a new user message', NULL, 'notification_message', 1, 12, 9, 2, 1, NULL, NULL, NULL),
+(49, 'user_deleted_send', 'Send notification about users deletions', NULL, 'checkbox', NULL, 5, 9, 2, NULL, NULL, NULL, NULL),
+(50, 'user_reset_password_title', 'Reset password confirmation title', 'An account confirm reset password notification', 'notification_title', 1, 13, 9, 2, 1, NULL, NULL, NULL),
+(51, 'user_reset_password_message', 'Reset password confirmation message', NULL, 'notification_message', 1, 14, 9, 2, 1, NULL, NULL, NULL),
+(52, 'user_password_reseted_title', 'Password reseted title', 'An account password reseted notification', 'notification_title', 1, 15, 9, 2, 1, NULL, NULL, NULL),
+(53, 'user_password_reseted_message', 'Password reseted message', NULL, 'notification_message', 1, 16, 9, 2, 1, NULL, NULL, NULL),
+(54, 'user_avatar_width', 'Avatar width', NULL, 'integer', 1, 1, 10, 2, NULL, NULL, NULL, NULL),
+(55, 'user_avatar_height', 'Avatar height', NULL, 'integer', 1, 2, 10, 2, NULL, NULL, NULL, NULL),
+(56, 'user_thumbnail_width', 'Thumbnail width', NULL, 'integer', 1, 3, 10, 2, NULL, NULL, NULL, NULL),
+(57, 'user_thumbnail_height', 'Thumbnail height', NULL, 'integer', 1, 4, 10, 2, NULL, NULL, NULL, NULL),
+(58, 'application_errors_notification_email', 'Errors notification email', NULL, 'email', NULL, 1, 11, 1, NULL, NULL, NULL, NULL),
+(59, 'application_error_notification_title', 'Error notification title', 'An error email notification', 'notification_title', 1, 2, 11, 1, 1, NULL, NULL, NULL),
+(60, 'application_error_notification_message', 'Error notification message', NULL, 'notification_message', 1, 3, 11, 1, 1, NULL, NULL, NULL),
+(61, 'file_manager_allowed_extensions', 'Allowed file extensions', 'You should separate values by a comma', 'textarea', 1, 1, 12, 4, NULL, NULL, NULL, NULL),
+(62, 'file_manager_allowed_size', 'Allowed file size', 'You should enter size in bytes', 'integer', 1, 2, 12, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(64, 'file_manager_file_name_length', 'The maximum length of the file name and directory', NULL, 'integer', 1, 2, 12, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(65, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. You should separate values by a comma', 'textarea', 1, 1, 14, 4, NULL, NULL, NULL, NULL),
+(66, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. You should separate values by a comma', 'textarea', 1, 2, 14, 4, NULL, NULL, NULL, NULL),
+(67, 'file_manager_window_width', 'Window width', NULL, 'integer', 1, 1, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(68, 'file_manager_window_height', 'Window height', NULL, 'integer', 1, 2, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(69, 'file_manager_window_image_width', 'Window width', NULL, 'integer', 1, 1, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(70, 'file_manager_window_image_height', 'Window height', NULL, 'integer', 1, 2, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 5, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(73, 'user_role_edited_send', 'Send notifications about editing users roles', NULL, 'checkbox', NULL, 17, 9, 2, NULL, NULL, NULL, NULL),
+(74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, NULL, NULL, NULL),
+(75, 'user_role_edited_message', 'User role edited message', NULL, 'notification_message', 1, 18, 9, 2, 1, NULL, NULL, NULL),
+(76, 'page_footer_menu_max_rows', 'Max rows in footer menu per column', NULL, 'integer', 1, 1, 18, 5, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE IF NOT EXISTS `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -800,16 +809,16 @@ CREATE TABLE IF NOT EXISTS `application_setting_value` (
     FOREIGN KEY (`setting_id`) REFERENCES `application_setting`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`language`) REFERENCES `application_localization`(`language`)
+    FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (1,  1,  'Dream CMS', NULL),
-(2,  2,  '1.0.0', NULL),
-(3,  3,  'Dream CMS demo site', NULL),
-(4,  4,  'stuff@mysite.com', NULL),
+(2,  2,  '2.0.0', NULL),
+(3,  3,  'Dream CMS', NULL),
+(4,  4,  'info@mysite.com', NULL),
 (5,  5,  'Dream CMS', NULL),
 (6,  6,  'php,dream cms,zend framework2', NULL),
 (7,  7,  '1', NULL),
@@ -891,7 +900,8 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (84, 74, 'Your role was edited', NULL),
 (85, 74, 'Ваша роль была отредактирована', 'ru'),
 (86, 75, '<p><b>Dear __RealName__</b>,</p>\r\n<p>Now your role on the site is: <b>__Role__</b></p>', NULL),
-(87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru');
+(87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru'),
+(88, 76, '5', NULL);
 
 CREATE TABLE IF NOT EXISTS `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -914,7 +924,7 @@ INSERT INTO `application_setting_predefined_value` (`setting_id`, `value`) VALUE
 
 CREATE TABLE IF NOT EXISTS `application_event` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `description` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`),
@@ -925,35 +935,44 @@ CREATE TABLE IF NOT EXISTS `application_event` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
-(1,  'get_localizations_via_xmlrpc', 1, 'Event - Getting localizations via XmlRpc'),
-(2,  'login_user', 2, 'Event - Users sign in'),
-(3,  'login_user_failed', 2, 'Event - Users logins failed'),
-(4,  'logout_user', 2, 'Event - Users sign out'),
-(5,  'get_user_info_via_xmlrpc', 2, 'Event - Getting user\'s info via XmlRpc'),
-(6,  'set_user_timezone_via_xmlrpc', 2, 'Event - Setting users timezones via XmlRpc'),
-(7,  'change_settings', 1, 'Event - Editing settings'),
-(8,  'delete_acl_role', 1, 'Event - Deleting ACL roles'),
-(9,  'add_acl_role', 1, 'Event - Adding ACL roles'),
-(10, 'edit_acl_role', 1, 'Event - Editing ACL roles'),
-(11, 'allow_acl_resource', 1, 'Event - Allowing ACL resources'),
-(12, 'disallow_acl_resource', 1, 'Event - Disallowing ACL resources'),
-(13, 'edit_acl_resource_settings', 1, 'Event - Editing ACL resources settings'),
-(14, 'clear_cache', 1, 'Event - Clearing site\'s cache'),
-(15, 'disapprove_user', 2, 'Event - Disapproving users'),
-(16, 'approve_user', 2, 'Event - Approving users'),
-(17, 'delete_user', 2, 'Event - Deleting users'),
-(18, 'add_user', 2, 'Event - Adding users'),
-(19, 'edit_user', 2, 'Event - Editing users'),
-(20, 'send_email_notification', 1, 'Event - Sending email notifications'),
-(22, 'reset_user_password', 2, 'Event - Resetting users passwords'),
-(23, 'reset_user_password_request', 2, 'Event - Requesting reset users passwords'),
-(24, 'edit_user_role', 2, 'Event - Editing users roles'),
-(25, 'delete_file', 4, 'Event - Deleting files'),
-(26, 'add_directory', 4, 'Event - Adding directories'),
-(27, 'delete_directory', 4, 'Event - Deleting directories'),
-(28, 'add_file', 4, 'Event - Adding files'),
-(29, 'edit_file', 4, 'Event - Editing files'),
-(30, 'edit_directory', 4, 'Event - Editing directories');
+(1,  'localization_get_localizations_via_xmlrpc', 7, 'Event - Getting localizations via XmlRpc'),
+(2,  'user_login', 2, 'Event - Users sign in'),
+(3,  'user_login_failed', 2, 'Event - Users logins failed'),
+(4,  'user_logout', 2, 'Event - Users sign out'),
+(5,  'user_get_info_via_xmlrpc', 2, 'Event - Getting user\'s info via XmlRpc'),
+(6,  'user_set_timezone_via_xmlrpc', 2, 'Event - Setting users timezones via XmlRpc'),
+(7,  'application_change_settings', 1, 'Event - Editing settings'),
+(8,  'acl_delete_role', 1, 'Event - Deleting ACL roles'),
+(9,  'acl_add_role', 1, 'Event - Adding ACL roles'),
+(10, 'acl_edit_role', 1, 'Event - Editing ACL roles'),
+(11, 'acl_allow_resource', 1, 'Event - Allowing ACL resources'),
+(12, 'acl_disallow_resource', 1, 'Event - Disallowing ACL resources'),
+(13, 'acl_edit_resource_settings', 1, 'Event - Editing ACL resources settings'),
+(14, 'application_clear_cache', 1, 'Event - Clearing site\'s cache'),
+(15, 'user_disapprove', 2, 'Event - Disapproving users'),
+(16, 'user_approve', 2, 'Event - Approving users'),
+(17, 'user_delete', 2, 'Event - Deleting users'),
+(18, 'user_add', 2, 'Event - Adding users'),
+(19, 'user_edit', 2, 'Event - Editing users'),
+(20, 'application_send_email_notification', 1, 'Event - Sending email notifications'),
+(21, 'user_reset_password', 2, 'Event - Resetting users passwords'),
+(22, 'user_reset_password_request', 2, 'Event - Requesting reset users passwords'),
+(23, 'user_edit_role', 2, 'Event - Editing users roles'),
+(24, 'file_manager_delete_file', 4, 'Event - Deleting files'),
+(25, 'file_manager_add_directory', 4, 'Event - Adding directories'),
+(26, 'file_manager_delete_directory', 4, 'Event - Deleting directories'),
+(27, 'file_manager_add_file', 4, 'Event - Adding files'),
+(28, 'file_manager_edit_file', 4, 'Event - Editing files'),
+(29, 'file_manager_edit_directory', 4, 'Event - Editing directories'),
+(30, 'page_show', 5, 'Event - Showing pages'),
+(31, 'user_get_info', 2, 'Event - Getting user\'s info'),
+(32, 'page_delete', 5, 'Event - Deleting pages'),
+(33, 'page_add', 5, 'Event - Adding pages'),
+(34, 'page_edit', 5, 'Event - Editing pages'),
+(35, 'page_widget_add', 5, 'Event - Adding widgets'),
+(36, 'page_widget_change_position', 5, 'Event - Changing widgets positions'),
+(37, 'page_widget_delete', 5, 'Event - Deleting widgets'),
+(38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -969,7 +988,8 @@ CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
 
 INSERT INTO `application_admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'System', 1, 'system_menu.png'),
-(2, 'Modules', 1, 'module_menu.png');
+(2, 'Pages', 5, 'page_menu.png'),
+(3, 'Modules', 1, 'module_menu.png');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu_category` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -985,9 +1005,10 @@ CREATE TABLE IF NOT EXISTS `application_admin_menu_category` (
 
 INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'Site settings', 1, 'setting_menu_item.png'),
-(2, 'Access Control List', 1, 'acl_menu_item.png'),
+(2, 'Access Control List', 8, 'acl_menu_item.png'),
 (3, 'Users', 2, 'user_group_menu_item.png'),
-(4, 'Files manager', 4, 'file_manager_menu_item.png');
+(4, 'Files manager', 4, 'file_manager_menu_item.png'),
+(5, 'Pages management', 5, 'page_menu_item.png');
 
 CREATE TABLE IF NOT EXISTS `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -995,7 +1016,7 @@ CREATE TABLE IF NOT EXISTS `application_admin_menu` (
     `controller` VARCHAR(50) NOT NULL,
     `action` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `order` SMALLINT(5) NOT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED NOT NULL,
     `part` SMALLINT(5) UNSIGNED NOT NULL,
     `icon` VARCHAR(100) NOT NULL,
@@ -1016,18 +1037,480 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
 (3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
 (4, 'List of users', 'users-administration', 'list', 2, 4, 3, 1),
-(5, 'Settings', 'users-administration', 'settings', 2, 5, 3, 1),
+(5, 'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
 (6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
-(7, 'Settings', 'files-manager-administration', 'settings', 4, 7, 4, 1);
+(7, 'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
+(8, 'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
+(9, 'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2);
 
-CREATE TABLE IF NOT EXISTS `application_injection` (
+CREATE TABLE IF NOT EXISTS `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `position` ENUM('head', 'body','footer', 'before-menu', 'after-menu') NOT NULL,
-    `patrial` VARCHAR(150) NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_position` (`id`, `name`) VALUES
+(1, 'head'),
+(2, 'body'),
+(3, 'footer'),
+(4, 'content-left'),
+(5, 'content-right'),
+(6, 'content-top'),
+(7, 'content-bottom'),
+(8, 'content-middle'),
+(9, 'logo');
+
+CREATE TABLE IF NOT EXISTS `page_layout` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) NOT NULL,
+    `title` VARCHAR(150) NOT NULL,
+    `default_position` SMALLINT(5) UNSIGNED NOT NULL,
+    `image` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`default_position`) REFERENCES `page_widget_position`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_layout` (`id`, `name`, `title`, `default_position`, `image`) VALUES
+(1,  'layout-1-column', '1 column', 8, 'layout-1-column.png'),
+(2,  'layout-2-columns-l33-r66', '2 columns (left 33%, right 66%)', 4, 'layout-2-columns-l33-r66.png'),
+(3,  'layout-2-columns-l66-r33', '2 columns (left 66%, right 33%)', 4, 'layout-2-columns-l66-r33.png'),
+(4,  'layout-2-columns-l50-r50', '2 columns (left 50%, right 50%)', 4, 'layout-2-columns-l50-r50.png'),
+(5,  'layout-3-columns-l33-m33-r33', '3 columns (left 33%, middle 33%, right 33%)', 4, 'layout-3-columns-l33-m33-r33.png'),
+(6,  'layout-top-area-below-2-columns-l33-r66', 'top area and 2 columns below (left 33%, right 66%)', 4, 'layout-top-area-below-2-columns-l33-r66.png'),
+(7,  'layout-top-area-below-2-columns-l66-r33', 'top area and 2 columns below (left 66%, right 33%)', 4, 'layout-top-area-below-2-columns-l66-r33.png'),
+(8,  'layout-top-area-below-2-columns-l50-r50', 'top area and 2 columns below (left 50%, right 50%)', 4, 'layout-top-area-below-2-columns-l50-r50.png'),
+(9,  'layout-top-area-below-3-columns-l33-m33-r33', 'top area and 3 columns below (left 33%, middle 33%, right 33%)', 4, 'layout-top-area-below-3-columns-l33-m33-r33.png'),
+(10, 'layout-top-bottom-areas-between-2-columns-l50-r50', 'top and bottom areas and 2 columns between them (left 50%, right 50%)', 4, 'layout-top-bottom-areas-between-2-columns-l50-r50.png'),
+(11, 'layout-2-columns-l50-r50-below-bottom-area', '2 columns (left 50%, right 50%) below bottom area', 4, 'layout-2-columns-l50-r50-below-bottom-area.png');
+
+CREATE TABLE IF NOT EXISTS `page_widget_position_connection` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `position_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `layout_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`position_id`) REFERENCES `page_widget_position`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`layout_id`) REFERENCES `page_layout`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_position_connection` (`id`, `position_id`, `layout_id`) VALUES
+(1,  8, 1),
+(2,  4, 2),
+(3,  5, 2),
+(4,  4, 3),
+(5,  5, 3),
+(6,  4, 4),
+(7,  5, 4),
+(8,  4, 5),
+(9,  8, 5),
+(10, 5, 5),
+(11, 4, 6),
+(12, 5, 6),
+(13, 6, 6),
+(14, 4, 7),
+(15, 5, 7),
+(16, 6, 7),
+(17, 4, 8),
+(18, 5, 8),
+(19, 6, 8),
+(20, 4, 9),
+(21, 8, 9),
+(22, 5, 9),
+(23, 6, 9),
+(24, 4, 10),
+(25, 5, 10),
+(26, 6, 10),
+(27, 7, 10),
+(28, 4, 11),
+(29, 5, 11),
+(30, 7, 11);
+
+CREATE TABLE IF NOT EXISTS `page_widget` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `order` SMALLINT(5) NOT NULL,
+    `type` ENUM('system','public') NOT NULL,
+    `description` VARCHAR(100) NOT NULL,
+    `duplicate` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`) VALUES
+(1,  'pageHtmlWidget', 5, 'public', 'Html', 1, NULL),
+(2,  'userLoginWidget', 2, 'public', 'Login', NULL, 1),
+(3,  'userRegisterWidget', 2, 'public', 'Register', NULL, 1),
+(4,  'userActivateWidget', 2, 'public', 'User activate', NULL, 1),
+(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1),
+(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1),
+(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1),
+(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL),
+(9,  'userInfoWidget', 2, 'public', 'Account info', NULL, NULL),
+(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, NULL),
+(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1),
+(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1),
+(13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1),
+(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1);
+
+CREATE TABLE IF NOT EXISTS `page_system` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `slug` VARCHAR(100) NOT NULL,
+    `title` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `user_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
+    `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `footer_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
+    `layout` SMALLINT(5) UNSIGNED NOT NULL,
+    `privacy` VARCHAR(50) DEFAULT NULL,
+    `disable_seo` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `xml_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `disable_xml_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `pages_provider` VARCHAR(50) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`slug`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`, `user_menu_order`, `disable_seo`, `xml_map`, `disable_xml_map`, `pages_provider`) VALUES
+(1,  'home', 'Home page', 5, NULL, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
+(2,  'login', 'Login', 2, NULL, 1, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
+(3,  'user-register', 'Register', 2, NULL, 1, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
+(4,  'user-forgot', 'Account recovery', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
+(5,  'user-activate', 'User activate', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL),
+(6,  'user-password-reset', 'Password reset', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL),
+(7,  'dashboard', 'User dashboard', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, NULL, 1, NULL),
+(8,  'user-delete', 'Delete your account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2, 1, NULL, 1, NULL),
+(9,  'sitemap', 'Sitemap', 5, NULL, 1, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
+(10, 'user', 'User profile', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, NULL, NULL, 1, NULL, 0, 1, NULL, NULL, 'User\\PageProvider\\UserPageProvider'),
+(11, 'user-edit', 'Edit account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, 1, NULL),
+(12, '404', '404 error', 5, NULL, NULL, 1, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, NULL, 1, NULL, 1, 0, 0, 1, NULL, 1, NULL);
+
+CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `depend_page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `page_depend` (`page_id`, `depend_page_id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system_page_depend` (`id`, `page_id`, `depend_page_id`) VALUES
+(1, 2, 1),
+(2, 3, 1),
+(3, 4, 1),
+(4, 4, 6),
+(5, 5, 1),
+(6, 6, 1),
+(7, 7, 1),
+(8, 8, 1),
+(9, 9, 1),
+(10, 10, 1),
+(11, 11, 1),
+(12, 12, 1);
+
+CREATE TABLE IF NOT EXISTS `page_system_widget_hidden` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system_widget_hidden` (`id`, `page_id`, `widget_id`) VALUES
+(1,   7,  2),
+(2,   7,  3),
+(3,   8,  2),
+(4,   8,  3),
+(5,   8,  13),
+(6,   8,  8),
+(7,   10,  13),
+(8,   11,  2),
+(9,   11,  3),
+(10,  6,  13),
+(11,  3,  13),
+(12,  4,  13),
+(13,  5,  2),
+(14,  5,  3),
+(15,  5,  13),
+(16,  2,  13),
+(17,  12,  13),
+(18,  12,  2),
+(19,  12,  3);
+
+CREATE TABLE IF NOT EXISTS `page_system_widget_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`, `order`) VALUES
+(1,  2,  2,  1),
+(2,  3,  3,  1),
+(3,  4,  5,  1),
+(4,  5,  4,  1),
+(5,  6,  6,  1),
+(6,  7,  11, 1),
+(7,  8,  7,  1),
+(8,  9,  8,  1),
+(9,  7,  12, 1),
+(10, 7,  14, 2),
+(11, 11, 13, 1),
+(12, 10, 9, 2),
+(13, 10, 10, 1);
+
+CREATE TABLE IF NOT EXISTS `page_widget_page_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_page_depend` (`id`, `page_id`, `widget_id`) VALUES
+(1, 5, 4),
+(2, 4, 5),
+(3, 6, 6),
+(4, 8, 7),
+(5, 10, 9),
+(6, 10, 10),
+(7, 7, 11),
+(8, 7, 12),
+(9, 7, 14);
+
+CREATE TABLE IF NOT EXISTS `page_widget_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `depend_widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `widget_depend` (`widget_id`, `depend_widget_id`),
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_structure` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `slug` VARCHAR(100) NOT NULL,
+    `title` VARCHAR(50) DEFAULT NULL,
+    `meta_description` VARCHAR(150) DEFAULT NULL,
+    `meta_keywords` VARCHAR(150) DEFAULT NULL,
+    `meta_robots` VARCHAR(50) DEFAULT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `user_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',
+    `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `xml_map` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `xml_map_update` ENUM('always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never') NOT NULL DEFAULT 'weekly',
+    `xml_map_priority` DECIMAL(2,1) NOT NULL DEFAULT '0.5',
+    `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `footer_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',
+    `active` TINYINT(1) UNSIGNED NULL  DEFAULT '1', 
+    `type` ENUM('system','custom') NOT NULL,
+    `language` CHAR(2) NOT NULL,
+    `layout` SMALLINT(5) UNSIGNED NOT NULL,
+    `redirect_url` VARCHAR(255) DEFAULT NULL,
+    `left_key` INT(10) NOT NULL DEFAULT '0',
+    `right_key` INT(10) NOT NULL DEFAULT '0',
+    `level` INT(10) NOT NULL DEFAULT '0',
+    `parent_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `system_page` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `date_edited` DATE DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `slug` (`slug`, `language`),
+    KEY `node` (`left_key`, `right_key`, `language`, `active`, `level`),
+    KEY `footer_menu` (`footer_menu`),
+    KEY `user_menu` (`user_menu`),
+    KEY `parent_id` (`language`, `parent_id`),
+    KEY `active` (`active`),
+    KEY `redirect_url` (`redirect_url`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`system_page`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_visibility` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `hidden` SMALLINT(5) UNSIGNED NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `page_id` (`page_id`, `hidden`),
+    FOREIGN KEY (`hidden`) REFERENCES `acl_role`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_widget_layout` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(30) NOT NULL,
+    `title` VARCHAR(50) NOT NULL,
+    `default` TINYINT(1) UNSIGNED NULL,
+    PRIMARY KEY (`id`),
+    KEY `default` (`default`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_layout` (`id`, `name`, `title`, `default`) VALUES
+(1, 'panel', 'Panel', 1);
+
+CREATE TABLE IF NOT EXISTS `page_widget_connection` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(50) DEFAULT NULL,
+    `page_id` SMALLINT(5) UNSIGNED NULL,
+    `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `position_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `layout` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `position` (`page_id`, `position_id`, `order`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_id`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`position_id`) REFERENCES `page_widget_position`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`layout`) REFERENCES `page_widget_layout`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_widget_setting_category` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL DEFAULT '',
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `category` (`name`, `module`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_setting_category` (`id`, `name`, `module`) VALUES
+(1,   'Main settings', 5);
+
+CREATE TABLE IF NOT EXISTS `page_widget_setting` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `widget` SMALLINT(5) UNSIGNED NOT NULL,
+    `label` VARCHAR(150) DEFAULT NULL,
+    `description` VARCHAR(255) DEFAULT NULL,
+    `description_helper` TEXT DEFAULT NULL,
+    `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea') NOT NULL,
+    `required` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `order` SMALLINT(5) NOT NULL DEFAULT '0',
+    `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `values_provider` VARCHAR(255) DEFAULT NULL,
+    `check` TEXT DEFAULT NULL,
+    `check_message` VARCHAR(150) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `name` (`name`, `widget`),
+    FOREIGN KEY (`category`) REFERENCES `page_widget_setting_category`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget`) REFERENCES `page_widget`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`) VALUES
+(1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1);
+
+CREATE TABLE IF NOT EXISTS `page_widget_setting_predefined_value` (
+    `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `value` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`setting_id`, `value`),
+    FOREIGN KEY (`setting_id`) REFERENCES `page_widget_setting`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_widget_setting_value` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `value` TEXT NOT NULL,
+    `widget_connection` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `setting` (`setting_id`, `widget_connection`),
+    FOREIGN KEY (`setting_id`) REFERENCES `page_widget_setting`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_connection`) REFERENCES `page_widget_connection`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `page_widget_visibility` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `widget_connection` SMALLINT(5) UNSIGNED NOT NULL,
+    `hidden` SMALLINT(5) UNSIGNED NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `widget` (`widget_connection`, `hidden`),
+    FOREIGN KEY (`hidden`) REFERENCES `acl_role`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_connection`) REFERENCES `page_widget_connection`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

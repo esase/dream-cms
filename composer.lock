@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "80ebd4322e3b98bc25c3ed3effe99a1653bc00fc"
+                "reference": "b307f3d9ef0960b74ea8bd8d5bbdef2049368947"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/80ebd4322e3b98bc25c3ed3effe99a1653bc00fc",
-                "reference": "80ebd4322e3b98bc25c3ed3effe99a1653bc00fc",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/b307f3d9ef0960b74ea8bd8d5bbdef2049368947",
+                "reference": "b307f3d9ef0960b74ea8bd8d5bbdef2049368947",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,7 @@
                     "library/HTMLPurifier.composer.php"
                 ]
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "LGPL"
             ],
@@ -39,8 +39,7 @@
                 {
                     "name": "Edward Z. Yang",
                     "email": "admin@htmlpurifier.org",
-                    "homepage": "http://ezyang.com",
-                    "role": "Developer"
+                    "homepage": "http://ezyang.com"
                 }
             ],
             "description": "Standards compliant HTML filter written in PHP",
@@ -48,7 +47,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2014-02-04 20:17:24"
+            "time": "2014-10-23 22:36:02"
         },
         {
             "name": "firephp/firephp-core",
@@ -140,16 +139,16 @@
         },
         {
             "name": "zendframework/zendframework",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zf2.git",
-                "reference": "055eac4314425c291f3ef0e104a6196a8fc24cd5"
+                "reference": "88c9b6f566fc1097f64ead155625db9bdfee531e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zf2/zipball/055eac4314425c291f3ef0e104a6196a8fc24cd5",
-                "reference": "055eac4314425c291f3ef0e104a6196a8fc24cd5",
+                "url": "https://api.github.com/repos/zendframework/zf2/zipball/88c9b6f566fc1097f64ead155625db9bdfee531e",
+                "reference": "88c9b6f566fc1097f64ead155625db9bdfee531e",
                 "shasum": ""
             },
             "require": {
@@ -211,7 +210,7 @@
             },
             "require-dev": {
                 "doctrine/annotations": ">=1.0",
-                "fabpot/php-cs-fixer": "*@dev",
+                "fabpot/php-cs-fixer": "dev-master#fcbb09b5204",
                 "ircmaxell/random-lib": "dev-master",
                 "ircmaxell/security-lib": "dev-master",
                 "mikey179/vfsstream": "1.2.*",
@@ -254,7 +253,7 @@
                 "framework",
                 "zf2"
             ],
-            "time": "2014-04-15 14:47:18"
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zendxml",
@@ -302,12 +301,8 @@
             "time": "2014-03-05 22:25:44"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "ezyang/htmlpurifier": 20
@@ -315,7 +310,5 @@
     "platform": {
         "php": ">=5.4.0"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }

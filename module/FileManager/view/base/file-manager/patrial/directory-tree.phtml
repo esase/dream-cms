@@ -1,0 +1,21 @@
+<!-- include needed js and css files -->
+<?php $this->layoutHeadScript()->appendFile($this->layoutAsset('jquery.treeview.js')) ?>
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset(($this->localization()->isCurrentLanguageLtr()
+        ? 'jquery.treeview.css'
+        : 'jquery.treeview.rtl.css'), 'css')) ?>
+
+<div id="directories-tree-wrapper" class="tree-wrapper">
+    <ul id="<?php echo $this->escapeHtmlAttr($this->id) ?>" class="<?php echo $this->escapeHtmlAttr($this->class) ?>">
+        <?php echo $this->items ?>
+    </ul>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+    $("#<?php echo $this->id ?>").treeview({
+        persist: "cookie",
+        cookieOptions : {
+            expires: <?php echo $this->cookie_lifetime ?>,
+            path : '<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller')]) ?>'
+        }
+    });
+<?php $this->inlineScript()->captureEnd() ?>

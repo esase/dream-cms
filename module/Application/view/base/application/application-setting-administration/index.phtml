@@ -1,0 +1,18 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('List of settings') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('application/application-setting-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'index' // selected action is "index"
+]) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Settings'),
+    'body' => $this->partial('partial/form', ['form' => $this->settingsForm])
+]) ?>

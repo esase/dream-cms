@@ -1,10 +1,11 @@
 <!-- init datepicker -->
-<script type="text/javascript" src="<?php echo $this->asset('jquery_i18n/jquery.ui.datepicker-' . $this->localization()->getCurrentLanguage() . '.js') ?>"></script>
 <script type="text/javascript">
-    $(".date").datepicker({
-        changeMonth: true,
-        changeYear: true,
-        regional: '<?php echo $this->escapeJs($this->localization()->getCurrentLanguage()) ?>',
-        yearRange: '<?php echo (int) $this->getSetting('application_calendar_min_year') ?>:<?php echo (int) $this->getSetting('application_calendar_max_year') ?>'
+    require(["<?php echo $this->layoutAsset('jquery_i18n/jquery.ui.datepicker-' . $this->localization()->getCurrentLanguage() . '.js') ?>"], function() {
+        $("#<?php echo $this->form_name ?> .date").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            regional: '<?php echo $this->escapeJs($this->localization()->getCurrentLanguage()) ?>',
+            yearRange: '<?php echo (int) $this->applicationSetting('application_calendar_min_year') ?>:<?php echo (int) $this->applicationSetting('application_calendar_max_year') ?>'
+        });
     });
 </script>

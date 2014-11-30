@@ -1,13 +1,13 @@
 <?php
 namespace User\Model;
 
+use Application\Service\ApplicationSetting as SettingService;
+use Application\Utility\ApplicationPagination as PaginationUtility;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
-use Application\Utility\Pagination as PaginationUtility;
-use Application\Service\Service as ApplicationService;
 use Zend\Db\Sql\Predicate\Like as LikePredicate;
 
-class UserAdministration extends Base
+class UserAdministration extends UserBase
 {
     /**
      * Get users
@@ -23,15 +23,15 @@ class UserAdministration extends Base
      *      integer role
      * @return object
      */
-    public function getUsers($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = array())
+    public function getUsers($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
-        $orderFields = array(
+        $orderFields = [
             'id',
             'nickname',
             'email',
             'registered',
             'status'
-        );
+        ];
 
         $orderType = !$orderType || $orderType == 'desc'
             ? 'desc'
@@ -42,56 +42,56 @@ class UserAdministration extends Base
             : 'id';
 
         $select = $this->select();
-        $select->from(array('a' => 'user_list'))
-            ->columns(array(
+        $select->from(['a' => 'user_list'])
+            ->columns([
                 'id' => 'user_id',
                 'nickname' => 'nick_name',
                 'email',
                 'status',
                 'registered',
                 'role_id' => 'role'
-            ))
+            ])
             ->join(
-                array('b' => 'application_acl_role'),
+                ['b' => 'acl_role'],
                 'a.role = b.id',
-                array(
+                [
                     'role' => 'name'
-                )
+                ]
             )
             ->order($orderBy . ' ' . $orderType);
 
         // filter by nickname
         if (!empty($filters['nickname'])) {
-            $select->where(array(
+            $select->where([
                 new LikePredicate('nick_name', $filters['nickname'] . '%')
-            ));
+            ]);
         }
 
         // filter by email
         if (!empty($filters['email'])) {
-            $select->where(array(
+            $select->where([
                 'email' => $filters['email']
-            ));
+            ]);
         }
 
         // filter by status
         if (!empty($filters['status'])) {
-            $select->where(array(
+            $select->where([
                 'status' => $filters['status']
-            ));
+            ]);
         }
 
         // filter by role
         if (!empty($filters['role'])) {
-            $select->where(array(
+            $select->where([
                 'role' => $filters['role']
-            ));
+            ]);
         }
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
-        $paginator->setPageRange(ApplicationService::getSetting('application_page_range'));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         return $paginator;
     }

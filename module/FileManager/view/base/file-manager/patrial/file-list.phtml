@@ -1,0 +1,161 @@
+<!-- render a list of files -->
+<?php if ($this->paginator === false) : ?>
+    <div class="alert alert-danger">
+        <?php echo $this->translate('Directory not exists') ?>
+    </div>
+<?php else: ?>
+    <!-- render a data grid -->
+    <?php echo $this->partial('partial/data-grid', [
+        'controller' => $this->applicationRoute()->getParam('controller'),
+        'action' => $this->applicationRoute()->getParam('action'),
+        'queries' => [
+            'path' => $this->path
+        ],
+        'order_by' => $this->order_by,
+        'order_type' => $this->order_type,
+        'per_page' => $this->per_page,
+        'default_order' => 'name',
+        'default_order_type' => 'desc',
+        'filter_form' => $this->filter_form,
+        'headers' => [
+            0 => [
+                'title' => $this->translate('Name'),
+                'order_name' => 'name'
+            ],
+            1 => [
+                'title' => $this->translate('Type'),
+                'order_name' => 'type'
+            ],
+            2 => [
+                'title' => $this->translate('Modified date'),
+                'order_name' => 'date'
+            ],
+            3 => [
+                'title' => $this->translate('File size'),
+                'order_name' => 'size'
+            ]
+        ],
+        'paginator' => $this->paginator,
+        'skipped_fields' => [
+        ],
+        'helpers' => [
+            'size' => 'applicationFileSize',
+            'name' => 'fileManagerFileUrl',
+            'type' => 'applicationBooleanValue',
+            'date' => 'applicationDate'
+        ],
+        'helpers_options' => [
+            'name' => [
+                'path' => $this->path,
+                'filters' => $this->filters
+            ],
+            'type' => [
+                'true_string' => $this->translate('Directory'),
+                'false_string' => $this->translate('File')
+            ]
+        ],
+        'actions' => [
+            'regular_actions' => [
+                0 => [
+                    'name' => $this->translate('Add a directory'),
+                    'controller' => $this->applicationRoute()->getParam('controller'),
+                    'action' => 'add-directory',
+                    'queries' => [
+                        'path' => $this->path
+                    ],
+                    'check_acl' => true
+                ],
+                1 => [
+                    'name' => $this->translate('Add a file'),
+                    'controller' => $this->applicationRoute()->getParam('controller'),
+                    'action' => 'add-file',
+                    'queries' => [
+                        'path' => $this->path
+                    ],
+                    'check_acl' => true
+                ]
+            ],
+            'multiple_actions' => [
+                0 => [
+                    'name' => $this->translate('Delete selected'),
+                    'controller' => $this->applicationRoute()->getParam('controller'),
+                    'action' => 'delete',
+                    'queries' => [
+                        'path' => $this->path
+                    ],
+                    'check_acl' => true,
+                    'confirm' => $this->translate('Selected files and dirs will be deleted. Are you sure?')
+                ],
+            ],
+            'single_actions' => [
+                0 => [
+                    'name' => $this->translate('View image'),
+                    'js' => 'showImage(\'__value__\')',
+                    'check_acl' => false,
+                    'action' => 'view-image',
+                    'image' => $this->layoutAsset('icon/eye_action.png', 'image', 'filemanager')
+                ],
+                1 => [
+                    'name' => $this->translate('Edit'),
+                    'controller' => $this->applicationRoute()->getParam('controller'),
+                    'action' => 'edit',
+                    'check_acl' => true,
+                    'image' => $this->layoutAsset('icon/edit_action.png', 'image'),
+                    'slug_params' => [
+                        'use_query' => true
+                    ],
+                   'queries' => [
+                      'path' => $this->path,
+                      'file_path' => $this->path
+                    ]
+                ],
+            ]
+        ],
+        'actions_options' => [
+            'action_identity' => 'name',
+            'form_name' => 'files',
+            'multiple_actions' => [
+                'items_name' => 'files[]'
+            ]
+        ],
+        'actions_extra_check' => [
+            'single_actions' => [
+                'view-image' => [
+                    0 => [
+                        'param' => 'name',
+                        'condition' =>  '$basePath = "' . $this->current_directory . '"; $fileName = "__value__";
+                                return !is_dir($basePath . $fileName) && in_array(Application\Utility\ApplicationFileSystem::getFileExtension($fileName), explode(",", "' . strtolower($this->applicationSetting('file_manager_image_extensions')) . '"));'
+                    ]
+                ]
+            ]
+        ]
+    ]) ?>    
+<?php endif ?>
+
+<!-- preview images popup -->
+<?php 
+    echo $this->partial('partial/popup', [
+        'popup_id' => 'preview-images',
+        'title' => 'View image',
+        'width' => $this->applicationSetting('file_manager_window_image_width'),
+        'height' => $this->applicationSetting('file_manager_window_image_height'),
+        'body' => '<div id="preview-image"></div>'
+    ]) 
+?>
+
+<?php $this->inlineScript()->captureStart() ?>
+    /**
+     * Show an image
+     *
+     * @param string fileName
+     * @return void
+     */
+    function showImage(fileName)
+    {
+        var baseUrl = "<?php echo $this->escapeJs($this->fileManagerBaseFileUrl($this->path)) ?>";
+        var $modalWindow = $("#preview-images");
+
+        $modalWindow.find("#preview-image").css("background-image", "url(" + baseUrl + fileName + ")");
+        $modalWindow.modal("show");
+    }
+<?php $this->inlineScript()->captureEnd() ?>

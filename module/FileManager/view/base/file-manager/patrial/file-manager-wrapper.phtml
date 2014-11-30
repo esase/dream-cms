@@ -1,0 +1,25 @@
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('main.css', 'css', 'filemanager')) ?>
+
+<?php $this->declareVars('directoriesTreeId') ?>
+<?php $this->directoriesTreeId = 'directories-tree' ?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<!-- files manager wrapper -->
+<div class="row" id="files-manager-wrapper">
+    <div class="col-md-4">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->translate('Directories tree'),
+            'body' => $this->fileManagerDirectoriesTree($this->user_directories, $this->directoriesTreeId, $this->path, $this->filters)
+        ]) ?>
+    </div>
+    <div class="col-md-8">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->action_title,
+            'body' => $this->action
+        ]) ?>
+    </div>
+</div>

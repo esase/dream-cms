@@ -31,33 +31,32 @@ function uniformHeight(elements, bindWindowResize)
  * @param string successCallback
  * @param string method
  * @param object params
+ * @param boolean replaceData
  * @return void
  */
-function ajaxQuery(container, url, successCallback, method, params)
+function ajaxQuery(container, url, successCallback, method, params, replaceData)
 {
     // show a loading box
     showLoadingBox(container);
 
-    // define an ajax query method
-    method = typeof method != 'undefined' && method == 'post' ? method : 'get';
-
-    // add a hash to url
-    if (method == 'get') {
-        var _r =  Math.random();
-        url =  url + (url.match(/\?/) ? '&_r=' + _r : '?_r=' + _r);
-    }
-
     $.ajax({
-        type: method,
+        type: typeof method != 'undefined' && method == 'post' ? method : 'get',
         url: url,
+        cache: false,
         data: params,
         success: function(data){
             // replace text into a container
-            $('#' + container).html(data);
+            if (typeof replaceData  == 'undefined' || replaceData == true) {
+                $('#' + container).html(data);
+            }
+            else {
+                // remove the loading box
+                $('#' + container).find('.loading-ajax-wrapper').remove();
+            }
 
             // call a callback
             if (typeof successCallback != 'undefined' && successCallback) {
-                successCallback.call();
+                successCallback.call(this, data);
             }
         }
     });
@@ -147,10 +146,27 @@ function showPopup(url, popupId)
 
     $.ajax({
     	'type'      : "get",
-    	'url'       : url + '?_r=' + Math.random(),
+    	'url'       : url,
+		'cache' 	: false,
     	'success'   : function(data) {
     	    $(document.body).append(data);
     	    $('#' + popupId).modal('show');
     	}
     });
+}
+
+/**
+ * Show loaded popup window
+ *
+ * @param string popupId
+ * @param string data
+ * @return void
+ */
+function showLoadedPopup(popupId, data)
+{
+    // remove previously opened popup
+    $('#' + popupId).remove();
+
+	$(document.body).append(data);
+	$('#' + popupId).modal('show');
 }

@@ -9,23 +9,29 @@ Develop:
 
 ## RELEASE INFORMATION
 
-*Zend Framework 2.3.1*
+*Zend Framework 2.3.3*
 
-This is the first maintenance release for the version 2.3 series.
+This is the third maintenance release for the version 2.3 series.
 
-15 Apr 2014
+17 Sep 2014
 
-### UPDATES IN 2.3.1
+### UPDATES IN 2.3.3
 
 **This release contains security updates:**
 
-- **ZF2014-03:** Potential XSS vector in multiple view helpers due to
-  inappropriate HTML attribute escaping. Many view helpers were using the
-  `escapeHtml()` view helper in order to escape HTML attributes. This release
-  patches them to use the `escapeHtmlAttr()` view helper in these situations.
-  If you use form or navigation view helpers, or "HTML element" view helpers
-  (such as `gravatar()`, `htmlFlash()`, `htmlPage()`, or `htmlQuicktime()`), we
-  recommend upgrading immediately.
+- **ZF2014-05:** Due to an issue that existed in PHP's LDAP extension, it is
+  possible to perform an unauthenticated simple bind against a LDAP server by
+  using a null byte for the password, regardless of whether or not the user
+  normally requires a password. We have provided a patch in order to protect
+  users of unpatched PHP versions (PHP 5.5 <= 5.5.11, PHP 5.4 <= 5.4.27, all
+  versions of PHP 5.3 and below). If you use `Zend\Ldap` and are on an affected
+  version of PHP, we recommend upgrading immediately.
+- **ZF2014-06:** A potential SQL injection vector existed when using a SQL
+  Server adapter to manually quote values due to the fact that it was not
+  escaping null bytes. Code was added to ensure null bytes are escaped, and
+  thus mitigate the SQLi vector. We do not recommend manually quoting values,
+  but if you do, and use the SQL Server adapter without PDO, we recommend
+  upgrading immediately.
 
 Please see [CHANGELOG.md](CHANGELOG.md).
 

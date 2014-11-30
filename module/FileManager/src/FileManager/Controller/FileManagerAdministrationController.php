@@ -27,9 +27,9 @@ class FileManagerAdministrationController extends FileManagerBaseController
      */
     public function settingsAction()
     {
-        return new ViewModel(array(
+        return new ViewModel([
             'settingsForm' => parent::settingsForm('filemanager', 'files-manager-administration', 'settings')
-        ));
+        ]);
     }
 
     /**

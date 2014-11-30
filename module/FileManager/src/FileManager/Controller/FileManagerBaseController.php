@@ -1,10 +1,10 @@
 <?php
 namespace FileManager\Controller;
 
-use Application\Controller\AbstractAdministrationController;
-use FileManager\Model\Base as FileManagerBaseModel;
+use Application\Controller\ApplicationAbstractAdministrationController;
+use FileManager\Model\FileManagerBase as FileManagerBaseModel;
 
-abstract class FileManagerBaseController extends AbstractAdministrationController
+abstract class FileManagerBaseController extends ApplicationAbstractAdministrationController
 {
     /**
      * Model instance
@@ -20,7 +20,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
         if (!$this->model) {
             $this->model = $this->getServiceLocator()
                 ->get('Application\Model\ModelManager')
-                ->getInstance('FileManager\Model\Base');
+                ->getInstance('FileManager\Model\FileManagerBase');
         }
 
         return $this->model;
@@ -58,7 +58,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
             // get a form
             $fileForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
-                ->getInstance('FileManager\Form\File');
+                ->getInstance('FileManager\Form\FileManagerFile');
 
             $request  = $this->getRequest();
 
@@ -76,7 +76,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                 // save data
                 if ($fileForm->getForm()->isValid()) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -95,16 +95,16 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                     }
 
                     return $this->redirectTo($this->
-                            params('controller'), 'add-file', array(), false, array('path' => $userPath));
+                            params('controller'), 'add-file', [], false, ['path' => $userPath]);
                 }
             }
         }
 
-        return array(
-            'fileForm' => $fileForm ? $fileForm->getForm() : null,
+        return [
+            'file_form' => $fileForm ? $fileForm->getForm() : null,
             'path' => $userPath,
-            'userDirectories' => $userDirectories
-        );
+            'user_directories' => $userDirectories
+        ];
     }
 
     /**
@@ -127,7 +127,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
             // get a form
             $directoryForm = $this->getServiceLocator()
                 ->get('Application\Form\FormManager')
-                ->getInstance('FileManager\Form\Directory')
+                ->getInstance('FileManager\Form\FileManagerDirectory')
                 ->setPath($userPath)
                 ->setModel($this->getModel());
 
@@ -141,7 +141,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                 // save data
                 if ($directoryForm->getForm()->isValid()) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
+                    if (true !== ($result = $this->aclCheckPermission())) {
                         return $result;
                     }
 
@@ -160,16 +160,16 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                     }
 
                     return $this->redirectTo($this->
-                            params('controller'), 'add-directory', array(), false, array('path' => $userPath));
+                            params('controller'), 'add-directory', [], false, ['path' => $userPath]);
                 }
             }
         }
 
-        return array(
-            'directoryForm' => $directoryForm ? $directoryForm->getForm() : null,
+        return [
+            'directory_form' => $directoryForm ? $directoryForm->getForm() : null,
             'path' => $userPath,
-            'userDirectories' => $userDirectories
-        );
+            'user_directories' => $userDirectories
+        ];
     }
 
     /**
@@ -206,7 +206,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                 // get a form
                 $editForm = $this->getServiceLocator()
                     ->get('Application\Form\FormManager')
-                    ->getInstance('FileManager\Form\Edit')
+                    ->getInstance('FileManager\Form\FileManagerEdit')
                     ->setFileName($fileName)
                     ->setFullFilePath($currentDirectory)
                     ->setFullUserPath($userDirectory)
@@ -222,6 +222,11 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
 
                     // save data
                     if ($editForm->getForm()->isValid()) {
+                        // check the permission and increase permission's actions track
+                        if (true !== ($result = $this->aclCheckPermission())) {
+                            return $result;
+                        }
+
                         // edit the file
                         if (false === ($newFileName = $this->getModel()->editFile($editForm->
                                 getForm()->getData()['name'], $fullFilePath, $userDirectory, $isDirectory))) {
@@ -238,21 +243,21 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                                         translate((!$isDirectory ? 'The file has been edited' : 'The directory has been edited')));
                         }
 
-                        return $this->redirectTo($this->params('controller'), 'edit', array(), false,
-                                array('path' => $userPath, 'file_path' => $userPath, 'slug' => ($newFileName ? $newFileName : $fileName)));
+                        return $this->redirectTo($this->params('controller'), 'edit', [], false,
+                                ['path' => $userPath, 'file_path' => $userPath, 'slug' => ($newFileName ? $newFileName : $fileName)]);
                     }
                 }
             }
         }
 
-        return array(
-            'isDirectory' => $isDirectory,
-            'editForm' => $editForm ? $editForm->getForm() : null,
+        return [
+            'is_directory' => $isDirectory,
+            'edit_form' => $editForm ? $editForm->getForm() : null,
             'path' => $userPath,
-            'filePath' => $filePath,
-            'fileName' => $fileName,
-            'userDirectories' => $userDirectories
-        );
+            'file_path' => $filePath,
+            'file_name' => $fileName,
+            'user_directories' => $userDirectories
+        ];
     }
 
     /**
@@ -272,8 +277,12 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
                 // process files names
                 foreach ($fileNames as $file) {
                     // check the permission and increase permission's actions track
-                    if (true !== ($result = $this->checkPermission())) {
-                        return $result;
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
                     }
 
                     // delete the file or directory with nested files and dirs
@@ -296,7 +305,7 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
         }
 
         // redirect back
-        return $this->redirectTo(null, null, array(), true);
+        return $this->redirectTo(null, null, [], true);
     }
 
     /**
@@ -307,16 +316,16 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
     protected function getListFiles()
     {
         // check the permission and increase permission's actions track
-        if (true !== ($result = $this->checkPermission())) {
+        if (true !== ($result = $this->aclCheckPermission())) {
             return $result;
         }
 
-        $filters = array();
+        $filters = [];
 
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('FileManager\Form\FileFilter');
+            ->getInstance('FileManager\Form\FileManagerFileFilter');
 
         $request = $this->getRequest();
         $filterForm->getForm()->setData($request->getQuery(), false);
@@ -331,24 +340,24 @@ abstract class FileManagerBaseController extends AbstractAdministrationControlle
 
         // get list of files and directories in specified directory
         $userPath = $this->getUserPath();
-
         $paginator = false;
+
         if (false !== ($currentDirectory = $this->getModel()->getUserDirectory($userPath))) {
             // get data
             $paginator = $this->getModel()->getFiles($currentDirectory,
                 $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
         }
 
-        return array(
+        return [
             'current_directory' => $currentDirectory,
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
             'path' => $userPath,
-            'userDirectories' => $userDirectories,
+            'user_directories' => $userDirectories,
             'paginator' => $paginator,
             'order_by' => $this->getOrderBy(),
             'order_type' => $this->getOrderType(),
             'per_page' => $this->getPerPage()
-        );
+        ];
     }
 }

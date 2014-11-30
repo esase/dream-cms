@@ -1,0 +1,21 @@
+body,
+html,
+div#container {
+  height: 100% !important;
+}
+div#container div#login-form-wrapper {
+  display: table;
+  height: 100%;
+  margin: 0 auto;
+  width: 350px;
+}
+div#container div#login-form-wrapper div#login-form {
+  display: table-cell;
+  vertical-align: middle;
+}
+div#container div#login-form-wrapper div#login-form div#extra-form-links-wrapper {
+  padding-top: 20px;
+}
+div#container div#login-form-wrapper #submit {
+  width: 100%;
+}
