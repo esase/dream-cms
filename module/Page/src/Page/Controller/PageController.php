@@ -81,6 +81,28 @@ class PageController extends AbstractActionController
             return $response;
         }
 
+        $request = $this->getRequest();
+        $widgetConnectionId = $this->params()->fromQuery('widget_connection', null);
+        $widgetPosition = $this->params()->fromQuery('widget_position', null);
+
+        // get only a specific widget info
+        if ($request->isXmlHttpRequest()
+                    && null !== $widgetConnectionId && null !== $widgetPosition) {
+
+            // set the page variables
+            $viewModel = new ViewModel([
+                'page' => $pageInfo,
+                'widget_connection' => $widgetConnectionId,
+                'widget_position' => $widgetPosition
+            ]);
+
+            // set a custom page layout
+            $viewModel->setTerminal(true)
+                ->setTemplate($this->getModel()->getLayoutPath() . 'layout-ajax');
+
+            return $viewModel;
+        }
+
         // passing the current page info to the layout
         $this->layout()->setVariable('page', $pageInfo);
 

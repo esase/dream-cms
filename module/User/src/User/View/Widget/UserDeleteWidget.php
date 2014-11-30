@@ -47,7 +47,7 @@ class UserDeleteWidget extends UserAbstractWidget
             }
 
             return $this->getView()->partial('user/widget/delete', [
-                'deleteForm' => $deleteForm->getForm()
+                'delete_form' => $deleteForm->getForm()
             ]);
         }
 

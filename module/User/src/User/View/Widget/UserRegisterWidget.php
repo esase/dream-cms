@@ -101,7 +101,7 @@ class UserRegisterWidget extends UserAbstractWidget
             }
 
             return $this->getView()->partial('user/widget/register', [
-                'userForm' => $userForm->getForm()
+                'user_form' => $userForm->getForm()
             ]);
         }
 

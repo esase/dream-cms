@@ -51,7 +51,7 @@ class UserForgotWidget extends UserAbstractWidget
             }
     
             return $this->getView()->partial('user/widget/forgot', [
-                'forgotForm' => $forgotForm->getForm()
+                'forgot_form' => $forgotForm->getForm()
             ]);
         }
 

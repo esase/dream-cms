@@ -238,7 +238,7 @@ class PageBase extends ApplicationAbstractBase
 
             $widgetConnections = [];
             foreach ($resultSet as $connection) {
-                $widgetConnections[$connection->page_id][$connection->widget_position][] = [
+                $widgetConnections[$connection->page_id][$connection->widget_position][$connection->widget_connection_id] = [
                     'widget_name' => $connection->widget_name,
                     'widget_title' => $connection->widget_title,
                     'widget_id' => $connection->widget_id,

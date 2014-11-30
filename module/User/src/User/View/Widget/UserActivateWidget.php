@@ -50,7 +50,7 @@ class UserActivateWidget extends UserAbstractWidget
             }
 
             return $this->getView()->partial('user/widget/activate', [
-                'activateForm' => $activateForm->getForm()
+                'activate_form' => $activateForm->getForm()
             ]);
         }
 

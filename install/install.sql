@@ -438,14 +438,14 @@ CREATE TABLE IF NOT EXISTS `application_module` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(2, 'User', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(3, 'XmlRpc', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(4, 'FileManager', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(5, 'Page', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(6, 'Layout', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(7, 'Localization', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(8, 'Acl', 'system', 'active', '1.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL);
+(1, 'Application', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(2, 'User', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(3, 'XmlRpc', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(4, 'FileManager', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(5, 'Page', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(6, 'Layout', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(7, 'Localization', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
+(8, 'Acl', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL);
 
 CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
     `namespace` VARCHAR(20) NOT NULL,
@@ -491,7 +491,7 @@ CREATE TABLE IF NOT EXISTS `layout_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `layout_list` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 'active', 'Base layout', 'Default base layout', '1.0.0', 'eSASe', 'alexermashev@gmail.com');
+('base', 'system', 'active', 'Base layout', 'Default base layout', '2.0.0', 'eSASe', 'alexermashev@gmail.com');
 
 CREATE TABLE IF NOT EXISTS `acl_role` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -816,7 +816,7 @@ CREATE TABLE IF NOT EXISTS `application_setting_value` (
 
 INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`) VALUES
 (1,  1,  'Dream CMS', NULL),
-(2,  2,  '1.0.0', NULL),
+(2,  2,  '2.0.0', NULL),
 (3,  3,  'Dream CMS', NULL),
 (4,  4,  'info@mysite.com', NULL),
 (5,  5,  'Dream CMS', NULL),

@@ -22,6 +22,12 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     protected $widgetConnectionId;
 
     /**
+     * Widget position
+     * @var string
+     */
+    protected $widgetPosition;
+
+    /**
      * Service locator
      * @var object
      */
@@ -224,6 +230,18 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     public function setWidgetConnectionId($widgetId) 
     {
         $this->widgetConnectionId = $widgetId;
+        return $this;
+    }
+
+    /**
+     * Set widget position
+     *
+     * @param string $position
+     * @return object fluent interface
+     */
+    public function setWidgetPosition($position) 
+    {
+        $this->widgetPosition = $position;
         return $this;
     }
 }

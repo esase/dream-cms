@@ -79,7 +79,7 @@ class UserEditWidget extends UserAbstractWidget
             }
 
             return $this->getView()->partial('user/widget/edit', [
-                'userForm' => $userForm->getForm()
+                'user_form' => $userForm->getForm()
             ]);
         }
 

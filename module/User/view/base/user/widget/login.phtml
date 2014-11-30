@@ -1,7 +1,7 @@
 <?php $this->declareVars(['pageUrl']) ?>
 
 <?php echo $this->partial('partial/form', [
-    'form' => $this->loginForm,
+    'form' => $this->login_form,
 ]) ?>
 
 <?php if (false !== ($this->pageUrl = $this->pageUrl('user-forgot'))): ?>

@@ -49,7 +49,7 @@ class UserPasswordResetWidget extends UserAbstractWidget
             }
 
             return $this->getView()->partial('user/widget/password-reset', [
-                'resetForm' => $resetForm->getForm(),
+                'reset_form' => $resetForm->getForm(),
             ]);
         }
 

@@ -54,7 +54,7 @@ class UserLoginWidget extends UserAbstractWidget
             }
 
             return $this->getView()->partial('user/widget/login', [
-                'loginForm' => $loginForm->getForm()
+                'login_form' => $loginForm->getForm()
             ]);
         }
 
