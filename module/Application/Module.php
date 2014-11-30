@@ -1,6 +1,7 @@
 <?php
 namespace Application;
 
+use User\Service\UserIdentity as UserIdentityService;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
@@ -140,11 +141,13 @@ class Module
             $container = new SessionContainer('initialized');
 
             if (!isset($container->init)) {
-                $session->regenerateId(true); $container->init = 1;
+                $session->regenerateId(true);
+                $container->init = 1;
             }
         }
         catch (Exception $e) {
             ApplicationErrorLogger::log($e);
+            UserIdentityService::getAuthService()->clearIdentity();
         }
     }
 
