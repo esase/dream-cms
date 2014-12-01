@@ -138,16 +138,45 @@ class Module
         try {
             $session = $this->serviceLocator->get('Zend\Session\SessionManager');
             $session->start();
-            $container = new SessionContainer('initialized');
 
+            $container = new SessionContainer('initialized');
+            $config = $this->serviceLocator->get('Config');
+
+            // init a new session
             if (!isset($container->init)) {
                 $session->regenerateId(true);
                 $container->init = 1;
+
+                // remember current visitors options
+                $container = new SessionContainer('session_validators');
+                if (!empty($config['session']['validators'])) {
+                    foreach ($config['session']['validators'] as $validator => $defaultValue) {
+                        $container[$validator] = $defaultValue;
+                    }
+                }
+            }
+
+            // validate the session
+            if (!empty($config['session']['validators'])) {
+                $chain = $session->getValidatorChain();
+                $container = new SessionContainer('session_validators');
+
+                foreach ($config['session']['validators'] as $validator => $defaultValue) {
+                    $validatorValue = !empty($container->$validator)
+                        ? $container[$validator]
+                        : $defaultValue; 
+
+                    $chain->attach('session.validate', [new $validator($validatorValue), 'isValid']);
+                }
             }
         }
         catch (Exception $e) {
             ApplicationErrorLogger::log($e);
             UserIdentityService::getAuthService()->clearIdentity();
+
+            if ($session) {
+                $session->rememberMe(0);
+            }
         }
     }
 
@@ -202,18 +231,9 @@ class Module
                     }
 
                     // get session manager
-                    $sessionManager = new SessionManager($sessionConfig,
-                    $sessionStorage, $sessionSaveHandler);
-
-                    if (!empty($config['session']['validators'])) {
-                        $chain = $sessionManager->getValidatorChain();
-
-                        foreach ($config['session']['validators'] as $validator) {
-                            $chain->attach('session.validate', [new $validator(), 'isValid']);
-                        }
-                    }
-
+                    $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
                     SessionContainer::setDefaultManager($sessionManager);
+
                     return $sessionManager;
                 },
                 'Application\Cache\Static' => function () {

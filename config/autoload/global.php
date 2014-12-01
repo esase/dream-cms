@@ -26,8 +26,8 @@ return [
         ],
         'storage' => 'Zend\Session\Storage\SessionArrayStorage',
         'validators' => [
-            'Zend\Session\Validator\RemoteAddr',
-            'Zend\Session\Validator\HttpUserAgent',
+            'Zend\Session\Validator\RemoteAddr' => getEnv('REMOTE_ADDR'),
+            'Zend\Session\Validator\HttpUserAgent' => getEnv('HTTP_USER_AGENT'),
         ],
         'save_handler' => null
     ],
