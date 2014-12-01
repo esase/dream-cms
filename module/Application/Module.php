@@ -14,9 +14,11 @@ use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\Session\SessionManager;
 use Zend\Session\Container as SessionContainer;
 use Zend\Console\Request as ConsoleRequest;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Zend\Console\Adapter\AdapterInterface as Console;
 use Exception;
 
-class Module
+class Module implements ConsoleUsageProviderInterface
 {
     /**
      * Service managerzend
@@ -335,6 +337,24 @@ class Module
  
                     return $messages;
                 }
+            ]
+        ];
+    }
+
+    /**
+     * Get console usage info
+     *
+     * @param object $console
+     * @return array
+     */
+    public function getConsoleUsage(Console $console)
+    {
+        return [
+            // describe available commands
+            'application send messages [--verbose|-v]' => 'Send messages from messages queue',
+            // describe expected parameters
+            [
+                '--verbose|-v', '(optional) turn on verbose mode'
             ]
         ];
     }

@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `application_email_queue` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(50) NOT NULL,
+    `title` TEXT NOT NULL,
+    `message` TEXT NOT NULL,
+    `created` INT(10) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `application_time_zone` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(150) NOT NULL,
@@ -797,7 +806,10 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (73, 'user_role_edited_send', 'Send notifications about editing users roles', NULL, 'checkbox', NULL, 17, 9, 2, NULL, NULL, NULL, NULL),
 (74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, NULL, NULL, NULL),
 (75, 'user_role_edited_message', 'User role edited message', NULL, 'notification_message', 1, 18, 9, 2, 1, NULL, NULL, NULL),
-(76, 'page_footer_menu_max_rows', 'Max rows in footer menu per column', NULL, 'integer', 1, 1, 18, 5, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
+(76, 'page_footer_menu_max_rows', 'Max rows in footer menu per column', NULL, 'integer', 1, 1, 18, 5, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(77, 'application_smtp_ssl', 'SMTP SSL', NULL, 'select', NULL, 6, 7, 1, NULL, NULL, NULL, NULL),
+(78, 'application_notifications_count', 'Count of notifications sent per time', NULL, 'integer', 1, 1, 7, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(79, 'application_smtp_login', 'SMTP login type', NULL, 'select', NULL, 7, 7, 1, NULL, NULL, NULL, NULL);
 
 CREATE TABLE IF NOT EXISTS `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -901,7 +913,11 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (85, 74, 'Ваша роль была отредактирована', 'ru'),
 (86, 75, '<p><b>Dear __RealName__</b>,</p>\r\n<p>Now your role on the site is: <b>__Role__</b></p>', NULL),
 (87, 75, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Теперь ваша роль на сайте: <b>__Role__</b></p>', 'ru'),
-(88, 76, '5', NULL);
+(88, 76, '5', NULL),
+(89, 77, 'tls', NULL),
+(90, 78, '10', NULL),
+(91, 31, '587', NULL),
+(92, 79, 'plain', NULL);
 
 CREATE TABLE IF NOT EXISTS `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -920,7 +936,13 @@ INSERT INTO `application_setting_predefined_value` (`setting_id`, `value`) VALUE
 (24, 'memcached'),
 (24, 'apc'),
 (24, 'xcache'),
-(24, 'wincache');
+(24, 'wincache'),
+(77, 'tls'),
+(77, 'ssl'),
+(79, 'login'),
+(79, 'smtp'),
+(79, 'plain'),
+(79, 'crammd5');
 
 CREATE TABLE IF NOT EXISTS `application_event` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

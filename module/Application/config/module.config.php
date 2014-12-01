@@ -1,6 +1,14 @@
 <?php
 
 return [
+    'controllers' => [
+        'invokables' => [
+            'login-administration' => 'Application\Controller\ApplicationLoginAdministrationController',
+            'settings-administration' => 'Application\Controller\ApplicationSettingAdministrationController',
+            'error' => 'Application\Controller\ApplicationErrorController',
+            'email-queue-console' => 'Application\Controller\ApplicationEmailQueueConsoleController',
+        ]
+    ],
     'router' => [
         'routes' => [
             'application' => [
@@ -37,6 +45,21 @@ return [
             ]
         ]
     ],
+    'console' => [
+        'router' => [
+            'routes' => [
+                'application send messages' => [
+                    'options' => [
+                        'route'    => 'application send messages [--verbose|-v]',
+                        'defaults' => [
+                            'controller' => 'email-queue-console',
+                            'action'     => 'sendMessages'
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ],
     'service_manager' => [
         'aliases' => [
             'translator' => 'MvcTranslator',
@@ -51,13 +74,6 @@ return [
                 'text_domain'  => 'default'
             ],
         ],
-    ],
-    'controllers' => [
-        'invokables' => [
-            'login-administration' => 'Application\Controller\ApplicationLoginAdministrationController',
-            'settings-administration' => 'Application\Controller\ApplicationSettingAdministrationController',
-            'error' => 'Application\Controller\ApplicationErrorController'
-        ]
     ],
     'controller_plugins' => [
         'invokables' => [
