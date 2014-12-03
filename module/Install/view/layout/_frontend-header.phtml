@@ -1,0 +1,82 @@
+<?php echo $this->doctype(); ?>
+<html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('Script installation') ?>
+        <base href="<?php echo $this->url('home', [], ['force_canonical' => true])  ?>">
+
+        <?php echo $this->headMeta()
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            ->appendName('viewport', 'width=device-width, initial-scale=1');
+        ?>
+
+        <!-- styles -->
+        <?php $this->headLink()
+            ->prependStylesheet('layout/base/application/css/administration.css') 
+            ->prependStylesheet('layout/base/application/css/jquery-ui.css')
+            ->prependStylesheet('layout/base/application/css/bootstrap-theme.css')
+            ->prependStylesheet('layout/base/application/css/bootstrap.css')
+        ?>
+
+        <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
+            <?php $this->headLink()
+                ->appendStylesheet('layout/base/application/css/bootstrap.rtl.css')
+                ->appendStylesheet('layout/base/application/css/administration.rtl.css')
+            ?>
+        <?php endif ?>
+
+        <?php echo $this->headLink() ?>
+
+        <!-- scripts -->
+        <?php echo $this->headScript()
+            ->prependFile('layout/base/application/js/jquery.cookie.js')
+            ->prependFile('layout/base/application/js/require.js')
+            ->prependFile('layout/base/application/js/bootstrap.js')
+            ->prependFile('layout/base/application/js/jquery-ui.js')            
+            ->prependFile('layout/base/application/js/jquery.js')
+            ->prependFile('layout/base/application/js/respond.js', 'text/javascript', ['conditional' => 'lt IE 9'])
+            ->prependFile('layout/base/application/js/html5shiv.js', 'text/javascript', ['conditional' => 'lt IE 9'])
+        ?>
+    </head>
+    <body>
+        <!-- nav bar -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" target="_blank" href="http://dream-cms.com"><b>Dream CMS 2.0.0 Installation</b></a>
+                </div>
+                <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif ?>">
+                                <!-- select language -->
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle current-language" data-toggle="dropdown">
+                                        <img src="layout/base/application/image/icon/flag/<?php  echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) . '.gif' ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getCurrentLocalization()['description']) ?>" />
+                                        <?php echo $this->escapeHtml($this->localization()->getCurrentLocalization()['language']) ?>
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <?php foreach ($this->localization()->getAllLocalizations() as $language => $languageInfo): ?>
+                                            <li role="presentation" <?php if ($language == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
+                                                <a role="menuitem" tabindex="-1" href="<?php echo $this->url('home/page', ['language' => $language], ['force_canonical' => true], true) ?>">
+                                                    <img src="layout/base/application/image/icon/flag/<?php  echo $this->escapeHtml($language) . '.gif' ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getAllLocalizations()[$language]['description']) ?>" />
+                                                    <?php echo $this->escapeHtml($this->localization()->getAllLocalizations()[$language]['description']) ?>
+                                                </a>
+                                            </li>
+                                        <?php endforeach ?>
+                                    </ul>
+                                </li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                <?php endif ?>
+            </div>
+        </div>
+
+        <!-- container -->
+        <div class="container" id="container">

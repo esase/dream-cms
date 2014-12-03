@@ -1,0 +1,38 @@
+<?php echo $this->doctype(); ?>
+<html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
+    <head>
+        <meta charset="utf-8">
+        <base href="<?php echo $this->url('home', [], ['force_canonical' => true])  ?>">
+        
+        <?php echo $this->headMeta()
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            ->appendName('viewport', 'width=device-width, initial-scale=1');
+        ?>
+
+        <!-- styles -->
+        <?php $this->headLink()
+            ->prependStylesheet('layout/base/application/css/jquery-ui.css')
+            ->prependStylesheet('layout/base/application/css/bootstrap-theme.css')
+            ->prependStylesheet('layout/base/application/css/bootstrap.css')
+        ?>
+
+        <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
+            <?php $this->headLink()->appendStylesheet('layout/base/application/css/bootstrap.rtl.css') ?>
+        <?php endif ?>
+
+        <?php echo $this->headLink() ?>
+
+        <!-- scripts -->
+        <?php echo $this->headScript()
+            ->prependFile('layout/base/application/js/jquery.cookie.js')
+            ->prependFile('layout/base/application/js/require.js')
+            ->prependFile('layout/base/application/js/bootstrap.js')
+            ->prependFile('layout/base/application/js/jquery-ui.js')            
+            ->prependFile('layout/base/application/js/jquery.js')
+            ->prependFile('layout/base/application/js/respond.js', 'text/javascript', ['conditional' => 'lt IE 9'])
+            ->prependFile('layout/base/application/js/html5shiv.js', 'text/javascript', ['conditional' => 'lt IE 9'])
+        ?>
+    </head>
+    <body>
+        <!-- container -->
+        <div class="container" id="container">

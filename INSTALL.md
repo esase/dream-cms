@@ -23,8 +23,7 @@
         11. public/resource/user
         12. public/resource/user/thumbnail
         13. data/log
-        14. public/resource/file_manager
-        15. public/resource/membership
+        14. public/resource/filemanager
 
 ## APACHE SETTINGS
 
