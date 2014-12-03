@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'cms_name' => 'Dream CMS',
+    'cms_version' => '2.0.0',
     'install_languages' => [
         'ru' => [
             'language' => 'ru',

@@ -48,7 +48,7 @@ return [
     'db' => [
         'driver' => 'Pdo',
         'driver_options' => [
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
+            (defined('PDO::MYSQL_ATTR_INIT_COMMAND') ? PDO::MYSQL_ATTR_INIT_COMMAND : null) => 'SET NAMES \'UTF8\''
         ],
     ],
     'service_manager' => [

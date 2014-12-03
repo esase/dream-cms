@@ -1,17 +1,13 @@
 <?php 
     echo $this->partial('partial/check-page', [
-        'header' => 'Permissions',
+        'header' => 'PHP settings',
         'content' => $this->partial('partial/table', [
             'headers' => [
-                'Path',
+                'Name',
                 'Current status',
                 'Desired status',
             ],
-            'list' => $this->resources,
-            'helpers' => [
-                'current' => 'translate',
-                'desired' => 'translate'
-            ]
+            'list' => $this->settings
         ])
     ])
 ?>

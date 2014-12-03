@@ -33,6 +33,66 @@ class IndexController extends AbstractActionController
         if (true !== ($result = $this->checkResourcesPermissions())) {
             return $result;
         }
+
+        // check PHP extensions
+        if (true !== ($result = $this->checkPhpExtensions())) {
+            return $result;
+        }
+
+        // check PHP settings
+        if (true !== ($result = $this->checkPhpSettings())) {
+            return $result;
+        }
+
+        // TODO: CLEAR all php cache files here after the installation : data\cache\config
+    }
+
+    /** 
+     * Check PHP settings
+     *
+     * @return boolean|object - ViewModel
+     */
+    protected function checkPhpSettings()
+    {
+        // get not configured settings
+        $settings = $this->getModel()->getNotConfiguredPhpSettings();
+
+        // show PHP settings layout
+        if ($settings) {
+            $viewModel = new ViewModel;
+            $viewModel->setVariables([
+                'settings' => $settings
+            ])
+            ->setTemplate('install/index/php-settings');
+
+            return $viewModel;
+        }
+
+        return true;
+    }
+
+    /** 
+     * Check PHP extensions
+     *
+     * @return boolean|object - ViewModel
+     */
+    protected function checkPhpExtensions()
+    {
+        // get not installed extensions
+        $extensions = $this->getModel()->getNotInstalledPhpExtensions();
+
+        // show PHP extensions layout
+        if ($extensions) {
+            $viewModel = new ViewModel;
+            $viewModel->setVariables([
+                'extensions' => $extensions
+            ])
+            ->setTemplate('install/index/php-extensions');
+
+            return $viewModel;
+        }
+
+        return true;
     }
 
     /** 

@@ -34,6 +34,12 @@ class Module
     protected static $currentLocalization;
 
     /**
+     * Intl loaded
+     * @var boolean
+     */
+    protected $intlLoaded;
+
+    /**
      * Init
      *
      * @param object $moduleManager
@@ -67,6 +73,8 @@ class Module
      */
     public function initApplication(ModuleEvent $e)
     {
+        $this->intlLoaded = extension_loaded('intl');
+
         // init php settings
         $this->initPhpSettings();
 
@@ -82,8 +90,10 @@ class Module
         self::$localizations = $this->serviceLocator->get('config')['install_languages'];
         $this->serviceLocator->get('translator');
 
-        $acceptLanguage = Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'));
-        
+        $acceptLanguage = $this->intlLoaded
+            ? Locale::acceptFromHttp(getEnv('HTTP_ACCEPT_LANGUAGE'))
+            : null;
+
         $defaultLanguage = $acceptLanguage 
             ? substr($acceptLanguage, 0, 2) 
             : null;
@@ -98,7 +108,10 @@ class Module
         $translator->setLocale(self::$defaultLocalization['locale']);
 
         // init default localization
-        Locale::setDefault(self::$defaultLocalization['locale']);
+        if ($this->intlLoaded) {
+            Locale::setDefault(self::$defaultLocalization['locale']);
+        }
+
         AbstractValidator::setDefaultTranslator($translator);
         self::$currentLocalization = self::$defaultLocalization;
     }
@@ -136,7 +149,10 @@ class Module
             self::$currentLocalization = self::$localizations[$matches->getParam('language')];
         }
 
-        Locale::setDefault(self::$localizations[$matches->getParam('language')]['locale']);
+        if ($this->intlLoaded) {
+            Locale::setDefault(self::$localizations[$matches->getParam('language')]['locale']);
+        }
+
         $router->setDefaultParam('language', $matches->getParam('language'));
     }
 
@@ -196,6 +212,9 @@ class Module
     {
         return [
             'factories' => [
+                'config' => function() {
+                    return new \Install\View\Helper\Config($this->serviceLocator->get('config'));
+                },
                 'localization' => function() {
                     return new \Install\View\Helper\Localization(self::$currentLocalization, self::$localizations);
                 }

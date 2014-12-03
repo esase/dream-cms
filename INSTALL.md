@@ -37,11 +37,16 @@
 ## PHP SETTINGS
 
     1. PHP must be compiled with these extensions:
-        1. memcached
+        1. memcached or xcache or apc or wincache
         2. intl
         3. zlib
         4. gd
-        5. SplFileInfo
+        5. fileinfo
+        6. zip
+        7. pdo_mysql
+        8. curl
+        9. mbstring
 
     2. PHP must be enabled with these options:
-        1. fopen wrappers On
+        1. allow_url_fopen 1
+        2. file_uploads 1

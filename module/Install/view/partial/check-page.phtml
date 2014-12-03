@@ -1,0 +1,10 @@
+<div class="page-header">
+    <h1><?php echo $this->translate($this->header) ?></h1>
+</div>
+<?php echo $this->content ?>
+<hr />
+<p class="text-center">
+    <a href="<?php echo $this->url('home/page', [], ['force_canonical' => true], true) ?>" class="text-center btn btn-primary " role="button">
+        <?php echo $this->translate('Refresh') ?>
+    </a>
+</p>
