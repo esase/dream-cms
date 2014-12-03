@@ -37,7 +37,7 @@ class InstallBase
         $resources = [];
 
         foreach ($this->writableResources as $path) {
-            if (false !== ($result = is_writable(APPLICATION_ROOT . '/' . $path))) {
+            if (false === ($result = is_writable(APPLICATION_ROOT . '/' . $path))) {
                 $resources[] = [
                     'path' => $path,
                     'current' => 'Not writable',
