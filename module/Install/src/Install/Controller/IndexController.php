@@ -1,6 +1,7 @@
 <?php
 namespace Install\Controller;
 
+use Install\Form\Install as InstallForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -29,6 +30,7 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
+        // TODO: CLEAR all php cache files here after the installation : data\cache\config
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {
             return $result;
@@ -44,7 +46,26 @@ class IndexController extends AbstractActionController
             return $result;
         }
 
-        // TODO: CLEAR all php cache files here after the installation : data\cache\config
+        $installForm = new InstallForm;
+        $installForm->prepare();
+
+        $request = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $installForm->setData($request->getPost());
+
+            // finish installation
+            if ($installForm->isValid()) {
+                print_r($request->getPost());
+                echo 'ok';exit;
+            }
+        }
+
+        return new ViewModel([
+            'install_form' => $installForm
+        ]);
     }
 
     /** 

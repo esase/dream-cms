@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"install\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-03 19:15+0600\n"
+"PO-Revision-Date: 2014-12-04 09:59+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,44 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Can't connect to the Database"
+msgstr "Can't connect to the Database"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Database password"
+msgstr "Database password"
+
+msgid "Database user"
+msgstr "* Database user"
+
+msgid "Database name"
+msgstr "* Database name"
+
+msgid "The input must contain only digits"
+msgstr "The input must contain only digits"
+
+msgid "Database port description"
+msgstr ""
+"Leave blank or specify custom MySQL database host port number.<br />Example: "
+"5506"
+
+msgid "Database host port number"
+msgstr "Database host port number"
+
+msgid "Database host name description"
+msgstr "Your MySQL database host name here. <br />Example: localhost"
+
+msgid "Value is required and can't be empty"
+msgstr "Value is required and can't be empty"
+
+msgid "Database host name"
+msgstr "* Database host name"
+
+msgid "DB config"
+msgstr "DB config"
 
 msgid "Name"
 msgstr "Name"

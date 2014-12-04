@@ -3,3 +3,42 @@
         GREAT!!!
     </h1>
 </div>
+
+<?php
+    $form = $this->install_form;
+    $form->setAttribute('method', 'post');
+    $form->setAttribute('action', $this->url('home/page'));
+    $formLabel = $this->plugin('formLabel');
+
+    echo $this->form()->openTag($form);
+?>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#dbConfig" aria-expanded="true" aria-controls="dbConfig">
+                    <?php echo $this->translate('DB config') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="dbConfig" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <?php echo $this->formRow($form->get('db_host')) ?>
+                <p class="help-block"><?php echo $this->translate('Database host name description') ?></p>
+
+                <?php echo $this->formRow($form->get('db_port')) ?>
+                <p class="help-block"><?php echo $this->translate('Database port description') ?></p>
+
+                <?php echo $this->formRow($form->get('db_name')) ?>
+                <?php echo $this->formRow($form->get('db_user')) ?>
+                <?php echo $this->formRow($form->get('db_password')) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+    $submit = $form->get('submit');
+    echo $this->formRow($submit);
+?>
