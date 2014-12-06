@@ -31,6 +31,8 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         // TODO: CLEAR all php cache files here after the installation : data\cache\config
+        // TODO: Create admin
+
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {
             return $result;

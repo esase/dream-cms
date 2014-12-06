@@ -12,6 +12,26 @@ use Exception;
 class Install extends Form
 {
     /**
+     * Admin nickName max string length
+     */
+    const ADMIN_NICKNAME_MAX_LENGTH = 50;
+
+    /**
+     * Admin password max string length
+     */
+    const ADMIN_PASSWORD_MAX_LENGTH = 50;
+
+    /**
+     * Admin email max string length
+     */
+    const ADMIN_EMAIL_MAX_LENGTH = 50;
+
+    /**
+     * Site email max string length
+     */
+    const SITE_EMAIL_MAX_LENGTH = 50;
+
+    /**
      * Prepare elements
      */
     public function prepare()
@@ -25,7 +45,8 @@ class Install extends Form
                 'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => 'localhost'
+                'value' => 'localhost',
+                'id' => 'db_host'
             ]
         ]);
 
@@ -38,7 +59,8 @@ class Install extends Form
                 'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => false,
-                'value' => null
+                'value' => null,
+                'id' => 'db_port'
             ]
         ]);
 
@@ -51,7 +73,8 @@ class Install extends Form
                 'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null
+                'value' => null,
+                'id' => 'db_name'
             ]
         ]);
 
@@ -64,7 +87,8 @@ class Install extends Form
                 'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null
+                'value' => null,
+                'id' => 'db_user'
             ]
         ]);
 
@@ -77,7 +101,64 @@ class Install extends Form
                 'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => false,
-                'value' => null
+                'value' => null,
+                'id' => 'db_password'
+            ]
+        ]);
+
+        $this->add([
+            'name' => 'site_email',
+            'options' => [
+                'label' => 'Site email',
+            ],
+            'attributes' => [
+                'type'  => 'Zend\Form\Element\Email',
+                'class' => 'form-control',
+                'required' => true,
+                'value' => null,
+                'id' => 'site_email'
+            ]
+        ]);
+
+        $this->add([
+            'name' => 'admin_username',
+            'options' => [
+                'label' => 'Admin username',
+            ],
+            'attributes' => [
+                'type'  => 'Zend\Form\Element\Text',
+                'class' => 'form-control',
+                'required' => true,
+                'value' => null,
+                'id' => 'admin_username'
+            ]
+        ]);
+
+        $this->add([
+            'name' => 'admin_password',
+            'options' => [
+                'label' => 'Admin password',
+            ],
+            'attributes' => [
+                'type'  => 'Zend\Form\Element\Text',
+                'class' => 'form-control',
+                'required' => true,
+                'value' => null,
+                'id' => 'admin_password'
+            ]
+        ]);
+
+        $this->add([
+            'name' => 'admin_email',
+            'options' => [
+                'label' => 'Admin email',
+            ],
+            'attributes' => [
+                'type'  => 'Zend\Form\Element\Email',
+                'class' => 'form-control',
+                'required' => true,
+                'value' => null,
+                'id' => 'admin_email'
             ]
         ]);
 
@@ -86,7 +167,7 @@ class Install extends Form
             'attributes' => [
                 'type'  => 'submit',
                 'value' => 'Submit',
-                'class' => 'btn btn-default btn-submit'
+                'class' => 'btn btn-default btn-submit',
             ]
         ]);
 
@@ -188,6 +269,84 @@ class Install extends Form
                 ]
             ],
             'validators' => [
+            ]
+        ]));
+
+        $inputFilter->add($inputFactory->createInput([
+            'name' => 'admin_username',
+            'required' => true,
+            'filters' => [
+                [
+                    'name' => 'Zend\Filter\StringTrim'
+                ]
+            ],
+            'validators' => [
+                [
+                    'name' => 'StringLength',
+                    'options' => [
+                        'max' => self::ADMIN_NICKNAME_MAX_LENGTH
+                    ]
+                ]
+            ]
+        ]));
+
+        $inputFilter->add($inputFactory->createInput([
+            'name' => 'admin_password',
+            'required' => true,
+            'filters' => [
+                [
+                    'name' => 'Zend\Filter\StringTrim'
+                ]
+            ],
+            'validators' => [
+                [
+                    'name' => 'StringLength',
+                    'options' => [
+                        'max' => self::ADMIN_PASSWORD_MAX_LENGTH
+                    ]
+                ]
+            ]
+        ]));
+
+        $inputFilter->add($inputFactory->createInput([
+            'name' => 'admin_email',
+            'required' => true,
+            'filters' => [
+                [
+                    'name' => 'Zend\Filter\StringTrim'
+                ]
+            ],
+            'validators' => [
+                [
+                    'name' => 'StringLength',
+                    'options' => [
+                        'max' => self::ADMIN_EMAIL_MAX_LENGTH
+                    ]
+                ],
+                [
+                    'name' => 'emailAddress'
+                ]
+            ]
+        ]));
+
+        $inputFilter->add($inputFactory->createInput([
+            'name' => 'site_email',
+            'required' => true,
+            'filters' => [
+                [
+                    'name' => 'Zend\Filter\StringTrim'
+                ]
+            ],
+            'validators' => [
+                [
+                    'name' => 'StringLength',
+                    'options' => [
+                        'max' => self::SITE_EMAIL_MAX_LENGTH
+                    ]
+                ],
+                [
+                    'name' => 'emailAddress'
+                ]
             ]
         ]));
 

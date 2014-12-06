@@ -15,14 +15,14 @@
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingOne">
+        <div class="panel-heading" role="tab" id="headingDb">
             <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#dbConfig" aria-expanded="true" aria-controls="dbConfig">
                     <?php echo $this->translate('DB config') ?>
                 </a>
             </h4>
         </div>
-        <div id="dbConfig" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div id="dbConfig" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingDb">
             <div class="panel-body">
                 <?php echo $this->formRow($form->get('db_host')) ?>
                 <p class="help-block"><?php echo $this->translate('Database host name description') ?></p>
@@ -33,6 +33,23 @@
                 <?php echo $this->formRow($form->get('db_name')) ?>
                 <?php echo $this->formRow($form->get('db_user')) ?>
                 <?php echo $this->formRow($form->get('db_password')) ?>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingSiteInfo">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#siteInfo" aria-expanded="true" aria-controls="siteInfo">
+                    <?php echo $this->translate('Site info') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="siteInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSiteInfo">
+            <div class="panel-body">
+                <?php echo $this->formRow($form->get('site_email')) ?>
+                <?php echo $this->formRow($form->get('admin_username')) ?>
+                <?php echo $this->formRow($form->get('admin_password')) ?>
+                <?php echo $this->formRow($form->get('admin_email')) ?>
             </div>
         </div>
     </div>

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"install\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-04 09:59+0600\n"
+"PO-Revision-Date: 2014-12-04 10:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,24 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Site email"
+msgstr "* Site email"
+
+msgid "Admin email"
+msgstr "* Admin email"
+
+msgid "The input is more than %max% characters long"
+msgstr "The input is more than %max% characters long"
+
+msgid "Admin password"
+msgstr "* Admin password"
+
+msgid "Admin username"
+msgstr "* Admin username"
+
+msgid "Site info"
+msgstr "Site info"
 
 msgid "Can't connect to the Database"
 msgstr "Can't connect to the Database"
@@ -36,7 +54,7 @@ msgstr "The input must contain only digits"
 msgid "Database port description"
 msgstr ""
 "Leave blank or specify custom MySQL database host port number.<br />Example: "
-"5506"
+"3306"
 
 msgid "Database host port number"
 msgstr "Database host port number"
@@ -97,3 +115,36 @@ msgstr "Permissions"
 
 msgid "Script installation"
 msgstr "Script installation"
+
+msgid "'%localPart%' is not a valid local part for the email address"
+msgstr "'%localPart%' is not a valid local part for the email address"
+
+msgid "'%localPart%' can not be matched against quoted-string format"
+msgstr "'%localPart%' can not be matched against quoted-string format"
+
+msgid "'%localPart%' can not be matched against dot-atom format"
+msgstr "'%localPart%' can not be matched against dot-atom format"
+
+msgid ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+msgstr ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+
+msgid ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+msgstr ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+
+msgid "'%hostname%' is not a valid hostname for the email address"
+msgstr "'%hostname%' is not a valid hostname for the email address"
+
+msgid ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
+msgstr ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
