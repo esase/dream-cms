@@ -1,6 +1,9 @@
-<div class="page-header">
-    <h1><?php echo $this->translate($this->header) ?></h1>
-</div>
+<?php 
+    echo $this->partial('partial/page-header', [
+        'header' => $this->header
+    ])
+?>
+
 <?php echo $this->content ?>
 <hr />
 <p class="text-center">

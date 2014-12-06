@@ -13,8 +13,8 @@
 
 return [
     'db' => [
-        'dsn' => 'mysql:dbname=__YOUR_DB_NAME__;host=__YOUR_DB_HOST__',
-        'username' => '__YOUR_DB_USER_NAME__',
-        'password' => '__YOUR_DB_PASSWORD__',
+        'dsn' => 'mysql:dbname=__DB_NAME__;host=__DB_HOST__;port=__DB_PORT__',
+        'username' => '__DB_USER_NAME__',
+        'password' => '__DB_PASSWORD__',
     ],
 ];

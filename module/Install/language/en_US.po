@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"install\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-04 10:58+0600\n"
+"PO-Revision-Date: 2014-12-06 20:00+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,45 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Installation has been successfully completed"
+msgstr "Installation has been successfully completed"
+
+msgid "Memcache port"
+msgstr "Memcache port"
+
+msgid "Fill the memcache host and port if you going to use it"
+msgstr "Fill the memcache host and port if you going to use it"
+
+msgid "Memcache host"
+msgstr "Memcache host"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "It used for caching  template paths, language translations, etc"
+msgstr "It used for caching  template paths, language translations, etc"
+
+msgid "Wincache"
+msgstr "Wincache"
+
+msgid "Xcache"
+msgstr "Xcache"
+
+msgid "Apc"
+msgstr "Apc"
+
+msgid "Memcached"
+msgstr "Memcached"
+
+msgid "Extension is not installed"
+msgstr "Extension is not installed"
+
+msgid "Dynamic cache engine"
+msgstr "* Dynamic cache engine"
+
+msgid "Cache"
+msgstr "Cache"
 
 msgid "Site email"
 msgstr "* Site email"
@@ -52,15 +91,13 @@ msgid "The input must contain only digits"
 msgstr "The input must contain only digits"
 
 msgid "Database port description"
-msgstr ""
-"Leave blank or specify custom MySQL database host port number.<br />Example: "
-"3306"
+msgstr "Specify custom MySQL database host port number"
 
 msgid "Database host port number"
-msgstr "Database host port number"
+msgstr "* Database host port number"
 
 msgid "Database host name description"
-msgstr "Your MySQL database host name here. <br />Example: localhost"
+msgstr "Your MySQL database host name here"
 
 msgid "Value is required and can't be empty"
 msgstr "Value is required and can't be empty"
@@ -68,8 +105,8 @@ msgstr "Value is required and can't be empty"
 msgid "Database host name"
 msgstr "* Database host name"
 
-msgid "DB config"
-msgstr "DB config"
+msgid "Database"
+msgstr "Database"
 
 msgid "Name"
 msgstr "Name"

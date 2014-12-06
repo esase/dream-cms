@@ -30,8 +30,8 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
-        // TODO: CLEAR all php cache files here after the installation : data\cache\config
-        // TODO: Create admin
+        // TODO: Show cron jobs on the finish page
+        // TODO: generated password don't work
 
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {
@@ -48,6 +48,7 @@ class IndexController extends AbstractActionController
             return $result;
         }
 
+        $errorMessage = null;
         $installForm = new InstallForm;
         $installForm->prepare();
 
@@ -58,14 +59,23 @@ class IndexController extends AbstractActionController
             // fill the form with received values
             $installForm->setData($request->getPost());
 
-            // finish installation
+            // finish the installation
             if ($installForm->isValid()) {
-                print_r($request->getPost());
-                echo 'ok';exit;
+                // show the finish page
+                if (true === ($result = $this->getModel()->install($installForm->getData()))) {
+                    // show the finish page
+                    $viewModel = new ViewModel;
+                    $viewModel->setTemplate('install/index/finish');
+
+                    return $viewModel;
+                }
+
+                $errorMessage = $result;
             }
         }
 
         return new ViewModel([
+            'error_message' => $errorMessage,
             'install_form' => $installForm
         ]);
     }

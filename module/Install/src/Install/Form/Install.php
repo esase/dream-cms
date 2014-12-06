@@ -37,128 +37,169 @@ class Install extends Form
     public function prepare()
     {
         $this->add([
+            'type'  => 'Zend\Form\Element\Text',
             'name' => 'db_host',
             'options' => [
                 'label' => 'Database host name',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => 'localhost',
-                'id' => 'db_host'
+                'id' => 'db_host',
+                'value' => 'localhost'
             ]
         ]);
 
         $this->add([
+            'type'  => 'Zend\Form\Element\Text',
             'name' => 'db_port',
             'options' => [
                 'label' => 'Database host port number',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
-                'required' => false,
-                'value' => null,
-                'id' => 'db_port'
+                'required' => true,
+                'id' => 'db_port',
+                'value' => '3306',
             ]
         ]);
 
         $this->add([
+            'type'  => 'Zend\Form\Element\Text',
             'name' => 'db_name',
             'options' => [
                 'label' => 'Database name',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null,
                 'id' => 'db_name'
             ]
         ]);
 
         $this->add([
+            'type'  => 'Zend\Form\Element\Text',
             'name' => 'db_user',
             'options' => [
                 'label' => 'Database user',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null,
                 'id' => 'db_user'
             ]
         ]);
 
         $this->add([
+            'type'  => 'Zend\Form\Element\Text',
             'name' => 'db_password',
             'options' => [
                 'label' => 'Database password',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => false,
-                'value' => null,
                 'id' => 'db_password'
             ]
         ]);
 
         $this->add([
+           'type'  => 'Zend\Form\Element\Email',
             'name' => 'site_email',
             'options' => [
                 'label' => 'Site email',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Email',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null,
                 'id' => 'site_email'
             ]
         ]);
 
         $this->add([
+            'type'  => 'Zend\Form\Element\Text',
             'name' => 'admin_username',
             'options' => [
                 'label' => 'Admin username',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null,
                 'id' => 'admin_username'
             ]
         ]);
 
         $this->add([
+            'type'  => 'Zend\Form\Element\Text',
             'name' => 'admin_password',
             'options' => [
                 'label' => 'Admin password',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Text',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null,
                 'id' => 'admin_password'
             ]
         ]);
 
         $this->add([
+            'type'  => 'Zend\Form\Element\Email',
             'name' => 'admin_email',
             'options' => [
                 'label' => 'Admin email',
             ],
             'attributes' => [
-                'type'  => 'Zend\Form\Element\Email',
                 'class' => 'form-control',
                 'required' => true,
-                'value' => null,
                 'id' => 'admin_email'
+            ]
+        ]);
+
+        $this->add([
+            'type'  => 'Zend\Form\Element\Select',
+            'name' => 'dynamic_cache',
+            'options' => [
+                'label' => 'Dynamic cache engine',
+                'value_options' => [
+                    '' => '',
+                    'memcached' => 'Memcached',
+                    'apc' => 'Apc',
+                    'xcache' => 'Xcache',
+                    'wincache' => 'Wincache',
+                ]
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'required' => true,
+                'id' => 'dynamic_cache'
+            ]
+        ]);
+
+        $this->add([
+            'type'  => 'Zend\Form\Element\Text',
+            'name' => 'memcache_host',
+            'options' => [
+                'label' => 'Memcache host',
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'required' => false,
+                'id' => 'memcache_host',
+                'value' => 'localhost'
+            ]
+        ]);
+
+        $this->add([
+            'type'  => 'Zend\Form\Element\Text',
+            'name' => 'memcache_port',
+            'options' => [
+                'label' => 'Memcache port',
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'required' => false,
+                'id' => 'memcache_port',
+                'value' => '11211',
             ]
         ]);
 
@@ -223,7 +264,7 @@ class Install extends Form
 
         $inputFilter->add($inputFactory->createInput([
             'name' => 'db_port',
-            'required' => false,
+            'required' => true,
             'filters' => [
                 [
                     'name' => 'Zend\Filter\StringTrim'
@@ -346,6 +387,63 @@ class Install extends Form
                 ],
                 [
                     'name' => 'emailAddress'
+                ]
+            ]
+        ]));
+
+        $inputFilter->add($inputFactory->createInput([
+            'name' => 'dynamic_cache',
+            'required' => true,
+            'filters' => [
+            ],
+            'validators' => [
+                [
+                    'name' => 'callback',
+                    'options' => [
+                        'callback' => function($value, $data) {
+                            switch($value) {
+                                case 'xcache' :
+                                    return extension_loaded('xcache');
+                                case 'wincache' :
+                                    return extension_loaded('wincache');
+                                case 'apc' :
+                                    return (version_compare('3.1.6', phpversion('apc')) > 0) || !ini_get('apc.enabled') ? false : true;
+                                default :
+                                    $v = (string) phpversion('memcached');
+                                    $extMemcachedMajorVersion = ($v !== '') ? (int) $v[0] : 0;
+
+                                    return $extMemcachedMajorVersion < 1 ? false : true;
+                            }
+                        },
+                        'message' => 'Extension is not installed'
+                    ]
+                ]
+            ]
+        ]));
+
+        $inputFilter->add($inputFactory->createInput([
+            'name' => 'memcache_host',
+            'required' => false,
+            'filters' => [
+                [
+                    'name' => 'Zend\Filter\StringTrim'
+                ]
+            ],
+            'validators' => [
+            ]
+        ]));
+
+        $inputFilter->add($inputFactory->createInput([
+            'name' => 'memcache_port',
+            'required' => false,
+            'filters' => [
+                [
+                    'name' => 'Zend\Filter\StringTrim'
+                ]
+            ],
+            'validators' => [
+                [
+                    'name' => 'Zend\Validator\Digits'
                 ]
             ]
         ]));

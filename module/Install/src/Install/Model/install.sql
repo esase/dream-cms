@@ -1,4 +1,46 @@
-CREATE TABLE IF NOT EXISTS `application_email_queue` (
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `acl_resource`;
+DROP TABLE IF EXISTS `acl_resource_action_track`;
+DROP TABLE IF EXISTS `acl_resource_connection`;
+DROP TABLE IF EXISTS `acl_resource_connection_setting`;
+DROP TABLE IF EXISTS `acl_role`;
+DROP TABLE IF EXISTS `application_admin_menu`;
+DROP TABLE IF EXISTS `application_admin_menu_category`;
+DROP TABLE IF EXISTS `application_admin_menu_part`;
+DROP TABLE IF EXISTS `application_email_queue`;
+DROP TABLE IF EXISTS `application_event`;
+DROP TABLE IF EXISTS `application_module`;
+DROP TABLE IF EXISTS `application_setting`;
+DROP TABLE IF EXISTS `application_setting_category`;
+DROP TABLE IF EXISTS `application_setting_predefined_value`;
+DROP TABLE IF EXISTS `application_setting_value`;
+DROP TABLE IF EXISTS `application_time_zone`;
+DROP TABLE IF EXISTS `layout_list`;
+DROP TABLE IF EXISTS `localization_list`;
+DROP TABLE IF EXISTS `page_layout`;
+DROP TABLE IF EXISTS `page_structure`;
+DROP TABLE IF EXISTS `page_system`;
+DROP TABLE IF EXISTS `page_system_page_depend`;
+DROP TABLE IF EXISTS `page_system_widget_depend`;
+DROP TABLE IF EXISTS `page_system_widget_hidden`;
+DROP TABLE IF EXISTS `page_visibility`;
+DROP TABLE IF EXISTS `page_widget`;
+DROP TABLE IF EXISTS `page_widget_connection`;
+DROP TABLE IF EXISTS `page_widget_depend`;
+DROP TABLE IF EXISTS `page_widget_layout`;
+DROP TABLE IF EXISTS `page_widget_page_depend`;
+DROP TABLE IF EXISTS `page_widget_position`;
+DROP TABLE IF EXISTS `page_widget_position_connection`;
+DROP TABLE IF EXISTS `page_widget_setting`;
+DROP TABLE IF EXISTS `page_widget_setting_category`;
+DROP TABLE IF EXISTS `page_widget_setting_predefined_value`;
+DROP TABLE IF EXISTS `page_widget_setting_value`;
+DROP TABLE IF EXISTS `page_widget_visibility`;
+DROP TABLE IF EXISTS `user_list`;
+DROP TABLE IF EXISTS `xmlrpc_class`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `application_email_queue` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(50) NOT NULL,
     `title` TEXT NOT NULL,
@@ -7,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `application_email_queue` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `application_time_zone` (
+CREATE TABLE `application_time_zone` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(150) NOT NULL,
     PRIMARY KEY (`id`)
@@ -431,7 +473,7 @@ INSERT INTO `application_time_zone` (`id`, `name`) VALUES
 (415, 'Pacific/Wallis'),
 (416, 'UTC');
 
-CREATE TABLE IF NOT EXISTS `application_module` (
+CREATE TABLE `application_module` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
@@ -456,7 +498,7 @@ INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `ve
 (7, 'Localization', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
 (8, 'Acl', 'system', 'active', '2.0.0', 'eSASe', 'alexermashev@gmail.com', NULL, NULL);
 
-CREATE TABLE IF NOT EXISTS `xmlrpc_class` (
+CREATE TABLE `xmlrpc_class` (
     `namespace` VARCHAR(20) NOT NULL,
     `path` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
@@ -470,7 +512,7 @@ INSERT INTO `xmlrpc_class` (`namespace`, `path`, `module`) VALUES
 ('localization', 'Localization\\XmlRpc\\LocalizationHandler', 1),
 ('user', 'User\\XmlRpc\\UserHandler', 2);
 
-CREATE TABLE IF NOT EXISTS `localization_list` (
+CREATE TABLE `localization_list` (
     `language` CHAR(2) NOT NULL,
     `locale` CHAR(5) NOT NULL,
     `description` VARCHAR(50) NOT NULL,
@@ -484,7 +526,7 @@ INSERT INTO `localization_list` (`language`, `locale`, `description`, `default`,
 ('en', 'en_US', 'English', 1, 'ltr'),
 ('ru', 'ru_RU', 'Русский', NULL, 'ltr');
 
-CREATE TABLE IF NOT EXISTS `layout_list` (
+CREATE TABLE `layout_list` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
@@ -502,7 +544,7 @@ CREATE TABLE IF NOT EXISTS `layout_list` (
 INSERT INTO `layout_list` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
 ('base', 'system', 'active', 'Base layout', 'Default base layout', '2.0.0', 'eSASe', 'alexermashev@gmail.com');
 
-CREATE TABLE IF NOT EXISTS `acl_role` (
+CREATE TABLE `acl_role` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
@@ -514,7 +556,7 @@ INSERT INTO `acl_role` (`id`, `name`, `type`) VALUES
 (2, 'guest', 'system'),
 (3, 'member', 'system');
 
-CREATE TABLE IF NOT EXISTS `acl_resource` (
+CREATE TABLE `acl_resource` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `resource` VARCHAR(50) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
@@ -579,7 +621,7 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (54, 'pages_administration_edit_widget_settings', 'ACL - Editing widgets settings in admin area', 5),
 (55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5);
 
-CREATE TABLE IF NOT EXISTS `acl_resource_connection` (
+CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `role` SMALLINT(5) UNSIGNED NOT NULL,
     `resource` SMALLINT(5) UNSIGNED NOT NULL,
@@ -597,7 +639,7 @@ INSERT INTO `acl_resource_connection` (`id`, `role`, `resource`) VALUES
 (1,  3, 39),
 (2,  2, 39);
 
-CREATE TABLE IF NOT EXISTS `user_list` (
+CREATE TABLE `user_list` (
     `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `nick_name` VARCHAR(50) NOT NULL DEFAULT '',
     `slug` VARCHAR(100) NOT NULL DEFAULT '',
@@ -639,10 +681,10 @@ CREATE TABLE IF NOT EXISTS `user_list` (
         ON DELETE SET NULL       
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `user_list` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`) VALUES
-(1, 'esase', 'esase', 'approved', 'alexermashev@gmail.com', 'a10487c11b57054ffefe4108f3657a13cdbf54cc', ',LtHh5Dz', 1, '123sAdsNms', 'Uyqqqx998');
+INSERT INTO `user_list` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`, `registered`) VALUES
+(1, '__admin_nick_name_value__', '__admin_nick_name_slug_value__', 'approved', '__admin_email_value__', '__admin_password_value__', '__admin_password_salt_value__', 1, '__admin_api_key_value__', '__admin_api_secret_value__', '__admin_registered_value__');
 
-CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
+CREATE TABLE `acl_resource_connection_setting` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
     `user_id` INT(10) UNSIGNED DEFAULT NULL,
@@ -660,7 +702,7 @@ CREATE TABLE IF NOT EXISTS `acl_resource_connection_setting` (
       ON DELETE CASCADE  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `acl_resource_action_track` (
+CREATE TABLE `acl_resource_action_track` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
     `connection_id` MEDIUMINT(8) UNSIGNED NOT NULL,
     `user_id` INT(10) UNSIGNED DEFAULT NULL,
@@ -676,7 +718,7 @@ CREATE TABLE IF NOT EXISTS `acl_resource_action_track` (
       ON DELETE CASCADE  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `application_setting_category` (
+CREATE TABLE `application_setting_category` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL DEFAULT '',
     `module` SMALLINT(5) UNSIGNED NOT NULL,
@@ -706,7 +748,7 @@ INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (17,  'Localization', 1),
 (18,  'Main settings', 5);
 
-CREATE TABLE IF NOT EXISTS `application_setting` (
+CREATE TABLE `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `label` VARCHAR(150) DEFAULT NULL,
@@ -757,8 +799,8 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (23, 'application_page_range', 'Page range', NULL, 'integer', 1, 5, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Page range should be greater than 0'),
 (24, 'application_dynamic_cache', 'Dynamic cache engine', 'It used for caching  template paths, language translations, etc', 'select', 1, 1, 2, 1, NULL, NULL, 'switch(''__value__'') {\r\n    case ''xcache'' :\r\n        return extension_loaded(''xcache'');\r\n    case ''wincache'' :\r\n        return extension_loaded(''wincache'');\r\n    case ''apc'' :\r\n        return (version_compare(''3.1.6'', phpversion(''apc'')) > 0) || !ini_get(''apc.enabled'') ? false : true;\r\n    default :\r\n        $v = (string) phpversion(''memcached'');\r\n        $extMemcachedMajorVersion = ($v !== '''') ? (int) $v[0] : 0;\r\n\r\n        return $extMemcachedMajorVersion < 1 ? false : true;\r\n}', 'Extension is not loaded'),
 (25, 'application_dynamic_cache_life_time', 'Dynamic cache life time', NULL, 'integer', 1, 2, 2, 1, NULL, NULL, NULL, NULL),
-(26, 'application_memcache_host', 'Memcache host', NULL, 'text', 1, 3, 2, 1, NULL, NULL, NULL, NULL),
-(27, 'application_memcache_port', 'Memcache port', NULL, 'integer', 1, 4, 2, 1, NULL, NULL, NULL, NULL),
+(26, 'application_memcache_host', 'Memcache host', NULL, 'text', NULL, 3, 2, 1, NULL, NULL, NULL, NULL),
+(27, 'application_memcache_port', 'Memcache port', NULL, 'integer', NULL, 4, 2, 1, NULL, NULL, NULL, NULL),
 (28, 'application_notification_from', 'From', NULL, 'email', 1, 1, 7, 1, NULL, NULL, NULL, NULL),
 (29, 'application_use_smtp', 'Use SMTP', NULL, 'checkbox', NULL, 2, 7, 1, NULL, NULL, NULL, NULL),
 (30, 'application_smtp_host', 'SMTP host', NULL, 'text', NULL, 3, 7, 1, NULL, NULL, NULL, NULL),
@@ -811,7 +853,7 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (78, 'application_notifications_count', 'Count of notifications sent per time', NULL, 'integer', 1, 1, 7, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (79, 'application_smtp_login', 'SMTP login type', NULL, 'select', NULL, 7, 7, 1, NULL, NULL, NULL, NULL);
 
-CREATE TABLE IF NOT EXISTS `application_setting_value` (
+CREATE TABLE `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
     `value` TEXT NOT NULL,
@@ -830,7 +872,7 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (1,  1,  'Dream CMS', NULL),
 (2,  2,  '2.0.0', NULL),
 (3,  3,  'Dream CMS', NULL),
-(4,  4,  'info@mysite.com', NULL),
+(4,  4,  '__site_email_value__', NULL),
 (5,  5,  'Dream CMS', NULL),
 (6,  6,  'php,dream cms,zend framework2', NULL),
 (7,  7,  '1', NULL),
@@ -850,10 +892,10 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (21, 21, '100', NULL),
 (22, 22, '10', NULL),
 (23, 23, '10', NULL),
-(24, 24, 'xcache', NULL),
+(24, 24, '__dynamic_cache_value__', NULL),
 (25, 25, '600', NULL),
-(26, 26, 'localhost', NULL),
-(27, 27, '11211', NULL),
+(26, 26, '__memcache_host_value__', NULL),
+(27, 27, '__memcache_port_value__', NULL),
 (28, 28, 'no_reply@mysite.com', NULL),
 (29, 34, '3', NULL),
 (30, 35, '15', NULL),
@@ -919,7 +961,7 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (91, 31, '587', NULL),
 (92, 79, 'plain', NULL);
 
-CREATE TABLE IF NOT EXISTS `application_setting_predefined_value` (
+CREATE TABLE `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
     `value` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`setting_id`, `value`),
@@ -944,7 +986,7 @@ INSERT INTO `application_setting_predefined_value` (`setting_id`, `value`) VALUE
 (79, 'plain'),
 (79, 'crammd5');
 
-CREATE TABLE IF NOT EXISTS `application_event` (
+CREATE TABLE `application_event` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
@@ -996,7 +1038,7 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (37, 'page_widget_delete', 5, 'Event - Deleting widgets'),
 (38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings');
 
-CREATE TABLE IF NOT EXISTS `application_admin_menu_part` (
+CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1013,7 +1055,7 @@ INSERT INTO `application_admin_menu_part` (`id`, `name`, `module`, `icon`) VALUE
 (2, 'Pages', 5, 'page_menu.png'),
 (3, 'Modules', 1, 'module_menu.png');
 
-CREATE TABLE IF NOT EXISTS `application_admin_menu_category` (
+CREATE TABLE `application_admin_menu_category` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1032,7 +1074,7 @@ INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) V
 (4, 'Files manager', 4, 'file_manager_menu_item.png'),
 (5, 'Pages management', 5, 'page_menu_item.png');
 
-CREATE TABLE IF NOT EXISTS `application_admin_menu` (
+CREATE TABLE `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `controller` VARCHAR(50) NOT NULL,
@@ -1065,7 +1107,7 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (8, 'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
 (9, 'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2);
 
-CREATE TABLE IF NOT EXISTS `page_widget_position` (
+CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     PRIMARY KEY (`id`),
@@ -1083,7 +1125,7 @@ INSERT INTO `page_widget_position` (`id`, `name`) VALUES
 (8, 'content-middle'),
 (9, 'logo');
 
-CREATE TABLE IF NOT EXISTS `page_layout` (
+CREATE TABLE `page_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     `title` VARCHAR(150) NOT NULL,
@@ -1108,7 +1150,7 @@ INSERT INTO `page_layout` (`id`, `name`, `title`, `default_position`, `image`) V
 (10, 'layout-top-bottom-areas-between-2-columns-l50-r50', 'top and bottom areas and 2 columns between them (left 50%, right 50%)', 4, 'layout-top-bottom-areas-between-2-columns-l50-r50.png'),
 (11, 'layout-2-columns-l50-r50-below-bottom-area', '2 columns (left 50%, right 50%) below bottom area', 4, 'layout-2-columns-l50-r50-below-bottom-area.png');
 
-CREATE TABLE IF NOT EXISTS `page_widget_position_connection` (
+CREATE TABLE `page_widget_position_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `position_id` SMALLINT(5) UNSIGNED NOT NULL,
     `layout_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1153,7 +1195,7 @@ INSERT INTO `page_widget_position_connection` (`id`, `position_id`, `layout_id`)
 (29, 5, 11),
 (30, 7, 11);
 
-CREATE TABLE IF NOT EXISTS `page_widget` (
+CREATE TABLE `page_widget` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1183,7 +1225,7 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1),
 (14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1);
 
-CREATE TABLE IF NOT EXISTS `page_system` (
+CREATE TABLE `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
@@ -1229,7 +1271,7 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`,
 (11, 'user-edit', 'Edit account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, 1, NULL),
 (12, '404', '404 error', 5, NULL, NULL, 1, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, NULL, 1, NULL, 1, 0, 0, 1, NULL, 1, NULL);
 
-CREATE TABLE IF NOT EXISTS `page_system_page_depend` (
+CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `depend_page_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1257,7 +1299,7 @@ INSERT INTO `page_system_page_depend` (`id`, `page_id`, `depend_page_id`) VALUES
 (11, 11, 1),
 (12, 12, 1);
 
-CREATE TABLE IF NOT EXISTS `page_system_widget_hidden` (
+CREATE TABLE `page_system_widget_hidden` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1291,7 +1333,7 @@ INSERT INTO `page_system_widget_hidden` (`id`, `page_id`, `widget_id`) VALUES
 (18,  12,  2),
 (19,  12,  3);
 
-CREATE TABLE IF NOT EXISTS `page_system_widget_depend` (
+CREATE TABLE `page_system_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1320,7 +1362,7 @@ INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`, `order`) 
 (12, 10, 9, 2),
 (13, 10, 10, 1);
 
-CREATE TABLE IF NOT EXISTS `page_widget_page_depend` (
+CREATE TABLE `page_widget_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1344,7 +1386,7 @@ INSERT INTO `page_widget_page_depend` (`id`, `page_id`, `widget_id`) VALUES
 (8, 7, 12),
 (9, 7, 14);
 
-CREATE TABLE IF NOT EXISTS `page_widget_depend` (
+CREATE TABLE `page_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `widget_id` SMALLINT(5) UNSIGNED NOT NULL,
     `depend_widget_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1358,7 +1400,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_depend` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_structure` (
+CREATE TABLE `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
     `title` VARCHAR(50) DEFAULT NULL,
@@ -1408,7 +1450,7 @@ CREATE TABLE IF NOT EXISTS `page_structure` (
         ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_visibility` (
+CREATE TABLE `page_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `hidden` SMALLINT(5) UNSIGNED NULL,
@@ -1422,7 +1464,7 @@ CREATE TABLE IF NOT EXISTS `page_visibility` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_widget_layout` (
+CREATE TABLE `page_widget_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(30) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
@@ -1434,7 +1476,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_layout` (
 INSERT INTO `page_widget_layout` (`id`, `name`, `title`, `default`) VALUES
 (1, 'panel', 'Panel', 1);
 
-CREATE TABLE IF NOT EXISTS `page_widget_connection` (
+CREATE TABLE `page_widget_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(50) DEFAULT NULL,
     `page_id` SMALLINT(5) UNSIGNED NULL,
@@ -1458,7 +1500,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_connection` (
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_widget_setting_category` (
+CREATE TABLE `page_widget_setting_category` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL DEFAULT '',
     `module` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1472,7 +1514,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_setting_category` (
 INSERT INTO `page_widget_setting_category` (`id`, `name`, `module`) VALUES
 (1,   'Main settings', 5);
 
-CREATE TABLE IF NOT EXISTS `page_widget_setting` (
+CREATE TABLE `page_widget_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `widget` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1499,7 +1541,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_setting` (
 INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`) VALUES
 (1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1);
 
-CREATE TABLE IF NOT EXISTS `page_widget_setting_predefined_value` (
+CREATE TABLE `page_widget_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
     `value` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`setting_id`, `value`),
@@ -1508,7 +1550,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_setting_predefined_value` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_widget_setting_value` (
+CREATE TABLE `page_widget_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
     `value` TEXT NOT NULL,
@@ -1523,7 +1565,7 @@ CREATE TABLE IF NOT EXISTS `page_widget_setting_value` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `page_widget_visibility` (
+CREATE TABLE `page_widget_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `widget_connection` SMALLINT(5) UNSIGNED NOT NULL,
     `hidden` SMALLINT(5) UNSIGNED NULL,

@@ -1,8 +1,8 @@
-<div class="page-header" style="margin-top:70px">
-    <h1>
-        GREAT!!!
-    </h1>
-</div>
+<?php 
+    echo $this->partial('partial/page-header', [
+        'header' => 'Configuration',
+    ])
+?>
 
 <?php
     $form = $this->install_form;
@@ -13,12 +13,19 @@
     echo $this->form()->openTag($form);
 ?>
 
+<?php if ($this->error_message): ?>
+    <div class="alert alert-danger" role="alert">
+        <?php echo $this->error_message ?>
+    </div>
+    <br />
+<?php endif ?>
+
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingDb">
             <h4 class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#dbConfig" aria-expanded="true" aria-controls="dbConfig">
-                    <?php echo $this->translate('DB config') ?>
+                    <?php echo $this->translate('Database') ?>
                 </a>
             </h4>
         </div>
@@ -53,9 +60,24 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingCache">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#cacheInfo" aria-expanded="true" aria-controls="cacheInfo">
+                    <?php echo $this->translate('Cache') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="cacheInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingCache">
+            <div class="panel-body">
+                <?php echo $this->formRow($form->get('dynamic_cache')) ?>
+                <p class="help-block"><?php echo $this->translate('It used for caching  template paths, language translations, etc') ?></p>
+                <?php echo $this->formRow($form->get('memcache_host')) ?>
+                <p class="help-block"><?php echo $this->translate('Fill the memcache host and port if you going to use it') ?></p>
+                <?php echo $this->formRow($form->get('memcache_port')) ?>
+            </div>
+        </div>
+    </div>
 </div>
 
-<?php
-    $submit = $form->get('submit');
-    echo $this->formRow($submit);
-?>
+<?php echo $this->formRow($form->get('submit')) ?>

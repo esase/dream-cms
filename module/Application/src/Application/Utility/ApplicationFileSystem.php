@@ -12,9 +12,9 @@ use Application\Utility\ApplicationSlug as SlugUtility;
 class ApplicationFileSystem
 {
     /**
-     * Default files permission
+     * Default folder permissions
      */
-    const DEFAULT_PERMISSION = 0777;
+    const DEFAULT_FOLDER_PERMISSIONS = 0755;
 
     /**
      * System files
@@ -52,7 +52,7 @@ class ApplicationFileSystem
      * @throws Application\Exception\ApplicationException
      * @return void
      */
-    public static function createDir($path, $permission = self::DEFAULT_PERMISSION)
+    public static function createDir($path, $permission = self::DEFAULT_FOLDER_PERMISSIONS)
     {
         if (true !== ($result = mkdir($path, $permission, true))) {
             throw new ApplicationException ('Failed to create directory - ' . $path);
