@@ -906,7 +906,7 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (35, 38, 'Your profile is now deactived', NULL),
 (36, 39, '<p><b>Dear __RealName__</b>,</p>\r\n<p>Your profile was deactivated!</p>\r\n<p>Please contact with support team.</p>\r\n<p>Your E-mail: __Email__</p>', NULL),
 (37, 38, 'Ваш профиль сейчас дезактивирован', 'ru'),
-(38, 39, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Ваш профиль был дезактивирован!</p>\r\n<p>Пожалуйста, связаться с командой поддержки.</p>\r\n<p>Ваш адрес электронной почты: __Email__</p>', 'ru'),
+(38, 39, '<p><b>Уважаемый(я) __RealName__</b>,</p>\r\n<p>Ваш профиль был дезактивирован!</p>\r\n<p>Пожалуйста, свяжитесь с командой поддержки.</p>\r\n<p>Ваш адрес электронной почты: __Email__</p>', 'ru'),
 (39, 40, 'Your profile deleted', NULL),
 (40, 41, '<p><b>Dear __RealName__</b>,</p>\r\n<p>Your profile was deleted!</p>', NULL),
 (41, 40, 'Ваш профиль удален', 'ru'),

@@ -12,6 +12,7 @@
  */
 
 return [
+    'support_url' => 'http://dream-cms.com',
     'php_settings' => [
         'mbstring.internal_encoding' => 'UTF-8'
     ],
@@ -26,8 +27,8 @@ return [
         ],
         'storage' => 'Zend\Session\Storage\SessionArrayStorage',
         'validators' => [
-            'Zend\Session\Validator\RemoteAddr' => getEnv('REMOTE_ADDR'),
-            'Zend\Session\Validator\HttpUserAgent' => getEnv('HTTP_USER_AGENT'),
+            'Zend\Session\Validator\RemoteAddr',
+            'Zend\Session\Validator\HttpUserAgent'
         ],
         'save_handler' => null
     ],

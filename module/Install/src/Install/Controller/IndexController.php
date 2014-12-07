@@ -30,7 +30,10 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
-        // TODO: test installation with disabled permissions
+        // TODO: ADD HELP LINKS FOR INSTALL STEPS IN VIEW
+        // TODO: REPLACE ALL LINK TO dream-cms.com with a value from config (support_url)
+//TODO: AD INFO ABOUT CRON JOBS INTO description.txt
+// TODO: TEST ALL UNIT TESTS IN UBUNTU
 
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {

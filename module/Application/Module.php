@@ -118,6 +118,9 @@ class Module implements ConsoleUsageProviderInterface
      */
     public function initApplication(ModuleEvent $e)
     {
+        // init php settings
+        $this->initPhpSettings();
+
         // set the service manager
         ServiceLocatorService::setServiceLocator($this->serviceLocator);
 
@@ -127,9 +130,6 @@ class Module implements ConsoleUsageProviderInterface
             // init session
             $this->initSession();
         }
-
-        // init php settings
-        $this->initPhpSettings();
     }
 
     /**
@@ -140,35 +140,21 @@ class Module implements ConsoleUsageProviderInterface
         try {
             $session = $this->serviceLocator->get('Zend\Session\SessionManager');
             $session->start();
-
             $container = new SessionContainer('initialized');
-            $config = $this->serviceLocator->get('Config');
 
             // init a new session
             if (!isset($container->init)) {
                 $session->regenerateId(true);
                 $container->init = 1;
-
-                // remember current visitors options
-                $container = new SessionContainer('session_validators');
-                if (!empty($config['session']['validators'])) {
-                    foreach ($config['session']['validators'] as $validator => $defaultValue) {
-                        $container[$validator] = $defaultValue;
-                    }
-                }
             }
 
             // validate the session
+            $config = $this->serviceLocator->get('Config');
+
             if (!empty($config['session']['validators'])) {
                 $chain = $session->getValidatorChain();
-                $container = new SessionContainer('session_validators');
-
-                foreach ($config['session']['validators'] as $validator => $defaultValue) {
-                    $validatorValue = !empty($container->$validator)
-                        ? $container[$validator]
-                        : $defaultValue; 
-
-                    $chain->attach('session.validate', [new $validator($validatorValue), 'isValid']);
+                foreach ($config['session']['validators'] as $validator) {
+                    $chain->attach('session.validate', [new $validator(), 'isValid']);
                 }
             }
         }
