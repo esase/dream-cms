@@ -30,9 +30,7 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
-        // TODO: при порадкшн мод, если директороия data / cache запрещена то вываливаются ворниги
-        // TODO:  НА ubunte криво как то работает
-        // TODO: CHECK CRON JOBS on UBUNTU
+        // TODO: test installation with disabled permissions
 
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {
