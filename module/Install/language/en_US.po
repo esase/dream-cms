@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"install\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-06 20:00+0600\n"
+"PO-Revision-Date: 2014-12-07 12:17+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,18 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Go to the admin panel to add additional modules and customize the site"
+msgstr "Go to the admin panel to add additional modules and customize the site"
+
+msgid "Remove the installation folder"
+msgstr "Remove the installation folder"
+
+msgid "Setup the following cron jobs command"
+msgstr "Setup the following cron jobs command"
+
+msgid "Final steps"
+msgstr "Final steps"
 
 msgid "Installation has been successfully completed"
 msgstr "Installation has been successfully completed"

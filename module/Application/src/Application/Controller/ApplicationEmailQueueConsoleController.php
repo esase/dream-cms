@@ -151,7 +151,7 @@ class ApplicationEmailQueueConsoleController extends ApplicationAbstractBaseCons
         $verbose = $request->getParam('verbose');
 
         if (!$verbose) {
-            return 'Messages have been sent.' . "\n";
+            return 'All messages have been sent.' . "\n";
         }
 
         return $sentMessages  . ' messages have been sent.' . "\n";

@@ -5,8 +5,15 @@
 ?>
 
 <div class="panel panel-default">
-    <div class="panel-heading">Cron jobs</div>
+    <div class="panel-heading"><?php echo $this->translate('Final steps') ?></div>
     <div class="panel-body">
-        <p><b>Setup the following cron jobs command: </b></p>
+        <p>1. <?php echo $this->translate('Setup the following cron jobs command') ?>:</p>
+        <ul>
+            <?php foreach ($this->cron_jobs as $job): ?>
+                <li><b><?php echo $job['time'] ?> <?php echo $this->cron_command ?> <?php echo $job['action'] ?></b></li>
+            <?php endforeach ?>
+        </ul>
+        <p>2. <?php echo $this->translate('Remove the installation folder') ?>: <b><?php echo $this->module_dir ?></b></p>
+        <p>3. <a target="_blank" href="<?php echo $this->url('application/page', ['controller' => 'login-administration']) ?>"><?php echo $this->translate('Go to the admin panel to add additional modules and customize the site') ?></a></p>
     </div>
 </div>

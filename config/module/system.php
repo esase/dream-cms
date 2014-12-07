@@ -1,5 +1,4 @@
 <?php
-
-return [
-    'Install'
-];
+    return [
+        'Install',
+    ];

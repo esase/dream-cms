@@ -30,8 +30,9 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
-        // TODO: Show cron jobs on the finish page
-        // TODO: generated password don't work
+        // TODO: при порадкшн мод, если директороия data / cache запрещена то вываливаются ворниги
+        // TODO:  НА ubunte криво как то работает
+        // TODO: CHECK CRON JOBS on UBUNTU
 
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {
@@ -61,11 +62,20 @@ class IndexController extends AbstractActionController
 
             // finish the installation
             if ($installForm->isValid()) {
+                $config = $this->serviceLocator->get('config');
+
                 // show the finish page
-                if (true === ($result = $this->getModel()->install($installForm->getData()))) {
+                if (true === ($result = $this->getModel()->
+                        install($installForm->getData(), $config['cms_name'], $config['cms_version']))) {
+
                     // show the finish page
                     $viewModel = new ViewModel;
-                    $viewModel->setTemplate('install/index/finish');
+                    $viewModel->setVariables([
+                            'cron_command' => $this->getModel()->getCronCommandLine(),
+                            'cron_jobs' => $this->getModel()->getCronJobs(),
+                            'module_dir' => $this->getModel()->getInstallModuleDirPath()
+                        ])
+                        ->setTemplate('install/index/finish');
 
                     return $viewModel;
                 }

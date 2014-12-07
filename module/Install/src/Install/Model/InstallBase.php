@@ -69,19 +69,56 @@ class InstallBase
     protected $installSqlFile = 'install.sql';
 
     /**
+     * Get cron jobs
+     * 
+     * @return array
+     */
+    public function getCronJobs()
+    {
+        return [
+            0 => [
+                'time'   => '*/5 * * * *',
+                'action' => APPLICATION_PUBLIC . '/index.php application send messages'
+            ]
+        ];
+    }
+
+    /**
+     * Get install module dir path
+     *
+     * @return string
+     */
+    public function getInstallModuleDirPath()
+    {
+        return APPLICATION_ROOT . '/module/Install';
+    }
+
+    /**
+     * Get cron command line
+     *
+     * @return string
+     */
+    public function getCronCommandLine()
+    {
+        return '/replace/it/with/path/to/php/binary -q';
+    }
+
+    /**
      * Install script
      *
      * @param array $formData
+     * @param string $cmsName
+     * @param string $cmsVersion
      * @return string|boolean
      */
-    public function install(array $formData)
+    public function install(array $formData, $cmsName, $cmsVersion)
     {
         try {
             // generate autoload config
             $this->generateAutoloadConfig($formData);
 
             // install the sql file
-            $this->installSqlFile($formData);
+            $this->installSqlFile($formData, $cmsName, $cmsVersion);
 
             // clear cache files
             $this->clearConfigCacheFiles();
@@ -172,9 +209,11 @@ class InstallBase
      * Install sql file
      *
      * @param array $formData
+     * @param string $cmsName
+     * @param string $cmsVersion
      * @return void
      */
-    protected function installSqlFile(array $formData)
+    protected function installSqlFile(array $formData, $cmsName, $cmsVersion)
     {
         $passwordSalt = $this->generateRandomString();
 
@@ -191,6 +230,8 @@ class InstallBase
             '__dynamic_cache_value__',
             '__memcache_host_value__',
             '__memcache_port_value__',
+            '__cms_name_value__',
+            '__cms_version_value__',
         ];
 
         $sqlReplaysKeys = [
@@ -206,6 +247,8 @@ class InstallBase
             $formData['dynamic_cache'],
             $formData['memcache_host'],
             $formData['memcache_port'],
+            $cmsName,
+            $cmsVersion
         ];
 
         $adapter = new DbAdapter([
