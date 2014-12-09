@@ -1,5 +1,8 @@
+<?php $this->layout()->help_url = '/install/php-settings' ?>
+
 <?php 
     echo $this->partial('partial/check-page', [
+        'image' => 'layout/base/application/image/icon/setting.png',
         'header' => 'PHP settings',
         'content' => $this->partial('partial/table', [
             'headers' => [

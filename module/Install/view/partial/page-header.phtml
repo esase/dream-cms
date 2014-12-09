@@ -1,3 +1,8 @@
 <div class="page-header">
-    <h1><?php echo $this->translate($this->header) ?></h1>
+    <h1>
+        <?php if($this->image): ?>
+            <img src="<?php echo $this->escapeHtmlAttr($this->image) ?>" />
+        <?php endif ?>
+        <?php echo $this->translate($this->header) ?>
+    </h1>
 </div>

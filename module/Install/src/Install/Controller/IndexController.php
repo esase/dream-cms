@@ -30,8 +30,6 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
-        // TODO: ADD HELP LINKS FOR INSTALL STEPS IN VIEW -- last
-
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {
             return $result;
