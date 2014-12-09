@@ -2,10 +2,10 @@
 
 ## SYSTEM REQUIREMENTS
 
-1. Apache WEB server 2 or later.
-2. PHP 5.4.0 or later.
-3. MySQL 5 or later with InnoDb support.
-4. Memcached latest version or some of different cache engines such as: APC, WinCache, XCache.
+    1. Apache WEB server 2 or later.
+    2. PHP 5.4.0 or later.
+    3. MySQL 5 or later with InnoDb support.
+    4. Memcached latest version or some of different cache engines such as: APC, WinCache, XCache.
 
 ## PERMISSIONS
 
@@ -23,8 +23,9 @@
         11. public/resource/user
         12. public/resource/user/thumbnail
         13. data/log
-        14. public/resource/file_manager
-        15. public/resource/membership
+        14. public/resource/filemanager
+        15. config/autoload
+        16. config/module/system.php
 
 ## APACHE SETTINGS
 
@@ -38,11 +39,20 @@
 ## PHP SETTINGS
 
     1. PHP must be compiled with these extensions:
-        1. memcached
+        1. memcached or xcache or apc or wincache
         2. intl
         3. zlib
         4. gd
-        5. SplFileInfo
+        5. fileinfo
+        6. zip
+        7. pdo_mysql
+        8. curl
+        9. mbstring
 
     2. PHP must be enabled with these options:
-        1. fopen wrappers On
+        1. allow_url_fopen 1
+        2. file_uploads 1
+
+## CRON JOBS
+
+    1. */5 * * * * /replace/it/with/path/to/php/binary -q /replace/it/with/application/public/path/index.php application send messages

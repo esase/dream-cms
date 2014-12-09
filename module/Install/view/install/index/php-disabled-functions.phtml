@@ -1,0 +1,20 @@
+<?php $this->layout()->help_url = '/install/php-disabled-functions' ?>
+
+<?php 
+    echo $this->partial('partial/check-page', [
+        'image' => 'layout/base/application/image/icon/info.png',
+        'header' => 'PHP disabled functions',
+        'content' => $this->partial('partial/table', [
+            'headers' => [
+                'Function',
+                'Current status',
+                'Desired status',
+            ],
+            'list' => $this->functions,
+            'helpers' => [
+                'current' => 'translate',
+                'desired' => 'translate'
+            ]
+        ])
+    ])
+?>

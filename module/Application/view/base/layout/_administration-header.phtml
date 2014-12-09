@@ -51,7 +51,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" target="_blank" href="http://dream-cms.com"><b><?php echo $this->escapeHtml($this->applicationSetting('application_generator')) ?> <?php echo $this->escapeHtml($this->applicationSetting('application_generator_version')) ?></b></a>
+                    <a class="navbar-brand" target="_blank" href="<?php echo $this->applicationConfig('support_url') ?>"><b><?php echo $this->escapeHtml($this->applicationSetting('application_generator')) ?> <?php echo $this->escapeHtml($this->applicationSetting('application_generator_version')) ?></b></a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>left<?php else: ?>right<?php endif; ?>">

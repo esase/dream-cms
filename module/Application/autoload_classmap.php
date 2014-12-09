@@ -25,6 +25,7 @@ return [
     'Application\View\Helper\ApplicationFlashMessage'                    => __DIR__ . '/src/Application/View/Helper/ApplicationFlashMessage.php',
     'Application\View\Helper\ApplicationSetting'                         => __DIR__ . '/src/Application/View/Helper/ApplicationSetting.php',
     'Application\View\Helper\ApplicationFileSize'                        => __DIR__ . '/src/Application/View/Helper/ApplicationFileSize.php',
+    'Application\View\Helper\ApplicationConfig'                          => __DIR__ . '/src/Application/View/Helper/ApplicationConfig.php',
     'Application\View\Helper\ApplicationBooleanValue'                    => __DIR__ . '/src/Application/View/Helper/ApplicationBooleanValue.php',
     'Application\View\Helper\ApplicationRandId'                          => __DIR__ . '/src/Application/View/Helper/ApplicationRandId.php',
     'Application\View\Helper\ApplicationDate'                            => __DIR__ . '/src/Application/View/Helper/ApplicationDate.php',

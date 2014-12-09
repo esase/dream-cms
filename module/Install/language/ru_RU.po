@@ -1,0 +1,220 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS \"install\" module\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-12-09 22:16+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: Русский\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "View help"
+msgstr "Получить справку"
+
+msgid "Disabled"
+msgstr "Отключена"
+
+msgid "Enabled"
+msgstr "Включена"
+
+msgid "Function"
+msgstr "Функция"
+
+msgid "PHP disabled functions"
+msgstr "Отключеные PHP функции"
+
+msgid "Go to the admin panel to add additional modules and customize the site"
+msgstr ""
+"Перейдите в админ-панель, чтобы добавить дополнительные модули и настроить "
+"сайт"
+
+msgid "Remove the installation folder"
+msgstr "Удалите установочную директорию"
+
+msgid "Setup the following cron jobs command"
+msgstr "Настройте команды для планировщика задач (cron)"
+
+msgid "Final steps"
+msgstr "Заключительные шаги"
+
+msgid "Installation has been successfully completed"
+msgstr "Установка была успешно завершена"
+
+msgid "Memcache port"
+msgstr "Порт сервера memcache"
+
+msgid "Fill the memcache host and port if you going to use it"
+msgstr ""
+"Заполните хост и порт для сервера memcache, если вы собираетесь его "
+"использовать"
+
+msgid "Memcache host"
+msgstr "Адрес сервера memcache"
+
+msgid "Configuration"
+msgstr "Конфигурация"
+
+msgid "It used for caching  template paths, language translations, etc"
+msgstr ""
+"Это используется для  кэширования путей шаблонов, языковых переводов итд"
+
+msgid "Wincache"
+msgstr "Wincache"
+
+msgid "Xcache"
+msgstr "Xcache"
+
+msgid "Apc"
+msgstr "Apc"
+
+msgid "Memcached"
+msgstr "Memcached"
+
+msgid "Extension is not installed"
+msgstr "Расширение не установлено"
+
+msgid "Dynamic cache engine"
+msgstr "* Динамический кеш"
+
+msgid "Cache"
+msgstr "Кэш"
+
+msgid "Site email"
+msgstr "* Email сайта"
+
+msgid "Admin email"
+msgstr "* Email администратора"
+
+msgid "The input is more than %max% characters long"
+msgstr "Ввведеное значение более %max% символов длиной"
+
+msgid "Admin password"
+msgstr "* Пароль администратора"
+
+msgid "Admin username"
+msgstr "* Имя администратора"
+
+msgid "Site info"
+msgstr "Сайт"
+
+msgid "Can't connect to the Database"
+msgstr "Не возможно подключиться к базе данных"
+
+msgid "Submit"
+msgstr "Отправить"
+
+msgid "Database password"
+msgstr "Пароль к базе данных"
+
+msgid "Database user"
+msgstr "* Имя пользователя базы данных"
+
+msgid "Database name"
+msgstr "* Имя базы данных"
+
+msgid "The input must contain only digits"
+msgstr "Вы можете ввести только цифры"
+
+msgid "Database port description"
+msgstr "Укажите номер порта базы данных MySQL"
+
+msgid "Database host port number"
+msgstr "* Номер порта хоста базы данных"
+
+msgid "Database host name description"
+msgstr "Имя хоста базы данных MySQL"
+
+msgid "Value is required and can't be empty"
+msgstr "Заполните поле"
+
+msgid "Database host name"
+msgstr "* Имя хоста базы данных"
+
+msgid "Database"
+msgstr "База данных"
+
+msgid "Name"
+msgstr "Название"
+
+msgid "PHP settings"
+msgstr "Настройки PHP"
+
+msgid "Extension"
+msgstr "Расширение"
+
+msgid "PHP extensions"
+msgstr "PHP расширения"
+
+msgid "Installed"
+msgstr "Установлено"
+
+msgid "Not installed"
+msgstr "Не установлено"
+
+msgid "Installation"
+msgstr "Установка"
+
+msgid "Refresh"
+msgstr "Обновить"
+
+msgid "Not writable"
+msgstr "Не записываемый"
+
+msgid "Writable"
+msgstr "Записываемый"
+
+msgid "Desired status"
+msgstr "Желаемый статус"
+
+msgid "Current status"
+msgstr "Текуший статус"
+
+msgid "Path"
+msgstr "Путь"
+
+msgid "Permissions"
+msgstr "Разрешения"
+
+msgid "Script installation"
+msgstr "Установка скрипта"
+
+msgid "'%localPart%' is not a valid local part for the email address"
+msgstr ""
+"'%localPart%' не является допустимым для локальной части адреса электронной "
+"почты"
+
+msgid "'%localPart%' can not be matched against quoted-string format"
+msgstr "'%localPart%' не может быть подобран  для для формата 'quoted-string'"
+
+msgid "'%localPart%' can not be matched against dot-atom format"
+msgstr "'%localPart%' не может быть подобран для для формата dot-atom"
+
+msgid ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+msgstr ""
+"'%hostname%' не в маршрутизируемом сегменте сети. Адрес электронной почты не "
+"должен использоваться в публичной сети"
+
+msgid ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+msgstr "'%hostname%' неправильная запись MX"
+
+msgid "'%hostname%' is not a valid hostname for the email address"
+msgstr ""
+"'%hostname%' не является допустимым именем хоста для адреса электронной почты"
+
+msgid ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
+msgstr ""
+"Неправильный формат. Вы должны использовать этот формат - local-part@hostname"

@@ -1,0 +1,214 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dream CMS \"install\" module\n"
+"POT-Creation-Date: 2013-07-19 11:59+0600\n"
+"PO-Revision-Date: 2014-12-09 22:16+0600\n"
+"Last-Translator: AlexE <alexermashev@gmail.com>\n"
+"Language-Team: \n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "View help"
+msgstr "View help"
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Function"
+msgstr "Function"
+
+msgid "PHP disabled functions"
+msgstr "PHP disabled functions"
+
+msgid "Go to the admin panel to add additional modules and customize the site"
+msgstr "Go to the admin panel to add additional modules and customize the site"
+
+msgid "Remove the installation folder"
+msgstr "Remove the installation folder"
+
+msgid "Setup the following cron jobs command"
+msgstr "Setup the following cron jobs command"
+
+msgid "Final steps"
+msgstr "Final steps"
+
+msgid "Installation has been successfully completed"
+msgstr "Installation has been successfully completed"
+
+msgid "Memcache port"
+msgstr "Memcache port"
+
+msgid "Fill the memcache host and port if you going to use it"
+msgstr "Fill the memcache host and port if you going to use it"
+
+msgid "Memcache host"
+msgstr "Memcache host"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "It used for caching  template paths, language translations, etc"
+msgstr "It used for caching  template paths, language translations, etc"
+
+msgid "Wincache"
+msgstr "Wincache"
+
+msgid "Xcache"
+msgstr "Xcache"
+
+msgid "Apc"
+msgstr "Apc"
+
+msgid "Memcached"
+msgstr "Memcached"
+
+msgid "Extension is not installed"
+msgstr "Extension is not installed"
+
+msgid "Dynamic cache engine"
+msgstr "* Dynamic cache engine"
+
+msgid "Cache"
+msgstr "Cache"
+
+msgid "Site email"
+msgstr "* Site email"
+
+msgid "Admin email"
+msgstr "* Admin email"
+
+msgid "The input is more than %max% characters long"
+msgstr "The input is more than %max% characters long"
+
+msgid "Admin password"
+msgstr "* Admin password"
+
+msgid "Admin username"
+msgstr "* Admin username"
+
+msgid "Site info"
+msgstr "Site info"
+
+msgid "Can't connect to the Database"
+msgstr "Can't connect to the Database"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Database password"
+msgstr "Database password"
+
+msgid "Database user"
+msgstr "* Database user"
+
+msgid "Database name"
+msgstr "* Database name"
+
+msgid "The input must contain only digits"
+msgstr "The input must contain only digits"
+
+msgid "Database port description"
+msgstr "Specify custom MySQL database host port number"
+
+msgid "Database host port number"
+msgstr "* Database host port number"
+
+msgid "Database host name description"
+msgstr "Your MySQL database host name here"
+
+msgid "Value is required and can't be empty"
+msgstr "Value is required and can't be empty"
+
+msgid "Database host name"
+msgstr "* Database host name"
+
+msgid "Database"
+msgstr "Database"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "PHP settings"
+msgstr "PHP settings"
+
+msgid "Extension"
+msgstr "Extension"
+
+msgid "PHP extensions"
+msgstr "PHP extensions"
+
+msgid "Installed"
+msgstr "Installed"
+
+msgid "Not installed"
+msgstr "Not installed"
+
+msgid "Installation"
+msgstr "Installation"
+
+msgid "Refresh"
+msgstr "Refresh"
+
+msgid "Not writable"
+msgstr "Not writable"
+
+msgid "Writable"
+msgstr "Writable"
+
+msgid "Desired status"
+msgstr "Desired status"
+
+msgid "Current status"
+msgstr "Current status"
+
+msgid "Path"
+msgstr "Path"
+
+msgid "Permissions"
+msgstr "Permissions"
+
+msgid "Script installation"
+msgstr "Script installation"
+
+msgid "'%localPart%' is not a valid local part for the email address"
+msgstr "'%localPart%' is not a valid local part for the email address"
+
+msgid "'%localPart%' can not be matched against quoted-string format"
+msgstr "'%localPart%' can not be matched against quoted-string format"
+
+msgid "'%localPart%' can not be matched against dot-atom format"
+msgstr "'%localPart%' can not be matched against dot-atom format"
+
+msgid ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+msgstr ""
+"'%hostname%' is not in a routable network segment. The email address should "
+"not be resolved from public network"
+
+msgid ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+msgstr ""
+"'%hostname%' does not appear to have any valid MX or A records for the email "
+"address"
+
+msgid "'%hostname%' is not a valid hostname for the email address"
+msgstr "'%hostname%' is not a valid hostname for the email address"
+
+msgid ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"
+msgstr ""
+"The input is not a valid email address. Use the basic format local-"
+"part@hostname"

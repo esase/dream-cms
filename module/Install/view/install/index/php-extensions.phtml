@@ -1,0 +1,20 @@
+<?php $this->layout()->help_url = '/install/php-extensions' ?>
+
+<?php 
+    echo $this->partial('partial/check-page', [
+        'image' => 'layout/base/application/image/icon/plugin.png',
+        'header' => 'PHP extensions',
+        'content' => $this->partial('partial/table', [
+            'headers' => [
+                'Extension',
+                'Current status',
+                'Desired status',
+            ],
+            'list' => $this->extensions,
+            'helpers' => [
+                'current' => 'translate',
+                'desired' => 'translate'
+            ]
+        ])
+    ])
+?>

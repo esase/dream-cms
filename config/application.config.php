@@ -1,12 +1,19 @@
 <?php
+
 use Zend\Stdlib\ArrayUtils;
+
+$applicationConfigCache = APPLICATION_ROOT . '/data/cache/config';
+$isConfigDirWritable = is_writable($applicationConfigCache);
 
 define('SYSTEM_MODULES_CONFIG', __DIR__ . '/module/system.php');
 define('CUSTOM_MODULES_CONFIG', __DIR__ . '/module/custom.php');
 
-// define application environment
-defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+// define the application environment
+if (!defined('APPLICATION_ENV')) {
+    php_sapi_name() == 'cli'
+        ? define('APPLICATION_ENV', 'console')
+        : define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+}
 
 // get list of modules
 $systemModules = require_once SYSTEM_MODULES_CONFIG;

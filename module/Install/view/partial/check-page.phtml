@@ -1,0 +1,14 @@
+<?php 
+    echo $this->partial('partial/page-header', [
+        'image' => $this->image,
+        'header' => $this->header,
+    ])
+?>
+
+<?php echo $this->content ?>
+<hr />
+<p class="text-center">
+    <a href="<?php echo $this->url('home/page', [], ['force_canonical' => true], true) ?>" class="text-center btn btn-primary " role="button">
+        <?php echo $this->translate('Refresh') ?>
+    </a>
+</p>

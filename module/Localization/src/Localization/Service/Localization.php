@@ -64,6 +64,6 @@ class Localization
      */
     public static function getDefaultLocalization()
     {
-        return current(self::$localizations);
+        return self::$localizations ? current(self::$localizations) : [];
     }
 }

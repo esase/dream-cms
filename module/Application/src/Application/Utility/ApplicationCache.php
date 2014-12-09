@@ -7,6 +7,8 @@ use Layout\Service\Layout as LayoutService;
 use Application\Model\ApplicationAdminMenu as AdminMenuBaseModel;
 use Application\Model\ApplicationTimeZone as TimeZoneBaseModel;
 use Application\Model\ApplicationSetting as SettingBaseModel;
+use Application\Utility\ApplicationErrorLogger;
+use Exception;
 
 class ApplicationCache
 {
@@ -17,8 +19,15 @@ class ApplicationCache
      */
     public static function clearSettingCache()
     {
-        return ServiceLocatorService::getServiceLocator()->
-            get('Application\Cache\Static')->clearByTags([SettingBaseModel::CACHE_SETTINGS_DATA_TAG]);
+        try {
+            return ServiceLocatorService::getServiceLocator()->
+                get('Application\Cache\Static')->clearByTags([SettingBaseModel::CACHE_SETTINGS_DATA_TAG]);
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**
@@ -28,8 +37,15 @@ class ApplicationCache
      */
     public static function clearTimeZoneCache()
     {
-        return ServiceLocatorService::getServiceLocator()->
-            get('Application\Cache\Static')->clearByTags([TimeZoneBaseModel::CACHE_TIME_ZONES_DATA_TAG]);
+        try {
+            return ServiceLocatorService::getServiceLocator()->
+                get('Application\Cache\Static')->clearByTags([TimeZoneBaseModel::CACHE_TIME_ZONES_DATA_TAG]);
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**
@@ -39,8 +55,15 @@ class ApplicationCache
      */
     public static function clearAdminMenuCache()
     {
-        return ServiceLocatorService::getServiceLocator()->
-            get('Application\Cache\Static')->clearByTags([AdminMenuBaseModel::CACHE_ADMIN_MENU_DATA_TAG]);
+        try {
+            return ServiceLocatorService::getServiceLocator()->
+                get('Application\Cache\Static')->clearByTags([AdminMenuBaseModel::CACHE_ADMIN_MENU_DATA_TAG]);
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**
@@ -50,7 +73,14 @@ class ApplicationCache
      */
     public static function clearStaticCache()
     {
-        return ServiceLocatorService::getServiceLocator()->get('Application\Cache\Static')->flush();
+        try {
+            return ServiceLocatorService::getServiceLocator()->get('Application\Cache\Static')->flush();
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**
@@ -60,7 +90,14 @@ class ApplicationCache
      */
     public static function clearDynamicCache()
     {
-        return ServiceLocatorService::getServiceLocator()->get('Application\Cache\Dynamic')->flush();
+        try {
+            return ServiceLocatorService::getServiceLocator()->get('Application\Cache\Dynamic')->flush();
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**
@@ -70,7 +107,14 @@ class ApplicationCache
      */
     public static function clearConfigCache()
     {
-        return ApplicationFileSystem::deleteFiles(ApplicationService::getConfigCachePath());
+        try {
+            return ApplicationFileSystem::deleteFiles(ApplicationService::getConfigCachePath());
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**
@@ -80,7 +124,14 @@ class ApplicationCache
      */
     public static function clearJsCache()
     {
-        return ApplicationFileSystem::deleteFiles(LayoutService::getLayoutCachePath('js'));
+        try {
+            return ApplicationFileSystem::deleteFiles(LayoutService::getLayoutCachePath('js'));
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**
@@ -90,7 +141,14 @@ class ApplicationCache
      */
     public static function clearCssCache()
     {
-        return ApplicationFileSystem::deleteFiles(LayoutService::getLayoutCachePath());
+        try {
+            return ApplicationFileSystem::deleteFiles(LayoutService::getLayoutCachePath());
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
     }
 
     /**

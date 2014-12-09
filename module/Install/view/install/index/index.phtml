@@ -1,0 +1,86 @@
+<?php $this->layout()->help_url = '/install/create-database' ?>
+
+<?php 
+    echo $this->partial('partial/page-header', [
+        'image' => 'layout/base/application/image/icon/setting.png',
+        'header' => 'Configuration',
+    ])
+?>
+
+<?php
+    $form = $this->install_form;
+    $form->setAttribute('method', 'post');
+    $form->setAttribute('action', $this->url('home/page'));
+    $formLabel = $this->plugin('formLabel');
+
+    echo $this->form()->openTag($form);
+?>
+
+<?php if ($this->error_message): ?>
+    <div class="alert alert-danger" role="alert">
+        <?php echo $this->error_message ?>
+    </div>
+    <br />
+<?php endif ?>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingDb">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#dbConfig" aria-expanded="true" aria-controls="dbConfig">
+                    <?php echo $this->translate('Database') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="dbConfig" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingDb">
+            <div class="panel-body">
+                <?php echo $this->formRow($form->get('db_host')) ?>
+                <p class="help-block"><?php echo $this->translate('Database host name description') ?></p>
+
+                <?php echo $this->formRow($form->get('db_port')) ?>
+                <p class="help-block"><?php echo $this->translate('Database port description') ?></p>
+
+                <?php echo $this->formRow($form->get('db_name')) ?>
+                <?php echo $this->formRow($form->get('db_user')) ?>
+                <?php echo $this->formRow($form->get('db_password')) ?>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingSiteInfo">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#siteInfo" aria-expanded="true" aria-controls="siteInfo">
+                    <?php echo $this->translate('Site info') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="siteInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSiteInfo">
+            <div class="panel-body">
+                <?php echo $this->formRow($form->get('site_email')) ?>
+                <?php echo $this->formRow($form->get('admin_username')) ?>
+                <?php echo $this->formRow($form->get('admin_password')) ?>
+                <?php echo $this->formRow($form->get('admin_email')) ?>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingCache">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#cacheInfo" aria-expanded="true" aria-controls="cacheInfo">
+                    <?php echo $this->translate('Cache') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="cacheInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingCache">
+            <div class="panel-body">
+                <?php echo $this->formRow($form->get('dynamic_cache')) ?>
+                <p class="help-block"><?php echo $this->translate('It used for caching  template paths, language translations, etc') ?></p>
+                <?php echo $this->formRow($form->get('memcache_host')) ?>
+                <p class="help-block"><?php echo $this->translate('Fill the memcache host and port if you going to use it') ?></p>
+                <?php echo $this->formRow($form->get('memcache_port')) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php echo $this->formRow($form->get('submit')) ?>
