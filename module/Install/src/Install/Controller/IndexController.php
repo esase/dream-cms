@@ -30,10 +30,7 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
-        // TODO: ADD HELP LINKS FOR INSTALL STEPS IN VIEW
-        // TODO: REPLACE ALL LINK TO dream-cms.com with a value from config (support_url)
-//TODO: AD INFO ABOUT CRON JOBS INTO description.txt
-// TODO: TEST ALL UNIT TESTS IN UBUNTU
+        // TODO: ADD HELP LINKS FOR INSTALL STEPS IN VIEW -- last
 
         // check resources permissions
         if (true !== ($result = $this->checkResourcesPermissions())) {
@@ -42,6 +39,11 @@ class IndexController extends AbstractActionController
 
         // check PHP extensions
         if (true !== ($result = $this->checkPhpExtensions())) {
+            return $result;
+        }
+
+        // check PHP disabled functions
+        if (true !== ($result = $this->checkPhpDisabledFunctions())) {
             return $result;
         }
 
@@ -89,6 +91,30 @@ class IndexController extends AbstractActionController
             'error_message' => $errorMessage,
             'install_form' => $installForm
         ]);
+    }
+
+    /** 
+     * Check PHP disabled functions
+     *
+     * @return boolean|object - ViewModel
+     */
+    protected function checkPhpDisabledFunctions()
+    {
+        // get disabled functions
+        $functions = $this->getModel()->getPhpDisabledFunctions();
+
+        // show PHP disabled functions layout
+        if ($functions) {
+            $viewModel = new ViewModel;
+            $viewModel->setVariables([
+                'functions' => $functions
+            ])
+            ->setTemplate('install/index/php-disabled-functions');
+
+            return $viewModel;
+        }
+
+        return true;
     }
 
     /** 

@@ -49,7 +49,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" target="_blank" href="http://dream-cms.com"><b><?php echo $this->escapeHtml($this->config('cms_name')) ?> <?php echo $this->escapeHtml($this->config('cms_version')) ?> <?php echo $this->translate('Installation') ?></b></a>
+                    <a class="navbar-brand" target="_blank" href="<?php echo $this->config('support_url') ?>"><b><?php echo $this->escapeHtml($this->config('cms_name')) ?> <?php echo $this->escapeHtml($this->config('cms_version')) ?> <?php echo $this->translate('Installation') ?></b></a>
                 </div>
                 <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                     <div class="navbar-collapse collapse">

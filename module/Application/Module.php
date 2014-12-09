@@ -322,7 +322,10 @@ class Module implements ConsoleUsageProviderInterface
                     $messages->setFlashMessenger($flashMessenger);
  
                     return $messages;
-                }
+                },
+                'applicationConfig' => function() {
+                    return new \Application\View\Helper\ApplicationConfig($this->serviceLocator->get('config'));
+                },
             ]
         ];
     }

@@ -57,6 +57,14 @@ class InstallBase
     ];
 
     /**
+     * Disabled php functions
+     * @var array
+     */
+    protected $phpDisabledFunctions = [
+        'eval'
+    ];
+
+    /**
      * Php version 
      * @var string
      */
@@ -355,6 +363,30 @@ class InstallBase
         }
 
         return $settings ? $settings  : [];
+    }
+
+    /**
+     * Get disabled php funcitons
+     *
+     * @return array
+     */
+    public function getPhpDisabledFunctions()
+    {
+        asort($this->phpDisabledFunctions);
+        $disabledFunctions = [];
+        $disabledList = explode(',', ini_get('disable_functions'));
+
+        foreach ($this->phpDisabledFunctions as $function) {
+            if (in_array($function, $disabledList)) {
+                $disabledFunctions[] = [
+                    'function' => $function,
+                    'current' => 'Disabled',
+                    'desired' => 'Enabled'
+                ];
+            }
+        }
+
+        return $disabledFunctions ? $disabledFunctions  : [];
     }
 
     /**
