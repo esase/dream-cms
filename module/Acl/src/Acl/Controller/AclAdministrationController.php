@@ -218,7 +218,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 }
 
                 // edit the role
-                if (true == ($result = $this->
+                if (true === ($result = $this->
                         getModel()->editRole($role['id'], $aclRoleForm->getForm()->getData()))) {
 
                     $this->flashMessenger()

@@ -1,3 +1,5 @@
+SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE';
+
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `acl_resource`;
 DROP TABLE IF EXISTS `acl_resource_action_track`;
@@ -756,7 +758,7 @@ CREATE TABLE `application_setting` (
     `description_helper` TEXT DEFAULT NULL,
     `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message', 'system') NOT NULL,
     `required` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `order` SMALLINT(5) NOT NULL DEFAULT '0',
+    `order` SMALLINT(5) DEFAULT NULL,
     `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `language_sensitive` TINYINT(1) NULL DEFAULT '1',
@@ -1083,7 +1085,7 @@ CREATE TABLE `application_admin_menu` (
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED NOT NULL,
     `part` SMALLINT(5) UNSIGNED NOT NULL,
-    `icon` VARCHAR(100) NOT NULL,
+    `icon` VARCHAR(100) NOT NULL DEFAULT '',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
@@ -1240,7 +1242,7 @@ CREATE TABLE `page_system` (
     `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `footer_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
+    `footer_menu_order` SMALLINT(5) DEFAULT NULL,    
     `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
     `disable_seo` TINYINT(1) UNSIGNED DEFAULT NULL,
@@ -1269,7 +1271,7 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`,
 (9,  'sitemap', 'Sitemap', 5, NULL, 1, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
 (10, 'user', 'User profile', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, NULL, NULL, 1, NULL, 0, 1, NULL, NULL, 'User\\PageProvider\\UserPageProvider'),
 (11, 'user-edit', 'Edit account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, 1, NULL),
-(12, '404', '404 error', 5, NULL, NULL, 1, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, NULL, 1, NULL, 1, 0, 0, 1, NULL, 1, NULL);
+(12, '404', '404 error', 5, NULL, NULL, 1, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
