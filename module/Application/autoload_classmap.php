@@ -44,6 +44,7 @@ return [
     'Application\Model\ApplicationSetting'                               => __DIR__ . '/src/Application/Model/ApplicationSetting.php',
     'Application\Model\ApplicationAbstractBase'                          => __DIR__ . '/src/Application/Model/ApplicationAbstractBase.php',
     'Application\Model\ApplicationEmailQueue'                            => __DIR__ . '/src/Application/Model/ApplicationEmailQueue.php',
+    'Application\Model\ApplicationInit'                                  => __DIR__ . '/src/Application/Model/ApplicationInit.php',
     'Application\Model\ApplicationBase'                                  => __DIR__ . '/src/Application/Model/ApplicationBase.php',
     'Application\Model\ApplicationAbstractNestedSet'                     => __DIR__ . '/src/Application/Model/ApplicationAbstractNestedSet.php',
     'Application\Model\ApplicationSettingAdministration'                 => __DIR__ . '/src/Application/Model/ApplicationSettingAdministration.php',
