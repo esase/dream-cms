@@ -1,5 +1,5 @@
 Options -Indexes
-SetEnv APPLICATION_ENV development
+SetEnv APPLICATION_ENV production
 
 <IfModule mod_rewrite.c>
     RewriteEngine On

@@ -62,7 +62,7 @@ class UserHandler extends XmlRpcAbstractHandler
         }
 
         // update the user's time zone
-        if (true == ($result = $this->getModel()->setUserTimeZone($this->
+        if (true === ($result = $this->getModel()->setUserTimeZone($this->
                 userIdentity['user_id'], $this->userIdentity['nick_name'], $timeZoneId))) {
 
             return self::SUCCESSFULLY_RESPONSE;

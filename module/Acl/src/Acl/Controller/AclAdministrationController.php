@@ -416,7 +416,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 }
 
                 // edit settings
-                if (true == ($result = $this->getModel()->editResourceSettings($settings['connection'], 
+                if (true === ($result = $this->getModel()->editResourceSettings($settings['connection'], 
                         $settings['resource'], $settings['role'], $aclResourceSettingsForm->getForm()->getData()))) {
 
                     $this->flashMessenger()

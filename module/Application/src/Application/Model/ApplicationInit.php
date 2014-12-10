@@ -13,7 +13,7 @@ class ApplicationInit extends ApplicationBase
      */
     public function setStrictSqlMode()
     {
-        $this->adapter->query('SET sql_mode=\'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE\'', Adapter::QUERY_MODE_EXECUTE);
+        $this->adapter->query('SET sql_mode="STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE"', Adapter::QUERY_MODE_EXECUTE);
     }
 
     /**

@@ -106,7 +106,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
 
                 // edit settings
                 $cleanCounter = $this->params()->fromPost('clean_counter') ? true : false;
-                if (true == ($result = $this->getAclModel()->editResourceSettings($settings['connection'], 
+                if (true === ($result = $this->getAclModel()->editResourceSettings($settings['connection'], 
                         $settings['resource'], $settings['role'], $aclResourceSettingsForm->getForm()->getData(), $user['user_id'], $cleanCounter))) {
 
                     $this->flashMessenger()
