@@ -17,6 +17,7 @@ use Zend\Console\Request as ConsoleRequest;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 use Exception;
+use DateTime;
 
 class Module
 {
@@ -97,6 +98,14 @@ class Module
             if ($defaultTimeZone != date_default_timezone_get()) {
                 date_default_timezone_set($defaultTimeZone);
             }
+
+            // get difference to greenwich time (GMT) with colon between hours and minutes
+            $date = new DateTime;
+
+            $applicationInit = $this->serviceLocator
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Application\Model\ApplicationInit')
+                ->setTimeZone($date->format('P'));
         }
         catch (Exception $e) {
             ApplicationErrorLogger::log($e);
@@ -142,8 +151,6 @@ class Module
 
             // set the user identity
             UserIdentityService::setCurrentUserIdentity($this->userIdentity);
-            
-            
         }
         catch (Exception $e) {
             ApplicationErrorLogger::log($e);

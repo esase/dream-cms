@@ -121,6 +121,9 @@ class Module implements ConsoleUsageProviderInterface
         // init php settings
         $this->initPhpSettings();
 
+        // init a strict sql mode
+        $this->initSqlStrictMode();
+
         // set the service manager
         ServiceLocatorService::setServiceLocator($this->serviceLocator);
 
@@ -129,6 +132,22 @@ class Module implements ConsoleUsageProviderInterface
         if (!$request instanceof ConsoleRequest) {
             // init session
             $this->initSession();
+        }
+    }
+
+    /**
+     * Init sql strict mode
+     */
+    protected function initSqlStrictMode()
+    {
+        try {
+            $applicationInit = $this->serviceLocator
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Application\Model\ApplicationInit')
+                ->setStrictSqlMode();
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
         }
     }
 

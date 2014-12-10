@@ -218,7 +218,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 }
 
                 // edit the role
-                if (true == ($result = $this->
+                if (true === ($result = $this->
                         getModel()->editRole($role['id'], $aclRoleForm->getForm()->getData()))) {
 
                     $this->flashMessenger()
@@ -416,7 +416,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 }
 
                 // edit settings
-                if (true == ($result = $this->getModel()->editResourceSettings($settings['connection'], 
+                if (true === ($result = $this->getModel()->editResourceSettings($settings['connection'], 
                         $settings['resource'], $settings['role'], $aclResourceSettingsForm->getForm()->getData()))) {
 
                     $this->flashMessenger()

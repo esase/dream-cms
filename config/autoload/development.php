@@ -20,5 +20,8 @@ return [
     ],
     'db' => [
         'profiler' => true
-    ]
+    ],
+    'session' => [
+        'validators' => null
+    ],
 ];

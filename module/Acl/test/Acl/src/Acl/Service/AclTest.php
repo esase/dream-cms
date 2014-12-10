@@ -120,7 +120,8 @@ class ServiceTest extends PHPUnit_Framework_TestCase
                 ->into('acl_resource')
                 ->values([
                     'resource' => $resource,
-                    'module' => 1
+                    'module' => 1,
+                    'description' => ''
                 ]);
 
             $statement = $this->aclModelBase->prepareStatementForSqlObject($query);
