@@ -621,7 +621,10 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (52, 'pages_administration_ajax_delete_widget', 'ACL - Deleting widgets on pages in admin area', 5),
 (53, 'pages_administration_ajax_view_dependent_widgets', 'ACL - Viewing dependent widgets in admin area', 5),
 (54, 'pages_administration_edit_widget_settings', 'ACL - Editing widgets settings in admin area', 5),
-(55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5);
+(55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5),
+(56, 'modules_administration_list_installed', 'ACL - Viewing installed modules in admin area', 1),
+(57, 'modules_administration_list_not_installed', 'ACL - Viewing not installed modules in admin area', 1),
+(58, 'modules_administration_add_new', 'ACL - Adding new modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1074,7 +1077,8 @@ INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) V
 (2, 'Access Control List', 8, 'acl_menu_item.png'),
 (3, 'Users', 2, 'user_group_menu_item.png'),
 (4, 'Files manager', 4, 'file_manager_menu_item.png'),
-(5, 'Pages management', 5, 'page_menu_item.png');
+(5, 'Pages management', 5, 'page_menu_item.png'),
+(6, 'Modules', 1, 'module_menu_item.png');
 
 CREATE TABLE `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1085,7 +1089,6 @@ CREATE TABLE `application_admin_menu` (
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED NOT NULL,
     `part` SMALLINT(5) UNSIGNED NOT NULL,
-    `icon` VARCHAR(100) NOT NULL DEFAULT '',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
@@ -1099,15 +1102,18 @@ CREATE TABLE `application_admin_menu` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
-(1, 'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
-(2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
-(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
-(4, 'List of users', 'users-administration', 'list', 2, 4, 3, 1),
-(5, 'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
-(6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
-(7, 'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
-(8, 'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
-(9, 'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2);
+(1,  'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
+(2,  'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
+(3,  'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
+(4,  'List of users', 'users-administration', 'list', 2, 4, 3, 1),
+(5,  'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
+(6,  'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
+(7,  'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
+(8,  'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
+(9,  'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2),
+(10, 'List of installed modules', 'modules-administration', 'list-installed', 1, 8, 6, 1),
+(11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1),
+(12, 'Add a new module', 'modules-administration', 'add-new', 1, 10, 6, 1);
 
 CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

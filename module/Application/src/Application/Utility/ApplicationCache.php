@@ -7,11 +7,30 @@ use Layout\Service\Layout as LayoutService;
 use Application\Model\ApplicationAdminMenu as AdminMenuBaseModel;
 use Application\Model\ApplicationTimeZone as TimeZoneBaseModel;
 use Application\Model\ApplicationSetting as SettingBaseModel;
+use Application\Model\ApplicationBase as ApplicationBaseModel;
 use Application\Utility\ApplicationErrorLogger;
 use Exception;
 
 class ApplicationCache
 {
+    /**
+     * Clear module cache
+     *
+     * @return boolean
+     */
+    public static function clearModuleCache()
+    {
+        try {
+            return ServiceLocatorService::getServiceLocator()->
+                get('Application\Cache\Static')->clearByTags([ApplicationBaseModel::CACHE_MODULES_DATA_TAG]);
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+        }
+
+        return false;
+    }
+
     /**
      * Clear setting cache
      *

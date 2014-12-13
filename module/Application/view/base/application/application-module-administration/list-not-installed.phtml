@@ -1,0 +1,95 @@
+<?php $this->declareVars('subPageTitle', 'content') ?>
+<?php $this->subPageTitle = $this->translate('List of not installed modules') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('application/application-module-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list-not-installed' // selected action is "list-not-installed"
+]) ?>
+
+<!-- render a data grid -->
+<?php $this->content = $this->partial('partial/data-grid', [
+    'controller' => $this->applicationRoute()->getParam('controller'),
+    'action' => $this->applicationRoute()->getParam('action'),
+    'queries' => [
+    ],
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'date',
+    'default_order_type' => 'desc',
+    'headers' => [
+        0 => [
+            'title' => $this->translate('Name')
+        ],
+        1 => [
+            'title' => $this->translate('Vendor'),
+            'order_name' => 'vendor'
+        ],
+        2 => [
+            'title' => $this->translate('Vendor email'),
+            'order_name' => 'email'
+        ],
+        3 => [
+            'title' => $this->translate('Version'),
+            'order_name' => 'version'
+        ],
+        4 => [
+            'title' => $this->translate('Modified date'),
+            'order_name' => 'date'
+        ]
+    ],
+    'paginator' => $this->paginator,
+    'skipped_fields' => [
+        'description'
+    ],
+    'helpers' => [
+        'name' => 'translate',
+        'date' => 'applicationDate'
+    ],
+    'helpers_options' => [
+    ],
+    'actions' => [
+        'regular_actions' => [
+        ],
+        'multiple_actions' => [
+        ],
+        'single_actions' => [
+            0 => [
+                'name' => $this->translate('View module description'),
+                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-module-description']) . '?id=__value__\', \'popup-module-description-window\')',
+                'check_acl' => true,
+                'controller' => 'modules-administration',
+                'action' => 'ajax-view-module-description',
+                'image' => $this->layoutAsset('icon/info_action.png', 'image')
+            ]
+        ]
+    ],
+    'actions_options' => [
+        'action_identity' => 'name',
+        'form_name' => 'modules',
+        'multiple_actions' => [
+            'items_name' => 'modules[]'
+        ]
+    ],
+    'actions_extra_check' => [
+        'single_actions' => [
+            'ajax-view-module-description' => [
+                0 => [
+                    'param' => 'description',
+                    'condition' =>  'return "" != "__value__";'
+                ]
+            ]
+        ]
+    ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Not installed modules'),
+    'body' => $this->content
+]) ?>
