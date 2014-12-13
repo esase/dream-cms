@@ -1,4 +1,5 @@
 AddEncoding gzip .gz
+php_flag engine off
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
