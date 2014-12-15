@@ -45,7 +45,9 @@
     ],
     'paginator' => $this->paginator,
     'skipped_fields' => [
-        'description'
+        'description',
+        'module_depends',
+        'system_requirements'
     ],
     'helpers' => [
         'name' => 'translate',
@@ -57,9 +59,32 @@
         'regular_actions' => [
         ],
         'multiple_actions' => [
+            0 => [
+                'name' => $this->translate('Install selected'),
+                'controller' => 'modules-administration',
+                'action' => 'install-modules',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected modules will be installed. Are you sure?')
+            ]
         ],
         'single_actions' => [
             0 => [
+                'name' => $this->translate('View dependent modules'),
+                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-dependent-modules']) . '?id=__value__\', \'popup-dependent-modules-window\')',
+                'check_acl' => true,
+                'controller' => 'modules-administration',
+                'action' => 'ajax-view-dependent-modules',
+                'image' => $this->layoutAsset('icon/depend_module_action.png', 'image')
+            ],
+            1 => [
+                'name' => $this->translate('View system requirements'),
+                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-module-system-requirements']) . '?id=__value__\', \'popup-module-system-requirements-window\')',
+                'check_acl' => true,
+                'controller' => 'modules-administration',
+                'action' => 'ajax-view-module-system-requirements',
+                'image' => $this->layoutAsset('icon/setting_action.png', 'image')
+            ],
+            2 => [
                 'name' => $this->translate('View module description'),
                 'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-module-description']) . '?id=__value__\', \'popup-module-description-window\')',
                 'check_acl' => true,
@@ -77,7 +102,34 @@
         ]
     ],
     'actions_extra_check' => [
+        'multiple_actions' => [
+            'installable' => [
+                'function' => function($data) {
+                    // check dependent modules and system requirements
+                    if (false === $data['module_depends']
+                            || false === $data['system_requirements']) {
+
+                        return false;
+                    }
+
+                    return true;
+                }
+            ]
+        ],
+        'multiple_actions_message' => $this->translate('You have to install or activate all dependent modules or configure all module\'s system requirements before you can install this module'),
         'single_actions' => [
+            'ajax-view-dependent-modules' => [
+                0 => [
+                    'param' => 'module_depends',
+                    'condition' =>  'return false === (bool) "__value__";'
+                ]
+            ],
+            'ajax-view-module-system-requirements' => [
+                0 => [
+                    'param' => 'system_requirements',
+                    'condition' =>  'return false === (bool) "__value__";'
+                ]
+            ],
             'ajax-view-module-description' => [
                 0 => [
                     'param' => 'description',

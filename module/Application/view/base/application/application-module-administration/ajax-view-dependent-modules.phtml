@@ -1,0 +1,16 @@
+<?php
+    echo $this->partial('partial/popup', [
+        'popup_id' => 'popup-dependent-modules-window',
+        'title' => 'Dependent modules',
+        'body' => $this->partial('partial/table', [
+            'headers' => [
+                'Module',
+                'Vendor'
+            ],
+            'list' => $this->modules,
+            'helpers' => [
+                'module' => 'translate'
+            ]
+        ])
+    ])
+?>

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-13 16:20+0600\n"
+"PO-Revision-Date: 2014-12-14 16:20+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,22 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Install selected"
+msgstr "Установить выбранное"
+
+msgid ""
+"You have to install or activate all dependent modules or configure all "
+"module's system requirements before you can install this module"
+msgstr ""
+"Вы должны установить или активировать все зависимые модули или настроить все "
+"системные требования модуля, прежде чем вы сможете установить этот модуль"
+
+msgid "View dependent modules"
+msgstr "Просмотр зависимых модулей"
+
+msgid "Dependent modules"
+msgstr "Зависимые модули"
 
 msgid "View module description"
 msgstr "Посмотреть описание модуля"
@@ -705,3 +721,9 @@ msgstr "Просмотр не установленных модулей в ад�
 
 msgid "ACL - Viewing installed modules in admin area"
 msgstr "Просмотр установленных модулей в админке"
+
+msgid "ACL - Viewing modules description in admin area"
+msgstr "Просмотр описания модулей в админке"
+
+msgid "ACL - Viewing dependent modules in admin area"
+msgstr "Просмотр зависимых модулей в админке"

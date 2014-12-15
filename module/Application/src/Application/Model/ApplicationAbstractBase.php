@@ -42,11 +42,6 @@ abstract class ApplicationAbstractBase extends Sql
     const CACHE_MODULES_ACTIVE = 'Application_Modules_Active';
 
     /**
-     * Installed modules
-     */
-    const CACHE_MODULES_INSTALLED = 'Application_Modules_Installed';
-
-    /**
      * Modules data cache tag
      */
     const CACHE_MODULES_DATA_TAG = 'Application_Modules_Data_Tag';
@@ -151,8 +146,7 @@ abstract class ApplicationAbstractBase extends Sql
                     'version',
                     'vendor',
                     'vendor_email',
-                    'description',
-                    'dependences'
+                    'description'
                 ])
                 ->where(['name' => $moduleName]);
 
@@ -168,42 +162,6 @@ abstract class ApplicationAbstractBase extends Sql
         }
 
         return $module;
-    }
-
-    /**
-     * Get installed modules list
-     *
-     * @return array
-     */
-    public function getInstalledModulesList()
-    {
-        // generate cache name
-        $cacheName = CacheUtility::getCacheName(self::CACHE_MODULES_INSTALLED);
-
-        // check data in cache
-        if (null === ($modulesList = $this->staticCacheInstance->getItem($cacheName))) {
-            $select = $this->select();
-            $select->from('application_module')
-                ->columns([
-                    'id',
-                    'name'
-                ])
-            ->order('id');
-    
-            $statement = $this->prepareStatementForSqlObject($select);
-            $resultSet = new ResultSet;
-            $resultSet->initialize($statement->execute());
-    
-            foreach ($resultSet as $module) {
-                $modulesList[$module->id] = $module->name;
-            }
-
-            // save data in cache
-            $this->staticCacheInstance->setItem($cacheName, $module);
-            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_MODULES_DATA_TAG]);
-        }
-
-        return $modulesList;
     }
 
     /**

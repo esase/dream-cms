@@ -39,10 +39,15 @@ class PageFilter extends ApplicationAbstractCustomForm
             ]
         ],
         1 => [
+            'name' => 'slug',
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
+            'label' => 'Display name'
+        ],
+        2 => [
             'name' => 'page_id',
             'type' => ApplicationCustomFormBuilder::FIELD_HIDDEN
         ],
-        2 => [
+        3 => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Search'

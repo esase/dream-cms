@@ -1,6 +1,7 @@
 SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE';
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `application_module_depend`;
 DROP TABLE IF EXISTS `acl_resource`;
 DROP TABLE IF EXISTS `acl_resource_action_track`;
 DROP TABLE IF EXISTS `acl_resource_connection`;
@@ -484,21 +485,33 @@ CREATE TABLE `application_module` (
     `vendor` VARCHAR(50) NOT NULL,
     `vendor_email` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255) DEFAULT NULL,
-    `dependences` VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `type` (`type`, `status`),
     UNIQUE `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL);
+INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`) VALUES
+(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
+(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
+(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
+(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
+(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
+(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
+(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
+(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL);
+
+CREATE TABLE `application_module_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `module_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `depend_module_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`module_id`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_module_id`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE    
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `xmlrpc_class` (
     `namespace` VARCHAR(20) NOT NULL,
@@ -560,7 +573,7 @@ INSERT INTO `acl_role` (`id`, `name`, `type`) VALUES
 
 CREATE TABLE `acl_resource` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `resource` VARCHAR(50) NOT NULL,
+    `resource` VARCHAR(100) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
@@ -624,7 +637,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5),
 (56, 'modules_administration_list_installed', 'ACL - Viewing installed modules in admin area', 1),
 (57, 'modules_administration_list_not_installed', 'ACL - Viewing not installed modules in admin area', 1),
-(58, 'modules_administration_add_new', 'ACL - Adding new modules in admin area', 1);
+(58, 'modules_administration_add_new', 'ACL - Adding new modules in admin area', 1),
+(59, 'modules_administration_ajax_view_module_description', 'ACL - Viewing modules description in admin area', 1),
+(60, 'modules_administration_ajax_view_dependent_modules', 'ACL - Viewing dependent modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

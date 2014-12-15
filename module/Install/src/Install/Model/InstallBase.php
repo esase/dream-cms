@@ -57,10 +57,10 @@ class InstallBase
     ];
 
     /**
-     * Disabled php functions
+     * Enabled php functions
      * @var array
      */
-    protected $phpDisabledFunctions = [
+    protected $phpEnabledFunctions = [
         'eval'
     ];
 
@@ -372,11 +372,11 @@ class InstallBase
      */
     public function getPhpDisabledFunctions()
     {
-        asort($this->phpDisabledFunctions);
+        asort($this->phpEnabledFunctions);
         $disabledFunctions = [];
         $disabledList = explode(',', ini_get('disable_functions'));
 
-        foreach ($this->phpDisabledFunctions as $function) {
+        foreach ($this->phpEnabledFunctions as $function) {
             if (in_array($function, $disabledList)) {
                 $disabledFunctions[] = [
                     'function' => $function,

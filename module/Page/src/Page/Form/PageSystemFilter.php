@@ -48,6 +48,11 @@ class PageSystemFilter extends ApplicationAbstractCustomForm
             'label' => 'Module',
             'values' => []
         ],
+        'slug' => [
+            'name' => 'slug',
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
+            'label' => 'Display name'
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

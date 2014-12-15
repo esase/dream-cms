@@ -660,7 +660,8 @@ class Page extends ApplicationAbstractCustomForm
      */
     public function validateSlug($value, array $context = [])
     {
-        return $this->model->isSlugFree($value, $this->pageInfo['id']);
+        return $this->model->
+                isSlugFree($value, (!empty($this->pageInfo['id']) ? $this->pageInfo['id'] : 0));
     }
 
     /**

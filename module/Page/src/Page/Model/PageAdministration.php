@@ -4,6 +4,7 @@ namespace Page\Model;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
+use Application\Utility\ApplicationSlug as SlugUtility;
 use Page\Model\PageNestedSet;
 use Page\Event\PageEvent;
 use Zend\Db\ResultSet\ResultSet;
@@ -11,6 +12,7 @@ use Zend\Db\Sql\Predicate;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
+use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Exception;
 
 class PageAdministration extends PageBase
@@ -268,8 +270,7 @@ class PageAdministration extends PageBase
                 $update = $this->update()
                     ->table('page_structure')
                     ->set([
-                        'slug' => $this->generateSlug($page['id'], $formData['title'],
-                                'page_structure', 'id', self::PAGE_SLUG_LENGTH, ['language' => $this->getCurrentLanguage()])
+                        'slug' => $this->generatePageSlug($page['id'], $formData['title'])
                     ])
                     ->where([
                         'id' => $page['id']
@@ -658,8 +659,7 @@ class PageAdministration extends PageBase
                 $update = $this->update()
                     ->table('page_structure')
                     ->set([
-                        'slug' => $this->generateSlug($pageId, $page['title'],
-                                'page_structure', 'id', self::PAGE_SLUG_LENGTH, ['language' => $this->getCurrentLanguage()])
+                        'slug' => $this->generatePageSlug($pageId, $page['title'])
                     ])
                     ->where([
                         'id' => $pageId
@@ -1367,13 +1367,15 @@ class PageAdministration extends PageBase
      * @param string $orderBy
      * @param string $orderType
      * @param array $filters
-     *  array modules
+     *      array modules
+     *      string slug
      * @return object
      */
     public function getSystemPages($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
         $orderFields = [
-            'id'
+            'id',
+            'slug'
         ];
 
         $orderType = !$orderType || $orderType == 'asc'
@@ -1388,7 +1390,8 @@ class PageAdministration extends PageBase
         $select->from(['a' => 'page_system'])
             ->columns([
                 'id',
-                'title'
+                'title',
+                'slug'
             ])
             ->join(
                 ['b' => 'application_module'],
@@ -1399,7 +1402,10 @@ class PageAdministration extends PageBase
             )
             ->join(
                 ['c' => 'page_structure'],
-                new Expression('a.slug = c.slug and c.language = ?', [$this->getCurrentLanguage()]),
+                new Expression('a.slug = c.slug and c.language = ? and c.type = ?', [
+                    $this->getCurrentLanguage(),
+                    PageNestedSet::PAGE_TYPE_SYSTEM
+                ]),
                 [],
                 'left'
             )
@@ -1411,6 +1417,14 @@ class PageAdministration extends PageBase
                 ],
                 'left'
             )
+            ->join(
+                ['i' => 'page_structure'],
+                new Expression('a.slug = i.slug and i.language = ?', [$this->getCurrentLanguage()]),
+                [
+                    'structure_slug' => 'slug'
+                ],
+                'left'
+            )
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
             ->where->isNull('c.id');
@@ -1418,6 +1432,13 @@ class PageAdministration extends PageBase
         // filter by modules
         if (!empty($filters['modules']) && is_array($filters['modules'])) {
             $select->where->in('a.module', $filters['modules']);
+        }
+
+        // filter by slug
+        if (!empty($filters['slug'])) {
+            $select->where([
+                'a.slug' => $filters['slug']
+            ]);
         }
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
@@ -1591,6 +1612,7 @@ class PageAdministration extends PageBase
      * @param string $orderType
      * @param array $filters
      *      string status
+     *      string slug
      * @return object Paginator
      */
     public function getStructurePages($parentId = null, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
@@ -1598,7 +1620,7 @@ class PageAdministration extends PageBase
         $orderFields = [
             'id',
             'position',
-            'active',
+            'slug',
             'widgets'
         ];
 
@@ -1630,7 +1652,7 @@ class PageAdministration extends PageBase
                 'position' => 'left_key',
                 'type',
                 'title',
-                'active',
+                'slug',
                 'left_key',
                 'right_key',
                 'system_page',
@@ -1681,11 +1703,80 @@ class PageAdministration extends PageBase
             }
         }
 
+        // filter by slug
+        if (!empty($filters['slug'])) {
+            $select->where([
+                'a.slug' => $filters['slug']
+            ]);
+        }
+
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
         $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         return $paginator;
+    }
+
+    /**
+     * Generate page slug
+     *
+     * @param integer $pageId
+     * @param string $title
+     * @param string $spaceDevider
+     * @return string
+     */
+    public function generatePageSlug($pageId, $title, $spaceDevider = '-')
+    {
+        // generate a slug
+        $newSlug  = $slug = SlugUtility::slugify($title, self::PAGE_SLUG_LENGTH, $spaceDevider);
+        $slagSalt = null;
+
+        while (true) {
+            // check the slug existent in structure pages 
+            $select = $this->select();
+            $select->from('page_structure')
+                ->columns([
+                    'slug'
+                ])
+                ->where([
+                    'slug' => $newSlug,
+                    'language' => $this->getCurrentLanguage()
+                ]);
+
+            $select->where([
+                new NotInPredicate('id', [$pageId])
+            ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $structurePagesResultSet = new ResultSet;
+            $structurePagesResultSet->initialize($statement->execute());
+
+            // check the slug existent in system pages
+            $select = $this->select();
+            $select->from('page_system')
+                ->columns([
+                    'slug'
+                ])
+                ->where([
+                    'slug' => $newSlug
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $systemPagesResultSet = new ResultSet;
+            $systemPagesResultSet->initialize($statement->execute());
+
+            // generated slug not found
+            if (!$structurePagesResultSet->current() && !$systemPagesResultSet->current()) {
+                break;
+            }
+
+            $newSlug = $pageId . $spaceDevider . $slug . $slagSalt;
+
+            // add an extra slug
+            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugSaltLength); // add a salt
+        }
+
+        return $newSlug;
     }
 }

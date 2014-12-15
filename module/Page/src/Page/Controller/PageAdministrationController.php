@@ -357,8 +357,11 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->showFooterMenu(!$page['disable_footer_menu'])
             ->showUserMenu(!$page['disable_user_menu'])
             ->showVisibilitySettings(!$page['forced_visibility'])
-            ->showSeo(!$page['disable_seo'])
-            ->setPageSystemTitle($this->getTranslator()->translate($page['system_title']));
+            ->showSeo(!$page['disable_seo']);
+
+        if (!empty($page['system_title'])) {
+            $pageForm->setPageSystemTitle($this->getTranslator()->translate($page['system_title']));
+        }
 
         // fill the page parent info
         if ($parent) {

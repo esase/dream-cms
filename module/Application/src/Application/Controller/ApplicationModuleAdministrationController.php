@@ -47,12 +47,59 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
         $module = $this->params()->fromQuery('id', -1);
 
         // get a module description
-        if (null == ($descripion = $this->getModel()->getModuleDescription($module))) {
+        if (false === ($descripion = $this->getModel()->getModuleDescription($module))) {
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
         return new ViewModel([
             'descripion' => $descripion
+        ]);
+    }
+
+    /**
+     * View dependent modules
+     */
+    public function ajaxViewDependentModulesAction()
+    {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->aclCheckPermission())) {
+            return $result;
+        }
+
+        $module = $this->params()->fromQuery('id', -1);
+
+        // get a module dependent modules
+        if (null == ($modules = $this->getModel()->getDependentModules($module))) {
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        return new ViewModel([
+            'modules' => $modules
+        ]);
+    }
+
+    /**
+     * View module system requirements
+     */
+    public function ajaxViewModuleSystemRequirementsAction()
+    {
+        // TODO: ADD ACL!!!
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->aclCheckPermission())) {
+            return $result;
+        }
+
+        $module = $this->params()->fromQuery('id', -1);
+        $moduleConfig = $this->getModel()->getCustomModuleConfig($module);
+
+        if (false === $moduleConfig || null == ($requirements =
+                $this->getModel()->getNotValidatedCustomModuleSystemRequirements($moduleConfig))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        return new ViewModel([
+            'requirements' => $requirements
         ]);
     }
 

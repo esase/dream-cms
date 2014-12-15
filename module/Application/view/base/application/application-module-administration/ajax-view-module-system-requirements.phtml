@@ -1,0 +1,23 @@
+<?php $this->declareVars('content') ?>
+
+<?php foreach ($this->requirements as $name => $requirement): ?>
+    <?php
+        $this->content .= '<h4>' . $name . '</h4>';
+        $this->content .= $this->partial('partial/table', [
+            'headers' => [
+                'Name',
+                'Current status',
+                'Desired status'
+            ],
+            'list' => $requirement
+        ])
+    ?>
+<?php endforeach ?>
+
+<?php
+    echo $this->partial('partial/popup', [
+        'popup_id' => 'popup-module-system-requirements-window',
+        'title' => 'Module system requirements',
+        'body' => $this->content
+    ])
+?>
