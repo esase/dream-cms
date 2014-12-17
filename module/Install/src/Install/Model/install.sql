@@ -481,9 +481,9 @@ CREATE TABLE `application_module` (
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
     `status` ENUM('active','not_active') NOT NULL,
-    `version` VARCHAR(20) NOT NULL,
-    `vendor` VARCHAR(50) NOT NULL,
-    `vendor_email` VARCHAR(50) NOT NULL,
+    `version` VARCHAR(20) DEFAULT NULL,
+    `vendor` VARCHAR(50) DEFAULT NULL,
+    `vendor_email` VARCHAR(50) DEFAULT NULL,
     `description` VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `type` (`type`, `status`),
@@ -639,7 +639,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (57, 'modules_administration_list_not_installed', 'ACL - Viewing not installed modules in admin area', 1),
 (58, 'modules_administration_add_new', 'ACL - Adding new modules in admin area', 1),
 (59, 'modules_administration_ajax_view_module_description', 'ACL - Viewing modules description in admin area', 1),
-(60, 'modules_administration_ajax_view_dependent_modules', 'ACL - Viewing dependent modules in admin area', 1);
+(60, 'modules_administration_ajax_view_dependent_modules', 'ACL - Viewing dependent modules in admin area', 1),
+(61, 'modules_administration_ajax_view_module_system_requirements', 'ACL - Viewing modules system requirements in admin area', 1),
+(62, 'modules_administration_install', 'ACL - Installing modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

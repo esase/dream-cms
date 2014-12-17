@@ -450,7 +450,7 @@ class Page extends ApplicationAbstractCustomForm
 
        if ($this->pageParent) {
             if (false !== ($childrenPages =
-                    $this->model->getAllPageStructureChildren($this->pageParent['id']))) {
+                    $this->model->getAllPageStructureChildren($this->pageParent['id'], true))) {
 
                 $activePageId = null;
                 $currentDefined = false;

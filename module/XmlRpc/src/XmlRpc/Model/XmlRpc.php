@@ -2,6 +2,7 @@
 namespace XmlRpc\Model;
 
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Expression as Expression;
 use Application\Utility\ApplicationCache as CacheUtility;
 
 class XmlRpc extends XmlRpcBase
@@ -19,12 +20,17 @@ class XmlRpc extends XmlRpcBase
         // check data in cache
         if (null === ($classes = $this->staticCacheInstance->getItem($cacheName))) {
             $select = $this->select();
-            $select->from('xmlrpc_class')
+            $select->from(['a' =>'xmlrpc_class'])
                 ->columns([
                     'namespace',
                     'path',
                     'module'
-                ]);
+                ])
+                ->join(
+                    ['b' => 'application_module'],
+                    new Expression('a.module = b.id and b.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                    []
+                );
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;

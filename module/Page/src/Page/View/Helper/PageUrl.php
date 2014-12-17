@@ -1,6 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
+use Application\Model\ApplicationAbstractBase as ApplicationAbstractBaseModel;
 use Page\Model\PageNestedSet;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
 use User\Service\UserIdentity as UserIdentityService;
@@ -98,13 +99,15 @@ class PageUrl extends AbstractHelper
         $page = $this->pagesMap[$language][$slug];
 
         // check the page's status
-        if ($page['active'] != PageNestedSet::PAGE_STATUS_ACTIVE) {
+        if ($page['active'] != PageNestedSet::PAGE_STATUS_ACTIVE
+                || $page['module_status'] != ApplicationAbstractBaseModel::MODULE_STATUS_ACTIVE) {
+
             return false;
         }
 
         switch ($type) {
-            case 'system' :
-            case 'custom' :
+            case PageNestedSet::PAGE_TYPE_SYSTEM :
+            case PageNestedSet::PAGE_TYPE_CUSTOM :
                 if($page['type'] != $type) {
                     return false;   
                 }

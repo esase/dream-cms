@@ -1,15 +1,19 @@
-<?php $this->declareVars('content') ?>
+<?php $this->declareVars('systemRequirements') ?>
+<?php $this->systemRequirements = new ArrayObject ?>
 
 <?php foreach ($this->requirements as $name => $requirement): ?>
     <?php
-        $this->content .= '<h4>' . $name . '</h4>';
-        $this->content .= $this->partial('partial/table', [
+        $this->systemRequirements[$name] = $this->partial('partial/table', [
             'headers' => [
                 'Name',
-                'Current status',
-                'Desired status'
+                'Current value',
+                'Desired value'
             ],
-            'list' => $requirement
+            'list' => $requirement,
+            'helpers' => [
+                'current' => 'translate',
+                'desired' => 'translate'
+            ]
         ])
     ?>
 <?php endforeach ?>
@@ -18,6 +22,9 @@
     echo $this->partial('partial/popup', [
         'popup_id' => 'popup-module-system-requirements-window',
         'title' => 'Module system requirements',
-        'body' => $this->content
+        'body' => $this->partial('partial/accordion', [
+            'name' => 'system-requirements-accordion',
+            'items' => $this->systemRequirements
+        ])
     ])
 ?>

@@ -1,14 +1,26 @@
 <?php
 namespace Application\Model;
 
+use Application\Exception\ApplicationException;
+use Application\Service\Application as ApplicationService;
+use Application\Utility\ApplicationFileSystem as ApplicationFileSystemUtility;
+use Application\Utility\ApplicationCache as ApplicationCacheUtility;
+use Layout\Utility\LayoutCache as LayoutCacheUtility;
+use Localization\Utility\LocalizationCache as LocalizationCacheUtility;
+use Page\Utility\PageCache as PageCacheUtility;
+use User\Utility\UserCache as UserCacheUtility;
+use XmlRpc\Utility\XmlRpcCache as XmlRpcCacheUtility;
+use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Paginator\Paginator;
 use DirectoryIterator;
 use CallbackFilterIterator;
+use Exception;
 
 class ApplicationModuleAdministration extends ApplicationBase
 {
@@ -122,8 +134,8 @@ class ApplicationModuleAdministration extends ApplicationBase
 
             $moduleInfo = [
                 'name' => $data->getFileName(),
-                'vendor' => !empty($moduleInstallConfig['version']) ? $moduleInstallConfig['vendor'] : null,
-                'email' => !empty($moduleInstallConfig['version']) ? $moduleInstallConfig['vendor_email'] : null,
+                'vendor' => !empty($moduleInstallConfig['vendor']) ? $moduleInstallConfig['vendor'] : null,
+                'email' => !empty($moduleInstallConfig['vendor_email']) ? $moduleInstallConfig['vendor_email'] : null,
                 'version' => !empty($moduleInstallConfig['version']) ? $moduleInstallConfig['version'] : null,
                 'description' => !empty($moduleInstallConfig['description']) ? $moduleInstallConfig['description'] : null,
                 'date' => $data->getMTime(),
@@ -169,7 +181,8 @@ class ApplicationModuleAdministration extends ApplicationBase
                     'a.depend_module_id = b.id',
                     [
                         'name',
-                        'vendor'
+                        'vendor',
+                        'vendor_email'
                     ]
                 )
                 ->where(['module_id' => $moduleInfo['id']]);
@@ -181,7 +194,8 @@ class ApplicationModuleAdministration extends ApplicationBase
             foreach ($resultSet as $module) {
                 $modules[] = [
                     'module' => $module['name'],
-                    'vendor' => $module['vendor'] 
+                    'vendor' => $module['vendor'],
+                    'vendor_email' => $module['vendor_email']
                 ];
             }
         }
@@ -190,15 +204,21 @@ class ApplicationModuleAdministration extends ApplicationBase
             if (false !== ($moduleInstallConfig = $this->getCustomModuleConfig($moduleName, 'install'))) {
                 if (!empty($moduleInstallConfig['module_depends'])) {
                     foreach ($moduleInstallConfig['module_depends'] as $module) {
+                        if (!isset($module['module'], $module['vendor'], $module['vendor_email'])) {
+                            continue;
+                        }
+
                         $moduleInfo = $this->getModuleInfo($module['module']);
 
                         if (!$moduleInfo
                                 || strcasecmp($moduleInfo['vendor'], $module['vendor']) != 0
+                                || strcasecmp($moduleInfo['vendor_email'], $module['vendor_email']) != 0
                                 || $moduleInfo['status'] != self::MODULE_STATUS_ACTIVE) {
 
                             $modules[] = [
                                 'module' => $module['module'],
-                                'vendor' => $module['vendor']
+                                'vendor' => $module['vendor'],
+                                'vendor_email' => $module['vendor_email']
                             ];
 
                             // load the module's translations
@@ -246,16 +266,45 @@ class ApplicationModuleAdministration extends ApplicationBase
      * Check custom module depends
      *
      * @param array $installConfig
+     *      string version optional
+     *      string vendor optional
+     *      string vendor_email optional
+     *      string description optional
+     *      array module_depends optional
+     *          string module
+     *          string vendor
+     *          string vendor_email
+     *      array clear_caches optional
+     *      array resources optional
+     *          string dir_name
+     *          bolean is_public optional
+     *      string install_sql optional
+     *      string uninstall_sql optional
+     *      array system_requirements optional
+     *          array php_extensions optional
+     *          array php_settings optional
+     *          array php_enabled_functions optional
+     *          array php_version optional
+     *      string install_sql optional
+     *      string install_intro optional
+     *      string uninstall_sql optional
+     *      string uninstall_intro optional
+     *      string layout_path optional
      * @return boolean
      */
-    protected function checkCustomModuleDepends(array $installConfig)
+    public function checkCustomModuleDepends(array $installConfig)
     {
         if (!empty($installConfig['module_depends'])) {
             foreach ($installConfig['module_depends'] as $module) {
+                if (!isset($module['module'], $module['vendor'], $module['vendor_email'])) {
+                    continue;
+                }
+
                 $moduleInfo = $this->getModuleInfo($module['module']);
 
                 if (!$moduleInfo
                         || strcasecmp($moduleInfo['vendor'], $module['vendor']) != 0
+                        || strcasecmp($moduleInfo['vendor_email'], $module['vendor_email']) != 0
                         || $moduleInfo['status'] != self::MODULE_STATUS_ACTIVE) {
 
                     return false;
@@ -270,6 +319,30 @@ class ApplicationModuleAdministration extends ApplicationBase
      * Get not validated custom module system requirements
      *
      * @param array $installConfig
+     *      string version optional
+     *      string vendor optional
+     *      string vendor_email optional
+     *      string description optional
+     *      array module_depends optional
+     *          string module
+     *          string vendor
+     *          string vendor_email
+     *      array clear_caches optional
+     *      array resources optional
+     *          string dir_name
+     *          bolean is_public optional
+     *      string install_sql optional
+     *      string uninstall_sql optional
+     *      array system_requirements optional
+     *          array php_extensions optional
+     *          array php_settings optional
+     *          array php_enabled_functions optional
+     *          array php_version optional
+     *      string install_sql optional
+     *      string install_intro optional
+     *      string uninstall_sql optional
+     *      string uninstall_intro optional
+     *      string layout_path optional
      * @return array
      */
     public function getNotValidatedCustomModuleSystemRequirements(array $installConfig)
@@ -278,6 +351,10 @@ class ApplicationModuleAdministration extends ApplicationBase
         $requirements = !empty($installConfig['system_requirements'])
             ? $installConfig['system_requirements']
             : null;
+
+        if (!$requirements) {
+            return $notValidatedRequirements;
+        }
 
         // check php extensions
         if (!empty($requirements['php_extensions'])) {
@@ -358,5 +435,312 @@ class ApplicationModuleAdministration extends ApplicationBase
                         $pattern['base_dir'], $pattern['pattern'], $pattern['text_domain']);
             }
         }
-    }    
+    }
+
+    /**
+     * Install custom module
+     *
+     * @param string $moduleName
+     * @param array $moduleInstallConfig
+     *      string version optional
+     *      string vendor optional
+     *      string vendor_email optional
+     *      string description optional
+     *      array module_depends optional
+     *          string module
+     *          string vendor
+     *          string vendor_email
+     *      array clear_caches optional
+     *      array resources optional
+     *          string dir_name
+     *          bolean is_public optional
+     *      string install_sql optional
+     *      string uninstall_sql optional
+     *      array system_requirements optional
+     *          array php_extensions optional
+     *          array php_settings optional
+     *          array php_enabled_functions optional
+     *          array php_version optional
+     *      string install_sql optional
+     *      string install_intro optional
+     *      string uninstall_sql optional
+     *      string uninstall_intro optional
+     *      string layout_path optional
+     * @return boolean|string
+     */
+    public function installCustomModule($moduleName, array $moduleInstallConfig)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            // 1. Add info about this module into the `application_module` +
+            // 2. Add module's depends +
+            // 3. Clear modules cache +
+            // 4 Clear other caches +
+            // 5. Resources dir +
+            // 6. Regenerate the /var/www/dream_cms/config/module/custom.php +
+            // 7. Execute install sql and pass into this file the module insert id +
+            // 9. TEST IN IN PRODACTION +
+            // 10. Test pages and widgets +
+            //      a. When page is inactive the still into menu +
+            // 11. Clear user cache when hi deleted +
+            // 12. Unit Tests +
+            // 13. XmlRpc +
+            // 15. Everethink should be hidden when module is not active +
+            // 18. Test also xmlsite map for innaactive modules +
+            // 19. Think about global deny all inactive modules (Maybe delete them from custom config ?) +
+            // 17. XmlRps classes should work with only active modules +
+            
+            // 16. Widget sorting wirking wrong when some widgets are inactive !!!!!!!!!!!
+            // 8. SYSTEM EVENT
+            // 20. An space brake the xml map here - http://localhost/dream_cms/public/sitemap.xml (I think it somewhre in modules.php)
+            
+            $insert = $this->insert()
+                ->into('application_module')
+                ->values([
+                    'name' => $moduleName,
+                    'type' => self::MODULE_TYPE_CUSTOM,
+                    'status' => self::MODULE_STATUS_ACTIVE,
+                    'version' => !empty($moduleInstallConfig['version']) ? $moduleInstallConfig['version'] : null,
+                    'vendor' => !empty($moduleInstallConfig['vendor']) ? $moduleInstallConfig['vendor'] : null,
+                    'vendor_email' => !empty($moduleInstallConfig['vendor_email']) ? $moduleInstallConfig['vendor_email'] : null,
+                    'description' => !empty($moduleInstallConfig['description']) ? $moduleInstallConfig['description'] : null
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $insertId = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            // execute an install sql file
+            if (!empty($moduleInstallConfig['install_sql'])) {
+                $sqlFindKeys = [
+                    '__module_id__'
+                ];
+
+                $sqlReplaysKeys = [
+                    $insertId
+                ];
+
+                $this->executeSqlFile($moduleInstallConfig['install_sql'], [
+                    'from' => $sqlFindKeys,
+                    'to' => $sqlReplaysKeys
+                ]);
+            }
+
+            // check the module's depends
+            if (!empty($moduleInstallConfig['module_depends'])) {
+                foreach ($moduleInstallConfig['module_depends'] as $module) {
+                    if (!isset($module['module'], $module['vendor'], $module['vendor_email'])) {
+                        continue;
+                    }
+
+                    if (null != ($moduleInfo = $this->getModuleInfo($module['module']))) {
+                        $insert = $this->insert()
+                            ->into('application_module_depend')
+                            ->values([
+                                'module_id' => $insertId,
+                                'depend_module_id' => $moduleInfo['id']
+                            ]);
+            
+                        $statement = $this->prepareStatementForSqlObject($insert);
+                        $statement->execute();
+                    }
+                }
+                
+            }
+            
+            // regenerate list of custom active modules
+            $this->generateCustomActiveModulesConfig();
+
+            // create resources dirs
+            if (!empty($moduleInstallConfig['resources'])) {
+                foreach ($moduleInstallConfig['resources'] as $dir) {
+                    if (!empty($dir['dir_name'])) {
+                        $dirPath = ApplicationService::getResourcesDir() . $dir['dir_name'];
+                        ApplicationFileSystemUtility::createDir($dirPath);
+
+                        if (isset($dir['is_public']) && false === $dir['is_public']) {
+                            file_put_contents($dirPath . '/' . '.htaccess', 'Deny from all');
+                        }
+                    }
+                }
+            }
+
+            // clear caches
+            $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
+
+            // add translations
+            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
+     * Generate custom active modules config
+     *
+     * @return void
+     */
+    protected function generateCustomActiveModulesConfig()
+    {
+        // get list of custom modules
+        $select = $this->select();
+        $select->from('application_module')
+            ->columns([
+                'name'
+            ])
+            ->where([
+                'type' => self::MODULE_TYPE_CUSTOM,
+                'status' => self::MODULE_STATUS_ACTIVE
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        $modules = [];
+        foreach($resultSet as $module) {
+            $modules[] = "'" . $module->name . "'";
+        }
+
+        $customModules = '
+            <?php
+                return ['. implode(',', $modules) . '];';
+
+        file_put_contents(APPLICATION_ROOT . '/config/module/custom.php', $customModules);
+    }
+
+    /**
+     * Execute sql file
+     *
+     * @param string $filePath
+     * @param array $replace
+     *      string from
+     *      string to
+     * @throws ApplicationException
+     * @return void
+     */
+    protected function executeSqlFile($filePath, array $replace = [])
+    {
+        if(!file_exists($filePath) || !($handler = fopen($filePath, 'r'))) {
+            throw new ApplicationException('Sql file not found or permission denied');
+        }
+
+        $query = null;
+        $delimiter = ';';
+        $result = [];
+
+        // collect all queries
+        while(!feof($handler)) {
+            $str = trim(fgets($handler));
+
+            if(empty($str) || $str[0] == '' || $str[0] == '#' || ($str[0] == '-' && $str[1] == '-'))
+                continue;
+
+            // change delimiter
+            if(strpos($str, 'DELIMITER //') !== false || strpos($str, 'DELIMITER ;') !== false) {
+                $delimiter = trim(str_replace('DELIMITER', '', $str));
+                continue;
+            }
+
+            $query .= ' ' . $str;
+
+            // check for multiline query
+            if(substr($str, -strlen($delimiter)) != $delimiter) {
+                continue;
+            }
+
+            // execute query
+            if (!empty($replace['from']) && !empty($replace['to'])) {
+                $query = str_replace($replace['from'], $replace['to'], $query);
+            }
+
+            if($delimiter != ';') {
+                $query = str_replace($delimiter, '', $query);
+            }
+
+            $this->adapter->query(trim($query), DbAdapter::QUERY_MODE_EXECUTE);
+            $query = null;
+        }
+
+        fclose($handler);
+    }
+
+    /**
+     * Clear caches
+     *
+     * @param array $caches
+     *      boolean setting optional
+     *      boolean time_zone optional
+     *      boolean admin_menu optional
+     *      boolean js_cache optional
+     *      boolean css_cache optional
+     *      boolean layout optional
+     *      boolean localization optional
+     *      boolean page optional
+     *      boolean user optional
+     *      boloean xmlrpc optional
+     * @return void
+     */
+    protected function clearCaches(array $caches = [])
+    {
+        // clear the modules and system config caches
+        ApplicationCacheUtility::clearModuleCache();
+        ApplicationCacheUtility::clearConfigCache();
+
+        foreach ($caches as $cacheName => $clear) {
+            if (false === (bool) $clear) {
+                continue;
+            }
+
+            switch ($cacheName) {
+                case 'setting' :
+                    ApplicationCacheUtility::clearSettingCache();
+                    break;
+
+                case 'time_zone' :
+                    ApplicationCacheUtility::clearTimeZoneCache();
+                    break;
+
+                case 'admin_menu' :
+                    ApplicationCacheUtility::clearAdminMenuCache();
+                    break;
+
+                case 'js_cache' :
+                    ApplicationCacheUtility::clearJsCache();
+                    break;
+
+                case 'css_cache' :
+                    ApplicationCacheUtility::clearCssCache();
+                    break;
+
+                case 'layout' :
+                    LayoutCacheUtility::clearLayoutCache();
+                    break;
+
+                case 'localization' :
+                    LocalizationCacheUtility::clearLocalizationCache();
+                    break;
+
+                case 'page' :
+                    PageCacheUtility::clearPageCache();
+                    break;
+
+                case 'user' :
+                    UserCacheUtility::clearUserCache();
+                    break;
+
+                case 'xmlrpc' :
+                    XmlRpcCacheUtility::clearXmlRpcCache();
+                    break;
+            }
+        }
+    }
 }

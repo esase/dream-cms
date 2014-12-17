@@ -490,6 +490,11 @@ class AclAdministration extends AclBase
                 ]
             )
             ->join(
+                ['cc' => 'application_module'],
+                new Expression('c.module = cc.id and cc.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
+            )
+            ->join(
                 ['d' => 'acl_resource_connection_setting'],
                 new Expression('a.id = d.connection_id and ' . $extraCondition),
                 [

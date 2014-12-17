@@ -26,10 +26,8 @@ class InstallBase
         'public/resource/user/thumbnail',
         'public/layout_cache/css',
         'public/layout_cache/js',
-        'public/layout/base',
-        'public/layout',
         'public/captcha',
-        'data/log',
+        'data/log'
     ];
 
     /**
@@ -86,7 +84,7 @@ class InstallBase
         return [
             0 => [
                 'time'   => '*/5 * * * *',
-                'action' => APPLICATION_PUBLIC . '/index.php application send messages'
+                'action' => APPLICATION_PUBLIC . '/index.php application send messages &> /dev/null'
             ]
         ];
     }
@@ -282,6 +280,8 @@ class InstallBase
      *
      * @param object $adapter
      * @param array $replace
+     *      string from
+     *      string to
      * @throws Exception
      * @return void
      */

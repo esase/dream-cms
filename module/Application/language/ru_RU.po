@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-14 16:20+0600\n"
+"PO-Revision-Date: 2014-12-16 13:54+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,48 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Selected modules have been installed"
+msgstr "Выбранные модули были установлены"
+
+msgid "Selected modules will be installed. Are you sure?"
+msgstr "Выбранные модули будут установлены. Вы уверены?"
+
+msgid "View system requirements"
+msgstr "Просмотр системных требований"
+
+msgid "php_version"
+msgstr "Версия PHP"
+
+msgid "php_enabled_functions"
+msgstr "Отключеные функции PHP"
+
+msgid "php_settings"
+msgstr "Настройки PHP"
+
+msgid "php_extensions"
+msgstr "Расширения PHP"
+
+msgid "Enabled"
+msgstr "Включено"
+
+msgid "Disabled"
+msgstr "Отключено"
+
+msgid "Installed"
+msgstr "Установлено"
+
+msgid "Not installed"
+msgstr "Не установлено"
+
+msgid "Desired value"
+msgstr "Желаемое значение"
+
+msgid "Current value"
+msgstr "Текущее значение"
+
+msgid "Module system requirements"
+msgstr "Системные требования модуля"
 
 msgid "Install selected"
 msgstr "Установить выбранное"
@@ -727,3 +769,9 @@ msgstr "Просмотр описания модулей в админке"
 
 msgid "ACL - Viewing dependent modules in admin area"
 msgstr "Просмотр зависимых модулей в админке"
+
+msgid "ACL - Viewing modules system requirements in admin area"
+msgstr "Просмотр системных требований модулей в админке"
+
+msgid "ACL - Installing modules in admin area"
+msgstr "Установка модулей в админке"

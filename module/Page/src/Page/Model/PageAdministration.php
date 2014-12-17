@@ -800,6 +800,11 @@ class PageAdministration extends PageBase
                 [],
                 'left'
             )
+            ->join(
+                ['i' => 'application_module'],
+                new Expression('i.id = a.module and i.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
+            )
             ->where->in('a.id', $pagesIds)
             ->where->isNull('d.id');
 
@@ -1395,7 +1400,7 @@ class PageAdministration extends PageBase
             ])
             ->join(
                 ['b' => 'application_module'],
-                'b.id = a.module',
+                new Expression('b.id = a.module and b.status = ?', [self::MODULE_STATUS_ACTIVE]),
                 [
                     'module_name' => 'name'
                 ]
@@ -1557,6 +1562,11 @@ class PageAdministration extends PageBase
             ->where([
                 'a.type' => self::WIDGET_TYPE_PUBLIC
             ])
+            ->join(
+                ['d' => 'application_module'],
+                new Expression('d.id = a.module and d.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
+            )
             ->where
             ->nest
                 ->isNull('c.id')
@@ -1569,12 +1579,12 @@ class PageAdministration extends PageBase
         if ($systemPageId) {
             // don't show hidden widgets
             $select->join(
-                ['d' => 'page_system_widget_hidden'],
-                new Expression('d.page_id = ? and a.id = d.widget_id', [$systemPageId]),
+                ['i' => 'page_system_widget_hidden'],
+                new Expression('i.page_id = ? and a.id = i.widget_id', [$systemPageId]),
                 [],
                 'left'
             );
-            $select->where->isNull('d.id');
+            $select->where->isNull('i.id');
 
             $select->where([ // we need only specific widgets for the page or not specified         
                 new Predicate\PredicateSet([
@@ -1675,10 +1685,21 @@ class PageAdministration extends PageBase
             ->join(
                 ['d' => 'page_widget'],
                 new Expression('c.widget_id = d.id and d.type = ?', [self::WIDGET_TYPE_PUBLIC]),
+                [],
+                'left'
+            )
+            ->join(
+                ['i' => 'application_module'],
+                new Expression('i.id = d.module and i.status = ?', [self::MODULE_STATUS_ACTIVE]),
                 [
-                    'widgets' => new Expression('count(d.id)') 
+                    'widgets' => new Expression('count(i.id)') 
                 ],
                 'left'
+            )
+            ->join(
+                ['f' => 'application_module'],
+                new Expression('f.id = a.module and f.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
             )
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType)

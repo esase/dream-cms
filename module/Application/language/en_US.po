@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-14 16:20+0600\n"
+"PO-Revision-Date: 2014-12-16 13:54+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,48 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Selected modules have been installed"
+msgstr "Selected modules have been installed"
+
+msgid "Selected modules will be installed. Are you sure?"
+msgstr "Selected modules will be installed. Are you sure?"
+
+msgid "View system requirements"
+msgstr "View system requirements"
+
+msgid "php_version"
+msgstr "PHP version"
+
+msgid "php_enabled_functions"
+msgstr "PHP disabled functions"
+
+msgid "php_settings"
+msgstr "PHP settings"
+
+msgid "php_extensions"
+msgstr "PHP extensions"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "Installed"
+msgstr "Installed"
+
+msgid "Not installed"
+msgstr "Not installed"
+
+msgid "Desired value"
+msgstr "Desired value"
+
+msgid "Current value"
+msgstr "Current value"
+
+msgid "Module system requirements"
+msgstr "Module system requirements"
 
 msgid "Install selected"
 msgstr "Install selected"
@@ -729,3 +771,9 @@ msgstr "Viewing modules description in admin area"
 
 msgid "ACL - Viewing dependent modules in admin area"
 msgstr "Viewing dependent modules in admin area"
+
+msgid "ACL - Viewing modules system requirements in admin area"
+msgstr "Viewing modules system requirements in admin area"
+
+msgid "ACL - Installing modules in admin area"
+msgstr "Installing modules in admin area"

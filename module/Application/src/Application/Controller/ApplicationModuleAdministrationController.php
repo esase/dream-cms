@@ -83,7 +83,6 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
      */
     public function ajaxViewModuleSystemRequirementsAction()
     {
-        // TODO: ADD ACL!!!
         // check the permission and increase permission's actions track
         if (true !== ($result = $this->aclCheckPermission())) {
             return $result;
@@ -108,7 +107,6 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
      */
     public function listNotInstalledAction()
     {
-        // TODO: ADD CHECKING OF DEPENDEDNT MODULES
         // TODO: MAKE AN INSTALLATION PROCESS
 
         // check the permission and increase permission's actions track
@@ -126,6 +124,83 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
             'order_type' => $this->getOrderType(),
             'per_page' => $this->getPerPage()
         ];
+    }
+
+    /**
+     * Install selected modules
+     */
+    public function installAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $installIntroText = [];
+
+            if (null !== ($modulesIds = $request->getPost('modules', null))) {
+                // install selected modules
+                foreach ($modulesIds as $module) {
+                    // get the module's config
+                    $moduleInstallConfig = $this->getModel()->getCustomModuleConfig($module);
+
+                    if (false === $moduleInstallConfig) {
+                        continue;
+                    }
+
+                    // check the module depends and system requirements
+                    $moduleDepends = $this->getModel()->checkCustomModuleDepends($moduleInstallConfig);
+                    $moduleRequirements = $this->getModel()->
+                            getNotValidatedCustomModuleSystemRequirements($moduleInstallConfig);
+
+                    // skip all not validated modules
+                    if (true !== $moduleDepends || count($moduleRequirements)) {
+                        continue;
+                    }
+
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
+                    }
+
+                    // install the module
+                    if (true !== ($installResult = $this->
+                            getModel()->installCustomModule($module, $moduleInstallConfig))) {
+
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage(($installResult ? $this->getTranslator()->translate($installResult)
+                                : $this->getTranslator()->translate('Error occurred')));
+
+                        break;
+                    }
+
+                    // checking for install intro text
+                    if (!empty($moduleInstallConfig['install_intro'])) {
+                        $installIntroText[] = $this->getTranslator()->translate($moduleInstallConfig['install_intro']);
+                    }
+                }
+
+                if (true === $installResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected modules have been installed'));
+
+                    if ($installIntroText) {
+                        foreach ($installIntroText as $intro) {
+                            $this->flashMessenger()
+                                ->setNamespace('info')
+                                ->addMessage($intro);
+                        }
+                    }
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('modules-administration', 'list-not-installed', [], true);
     }
 
     /**

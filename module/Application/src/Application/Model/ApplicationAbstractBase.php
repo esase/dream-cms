@@ -57,6 +57,16 @@ abstract class ApplicationAbstractBase extends Sql
     const MODULE_STATUS_NOT_ACTIVE = 'not_active';
 
     /**
+     * Module type system
+     */
+    const MODULE_TYPE_SYSTEM = 'system';
+
+    /**
+     * MOdule type custom
+     */
+    const MODULE_TYPE_CUSTOM = 'custom';
+
+    /**
      * Class constructor
      *
      * @param object $adapter
@@ -196,7 +206,7 @@ abstract class ApplicationAbstractBase extends Sql
             }
 
             // save data in cache
-            $this->staticCacheInstance->setItem($cacheName, $module);
+            $this->staticCacheInstance->setItem($cacheName, $modulesList);
             $this->staticCacheInstance->setTags($cacheName, [self::CACHE_MODULES_DATA_TAG]);
         }
 
