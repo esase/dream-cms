@@ -490,10 +490,11 @@ class ApplicationModuleAdministration extends ApplicationBase
             // 18. Test also xmlsite map for innaactive modules +
             // 19. Think about global deny all inactive modules (Maybe delete them from custom config ?) +
             // 17. XmlRps classes should work with only active modules +
+            // 20. An space brake the xml map here - http://localhost/dream_cms/public/sitemap.xml (I think it somewhre in modules.php) +
+            
             
             // 16. Widget sorting wirking wrong when some widgets are inactive !!!!!!!!!!!
             // 8. SYSTEM EVENT
-            // 20. An space brake the xml map here - http://localhost/dream_cms/public/sitemap.xml (I think it somewhre in modules.php)
             
             $insert = $this->insert()
                 ->into('application_module')
@@ -605,16 +606,13 @@ class ApplicationModuleAdministration extends ApplicationBase
         $resultSet = new ResultSet;
         $resultSet->initialize($statement->execute());
 
-        $modules = [];
+        $modules = null;
         foreach($resultSet as $module) {
-            $modules[] = "'" . $module->name . "'";
+            $modules .= "'" . $module->name . "',";
         }
 
-        $customModules = '
-            <?php
-                return ['. implode(',', $modules) . '];';
-
-        file_put_contents(APPLICATION_ROOT . '/config/module/custom.php', $customModules);
+        file_put_contents(APPLICATION_ROOT .
+                '/config/module/custom.php', '<?php return ['. rtrim($modules, ',') . '];');
     }
 
     /**

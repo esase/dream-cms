@@ -10,6 +10,21 @@ use Exception;
 class InstallBase
 {
     /**
+     * System modules
+     * @var array
+     */
+    protected $systemModules = [
+        'Application',
+        'Acl',
+        'User',
+        'Layout',
+        'Localization',
+        'Page',
+        'XmlRpc',
+        'FileManager'
+    ];
+
+    /**
      * Writable resources
      * @var array
      */
@@ -158,21 +173,8 @@ class InstallBase
      */
     protected function generateSystemModulesConfig()
     {
-        $systemModules = "
-        <?php
-            return [
-                'Application',
-                'Acl',
-                'User',
-                'Layout',
-                'Localization',
-                'Page',
-                'XmlRpc',
-                'FileManager'
-            ];
-        ";
-
-        file_put_contents(APPLICATION_ROOT . '/config/module/system.php', $systemModules);
+        file_put_contents(APPLICATION_ROOT . '/config/module/system.php',
+                '<?php return ['. implode(',', array_map(function($value) {return "'" . $value . "'";}, $this->systemModules)) . '];');
     }
 
     /**
