@@ -261,8 +261,16 @@ class Module implements ConsoleUsageProviderInterface
                     return $cache;
                 },
                 'Application\Cache\Dynamic' => function() {
-                    // get an active cache engine
-                    $cacheEngine = SettingService::getSetting('application_dynamic_cache');
+                    // get an active dynamic cache engine
+                    if (null == ($cacheEngine =
+                            SettingService::getSetting('application_dynamic_cache'))) {
+
+                        return CacheStorageFactory::factory([
+                            'adapter' => [
+                                'name' => 'BlackHole'
+                            ]
+                        ]);
+                    }
 
                     $cache = CacheStorageFactory::factory([
                         'adapter' => [

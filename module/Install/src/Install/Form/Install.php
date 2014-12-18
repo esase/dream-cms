@@ -170,7 +170,7 @@ class Install extends Form
             ],
             'attributes' => [
                 'class' => 'form-control',
-                'required' => true,
+                'required' => false,
                 'id' => 'dynamic_cache'
             ]
         ]);
@@ -393,7 +393,7 @@ class Install extends Form
 
         $inputFilter->add($inputFactory->createInput([
             'name' => 'dynamic_cache',
-            'required' => true,
+            'required' => false,
             'filters' => [
             ],
             'validators' => [

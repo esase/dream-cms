@@ -1,6 +1,7 @@
 <?php
 namespace Application\Utility;
 
+use Application\Service\ApplicationSetting as ApplicationSettingService;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Service\Application as ApplicationService;
 use Layout\Service\Layout as LayoutService;
@@ -109,6 +110,12 @@ class ApplicationCache
      */
     public static function clearDynamicCache()
     {
+        if (null == ($dynamicCache =
+                ApplicationSettingService::getSetting('application_dynamic_cache'))) {
+
+            return true;
+        }
+
         try {
             return ServiceLocatorService::getServiceLocator()->get('Application\Cache\Dynamic')->flush();
         }
