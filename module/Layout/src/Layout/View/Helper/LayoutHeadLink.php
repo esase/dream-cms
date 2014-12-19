@@ -138,12 +138,12 @@ class LayoutHeadLink extends BaseHeadLink
 
                         // add absolute path to file
                         if (empty($fileInfo['scheme'])) {
-                            $file->path = dirname(APPLICATION_ROOT) . $file->href;
+                            $file->path = APPLICATION_PUBLIC . '/' . $file->href;
                         }
 
                         // get file content
-                        if (false !== ($result = $this->processCssContent(
-                                (isset($file->path)? $file->path : $file->href), dirname($file->href)))) {
+                        if (false !== ($result = $this->processCssContent((isset($file->path)
+                                ? $file->path : $file->href), $this->view->basePath() . '/' . dirname($file->href)))) {
 
                             $content .= $result;
                         }
@@ -161,9 +161,7 @@ class LayoutHeadLink extends BaseHeadLink
                 }
 
                 // get new url
-                $file->href = $this->view->
-                        basePath() . '/' . LayoutService::getLayoutCacheDir() . '/' . $cacheFile;
-                
+                $file->href = LayoutService::getLayoutCacheDir() . '/' . $cacheFile;
                 $items[] = $this->itemToString($file);
 
             }
@@ -190,7 +188,7 @@ class LayoutHeadLink extends BaseHeadLink
         if (null != ($content = file_get_contents($filePath))) {
             // make unification of css imports
             $content = $this->unificationCssImports($content);
-           
+
             // replace relative urls to absolute
             $content = $this->replaceCssRelUrlsToAbs($content, $baseFileUrl);
 
@@ -198,8 +196,7 @@ class LayoutHeadLink extends BaseHeadLink
             $fileInfo = parse_url($filePath);
 
             // find all css imports
-            $content = $this->findCssImports($content,
-                    $nestedLevel, (!empty($fileInfo['scheme']) ? dirname($filePath) : null));
+            $content = $this->findCssImports($content, $nestedLevel);
         }
 
         return $content;
@@ -217,11 +214,18 @@ class LayoutHeadLink extends BaseHeadLink
         $content = preg_replace_callback($this->cssImportsExpression, function($urlInfo) use ($nestedLevel) {
             $urlDevider = $urlInfo['importUrl']{0} != '/' ? '/' : null;
 
+            $basePath = $this->view->basePath();
+
+            // check for base path
+            if (substr($urlInfo['importUrl'], 0, strlen($basePath)) == $basePath) {
+                $urlInfo['importUrl'] = substr($urlInfo['importUrl'], strlen($basePath));
+            }
+
             // check the file sheme
            $fileInfo = parse_url($urlInfo['importUrl']);
 
            $filePath = empty($fileInfo['scheme'])
-                ? dirname(APPLICATION_ROOT) . $urlDevider . $urlInfo['importUrl']
+                ? APPLICATION_PUBLIC . $urlDevider . $urlInfo['importUrl']
                 : $urlInfo['importUrl'];
 
             // get file

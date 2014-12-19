@@ -40,7 +40,8 @@ class FileManagerFileUrl extends AbstractHelper
         return $this->getView()->partial('file-manager/patrial/file-url', [
             'file_extension' => FileSystemUtility::getFileExtension($fileName),
             'name' => $fileName,
-            'url' => FileManagerBaseModel::getUserBaseFilesUrl() . '/' . $currentPath
+            'url' =>  $this->view->serverUrl() . $this->view->basePath() .
+                    '/' . FileManagerBaseModel::getUserBaseFilesUrl() . '/' . $currentPath
         ]);
     }
 }

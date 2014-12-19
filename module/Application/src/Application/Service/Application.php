@@ -4,16 +4,6 @@ namespace Application\Service;
 class Application
 {
     /**
-     * Get application url
-     *
-     * @return array
-     */
-    public static function getApplicationUrl()
-    {
-        return ApplicationServiceLocator::getServiceLocator()->get('Request')->getBaseUrl();
-    }
-
-    /**
      * Get config path
      *
      * @return string
@@ -42,7 +32,6 @@ class Application
      */
     public static function getResourcesUrl()
     {
-        return self::getApplicationUrl() . '/' .
-                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['resource'] . '/';
+        return ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['resource'] . '/';
     }
 }

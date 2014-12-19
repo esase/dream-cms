@@ -35,13 +35,13 @@ class InstallBase
         'config/autoload',
         'config/module/custom.php',
         'config/module/system.php',
-        'public/resource',
-        'public/resource/filemanager',
-        'public/resource/user',
-        'public/resource/user/thumbnail',
-        'public/layout_cache/css',
-        'public/layout_cache/js',
-        'public/captcha',
+        '__public__/resource',
+        '__public__/resource/filemanager',
+        '__public__/resource/user',
+        '__public__/resource/user/thumbnail',
+        '__public__/layout_cache/css',
+        '__public__/layout_cache/js',
+        '__public__/captcha',
         'data/log'
     ];
 
@@ -424,7 +424,10 @@ class InstallBase
         asort($this->writableResources);
         $resources = [];
 
+        $publicDir = basename(APPLICATION_PUBLIC);
         foreach ($this->writableResources as $path) {
+            $path = str_replace('__public__', $publicDir, $path);
+
             if (false === ($result = is_writable(APPLICATION_ROOT . '/' . $path))) {
                 $resources[] = [
                     'path' => $path,
