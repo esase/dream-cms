@@ -1,6 +1,7 @@
 <?php
 namespace Application\Model;
 
+use Application\Event\ApplicationEvent;
 use Application\Exception\ApplicationException;
 use Application\Service\Application as ApplicationService;
 use Application\Utility\ApplicationFileSystem as ApplicationFileSystemUtility;
@@ -473,36 +474,6 @@ class ApplicationModuleAdministration extends ApplicationBase
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            // 1. Add info about this module into the `application_module` +
-            // 2. Add module's depends +
-            // 3. Clear modules cache +
-            // 4 Clear other caches +
-            // 5. Resources dir +
-            // 6. Regenerate the /var/www/dream_cms/config/module/custom.php +
-            // 7. Execute install sql and pass into this file the module insert id +
-            // 9. TEST IN IN PRODACTION +
-            // 10. Test pages and widgets +
-            //      a. When page is inactive the still into menu +
-            // 11. Clear user cache when hi deleted +
-            // 12. Unit Tests +
-            // 13. XmlRpc +
-            // 15. Everethink should be hidden when module is not active +
-            // 18. Test also xmlsite map for innaactive modules +
-            // 19. Think about global deny all inactive modules (Maybe delete them from custom config ?) +
-            // 17. XmlRps classes should work with only active modules +
-            // 20. An space brake the xml map here - http://localhost/dream_cms/public/sitemap.xml (I think it somewhre in modules.php) +
-            // 25. Fix tinymce and fix files urls in FileManager +
-            // 22. Check all layout url in images, js, photos, etc +
-            // 21. Fix all layout troubles (check it also with different layout and enabled/disabled cache) +
-            // 24. Check again whole system and modules installation for both mode (as local dir and domain) +
-            // 26. Fron-end layout has en empty in the start of file +
-            // 23. Rename back the www dir to public +
-
-            // 16. Widget sorting wirking wrong when some widgets are inactive !!!!!!!!!!!
-            // 8. SYSTEM EVENT
-            // 25. Don't show widget if there are not any dependent system pages
-            
-
             $insert = $this->insert()
                 ->into('application_module')
                 ->values([
@@ -588,6 +559,8 @@ class ApplicationModuleAdministration extends ApplicationBase
             return $e->getMessage();
         }
 
+        // fire the install custom module event
+        ApplicationEvent::fireInstallCustomModuleEvent($moduleName);
         return true;
     }
 

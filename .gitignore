@@ -10,6 +10,7 @@ data/cache/config/*
 config/autoload/local.php
 config/autoload/*.local.php
 module/Example/*
+module/Example2/*
 public/layout_cache/css/*
 !public/layout_cache/css/.htaccess
 public/layout_cache/js/*

@@ -204,6 +204,15 @@ class PageBase extends ApplicationAbstractBase
                     ]
                 )
                 ->join(
+                    ['cc' => 'page_structure'],
+                    new Expression('cc.system_page = c.depend_page_id and cc.language = ? and cc.active = ?', [
+                        $this->getCurrentLanguage(),
+                        PageNestedSet::PAGE_STATUS_ACTIVE
+                    ]),
+                    [],
+                    'left'
+                )
+                ->join(
                     ['d' => 'application_module'],
                     new Expression('c.module = d.id and d.status = ?', [self::MODULE_STATUS_ACTIVE]),
                     []
@@ -231,7 +240,14 @@ class PageBase extends ApplicationAbstractBase
                 ->order('a.order')
                 ->where->IsNull('a.page_id')
                     ->or->where->IsNotNull('a.page_id')
-                    ->and->where->IsNotNull('b.id');
+                    ->and->where->IsNotNull('b.id')
+                ->nest
+                    ->isNull('c.depend_page_id')
+                    ->or
+                    ->isNotNull('c.depend_page_id')
+                    ->and
+                    ->isNotNull('cc.system_page')
+                ->unnest;
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;

@@ -1058,7 +1058,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (35, 'page_widget_add', 5, 'Event - Adding widgets'),
 (36, 'page_widget_change_position', 5, 'Event - Changing widgets positions'),
 (37, 'page_widget_delete', 5, 'Event - Deleting widgets'),
-(38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings');
+(38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings'),
+(39, 'application_install_custom_module', 1, 'Event - Installing custom modules');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1220,36 +1221,6 @@ INSERT INTO `page_widget_position_connection` (`id`, `position_id`, `layout_id`)
 (29, 5, 11),
 (30, 7, 11);
 
-CREATE TABLE `page_widget` (
-    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `type` ENUM('system','public') NOT NULL,
-    `description` VARCHAR(100) NOT NULL,
-    `duplicate` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`) VALUES
-(1,  'pageHtmlWidget', 5, 'public', 'Html', 1, NULL),
-(2,  'userLoginWidget', 2, 'public', 'Login', NULL, 1),
-(3,  'userRegisterWidget', 2, 'public', 'Register', NULL, 1),
-(4,  'userActivateWidget', 2, 'public', 'User activate', NULL, 1),
-(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1),
-(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1),
-(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1),
-(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL),
-(9,  'userInfoWidget', 2, 'public', 'Account info', NULL, NULL),
-(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, NULL),
-(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1),
-(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1),
-(13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1),
-(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1);
-
 CREATE TABLE `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
@@ -1295,6 +1266,40 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`,
 (10, 'user', 'User profile', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, NULL, NULL, 1, NULL, 0, 1, NULL, NULL, 'User\\PageProvider\\UserPageProvider'),
 (11, 'user-edit', 'Edit account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, 1, NULL),
 (12, '404', '404 error', 5, NULL, NULL, 1, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL);
+
+CREATE TABLE `page_widget` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `type` ENUM('system','public') NOT NULL,
+    `description` VARCHAR(100) NOT NULL,
+    `duplicate` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `depend_page_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
+(1,  'pageHtmlWidget', 5, 'public', 'Html', 1, NULL, NULL),
+(2,  'userLoginWidget', 2, 'public', 'Login', NULL, 1, NULL),
+(3,  'userRegisterWidget', 2, 'public', 'Register', NULL, 1, NULL),
+(4,  'userActivateWidget', 2, 'public', 'User activate', NULL, 1, NULL),
+(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1, NULL),
+(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1, NULL),
+(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1, NULL),
+(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL, NULL),
+(9,  'userInfoWidget', 2, 'public', 'Account info', NULL, NULL, NULL),
+(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, NULL, NULL),
+(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1, NULL),
+(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL),
+(13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL),
+(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

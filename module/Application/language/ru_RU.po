@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-16 13:54+0600\n"
+"PO-Revision-Date: 2014-12-21 14:22+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -719,6 +719,15 @@ msgstr "Значение должно содержать только цифры
 
 msgid "The form submitted did not originate from the expected site"
 msgstr "Данные были присланы не с текущего сайта"
+
+msgid "Event - Installing custom modules"
+msgstr "Установка пользовательских модулей"
+
+msgid "Event - Custom module installed by guest"
+msgstr "Гость установил пользовательский модуль \"%s\""
+
+msgid "Event - Custom module installed by user"
+msgstr "\"%s\" установил(а) пользовательский модуль \"%s\""
 
 msgid "Event - Editing settings"
 msgstr "Изменение настроек"

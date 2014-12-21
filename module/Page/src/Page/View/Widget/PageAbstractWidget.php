@@ -10,6 +10,12 @@ use Zend\View\Helper\AbstractHelper;
 abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
 {
     /**
+     * Widget redirected flag
+     * @var boolean
+     */
+    protected $widgetRedirected = false;
+
+    /**
      * Page Id
      * @var integer
      */
@@ -138,6 +144,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     protected function redirectTo(array $params = [], $useReferer = false, array $queries = [])
     {
         $request = $this->getServiceLocator()->get('Request');
+        $this->widgetRedirected = true;
 
         // check the referer
         if ($useReferer && null != ($referer = $request->getHeader('Referer'))) {
@@ -157,6 +164,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
      */
     protected function redirectToUrl($url)
     {
+        $this->widgetRedirected = true;
         $request = $this->getServiceLocator()->get('Request');
         return $this->getServiceLocator()->
                 get('controllerPluginManager')->get('redirect')->toUrl($url);
@@ -169,6 +177,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
      */
     protected function reloadPage()
     {
+        $this->widgetRedirected = true;
         return $this->getServiceLocator()->
                 get('controllerPluginManager')->get('redirect')->toUrl($this->getView()->serverUrl(true));
     }
@@ -243,5 +252,15 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     {
         $this->widgetPosition = $position;
         return $this;
+    }
+
+    /**
+     * Is widget redirected
+     *
+     * @return boolean
+     */
+    public function isWidgetRedirected()
+    {
+        return $this->widgetRedirected;
     }
 }

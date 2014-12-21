@@ -54,6 +54,7 @@
             'placeholder' : 'ui-state-highlight',
             'handle' : '.sortable-handler',
             'stop' : function (e, ui) {
+
                 params = {
                     'widget_order' : $(ui.item).index(),
                     'widget_connection'  : $(ui.item).attr('widget-connection'),

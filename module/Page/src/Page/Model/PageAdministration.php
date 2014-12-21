@@ -385,14 +385,69 @@ class PageAdministration extends PageBase
      */
     public function changePublicWidgetPosition(array $oldConnectionInfo, $newOrder, $newPositionId)
     {
-        if ($newOrder == $oldConnectionInfo['order']
-                && $newPositionId == $oldConnectionInfo['position_id']) {
-
-            return true;
-        }
-
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            // get list of all active widgets
+            $select = $this->select();
+            $select->from(['a' => 'page_widget_connection'])
+                ->columns([
+                    'order'
+                ])
+                ->join(
+                    ['b' => 'page_widget'],
+                    'a.widget_id = b.id',
+                    []
+                )
+                ->join(
+                    ['c' => 'application_module'],
+                    new Expression('b.module = c.id and c.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                    []
+                )
+                ->join(
+                    ['d' => 'page_structure'],
+                    new Expression('d.system_page = b.depend_page_id and d.language = ? and d.active = ?', [
+                        $this->getCurrentLanguage(),
+                        PageNestedSet::PAGE_STATUS_ACTIVE
+                    ]),
+                    [],
+                    'left'
+                )
+                ->order('a.order')
+                ->where([
+                    'a.page_id' => $oldConnectionInfo['page_id'],
+                    'a.position_id' => $newPositionId
+                ])
+                ->where->nest
+                    ->isNull('b.depend_page_id')
+                    ->or
+                    ->isNotNull('b.depend_page_id')
+                    ->and
+                    ->isNotNull('d.system_page')
+                ->unnest;
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+
+            $index = 1;
+            $activeWidgets = [];
+            foreach ($result as $activeWidget) {
+                $activeWidgets[$index] = $activeWidget['order'];
+                $index++;
+            }
+
+            // change widget order value
+            if ($activeWidgets) {
+                $newOrder = isset($activeWidgets[$newOrder])
+                    ? $activeWidgets[$newOrder]
+                    : $activeWidgets[count($activeWidgets)] + 1;
+            }
+
+            if ($newOrder == $oldConnectionInfo['order']
+                    && $newPositionId == $oldConnectionInfo['position_id']) {
+
+                return true;
+            }
 
             $this->updateStructurePageEditedDate($oldConnectionInfo['page_id']);
 
@@ -1557,16 +1612,25 @@ class PageAdministration extends PageBase
                 [],
                 'left'
             )
-            ->group('a.id')
-            ->order('a.id')
-            ->where([
-                'a.type' => self::WIDGET_TYPE_PUBLIC
-            ])
             ->join(
                 ['d' => 'application_module'],
                 new Expression('d.id = a.module and d.status = ?', [self::MODULE_STATUS_ACTIVE]),
                 []
             )
+            ->join(
+                ['i' => 'page_structure'],
+                new Expression('i.system_page = a.depend_page_id and i.language = ? and i.active = ?', [
+                    $this->getCurrentLanguage(),
+                    PageNestedSet::PAGE_STATUS_ACTIVE
+                ]),
+                [],
+                'left'
+            )
+            ->group('a.id')
+            ->order('a.id')
+            ->where([
+                'a.type' => self::WIDGET_TYPE_PUBLIC
+            ])            
             ->where
             ->nest
                 ->isNull('c.id')
@@ -1574,17 +1638,24 @@ class PageAdministration extends PageBase
                 ->isNotNull('c.id')
                 ->and
                 ->equalTo('a.duplicate', self::WIDGET_DUPLICATE)
+            ->unnest
+            ->nest
+                ->isNull('a.depend_page_id')
+                ->or
+                ->isNotNull('a.depend_page_id')
+                ->and
+                ->isNotNull('i.system_page')
             ->unnest;
 
         if ($systemPageId) {
             // don't show hidden widgets
             $select->join(
-                ['i' => 'page_system_widget_hidden'],
-                new Expression('i.page_id = ? and a.id = i.widget_id', [$systemPageId]),
+                ['f' => 'page_system_widget_hidden'],
+                new Expression('f.page_id = ? and a.id = f.widget_id', [$systemPageId]),
                 [],
                 'left'
             );
-            $select->where->isNull('i.id');
+            $select->where->isNull('f.id');
 
             $select->where([ // we need only specific widgets for the page or not specified         
                 new Predicate\PredicateSet([
@@ -1689,8 +1760,18 @@ class PageAdministration extends PageBase
                 'left'
             )
             ->join(
+                ['dd' => 'page_structure'],
+                new Expression('dd.system_page = d.depend_page_id and dd.language = ? and dd.active = ?', [
+                    $this->getCurrentLanguage(),
+                    PageNestedSet::PAGE_STATUS_ACTIVE
+                ]),
+                [],
+                'left'
+            )
+            ->join(
                 ['i' => 'application_module'],
-                new Expression('i.id = d.module and i.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                new Expression('i.id = d.module and i.status = ? and (d.depend_page_id is null
+                        or d.depend_page_id is not null and dd.system_page is not null)', [self::MODULE_STATUS_ACTIVE]),
                 [
                     'widgets' => new Expression('count(i.id)') 
                 ],

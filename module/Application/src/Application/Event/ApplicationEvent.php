@@ -21,6 +21,11 @@ class ApplicationEvent extends ApplicationAbstractEvent
     const SEND_EMAIL_NOTIFICATION = 'application_send_email_notification';
 
     /**
+     * Install custom module event
+     */
+    const INSTALL_CUSTOM_MODULE = 'application_install_custom_module';
+
+    /**
      * Fire send email notification event
      *
      * @param string $email
@@ -76,6 +81,27 @@ class ApplicationEvent extends ApplicationAbstractEvent
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
 
         self::fireEvent(self::CHANGE_SETTINGS, 
+                $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire install custom module event
+     *
+     * @param string $module
+     * @return void
+     */
+    public static function fireInstallCustomModuleEvent($module)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Custom module installed by guest'
+            : 'Event - Custom module installed by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$module]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
+
+        self::fireEvent(self::INSTALL_CUSTOM_MODULE, 
                 $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

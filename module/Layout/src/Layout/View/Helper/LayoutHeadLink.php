@@ -141,9 +141,13 @@ class LayoutHeadLink extends BaseHeadLink
                             $file->path = APPLICATION_PUBLIC . '/' . $file->href;
                         }
 
+                        $basePath = empty($fileInfo['scheme'])
+                            ? $this->view->basePath() . '/' . dirname($file->href)
+                            : dirname($file->href);
+
                         // get file content
-                        if (false !== ($result = $this->processCssContent((isset($file->path)
-                                ? $file->path : $file->href), $this->view->basePath() . '/' . dirname($file->href)))) {
+                        if (false !== ($result = $this->
+                                processCssContent((isset($file->path) ? $file->path : $file->href), $basePath))) {
 
                             $content .= $result;
                         }
@@ -216,21 +220,26 @@ class LayoutHeadLink extends BaseHeadLink
 
             $basePath = $this->view->basePath();
 
+            // check the file sheme
+            $fileInfo = parse_url($urlInfo['importUrl']);
+
             // check for base path
-            if (substr($urlInfo['importUrl'], 0, strlen($basePath)) == $basePath) {
+            if (empty($fileInfo['scheme'])
+                    && substr($urlInfo['importUrl'], 0, strlen($basePath)) == $basePath) {
+
                 $urlInfo['importUrl'] = substr($urlInfo['importUrl'], strlen($basePath));
             }
 
-            // check the file sheme
-           $fileInfo = parse_url($urlInfo['importUrl']);
-
-           $filePath = empty($fileInfo['scheme'])
+            $filePath = empty($fileInfo['scheme'])
                 ? APPLICATION_PUBLIC . $urlDevider . $urlInfo['importUrl']
                 : $urlInfo['importUrl'];
 
-            // get file
-            return  $this->processCssContent($filePath, dirname($urlInfo['importUrl']), $nestedLevel + 1);
+            $basePath = empty($fileInfo['scheme'])
+                ? $basePath . dirname($urlInfo['importUrl'])
+                : dirname($urlInfo['importUrl']);
 
+            // get file
+            return  $this->processCssContent($filePath, $basePath, $nestedLevel + 1);
         }, $content);
 
         return $content;
