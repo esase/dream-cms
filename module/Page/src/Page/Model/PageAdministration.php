@@ -1692,6 +1692,7 @@ class PageAdministration extends PageBase
      * @param string $orderBy
      * @param string $orderType
      * @param array $filters
+     *      array modules
      *      string status
      *      string slug
      * @return object Paginator
@@ -1791,6 +1792,11 @@ class PageAdministration extends PageBase
         null === $parentId
             ? $select->where->isNull('a.parent_id')
             : $select->where(['a.parent_id' => $parentId]);
+
+        // filter by modules
+        if (!empty($filters['modules']) && is_array($filters['modules'])) {
+            $select->where->in('f.id', $filters['modules']);
+        }
 
         // filter by status
         if (!empty($filters['status'])) {

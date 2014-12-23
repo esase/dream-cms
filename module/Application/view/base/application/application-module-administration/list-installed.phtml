@@ -1,3 +1,5 @@
+<?php use Application\Model\ApplicationAbstractBase ?>
+
 <?php $this->declareVars('subPageTitle') ?>
 <?php $this->subPageTitle = $this->translate('List of installed modules') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
@@ -9,4 +11,144 @@
 <?php echo $this->partial('administration-partial/tab', [
     'tabs' => $this->baseTabs,
     'active' => 'list-installed' // selected action is "list-installed"
+]) ?>
+
+<?php $this->content = $this->partial('partial/data-grid', [
+    'controller' => 'modules-administration',
+    'action' => 'list-installed',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => [
+        0 => [
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ],
+        1 => [
+            'title' => $this->translate('Name')
+        ],
+        2 => [
+            'title' => $this->translate('Type'),
+            'order_name' => 'type'
+        ],
+        3 => [
+            'title' => $this->translate('Status'),
+            'order_name' => 'status'
+        ],
+        4 => [
+            'title' => $this->translate('Version'),
+            'order_name' => 'version'
+        ],
+        5 => [
+            'title' => $this->translate('Vendor'),
+            'order_name' => 'vendor'
+        ],
+        6 => [
+            'title' => $this->translate('Vendor email'),
+            'order_name' => 'email'
+        ],
+    ],
+    'paginator' => $this->paginator,
+    'skipped_fields' => [
+        'description',
+        'module_depends'
+    ],
+    'helpers' => [
+        'name' => 'translate',
+        'type' => 'translate',
+        'status' => 'translate'
+    ],
+    'helpers_options' => [
+    ],
+    'actions' => [
+        'regular_actions' => [
+        ],
+        'multiple_actions' => [
+            0 => [
+                'name' => $this->translate('Uninstall selected'),
+                'controller' => 'modules-administration',
+                'action' => 'uninstall',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected modules will be uninstalled. Are you sure?')
+            ],
+            1 => [
+                'name' => $this->translate('Activate selected'),
+                'controller' => 'modules-administration',
+                'action' => 'activate',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected modules will be activated. Are you sure?')
+            ],
+            2 => [
+                'name' => $this->translate('Deactivate selected'),
+                'controller' => 'modules-administration',
+                'action' => 'deactivate',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected modules will be deactivated. Are you sure?')
+            ]
+        ],
+        'single_actions' => [
+            0 => [
+                'name' => $this->translate('View installed modules dependents'),
+                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-dependent-modules']) . '?id=__value__\', \'popup-dependent-modules-window\')',
+                'check_acl' => true,
+                'controller' => 'modules-administration',
+                'action' => 'ajax-view-dependent-modules',
+                'image' => $this->layoutAsset('icon/depend_module_action.png', 'image')
+            ],
+            1 => [
+                'name' => $this->translate('View module description'),
+                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-module-description']) . '?id=__value__\', \'popup-module-description-window\')',
+                'check_acl' => true,
+                'controller' => 'modules-administration',
+                'action' => 'ajax-view-module-description',
+                'image' => $this->layoutAsset('icon/info_action.png', 'image')
+            ]
+        ]
+    ],
+    'actions_options' => [
+        'action_identity' => 'name',
+        'form_name' => 'modules',
+        'multiple_actions' => [
+            'items_name' => 'modules[]'
+        ]
+    ],
+    'actions_extra_check' => [
+        'multiple_actions' => [
+            'manageable' => [
+                'function' => function($data) {
+                    if ($data['type'] == ApplicationAbstractBase::MODULE_TYPE_SYSTEM
+                        || null != $data['module_depends']) {
+
+                        return false;
+                    }
+
+                    return true;
+                }
+            ]
+        ],
+        'multiple_actions_message' => $this->translate('You cannot delete system modules. If you want delete, activate or deactivate custom module you have to delete all dependent modules'),
+        'single_actions' => [
+            'ajax-view-dependent-modules' => [
+                0 => [
+                    'param' => 'module_depends',
+                    'condition' =>  'return "" != "__value__";'
+                ]
+            ],
+            'ajax-view-module-description' => [
+                0 => [
+                    'param' => 'description',
+                    'condition' =>  'return "" != "__value__";'
+                ]
+            ]
+        ]
+    ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Installed modules'),
+    'body' => $this->content
 ]) ?>

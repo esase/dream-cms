@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-21 14:22+0600\n"
+"PO-Revision-Date: 2014-12-23 16:07+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,43 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Module uninstallation system pages warning"
+msgstr ""
+"Модуль '%s' содержит системные страницы в дереве страниц, которые должны "
+"быть удалены перед деинсталляцией"
+
+msgid "Selected modules have been uninstalled"
+msgstr "Выбранные модули были деинсталлированы"
+
+msgid ""
+"You cannot delete system modules. If you want delete, activate or deactivate "
+"custom module you have to delete all dependent modules"
+msgstr ""
+"Вы не можете удалять системные модули. Если вы хотите удалить, активировать "
+"или деактивировать пользовательский модуль, вы должны удалить все зависимости"
+
+msgid "Installed modules"
+msgstr "Установленные модули"
+
+msgid "Selected modules will be uninstalled. Are you sure?"
+msgstr "Выбранные модули будут деинсталлированы. Вы уверены?"
+
+msgid "Uninstall selected"
+msgstr "Деинсталляция выбранного"
+
+msgid "View installed modules dependents"
+msgstr "Просмотр зависящих модулей"
+
+msgid "Appliction module description"
+msgstr ""
+"Это один из модулей системы, который обеспечивает базовую функциональность"
+
+msgid "active"
+msgstr "Активен"
+
+msgid "not_active"
+msgstr "Не активен"
 
 msgid "Selected modules have been installed"
 msgstr "Выбранные модули были установлены"
@@ -71,8 +108,8 @@ msgstr ""
 msgid "View dependent modules"
 msgstr "Просмотр зависимых модулей"
 
-msgid "Dependent modules"
-msgstr "Зависимые модули"
+msgid "Dependents"
+msgstr "Зависимости"
 
 msgid "View module description"
 msgstr "Посмотреть описание модуля"
@@ -502,10 +539,10 @@ msgid "Per page"
 msgstr "Результатов на странице"
 
 msgid "custom"
-msgstr "Пользовательский ресурс"
+msgstr "Пользовательский"
 
 msgid "system"
-msgstr "Системный ресурс"
+msgstr "Системный"
 
 msgid "Save"
 msgstr "Сохранить"
@@ -720,6 +757,15 @@ msgstr "Значение должно содержать только цифры
 msgid "The form submitted did not originate from the expected site"
 msgstr "Данные были присланы не с текущего сайта"
 
+msgid "Event - Uninstalling custom modules"
+msgstr "Деинсталляция пользовательских модулей"
+
+msgid "Event - Custom module uninstalled by guest"
+msgstr "Гость деинсталлировал пользовательский модуль \"%s\""
+
+msgid "Event - Custom module uninstalled by user"
+msgstr "\"%s\" деинсталлировал(а) пользовательский модуль \"%s\""
+
 msgid "Event - Installing custom modules"
 msgstr "Установка пользовательских модулей"
 
@@ -784,3 +830,6 @@ msgstr "Просмотр системных требований модулей 
 
 msgid "ACL - Installing modules in admin area"
 msgstr "Установка модулей в админке"
+
+msgid "ACL - Uninstalling modules in admin area"
+msgstr "Деинсталляция модулей в админке"

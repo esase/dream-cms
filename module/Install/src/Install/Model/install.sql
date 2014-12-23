@@ -491,14 +491,14 @@ CREATE TABLE `application_module` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`) VALUES
-(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
-(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
-(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
-(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
-(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
-(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
-(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL),
-(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL);
+(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Appliction module description'),
+(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'User module description'),
+(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'XmlRpc module description'),
+(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'File manager module description'),
+(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Page module description'),
+(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Layout module description'),
+(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Localization module description'),
+(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Acl module description');
 
 CREATE TABLE `application_module_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -641,7 +641,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (59, 'modules_administration_ajax_view_module_description', 'ACL - Viewing modules description in admin area', 1),
 (60, 'modules_administration_ajax_view_dependent_modules', 'ACL - Viewing dependent modules in admin area', 1),
 (61, 'modules_administration_ajax_view_module_system_requirements', 'ACL - Viewing modules system requirements in admin area', 1),
-(62, 'modules_administration_install', 'ACL - Installing modules in admin area', 1);
+(62, 'modules_administration_install', 'ACL - Installing modules in admin area', 1),
+(63, 'modules_administration_uninstall', 'ACL - Uninstalling modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1059,7 +1060,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (36, 'page_widget_change_position', 5, 'Event - Changing widgets positions'),
 (37, 'page_widget_delete', 5, 'Event - Deleting widgets'),
 (38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings'),
-(39, 'application_install_custom_module', 1, 'Event - Installing custom modules');
+(39, 'application_install_custom_module', 1, 'Event - Installing custom modules'),
+(40, 'application_uninstall_custom_module', 1, 'Event - Uninstalling custom modules');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

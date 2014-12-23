@@ -18,6 +18,7 @@ use Application\Utility\ApplicationPagination as PaginationUtility;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Paginator\Paginator;
 use DirectoryIterator;
 use CallbackFilterIterator;
@@ -45,6 +46,96 @@ class ApplicationModuleAdministration extends ApplicationBase
     public function getModulesDir()
     {
         return APPLICATION_ROOT . '/module/';
+    }
+
+    /**
+     * Get installed modules
+     *
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @param array $filters
+     *      string status
+     *      string type
+     * @return object
+     */
+    public function getInstalledModules($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
+    {
+        $orderFields = [
+            'id',
+            'type',
+            'status',
+            'version',
+            'vendor',
+            'email'
+        ];
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'id';
+
+        $select = $this->select();
+        $select->from(['a' => 'application_module'])
+            ->columns([
+                'id',
+                'name',
+                'type',
+                'status',
+                'version',
+                'vendor',
+                'email' => 'vendor_email',
+                'description'
+            ])
+            ->join(
+                ['b' => 'application_module_depend'],
+                'a.id = b.depend_module_id',
+                [
+                    'module_depends' => 'id'
+                ],
+                'left'
+            )
+            ->group('a.id')
+            ->order($orderBy . ' ' . $orderType);
+
+        // filter by status
+        if (!empty($filters['status'])) {
+            switch ($filters['status']) {
+                case self::MODULE_STATUS_ACTIVE :
+                case self::MODULE_STATUS_NOT_ACTIVE :
+                    $select->where([
+                        'a.status' => $filters['status']
+                    ]);
+                    break;
+
+                default :
+            }
+        }
+
+        // filter by type
+        if (!empty($filters['type'])) {
+            switch ($filters['type']) {
+                case self::MODULE_TYPE_SYSTEM :
+                case self::MODULE_TYPE_CUSTOM :
+                    $select->where([
+                        'a.type' => $filters['type']
+                    ]);
+                    break;
+
+                default :
+            }
+        }
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
+
+        return $paginator;
     }
 
     /**
@@ -84,6 +175,33 @@ class ApplicationModuleAdministration extends ApplicationBase
     }
 
     /**
+     * Get all installed modules
+     *
+     * @return array
+     */
+    protected function getAllInstalledModules()
+    {
+        $select = $this->select();
+        $select->from('application_module')
+            ->columns([
+                'id',
+                'name'
+            ])
+        ->order('id');
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        $modulesList = [];
+        foreach ($resultSet as $module) {
+            $modulesList[$module->id] = $module->name;
+        }
+
+        return $modulesList;
+    }
+
+    /**
      * Get not installed modules
      *
      * @param integer $page
@@ -110,7 +228,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             : 'date';
 
         // get installed active modules
-        $installedModules = array_map('strtolower', $this->getActiveModulesList());
+        $installedModules = array_map('strtolower', $this->getAllInstalledModules());
 
         // get all directories and files
         $directoryIterator = new DirectoryIterator($this->getModulesDir());
@@ -179,14 +297,14 @@ class ApplicationModuleAdministration extends ApplicationBase
                 ->columns([])
                 ->join(
                     ['b' => 'application_module'],
-                    'a.depend_module_id = b.id',
+                    'a.module_id = b.id',
                     [
                         'name',
                         'vendor',
                         'vendor_email'
                     ]
                 )
-                ->where(['module_id' => $moduleInfo['id']]);
+                ->where(['depend_module_id' => $moduleInfo['id']]);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -439,6 +557,90 @@ class ApplicationModuleAdministration extends ApplicationBase
     }
 
     /**
+     * Uninstall custom module
+     *
+     * @param string $moduleName
+     * @param array $moduleInstallConfig
+     *      string version optional
+     *      string vendor optional
+     *      string vendor_email optional
+     *      string description optional
+     *      array module_depends optional
+     *          string module
+     *          string vendor
+     *          string vendor_email
+     *      array clear_caches optional
+     *      array resources optional
+     *          string dir_name
+     *          bolean is_public optional
+     *      string install_sql optional
+     *      string uninstall_sql optional
+     *      array system_requirements optional
+     *          array php_extensions optional
+     *          array php_settings optional
+     *          array php_enabled_functions optional
+     *          array php_version optional
+     *      string install_sql optional
+     *      string install_intro optional
+     *      string uninstall_sql optional
+     *      string uninstall_intro optional
+     *      string layout_path optional
+     * @return boolean|string
+     */
+    public function uninstallCustomModule($moduleName, array $moduleInstallConfig)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $query = $this->delete('application_module')
+                ->where([
+                    'name' => $moduleName
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($query);
+            $statement->execute();
+
+            // execute an uninstall sql file
+            if (!empty($moduleInstallConfig['uninstall_sql'])) {
+                $this->executeSqlFile($moduleInstallConfig['uninstall_sql']);
+            }
+
+            // delete resources dirs
+            if (!empty($moduleInstallConfig['resources'])) {
+                foreach ($moduleInstallConfig['resources'] as $dir) {
+                    if (!empty($dir['dir_name'])) {                      
+                        $dirPath = ApplicationService::getResourcesDir() . $dir['dir_name'];
+
+                        if (file_exists($dirPath)) {
+                            if (true !== ($result = ApplicationFileSystemUtility::deleteFiles($dirPath, [], false, true))) {
+                               throw new ApplicationException('Cannot delete the ' . $dirPath); 
+                            }
+                        }
+                    }
+                }
+            }
+
+            // regenerate list of custom active modules
+            $this->generateCustomActiveModulesConfig();
+
+            // clear caches
+            $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the uninstall custom module event
+        ApplicationEvent::fireUninstallCustomModuleEvent($moduleName);
+        return true;
+    }
+
+    /**
      * Install custom module
      *
      * @param string $moduleName
@@ -527,9 +729,6 @@ class ApplicationModuleAdministration extends ApplicationBase
                 }
                 
             }
-            
-            // regenerate list of custom active modules
-            $this->generateCustomActiveModulesConfig();
 
             // create resources dirs
             if (!empty($moduleInstallConfig['resources'])) {
@@ -544,6 +743,9 @@ class ApplicationModuleAdministration extends ApplicationBase
                     }
                 }
             }
+
+            // regenerate list of custom active modules
+            $this->generateCustomActiveModulesConfig();
 
             // clear caches
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
@@ -565,6 +767,41 @@ class ApplicationModuleAdministration extends ApplicationBase
     }
 
     /**
+     * Check modules structure pages
+     *
+     * @param string $module
+     * @return boolean
+     */
+    public function checkModuleStructurePages($module)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'application_module'])
+            ->columns([])
+            ->join(
+                ['b' => 'page_system'],
+                'a.id = b.module',
+                []
+            )
+            ->join(
+                ['c' => 'page_structure'],
+                'b.id = c.system_page',
+                [
+                    'id'
+                ]
+            )
+            ->where([
+                'name' => $module
+            ])
+            ->limit(1);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->count() ? true : false;
+    }
+
+    /**
      * Generate custom active modules config
      *
      * @return void
@@ -580,7 +817,8 @@ class ApplicationModuleAdministration extends ApplicationBase
             ->where([
                 'type' => self::MODULE_TYPE_CUSTOM,
                 'status' => self::MODULE_STATUS_ACTIVE
-            ]);
+            ])
+            ->order('id');
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;

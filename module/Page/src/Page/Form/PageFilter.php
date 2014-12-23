@@ -3,6 +3,7 @@ namespace Page\Form;
 
 use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
+use Page\Model\PageBase as PageBaseModel;
 
 class PageFilter extends ApplicationAbstractCustomForm 
 {
@@ -25,11 +26,23 @@ class PageFilter extends ApplicationAbstractCustomForm
     protected $notValidatedElements = ['submit'];
 
     /**
+     * Model
+     * @var object
+     */
+    protected $model;
+
+    /**
      * Form elements
      * @var array
      */
     protected $formElements = [
-        0 => [
+        'modules' => [
+            'name' => 'modules',
+            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_SELECT,
+            'label' => 'Module',
+            'values' => []
+        ],
+        'status' => [
             'name' => 'status',
             'type' => ApplicationCustomFormBuilder::FIELD_SELECT,
             'label' => 'Page is active',
@@ -38,19 +51,52 @@ class PageFilter extends ApplicationAbstractCustomForm
                'not_active' => 'No'
             ]
         ],
-        1 => [
+        'slug' => [
             'name' => 'slug',
             'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
             'label' => 'Display name'
         ],
-        2 => [
+        'page_id' => [
             'name' => 'page_id',
             'type' => ApplicationCustomFormBuilder::FIELD_HIDDEN
         ],
-        3 => [
+        'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Search'
         ]
     ];
+
+    /**
+     * Get form instance
+     *
+     * @return object
+     */
+    public function getForm()
+    {
+        // get form builder
+        if (!$this->form) {
+            if ($this->model) {
+                // fill the form with default values
+                $this->formElements['modules']['values'] = $this->model->getActiveModulesList();
+            }
+
+            $this->form = new ApplicationCustomFormBuilder($this->formName,
+                    $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
+        }
+
+        return $this->form;
+    }
+
+    /**
+     * Set model
+     *
+     * @param object $model
+     * @return object fluent interface
+     */
+    public function setModel(PageBaseModel $model)
+    {
+        $this->model = $model;
+        return $this;
+    }
 }

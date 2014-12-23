@@ -836,7 +836,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Page\Form\PageFilter');
+            ->getInstance('Page\Form\PageFilter')
+            ->setModel($this->getModel());
 
         $request = $this->getRequest();
         $filterForm->getForm()->setData($request->getQuery(), false);

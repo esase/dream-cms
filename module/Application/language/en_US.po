@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-21 14:23+0600\n"
+"PO-Revision-Date: 2014-12-23 16:07+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,42 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Module uninstallation system pages warning"
+msgstr ""
+"Module '%s' contains system pages in the pages tree that should be removed "
+"before the uninstallation"
+
+msgid "Selected modules have been uninstalled"
+msgstr "Selected modules have been uninstalled"
+
+msgid ""
+"You cannot delete system modules. If you want delete, activate or deactivate "
+"custom module you have to delete all dependent modules"
+msgstr ""
+"You cannot delete system modules. If you want delete, activate or deactivate "
+"custom module you have to delete all dependent modules"
+
+msgid "Installed modules"
+msgstr "Installed modules"
+
+msgid "Selected modules will be uninstalled. Are you sure?"
+msgstr "Selected modules will be uninstalled. Are you sure?"
+
+msgid "Uninstall selected"
+msgstr "Uninstall selected"
+
+msgid "View installed modules dependents"
+msgstr "View dependents modules"
+
+msgid "Appliction module description"
+msgstr "It one of the system  modules that provides basic functionality"
+
+msgid "active"
+msgstr "Active"
+
+msgid "not_active"
+msgstr "Not active"
 
 msgid "Selected modules have been installed"
 msgstr "Selected modules have been installed"
@@ -70,8 +106,8 @@ msgstr ""
 msgid "View dependent modules"
 msgstr "View dependent modules"
 
-msgid "Dependent modules"
-msgstr "Dependent modules"
+msgid "Dependents"
+msgstr "Dependents"
 
 msgid "View module description"
 msgstr "View module description"
@@ -722,6 +758,15 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
+msgid "Event - Uninstalling custom modules"
+msgstr "Uninstalling custom modules"
+
+msgid "Event - Custom module uninstalled by guest"
+msgstr "Guest uninstalled custom module \"%s\""
+
+msgid "Event - Custom module uninstalled by user"
+msgstr "\"%s\" uninstalled custom module \"%s\""
+
 msgid "Event - Installing custom modules"
 msgstr "Installing custom modules"
 
@@ -786,3 +831,6 @@ msgstr "Viewing modules system requirements in admin area"
 
 msgid "ACL - Installing modules in admin area"
 msgstr "Installing modules in admin area"
+
+msgid "ACL - Uninstalling modules in admin area"
+msgstr "Uninstalling modules in admin area"
