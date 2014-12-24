@@ -137,12 +137,11 @@ class ApplicationModuleAdministration extends ApplicationBase
 
         // load the custom deactivated module's translations
         foreach($paginator->getCurrentItems()->buffer() as $module) {
-            if ($module['type'] != self::MODULE_TYPE_CUSTOM) {
-                continue;
-            }
+            if ($module['type'] == self::MODULE_TYPE_CUSTOM
+                        && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-            $this->addCustomModuleTranslations($this->
-                    getCustomModuleConfig($module['name'], 'system', false));
+                $this->addCustomModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+            }
         }
 
         return $paginator;
@@ -312,6 +311,7 @@ class ApplicationModuleAdministration extends ApplicationBase
                         'name',
                         'vendor',
                         'vendor_email',
+                        'type',
                         'status'
                     ]
                 )
@@ -322,10 +322,10 @@ class ApplicationModuleAdministration extends ApplicationBase
             $resultSet->initialize($statement->execute());
             
             foreach ($resultSet as $module) {
-                if ($module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
-                    // load the module's translations
-                    $this->addCustomModuleTranslations($this->
-                            getCustomModuleConfig($module['name'], 'system', false));
+                if ($module['type'] == self::MODULE_TYPE_CUSTOM
+                        && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
+
+                    $this->addCustomModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
                 }
 
                 $modules[] = [
@@ -382,10 +382,10 @@ class ApplicationModuleAdministration extends ApplicationBase
     {
         // try to get description from the installed module
         if (null != ($moduleInfo = $this->getModuleInfo($module))) {
-            if ($moduleInfo['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
-                // load the module's translations
-                $this->addCustomModuleTranslations($this->
-                        getCustomModuleConfig($moduleInfo['name'], 'system', false));
+            if ($moduleInfo['type'] == self::MODULE_TYPE_CUSTOM
+                    && $moduleInfo['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
+
+                $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleInfo['name'], 'system', false));
             }
 
             return !empty($moduleInfo['description']) ? $moduleInfo['description'] : false;
