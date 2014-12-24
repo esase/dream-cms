@@ -69,20 +69,20 @@
         ],
         'single_actions' => [
             0 => [
-                'name' => $this->translate('View dependent modules'),
-                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-dependent-modules']) . '?id=__value__\', \'popup-dependent-modules-window\')',
-                'check_acl' => true,
-                'controller' => 'modules-administration',
-                'action' => 'ajax-view-dependent-modules',
-                'image' => $this->layoutAsset('icon/depend_module_action.png', 'image')
-            ],
-            1 => [
                 'name' => $this->translate('View system requirements'),
                 'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-module-system-requirements']) . '?id=__value__\', \'popup-module-system-requirements-window\')',
                 'check_acl' => true,
                 'controller' => 'modules-administration',
                 'action' => 'ajax-view-module-system-requirements',
                 'image' => $this->layoutAsset('icon/setting_action.png', 'image')
+            ],
+            1 => [
+                'name' => $this->translate('View dependent modules'),
+                'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-dependent-modules']) . '?id=__value__\', \'popup-dependent-modules-window\')',
+                'check_acl' => true,
+                'controller' => 'modules-administration',
+                'action' => 'ajax-view-dependent-modules',
+                'image' => $this->layoutAsset('icon/depend_module_action.png', 'image')
             ],
             2 => [
                 'name' => $this->translate('View module description'),

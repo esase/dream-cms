@@ -642,7 +642,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (60, 'modules_administration_ajax_view_dependent_modules', 'ACL - Viewing dependent modules in admin area', 1),
 (61, 'modules_administration_ajax_view_module_system_requirements', 'ACL - Viewing modules system requirements in admin area', 1),
 (62, 'modules_administration_install', 'ACL - Installing modules in admin area', 1),
-(63, 'modules_administration_uninstall', 'ACL - Uninstalling modules in admin area', 1);
+(63, 'modules_administration_uninstall', 'ACL - Uninstalling modules in admin area', 1),
+(64, 'modules_administration_activate', 'ACL - Activating modules in admin area', 1),
+(65, 'modules_administration_deactivate', 'ACL - Deactivating modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1061,7 +1063,9 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (37, 'page_widget_delete', 5, 'Event - Deleting widgets'),
 (38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings'),
 (39, 'application_install_custom_module', 1, 'Event - Installing custom modules'),
-(40, 'application_uninstall_custom_module', 1, 'Event - Uninstalling custom modules');
+(40, 'application_uninstall_custom_module', 1, 'Event - Uninstalling custom modules'),
+(41, 'application_activate_custom_module', 1, 'Event - Activating custom modules'),
+(42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

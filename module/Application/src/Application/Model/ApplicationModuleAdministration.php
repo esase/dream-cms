@@ -135,6 +135,16 @@ class ApplicationModuleAdministration extends ApplicationBase
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
         $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
+        // load the custom deactivated module's translations
+        foreach($paginator->getCurrentItems()->buffer() as $module) {
+            if ($module['type'] != self::MODULE_TYPE_CUSTOM) {
+                continue;
+            }
+
+            $this->addCustomModuleTranslations($this->
+                    getCustomModuleConfig($module['name'], 'system', false));
+        }
+
         return $paginator;
     }
 
@@ -301,7 +311,8 @@ class ApplicationModuleAdministration extends ApplicationBase
                     [
                         'name',
                         'vendor',
-                        'vendor_email'
+                        'vendor_email',
+                        'status'
                     ]
                 )
                 ->where(['depend_module_id' => $moduleInfo['id']]);
@@ -311,6 +322,12 @@ class ApplicationModuleAdministration extends ApplicationBase
             $resultSet->initialize($statement->execute());
             
             foreach ($resultSet as $module) {
+                if ($module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
+                    // load the module's translations
+                    $this->addCustomModuleTranslations($this->
+                            getCustomModuleConfig($module['name'], 'system', false));
+                }
+
                 $modules[] = [
                     'module' => $module['name'],
                     'vendor' => $module['vendor'],
@@ -365,6 +382,12 @@ class ApplicationModuleAdministration extends ApplicationBase
     {
         // try to get description from the installed module
         if (null != ($moduleInfo = $this->getModuleInfo($module))) {
+            if ($moduleInfo['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
+                // load the module's translations
+                $this->addCustomModuleTranslations($this->
+                        getCustomModuleConfig($moduleInfo['name'], 'system', false));
+            }
+
             return !empty($moduleInfo['description']) ? $moduleInfo['description'] : false;
         }
 
@@ -555,6 +578,49 @@ class ApplicationModuleAdministration extends ApplicationBase
             }
         }
     }
+    
+    /**
+     * Set custom module status
+     *
+     * @param string $moduleName
+     * @param boolean $active
+     * @return boolean|string
+     */
+    public function setCustomModuleStatus($moduleName, $active = true)
+    {
+        try {
+            $update = $this->update()
+                ->table('application_module')
+                ->set([
+                    'status' => $active ? self::MODULE_STATUS_ACTIVE : self::MODULE_STATUS_NOT_ACTIVE
+                ])
+                ->where([
+                    'name' => $moduleName
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // regenerate list of custom active modules
+            $this->generateCustomActiveModulesConfig();
+
+            // clear caches
+            $moduleInstallConfig = $this->getCustomModuleConfig($moduleName, 'install', false);
+            $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        true === $active
+            ? ApplicationEvent::fireActivateCustomModuleEvent($moduleName)
+            : ApplicationEvent::fireDeactivateCustomModuleEvent($moduleName);
+
+        return true;
+    }
 
     /**
      * Uninstall custom module
@@ -625,6 +691,7 @@ class ApplicationModuleAdministration extends ApplicationBase
 
             // clear caches
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
+            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
 
             $this->adapter->getDriver()->getConnection()->commit();
         }
@@ -798,7 +865,19 @@ class ApplicationModuleAdministration extends ApplicationBase
         $resultSet = new ResultSet;
         $resultSet->initialize($statement->execute());
 
-        return $resultSet->count() ? true : false;
+        $result =  $resultSet->count() ? true : false;
+
+        // load the module's translations
+        if (true === $result) {
+            $module = $this->getModuleInfo($module);
+            if ($module['type'] == self::MODULE_TYPE_CUSTOM
+                        && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
+
+                $this->addCustomModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -910,6 +989,7 @@ class ApplicationModuleAdministration extends ApplicationBase
         // clear the modules and system config caches
         ApplicationCacheUtility::clearModuleCache();
         ApplicationCacheUtility::clearConfigCache();
+        ApplicationCacheUtility::clearDynamicCache();
 
         foreach ($caches as $cacheName => $clear) {
             if (false === (bool) $clear) {

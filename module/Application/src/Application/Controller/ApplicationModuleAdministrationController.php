@@ -137,6 +137,7 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
 
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // uninstall selected modules
+                $uninstallResult = false;
                 foreach ($modulesIds as $module) {
                     // get a module info
                     if (null != ($moduleInfo = $this->getModel()->getModuleInfo($module))) {
@@ -151,7 +152,8 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                         if (true === ($result = $this->getModel()->checkModuleStructurePages($module))) {
                             $this->flashMessenger()
                                 ->setNamespace('error')
-                                ->addMessage(sprintf($this->getTranslator()->translate('Module uninstallation system pages warning'), $module));
+                                ->addMessage(sprintf($this->getTranslator()->
+                                        translate('Module uninstallation system pages warning'), $this->getTranslator()->translate($module)));
 
                             break;
                         }
@@ -218,6 +220,7 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
 
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // install selected modules
+                $installResult = false;
                 foreach ($modulesIds as $module) {
                     // get the module's config
                     $moduleInstallConfig = $this->getModel()->getCustomModuleConfig($module);
@@ -281,6 +284,114 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
 
         // redirect back
         return $this->redirectTo('modules-administration', 'list-not-installed', [], true);
+    }
+
+    /**
+     * Activate selected modules
+     */
+    public function activateAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($modulesIds = $request->getPost('modules', null))) {
+                // activate selected modules
+                $activateResult = false;
+                foreach ($modulesIds as $module) {
+                    // get a module info
+                    if (null != ($moduleInfo = $this->getModel()->getModuleInfo($module))) {
+                        // check dependent modules and type of the module
+                        if (count($this->getModel()->getDependentModules($module)) ||
+                                $moduleInfo['type'] == ApplicationAbstractBaseModel::MODULE_TYPE_SYSTEM) {
+
+                            continue;
+                        }
+
+                        // check the permission and increase permission's actions track
+                        if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                            break;
+                        }
+
+                        // activate the module
+                        if (true !== ($activateResult = $this->getModel()->setCustomModuleStatus($module))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage(($uninstallResult ? $this->getTranslator()->translate($activateResult)
+                                    : $this->getTranslator()->translate('Error occurred')));
+
+                            break;
+                        }
+                    }
+                }
+
+                if (true === $activateResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected modules have been activated'));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('modules-administration', 'list-installed', [], true);
+    }
+
+    /**
+     * Deactivate selected modules
+     */
+    public function deactivateAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($modulesIds = $request->getPost('modules', null))) {
+                // deactivate selected modules
+                $deactivateResult = false;
+                foreach ($modulesIds as $module) {
+                    // get a module info
+                    if (null != ($moduleInfo = $this->getModel()->getModuleInfo($module))) {
+                        // check dependent modules and type of the module
+                        if (count($this->getModel()->getDependentModules($module)) ||
+                                $moduleInfo['type'] == ApplicationAbstractBaseModel::MODULE_TYPE_SYSTEM) {
+
+                            continue;
+                        }
+
+                        // check the permission and increase permission's actions track
+                        if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                            break;
+                        }
+
+                        // deactivate the module
+                        if (true !== ($deactivateResult = $this->getModel()->setCustomModuleStatus($module, false))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage(($uninstallResult ? $this->getTranslator()->translate($deactivateResult)
+                                    : $this->getTranslator()->translate('Error occurred')));
+
+                            break;
+                        }
+                    }
+                }
+
+                if (true === $deactivateResult) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Selected modules have been deactivated'));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('modules-administration', 'list-installed', [], true);
     }
 
     /**

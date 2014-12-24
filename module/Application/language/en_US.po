@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-23 16:07+0600\n"
+"PO-Revision-Date: 2014-12-24 11:18+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,24 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Selected modules have been deactivated"
+msgstr "Selected modules have been deactivated"
+
+msgid "Selected modules have been activated"
+msgstr "Selected modules have been activated"
+
+msgid "Selected modules will be deactivated. Are you sure?"
+msgstr "Selected modules will be deactivated. Are you sure?"
+
+msgid "Selected modules will be activated. Are you sure?"
+msgstr "Selected modules will be activated. Are you sure?"
+
+msgid "Deactivate selected"
+msgstr "Deactivate selected"
+
+msgid "Activate selected"
+msgstr "Activate selected"
 
 msgid "Module uninstallation system pages warning"
 msgstr ""
@@ -758,6 +776,24 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
+msgid "Event - Activating custom modules"
+msgstr "Activating custom modules"
+
+msgid "Event - Custom module activated by guest"
+msgstr "Guest activated custom module \"%s\""
+
+msgid "Event - Custom module activated by user"
+msgstr "\"%s\" activated custom module \"%s\""
+
+msgid "Event - Deactivating custom modules"
+msgstr "Deactivating custom modules"
+
+msgid "Event - Custom module deactivated by guest"
+msgstr "Guest deactivated custom module \"%s\""
+
+msgid "Event - Custom module deactivated by user"
+msgstr "\"%s\" deactivated custom module \"%s\""
+
 msgid "Event - Uninstalling custom modules"
 msgstr "Uninstalling custom modules"
 
@@ -834,3 +870,9 @@ msgstr "Installing modules in admin area"
 
 msgid "ACL - Uninstalling modules in admin area"
 msgstr "Uninstalling modules in admin area"
+
+msgid "ACL - Activating modules in admin area"
+msgstr "Activating modules in admin area"
+
+msgid "ACL - Deactivating modules in admin area"
+msgstr "Deactivating modules in admin area"

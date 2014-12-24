@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-23 16:07+0600\n"
+"PO-Revision-Date: 2014-12-24 11:18+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,24 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Selected modules have been deactivated"
+msgstr "Выбранные модули были дезактивированы"
+
+msgid "Selected modules have been activated"
+msgstr "Выбранные модули были активированы"
+
+msgid "Selected modules will be deactivated. Are you sure?"
+msgstr "Выбранные модули будут дезактивированы. Вы уверены?"
+
+msgid "Selected modules will be activated. Are you sure?"
+msgstr "Выбранные модули будут активированы. Вы уверены?"
+
+msgid "Deactivate selected"
+msgstr "Дезактивация выбранного"
+
+msgid "Activate selected"
+msgstr "Активация выбранного"
 
 msgid "Module uninstallation system pages warning"
 msgstr ""
@@ -757,6 +775,24 @@ msgstr "Значение должно содержать только цифры
 msgid "The form submitted did not originate from the expected site"
 msgstr "Данные были присланы не с текущего сайта"
 
+msgid "Event - Activating custom modules"
+msgstr "Активация пользовательских модулей"
+
+msgid "Event - Custom module activated by guest"
+msgstr "Гость активировал пользовательский модуль \"%s\""
+
+msgid "Event - Custom module activated by user"
+msgstr "\"%s\" активировал(а) пользовательский модуль \"%s\""
+
+msgid "Event - Deactivating custom modules"
+msgstr "Дезактивация пользовательских модулей"
+
+msgid "Event - Custom module deactivated by guest"
+msgstr "Гость дезактивировал пользовательский модуль \"%s\""
+
+msgid "Event - Custom module deactivated by user"
+msgstr "\"%s\" дезактивировал(а) пользовательский модуль \"%s\""
+
 msgid "Event - Uninstalling custom modules"
 msgstr "Деинсталляция пользовательских модулей"
 
@@ -833,3 +869,9 @@ msgstr "Установка модулей в админке"
 
 msgid "ACL - Uninstalling modules in admin area"
 msgstr "Деинсталляция модулей в админке"
+
+msgid "ACL - Activating modules in admin area"
+msgstr "Активация модулей в админке"
+
+msgid "ACL - Deactivating modules in admin area"
+msgstr "Дезактивация модулей в админке"

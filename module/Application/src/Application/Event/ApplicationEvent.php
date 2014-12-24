@@ -31,6 +31,16 @@ class ApplicationEvent extends ApplicationAbstractEvent
     const UNINSTALL_CUSTOM_MODULE = 'application_uninstall_custom_module';
 
     /**
+     * Activate custom module event
+     */
+    const ACTIVATE_CUSTOM_MODULE = 'application_activate_custom_module';
+
+    /**
+     * Deactivate custom module event
+     */
+    const DEACTIVATE_CUSTOM_MODULE = 'application_deactivate_custom_module';
+
+    /**
      * Fire send email notification event
      *
      * @param string $email
@@ -128,6 +138,48 @@ class ApplicationEvent extends ApplicationAbstractEvent
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
 
         self::fireEvent(self::UNINSTALL_CUSTOM_MODULE, 
+                $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire activate custom module event
+     *
+     * @param string $module
+     * @return void
+     */
+    public static function fireActivateCustomModuleEvent($module)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Custom module activated by guest'
+            : 'Event - Custom module activated by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$module]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
+
+        self::fireEvent(self::ACTIVATE_CUSTOM_MODULE, 
+                $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire deactivate custom module event
+     *
+     * @param string $module
+     * @return void
+     */
+    public static function fireDeactivateCustomModuleEvent($module)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Custom module deactivated by guest'
+            : 'Event - Custom module deactivated by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$module]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
+
+        self::fireEvent(self::DEACTIVATE_CUSTOM_MODULE, 
                 $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }
