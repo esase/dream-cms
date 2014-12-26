@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-24 11:18+0600\n"
+"PO-Revision-Date: 2014-12-26 18:21+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,45 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Module has been uploaded"
+msgstr "Модуль был загружен"
+
+msgid "Cannot define the module's layout path into the config file"
+msgstr "Невозможно определить путь макета модуля в конфигурационном файле"
+
+msgid "Module already uploaded"
+msgstr "Модуль уже загружен"
+
+msgid "Cannot define the module's path into the config file"
+msgstr "Невозможно определить путь модуля в конфигурационном файле"
+
+msgid "Cannot define the module's config file"
+msgstr "Невозможно определить конфигурационный файл модуля"
+
+msgid "Cannot extract archived module"
+msgstr "Невозможно извлечь модуль из архива"
+
+msgid "Cannot open archived module"
+msgstr "Не удается открыть модуль из архива"
+
+msgid "Your FTP account does not allow use the system dirs"
+msgstr "Ваш FTP аккаунт не позволяет использовать системные каталоги"
+
+msgid "FTP server is not responding or you entered wrong login data"
+msgstr "FTP-сервер не отвечает, или вы ввели неправильный данные для входа"
+
+msgid "Upload"
+msgstr "Загрузить"
+
+msgid "Upload new module description"
+msgstr "Пожалуйста, выберите модуль в формате ZIP"
+
+msgid "FTP access"
+msgstr "FTP доступ"
+
+msgid "A new module"
+msgstr "Новый модуль"
 
 msgid "Selected modules have been deactivated"
 msgstr "Выбранные модули были дезактивированы"
@@ -147,8 +186,8 @@ msgstr "Поставщик"
 msgid "Not installed modules"
 msgstr "Не установленные модули"
 
-msgid "Add a new module"
-msgstr "Добавить новый модуль"
+msgid "Upload a module"
+msgstr "Загрузить модуль"
 
 msgid "List of not installed modules"
 msgstr "Список не установленных модулей"
@@ -846,8 +885,8 @@ msgstr "Очистка кэша сайта в админке"
 msgid "ACL - Using js in forms"
 msgstr "Использование JS в формах"
 
-msgid "ACL - Adding new modules in admin area"
-msgstr "Добавление новых модулей в админке"
+msgid "ACL - Uploading new modules in admin area"
+msgstr "Загрузка новых модулей в админке"
 
 msgid "ACL - Viewing not installed modules in admin area"
 msgstr "Просмотр не установленных модулей в админке"

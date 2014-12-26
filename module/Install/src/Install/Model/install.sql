@@ -637,7 +637,7 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5),
 (56, 'modules_administration_list_installed', 'ACL - Viewing installed modules in admin area', 1),
 (57, 'modules_administration_list_not_installed', 'ACL - Viewing not installed modules in admin area', 1),
-(58, 'modules_administration_add_new', 'ACL - Adding new modules in admin area', 1),
+(58, 'modules_administration_upload', 'ACL - Uploading new modules in admin area', 1),
 (59, 'modules_administration_ajax_view_module_description', 'ACL - Viewing modules description in admin area', 1),
 (60, 'modules_administration_ajax_view_dependent_modules', 'ACL - Viewing dependent modules in admin area', 1),
 (61, 'modules_administration_ajax_view_module_system_requirements', 'ACL - Viewing modules system requirements in admin area', 1),
@@ -1136,8 +1136,7 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (8,  'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
 (9,  'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2),
 (10, 'List of installed modules', 'modules-administration', 'list-installed', 1, 8, 6, 1),
-(11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1),
-(12, 'Add a new module', 'modules-administration', 'add-new', 1, 10, 6, 1);
+(11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1);
 
 CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

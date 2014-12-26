@@ -433,9 +433,61 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
     }
 
     /**
-     * Add new module
+     * Upload a new module
      */
-    public function addNewAction()
+    public function uploadAction()
     {
+        $request = $this->getRequest();
+        $host = $request->getUri()->getHost();
+
+        // TODO: CHECK ACL
+        // TODO: FIRE NOTIFICATION
+        // TODO:  Test it with different public dir names
+
+        // get an module form
+        $moduleForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Application\Form\ApplicationModule')
+            ->setHost($host);
+
+        // validate the form
+        if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            // fill the form with received values
+            $moduleForm->getForm()->setData($post, false);
+
+            // upload a module
+            if ($moduleForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // upload the module
+                if (true === ($result =
+                        $this->getModel()->uploadCustomModule($moduleForm->getForm()->getData(), $host))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Module has been uploaded'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('modules-administration', 'upload');
+            }
+        }
+
+        return new ViewModel([
+            'moduleForm' => $moduleForm->getForm()
+        ]);
     }
 }

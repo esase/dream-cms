@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-24 11:18+0600\n"
+"PO-Revision-Date: 2014-12-26 18:21+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,45 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Module has been uploaded"
+msgstr "Module has been uploaded"
+
+msgid "Cannot define the module's layout path into the config file"
+msgstr "Cannot define the module's layout path into the config file"
+
+msgid "Module already uploaded"
+msgstr "Module already uploaded"
+
+msgid "Cannot define the module's path into the config file"
+msgstr "Cannot define the module's path into the config file"
+
+msgid "Cannot define the module's config file"
+msgstr "Cannot define the module's config file"
+
+msgid "Cannot extract archived module"
+msgstr "Cannot extract archived module"
+
+msgid "Cannot open archived module"
+msgstr "Cannot open archived module"
+
+msgid "Your FTP account does not allow use the system dirs"
+msgstr "Your FTP account does not allow use the system dirs"
+
+msgid "FTP server is not responding or you entered wrong login data"
+msgstr "FTP server is not responding or you entered wrong login data"
+
+msgid "Upload"
+msgstr "Upload"
+
+msgid "Upload new module description"
+msgstr "Please choose a module in the ZIP format"
+
+msgid "FTP access"
+msgstr "FTP access"
+
+msgid "A new module"
+msgstr "A new module"
 
 msgid "Selected modules have been deactivated"
 msgstr "Selected modules have been deactivated"
@@ -145,8 +184,8 @@ msgstr "Vendor"
 msgid "Not installed modules"
 msgstr "Not installed modules"
 
-msgid "Add a new module"
-msgstr "Add a new module"
+msgid "Upload a module"
+msgstr "Upload a module"
 
 msgid "List of not installed modules"
 msgstr "List of not installed modules"
@@ -847,8 +886,8 @@ msgstr "Clearing site's cache in admin area"
 msgid "ACL - Using js in forms"
 msgstr "Using js in forms"
 
-msgid "ACL - Adding new modules in admin area"
-msgstr "Adding new modules in admin area"
+msgid "ACL - Uploading new modules in admin area"
+msgstr "Uploading new modules in admin area"
 
 msgid "ACL - Viewing not installed modules in admin area"
 msgstr "Viewing not installed modules in admin area"

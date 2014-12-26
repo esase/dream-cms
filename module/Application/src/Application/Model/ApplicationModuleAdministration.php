@@ -1,6 +1,7 @@
 <?php
 namespace Application\Model;
 
+use Application\Utility\ApplicationFtp as ApplicationFtpUtility;
 use Application\Event\ApplicationEvent;
 use Application\Exception\ApplicationException;
 use Application\Service\Application as ApplicationService;
@@ -23,6 +24,7 @@ use Zend\Paginator\Paginator;
 use DirectoryIterator;
 use CallbackFilterIterator;
 use Exception;
+use ZipArchive;
 
 class ApplicationModuleAdministration extends ApplicationBase
 {
@@ -831,6 +833,114 @@ class ApplicationModuleAdministration extends ApplicationBase
         // fire the install custom module event
         ApplicationEvent::fireInstallCustomModuleEvent($moduleName);
         return true;
+    }
+
+    /**
+     * Upload custom module
+     *
+     * @param array $formData
+     *      string login required
+     *      string password required
+     *      array module required
+     * @param string $host
+     * @return boolean|string
+     */
+    public function uploadCustomModule(array $formData, $host)
+    {
+        $uploadResult = true;
+
+        try {
+            // create a tmp dir
+            $tmpDirName = ApplicationService::getTmpPath() . '/' . $this->generateRandString();
+            ApplicationFileSystemUtility::createDir($tmpDirName);
+
+            // unzip a custom module into the tmp dir
+            $zip = new ZipArchive;
+
+            if (true !== ($zipModule = $zip->open($formData['module']['tmp_name']))) {
+                $zip->close();
+                throw new ApplicationException('Cannot open archived module');
+            }
+
+            if (true !== ($reult = $zip->extractTo($tmpDirName))) {
+                $zip->close();
+                throw new ApplicationException('Cannot extract archived module');
+            }
+
+            $zip->close();
+
+            // check the module's config
+            if (!file_exists($tmpDirName . '/config.php')) {
+                throw new ApplicationException('Cannot define the module\'s config file');
+            }
+
+            // get the module's config
+            $moduleConfig = include $tmpDirName . '/config.php';
+
+            // get the module's path
+            $modulePath   = !empty($moduleConfig['module_path'])
+                ? $tmpDirName . '/' . $moduleConfig['module_path']
+                : null;
+
+            // check the module existing
+            if (!$modulePath || !file_exists($modulePath) || !is_dir($modulePath)) {
+                throw new ApplicationException('Cannot define the module\'s path into the config file');
+            }
+
+            // check the module layout existing
+            $moduleLayoutPath = null;
+            if (!empty($moduleConfig['layout_path'])) {
+                $moduleLayoutPath = $tmpDirName . '/' . $moduleConfig['layout_path'];
+
+                if (!file_exists($moduleLayoutPath) || !is_dir($moduleLayoutPath)) {
+                    throw new ApplicationException('Cannot define the module\'s layout path into the config file');
+                }
+            }
+
+            // check the module existing into modules and layouts dirs
+            $moduleName = basename($modulePath);
+            $globalModulePath = '/module/' . $moduleName;
+
+            $moduleLayoutName = $moduleLayoutPath
+                ? basename($moduleLayoutPath)
+                : null;
+
+            $localModulePath = APPLICATION_ROOT . $globalModulePath;
+            $localModuleLayout = $moduleLayoutName
+                ? ApplicationService::getBaseLayoutPath() . '/' . $moduleLayoutName
+                : null;
+
+            if (file_exists($localModulePath)
+                    || ($localModuleLayout && file_exists($localModuleLayout))) {
+
+                throw new ApplicationException('Module already uploaded');
+            }
+
+            // upload the module via FTP 
+            $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
+            $ftp->createDirectory($globalModulePath);
+            $ftp->copyDirectory($modulePath, $globalModulePath);
+
+            // upload the module's layout
+            if ($moduleLayoutPath) {
+                $globalModuleLayoutPath = basename(APPLICATION_PUBLIC) .
+                        '/' . ApplicationService::getBaseLayoutPath(false) . '/' . $moduleLayoutName;
+
+                $ftp->createDirectory($globalModuleLayoutPath);
+                $ftp->copyDirectory($moduleLayoutPath, $globalModuleLayoutPath);
+            }
+        }
+        catch (Exception $e) {            
+            ApplicationErrorLogger::log($e);
+            $uploadResult = $e->getMessage();
+        }
+
+        // remove the tmp dir
+        if (file_exists($tmpDirName)) {
+            ApplicationFileSystemUtility::deleteFiles($tmpDirName, [], false, true);
+        }
+
+        return $uploadResult;
     }
 
     /**

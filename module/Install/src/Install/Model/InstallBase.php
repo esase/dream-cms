@@ -32,6 +32,7 @@ class InstallBase
         'data/cache/application',
         'data/cache/config',
         'data/session',
+        'data/tmp',
         'config/autoload',
         'config/module/custom.php',
         'config/module/system.php',

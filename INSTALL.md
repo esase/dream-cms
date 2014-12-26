@@ -24,6 +24,7 @@
         12. public/resource/filemanager
         13. config/autoload
         14. config/module/system.php
+        15. data/tmp
 
 ## APACHE SETTINGS
 

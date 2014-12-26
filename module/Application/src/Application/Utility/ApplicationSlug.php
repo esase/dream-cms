@@ -36,8 +36,12 @@ class ApplicationSlug
      * @param string $slugChars
      * @return string
      */
-    public static function generateRandomSlug($slugLength = 10, $slugChars = 'abcdefghijklmnopqrstuvwxyz')
+    public static function generateRandomSlug($slugLength = 10, $slugChars = null)
     {
+        if (!$slugChars) {
+            $slugChars = 'abcdefghijklmnopqrstuvwxyz';
+        }
+
         return Rand::getString($slugLength, $slugChars, true);
     }
 }
