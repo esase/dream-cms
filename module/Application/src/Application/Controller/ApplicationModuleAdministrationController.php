@@ -433,16 +433,70 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
     }
 
     /**
+     * Upload updates
+     */
+    public function uploadUpdatesAction()
+    {
+        // TODO: CHECK ACL+
+        // TODO: MAKE vendor and vendor email required
+        // TODO: FIRE EVENT
+        
+        $request = $this->getRequest();
+        $host = $request->getUri()->getHost();
+
+        // get an module form
+        $moduleForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Application\Form\ApplicationModule')
+            ->setHost($host);
+
+        // validate the form
+        if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            // fill the form with received values
+            $moduleForm->getForm()->setData($post, false);
+
+            // upload updates
+            if ($moduleForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                if (true === ($result =
+                        $this->getModel()->uploadModuleUpdates($moduleForm->getForm()->getData(), $host))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Updates of module have been uploaded'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('modules-administration', 'upload-updates');
+            }
+        }
+
+        return new ViewModel([
+            'moduleForm' => $moduleForm->getForm()
+        ]);
+    }
+
+    /**
      * Upload a new module
      */
     public function uploadAction()
     {
         $request = $this->getRequest();
         $host = $request->getUri()->getHost();
-
-        // TODO: CHECK ACL
-        // TODO: FIRE NOTIFICATION
-        // TODO:  Test it with different public dir names
 
         // get an module form
         $moduleForm = $this->getServiceLocator()

@@ -644,7 +644,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (62, 'modules_administration_install', 'ACL - Installing modules in admin area', 1),
 (63, 'modules_administration_uninstall', 'ACL - Uninstalling modules in admin area', 1),
 (64, 'modules_administration_activate', 'ACL - Activating modules in admin area', 1),
-(65, 'modules_administration_deactivate', 'ACL - Deactivating modules in admin area', 1);
+(65, 'modules_administration_deactivate', 'ACL - Deactivating modules in admin area', 1),
+(66, 'modules_administration_upload_updates', 'ACL - Uploading  updates of modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1065,7 +1066,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (39, 'application_install_custom_module', 1, 'Event - Installing custom modules'),
 (40, 'application_uninstall_custom_module', 1, 'Event - Uninstalling custom modules'),
 (41, 'application_activate_custom_module', 1, 'Event - Activating custom modules'),
-(42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules');
+(42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules'),
+(43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1136,7 +1138,8 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (8,  'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
 (9,  'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2),
 (10, 'List of installed modules', 'modules-administration', 'list-installed', 1, 8, 6, 1),
-(11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1);
+(11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1),
+(12, 'Upload updates', 'modules-administration', 'upload-updates', 1, 10, 6, 1);
 
 CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

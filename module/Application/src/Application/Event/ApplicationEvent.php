@@ -41,6 +41,11 @@ class ApplicationEvent extends ApplicationAbstractEvent
     const DEACTIVATE_CUSTOM_MODULE = 'application_deactivate_custom_module';
 
     /**
+     * Upload custom module event
+     */
+    const UPLOAD_CUSTOM_MODULE = 'application_upload_custom_module';
+
+    /**
      * Fire send email notification event
      *
      * @param string $email
@@ -180,6 +185,27 @@ class ApplicationEvent extends ApplicationAbstractEvent
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
 
         self::fireEvent(self::DEACTIVATE_CUSTOM_MODULE, 
+                $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire upload custom module event
+     *
+     * @param string $module
+     * @return void
+     */
+    public static function fireUploadCustomModuleEvent($module)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Custom module uploaded by guest'
+            : 'Event - Custom module uploaded by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$module]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
+
+        self::fireEvent(self::UPLOAD_CUSTOM_MODULE, 
                 $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

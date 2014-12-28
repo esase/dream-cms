@@ -4,6 +4,20 @@ namespace Application\Service;
 class Application
 {
     /**
+     * Get module path
+     *
+     * @return string
+     */
+    public static function getModulePath($full = true)
+    {
+        $basePath = ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['module'];
+
+        return $full
+            ? APPLICATION_ROOT .  '/' . $basePath
+            : $basePath;
+    }
+
+    /**
      * Get base layout path
      *
      * @return string
@@ -15,6 +29,17 @@ class Application
         return $full
             ? APPLICATION_PUBLIC . '/' . $basePath
             : $basePath;
+    }
+
+    /**
+     * Get custom module config
+     *
+     * @return string
+     */
+    public static function getCustomModuleConfig()
+    {
+        return APPLICATION_ROOT . '/' .
+                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['custom_module_config'];
     }
 
     /**

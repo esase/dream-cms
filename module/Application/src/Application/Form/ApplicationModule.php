@@ -1,6 +1,7 @@
 <?php
 namespace Application\Form;
 
+use Application\Service\Application as ApplicationService;
 use Application\Form\ApplicationCustomFormBuilder;
 use Application\Utility\ApplicationFtp as ApplicationFtpUtility;
 use Exception;
@@ -50,7 +51,7 @@ class ApplicationModule extends ApplicationAbstractCustomForm
             'label' => 'Module',
             'required' => true,
             'category' => 'FTP access',
-            'description' => 'Upload new module description'
+            'description' => 'Upload module description'
         ],
         'submit' => [
             'name' => 'submit',
@@ -146,8 +147,8 @@ class ApplicationModule extends ApplicationAbstractCustomForm
     {
         try {
             $ftpUtility = $this->connectToFtp($value, $context['password']);
-            if ($ftpUtility->isDirExists('module')
-                    && $ftpUtility->isDirExists(basename(APPLICATION_PUBLIC) . '/layout/base')) {
+            if ($ftpUtility->isDirExists(ApplicationService::getModulePath(false)) && $ftpUtility->
+                        isDirExists(basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getBaseLayoutPath(false))) {
 
                 return true;
             }

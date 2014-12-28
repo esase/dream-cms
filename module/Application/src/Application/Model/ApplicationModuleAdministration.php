@@ -18,13 +18,11 @@ use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Paginator\Paginator;
 use DirectoryIterator;
 use CallbackFilterIterator;
 use Exception;
-use ZipArchive;
 
 class ApplicationModuleAdministration extends ApplicationBase
 {
@@ -39,16 +37,6 @@ class ApplicationModuleAdministration extends ApplicationBase
      * @var string
      */
     protected $moduleInstallConfig = '/config/module.config.install.php';
-
-    /**
-     * Get modules dir
-     *
-     * @return string
-     */
-    public function getModulesDir()
-    {
-        return APPLICATION_ROOT . '/module/';
-    }
 
     /**
      * Get installed modules
@@ -157,7 +145,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      */
     public function isCustomModule($module)
     {
-        $moduleDirectory = $this->getModulesDir() . basename($module);
+        $moduleDirectory = ApplicationService::getModulePath() . '/' . basename($module);
         return file_exists($moduleDirectory . $this->
                 moduleInstallConfig) && file_exists($moduleDirectory . $this->moduleConfig);
     }
@@ -177,11 +165,11 @@ class ApplicationModuleAdministration extends ApplicationBase
 
         switch ($type) {
             case 'install' :
-                return include $this->getModulesDir() . basename($module) . $this->moduleInstallConfig;
+                return include ApplicationService::getModulePath() . '/' . basename($module) . $this->moduleInstallConfig;
 
             case 'system' :
             default :
-                return include $this->getModulesDir() . basename($module) . $this->moduleConfig;
+                return include ApplicationService::getModulePath() . '/' . basename($module) . $this->moduleConfig;
         }
     }
 
@@ -242,7 +230,7 @@ class ApplicationModuleAdministration extends ApplicationBase
         $installedModules = array_map('strtolower', $this->getAllInstalledModules());
 
         // get all directories and files
-        $directoryIterator = new DirectoryIterator($this->getModulesDir());
+        $directoryIterator = new DirectoryIterator(ApplicationService::getModulePath());
         $modules = new CallbackFilterIterator($directoryIterator, function($current, $key, $iterator) use ($installedModules) {
             // skip already installed modules
             if ($current->isDot() || !$current->isDir()
@@ -421,7 +409,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *      array clear_caches optional
      *      array resources optional
      *          string dir_name
-     *          bolean is_public optional
+     *          boolean is_public optional
      *      string install_sql optional
      *      string uninstall_sql optional
      *      array system_requirements optional
@@ -474,7 +462,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *      array clear_caches optional
      *      array resources optional
      *          string dir_name
-     *          bolean is_public optional
+     *          boolean is_public optional
      *      string install_sql optional
      *      string uninstall_sql optional
      *      array system_requirements optional
@@ -640,7 +628,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *      array clear_caches optional
      *      array resources optional
      *          string dir_name
-     *          bolean is_public optional
+     *          boolean is_public optional
      *      string install_sql optional
      *      string uninstall_sql optional
      *      array system_requirements optional
@@ -658,7 +646,9 @@ class ApplicationModuleAdministration extends ApplicationBase
     public function uninstallCustomModule($moduleName, array $moduleInstallConfig)
     {
         try {
-            $this->adapter->getDriver()->getConnection()->beginTransaction();
+            // clear caches
+            $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
+            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
 
             $query = $this->delete('application_module')
                 ->where([
@@ -667,6 +657,9 @@ class ApplicationModuleAdministration extends ApplicationBase
 
             $statement = $this->prepareStatementForSqlObject($query);
             $statement->execute();
+
+            // regenerate list of custom active modules
+            $this->generateCustomActiveModulesConfig();
 
             // execute an uninstall sql file
             if (!empty($moduleInstallConfig['uninstall_sql'])) {
@@ -687,20 +680,9 @@ class ApplicationModuleAdministration extends ApplicationBase
                     }
                 }
             }
-
-            // regenerate list of custom active modules
-            $this->generateCustomActiveModulesConfig();
-
-            // clear caches
-            $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
-            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
-
-            $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
-            $this->adapter->getDriver()->getConnection()->rollback();
             ApplicationErrorLogger::log($e);
-
             return $e->getMessage();
         }
 
@@ -725,7 +707,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *      array clear_caches optional
      *      array resources optional
      *          string dir_name
-     *          bolean is_public optional
+     *          boolean is_public optional
      *      string install_sql optional
      *      string uninstall_sql optional
      *      array system_requirements optional
@@ -743,7 +725,11 @@ class ApplicationModuleAdministration extends ApplicationBase
     public function installCustomModule($moduleName, array $moduleInstallConfig)
     {
         try {
-            $this->adapter->getDriver()->getConnection()->beginTransaction();
+            // clear caches
+            $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
+
+            // add translations
+            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
 
             $insert = $this->insert()
                 ->into('application_module')
@@ -791,7 +777,7 @@ class ApplicationModuleAdministration extends ApplicationBase
                                 'module_id' => $insertId,
                                 'depend_module_id' => $moduleInfo['id']
                             ]);
-            
+
                         $statement = $this->prepareStatementForSqlObject($insert);
                         $statement->execute();
                     }
@@ -801,31 +787,23 @@ class ApplicationModuleAdministration extends ApplicationBase
 
             // create resources dirs
             if (!empty($moduleInstallConfig['resources'])) {
-                foreach ($moduleInstallConfig['resources'] as $dir) {
-                    if (!empty($dir['dir_name'])) {
-                        $dirPath = ApplicationService::getResourcesDir() . $dir['dir_name'];
-                        ApplicationFileSystemUtility::createDir($dirPath);
-
-                        if (isset($dir['is_public']) && false === $dir['is_public']) {
-                            file_put_contents($dirPath . '/' . '.htaccess', 'Deny from all');
-                        }
-                    }
-                }
+                $this->createResourceDirs($moduleInstallConfig['resources']);
             }
 
             // regenerate list of custom active modules
             $this->generateCustomActiveModulesConfig();
-
-            // clear caches
-            $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
-
-            // add translations
-            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
-            $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
-            $this->adapter->getDriver()->getConnection()->rollback();
             ApplicationErrorLogger::log($e);
+
+            // delete module
+            $query = $this->delete('application_module')
+                ->where([
+                    'name' => $moduleName
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($query);
+            $statement->execute();
 
             return $e->getMessage();
         }
@@ -833,6 +811,169 @@ class ApplicationModuleAdministration extends ApplicationBase
         // fire the install custom module event
         ApplicationEvent::fireInstallCustomModuleEvent($moduleName);
         return true;
+    }
+
+    /**
+     * Create resources dirs
+     *
+     * @param array $resources
+     *      string dir_name
+     *      boolean is_public optional
+     * @return void
+     */
+    protected function createResourceDirs(array $resources)
+    {
+        foreach ($resources as $dir) {
+            if (!empty($dir['dir_name'])) {
+                $dirPath = ApplicationService::getResourcesDir() . $dir['dir_name'];
+                ApplicationFileSystemUtility::createDir($dirPath);
+
+                if (isset($dir['is_public']) && false === $dir['is_public']) {
+                    file_put_contents($dirPath . '/' . '.htaccess', 'Deny from all');
+                }
+            }
+        }
+    }
+
+    /**
+     * Upload module updates
+     *
+     * @param array $formData
+     *      string login required
+     *      string password required
+     *      array module required
+     * @param string $host
+     * @return boolean|string
+     */
+    public function uploadModuleUpdates(array $formData, $host)
+    {
+        $uploadResult = true;
+
+        try {
+            // create a tmp dir
+            $tmpDirName = $this->generateTmpDir();
+            ApplicationFileSystemUtility::createDir($tmpDirName);
+
+            // unzip a module updates into the tmp dir
+            $this->unzipFiles($formData['module']['tmp_name'], $tmpDirName);
+
+            // check the module's config
+            if (!file_exists($tmpDirName . '/config.php')) {
+                throw new ApplicationException('Cannot define the module\'s config file');
+            }
+
+            // get the module's config
+            $updateModuleConfig = include $tmpDirName . '/config.php';
+
+            $moduleName = !empty($updateModuleConfig['module']) ? $updateModuleConfig['module'] : null;
+            $moduleVersion = !empty($updateModuleConfig['version']) ? $updateModuleConfig['version'] : null;
+            $moduleVendor = !empty($updateModuleConfig['vendor']) ? $updateModuleConfig['vendor'] : null;
+            $moduleVendorEmail = !empty($updateModuleConfig['vendor_email']) ? $updateModuleConfig['vendor_email'] : null;
+
+            // check the module existing
+            if (!$moduleName) {
+                throw new ApplicationException('Module not found');
+            }
+
+            $moduleInstalled = true;
+
+            // get module info from db
+            if (null == ($moduleInfo = $this->getModuleInfo($moduleName))) {
+                // get info from config
+                if (false === ($moduleInfo = $this->getCustomModuleConfig($moduleName))) {
+                    throw new ApplicationException('Module not found');
+                }
+
+                $moduleInstalled = false;
+            }
+
+            // compare the modules options
+            if (!$moduleVendor || !$moduleVendorEmail
+                    || empty($moduleInfo['vendor']) || empty($moduleInfo['vendor_email'])
+                    || strcasecmp($moduleVendor, $moduleInfo['vendor']) <> 0
+                    || strcasecmp($moduleVendorEmail, $moduleInfo['vendor_email']) <> 0) {
+
+                throw new ApplicationException('Module not found');
+            }
+
+            // compare the module versions
+            if (!$moduleVersion
+                    || empty($moduleInfo['version'])
+                    || version_compare($moduleVersion, $moduleInfo['version']) <= 0) {
+
+                throw new ApplicationException('This module updates are not necessary or not defined');
+            }
+
+            if ($moduleInstalled) {
+                // clear caches
+                $this->clearCaches((!empty($updateModuleConfig['clear_caches']) ? $updateModuleConfig['clear_caches'] : []));
+
+                // create resources dirs
+                if (!empty($updateModuleConfig['create_resources'])) {
+                    $this->createResourceDirs($updateModuleConfig['create_resources']);
+                }
+
+                // delete resources dirs
+                if (!empty($updateModuleConfig['delete_resources'])) {
+                    foreach ($updateModuleConfig['delete_resources'] as $dir) {
+                        if (file_exists(ApplicationService::getResourcesDir() . $dir['dir_name'])) {
+                            ApplicationFileSystemUtility::
+                                    deleteFiles(ApplicationService::getResourcesDir() . $dir['dir_name'], [], false, true);
+                        }
+                    }
+                }
+
+                // execute an update sql file
+                if (!empty($updateModuleConfig['update_sql'])) {
+                    $this->executeSqlFile($tmpDirName . '/' . $updateModuleConfig['update_sql']);
+                }
+            }
+
+            /*
+            
+            return [
+    'module' => 'Example',
+    'version' => '1.1.0',
+    'vendor' => 'eSASe',
+    'vendor_email' => 'alexermashev@gmail.com',
+	'module_path' => 'module',
+	'layout_path' => 'layout',
+    'update_sql' => 'update.sql',
+    'clear_caches' => [
+        'setting'       => false,
+        'time_zone'     => false,
+        'admin_menu'    => false,
+        'js_cache'      => false,
+        'css_cache'     => false,
+        'layout'        => false,
+        'localization'  => false,
+        'page'          => false,
+        'user'          => false,
+        'xmlrpc'        => false
+    ],
+    'resources' => [
+        [
+            'dir_name' => 'example/big',
+            'is_public' => false
+        ]
+    ],
+];
+            */
+            
+            //getCustomModuleConfig($module, $type = 'install', $checkExisting = true)
+            //'module' => 'Example',
+        }
+        catch (Exception $e) {            
+            ApplicationErrorLogger::log($e);
+            $uploadResult = $e->getMessage();
+        }
+
+        // remove the tmp dir
+        if (file_exists($tmpDirName)) {
+            ApplicationFileSystemUtility::deleteFiles($tmpDirName, [], false, true);
+        }
+
+        return $uploadResult;
     }
 
     /**
@@ -851,23 +992,11 @@ class ApplicationModuleAdministration extends ApplicationBase
 
         try {
             // create a tmp dir
-            $tmpDirName = ApplicationService::getTmpPath() . '/' . $this->generateRandString();
+            $tmpDirName = $this->generateTmpDir();
             ApplicationFileSystemUtility::createDir($tmpDirName);
 
             // unzip a custom module into the tmp dir
-            $zip = new ZipArchive;
-
-            if (true !== ($zipModule = $zip->open($formData['module']['tmp_name']))) {
-                $zip->close();
-                throw new ApplicationException('Cannot open archived module');
-            }
-
-            if (true !== ($reult = $zip->extractTo($tmpDirName))) {
-                $zip->close();
-                throw new ApplicationException('Cannot extract archived module');
-            }
-
-            $zip->close();
+            $this->unzipFiles($formData['module']['tmp_name'], $tmpDirName);
 
             // check the module's config
             if (!file_exists($tmpDirName . '/config.php')) {
@@ -899,13 +1028,13 @@ class ApplicationModuleAdministration extends ApplicationBase
 
             // check the module existing into modules and layouts dirs
             $moduleName = basename($modulePath);
-            $globalModulePath = '/module/' . $moduleName;
+            $globalModulePath = ApplicationService::getModulePath(false) . '/' . $moduleName;
 
             $moduleLayoutName = $moduleLayoutPath
                 ? basename($moduleLayoutPath)
                 : null;
 
-            $localModulePath = APPLICATION_ROOT . $globalModulePath;
+            $localModulePath = APPLICATION_ROOT . '/' . $globalModulePath;
             $localModuleLayout = $moduleLayoutName
                 ? ApplicationService::getBaseLayoutPath() . '/' . $moduleLayoutName
                 : null;
@@ -938,6 +1067,11 @@ class ApplicationModuleAdministration extends ApplicationBase
         // remove the tmp dir
         if (file_exists($tmpDirName)) {
             ApplicationFileSystemUtility::deleteFiles($tmpDirName, [], false, true);
+        }
+
+        // fire the upload custom module event
+        if (true === $uploadResult) {
+            ApplicationEvent::fireUploadCustomModuleEvent($moduleName);
         }
 
         return $uploadResult;
@@ -1018,64 +1152,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             $modules .= "'" . $module->name . "',";
         }
 
-        file_put_contents(APPLICATION_ROOT .
-                '/config/module/custom.php', '<?php return ['. rtrim($modules, ',') . '];');
-    }
-
-    /**
-     * Execute sql file
-     *
-     * @param string $filePath
-     * @param array $replace
-     *      string from
-     *      string to
-     * @throws ApplicationException
-     * @return void
-     */
-    protected function executeSqlFile($filePath, array $replace = [])
-    {
-        if(!file_exists($filePath) || !($handler = fopen($filePath, 'r'))) {
-            throw new ApplicationException('Sql file not found or permission denied');
-        }
-
-        $query = null;
-        $delimiter = ';';
-        $result = [];
-
-        // collect all queries
-        while(!feof($handler)) {
-            $str = trim(fgets($handler));
-
-            if(empty($str) || $str[0] == '' || $str[0] == '#' || ($str[0] == '-' && $str[1] == '-'))
-                continue;
-
-            // change delimiter
-            if(strpos($str, 'DELIMITER //') !== false || strpos($str, 'DELIMITER ;') !== false) {
-                $delimiter = trim(str_replace('DELIMITER', '', $str));
-                continue;
-            }
-
-            $query .= ' ' . $str;
-
-            // check for multiline query
-            if(substr($str, -strlen($delimiter)) != $delimiter) {
-                continue;
-            }
-
-            // execute query
-            if (!empty($replace['from']) && !empty($replace['to'])) {
-                $query = str_replace($replace['from'], $replace['to'], $query);
-            }
-
-            if($delimiter != ';') {
-                $query = str_replace($delimiter, '', $query);
-            }
-
-            $this->adapter->query(trim($query), DbAdapter::QUERY_MODE_EXECUTE);
-            $query = null;
-        }
-
-        fclose($handler);
+        file_put_contents(ApplicationService::getCustomModuleConfig(), '<?php return ['. rtrim($modules, ',') . '];');
     }
 
     /**

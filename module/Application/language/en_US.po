@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-26 18:21+0600\n"
+"PO-Revision-Date: 2014-12-28 14:42+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,21 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "This module updates are not necessary or not defined"
+msgstr "This module updates are not necessary or not defined"
+
+msgid "Module not found"
+msgstr "Module not found"
+
+msgid "Updates of module have been uploaded"
+msgstr "Updates of module have been uploaded"
+
+msgid "Updates"
+msgstr "Updates"
+
+msgid "Upload updates"
+msgstr "Upload updates"
 
 msgid "Module has been uploaded"
 msgstr "Module has been uploaded"
@@ -30,11 +45,11 @@ msgstr "Cannot define the module's path into the config file"
 msgid "Cannot define the module's config file"
 msgstr "Cannot define the module's config file"
 
-msgid "Cannot extract archived module"
-msgstr "Cannot extract archived module"
+msgid "Cannot extract archived files"
+msgstr "Cannot extract archived files"
 
-msgid "Cannot open archived module"
-msgstr "Cannot open archived module"
+msgid "Cannot open archived files"
+msgstr "Cannot open archived files"
 
 msgid "Your FTP account does not allow use the system dirs"
 msgstr "Your FTP account does not allow use the system dirs"
@@ -45,8 +60,8 @@ msgstr "FTP server is not responding or you entered wrong login data"
 msgid "Upload"
 msgstr "Upload"
 
-msgid "Upload new module description"
-msgstr "Please choose a module in the ZIP format"
+msgid "Upload module description"
+msgstr "Please choose a file in the ZIP format"
 
 msgid "FTP access"
 msgstr "FTP access"
@@ -815,6 +830,15 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
+msgid "Event - Uploading custom modules"
+msgstr "Uploading custom modules"
+
+msgid "Event - Custom module uploaded by guest"
+msgstr "Guest uploaded custom module \"%s\""
+
+msgid "Event - Custom module uploaded by user"
+msgstr "\"%s\" uploaded custom module \"%s\""
+
 msgid "Event - Activating custom modules"
 msgstr "Activating custom modules"
 
@@ -915,3 +939,6 @@ msgstr "Activating modules in admin area"
 
 msgid "ACL - Deactivating modules in admin area"
 msgstr "Deactivating modules in admin area"
+
+msgid "ACL - Uploading  updates of modules in admin area"
+msgstr "Uploading  updates of modules in admin area"
