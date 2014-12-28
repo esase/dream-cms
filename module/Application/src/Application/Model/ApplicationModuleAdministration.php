@@ -740,7 +740,8 @@ class ApplicationModuleAdministration extends ApplicationBase
                     'version' => !empty($moduleInstallConfig['version']) ? $moduleInstallConfig['version'] : null,
                     'vendor' => !empty($moduleInstallConfig['vendor']) ? $moduleInstallConfig['vendor'] : null,
                     'vendor_email' => !empty($moduleInstallConfig['vendor_email']) ? $moduleInstallConfig['vendor_email'] : null,
-                    'description' => !empty($moduleInstallConfig['description']) ? $moduleInstallConfig['description'] : null
+                    'description' => !empty($moduleInstallConfig['description']) ? $moduleInstallConfig['description'] : null,
+                    'layout_path' => !empty($moduleInstallConfig['layout_path']) ? $moduleInstallConfig['layout_path'] : null
                 ]);
 
             $statement = $this->prepareStatementForSqlObject($insert);
@@ -904,6 +905,26 @@ class ApplicationModuleAdministration extends ApplicationBase
                 throw new ApplicationException('This module updates are not necessary or not defined');
             }
 
+            // get the module's path
+            $modulePath   = !empty($updateModuleConfig['module_path'])
+                ? $tmpDirName . '/' . $updateModuleConfig['module_path']
+                : null;
+
+            // check the module existing
+            if ($modulePath && (!file_exists($modulePath) || !is_dir($modulePath))) {
+                throw new ApplicationException('Cannot define the module\'s path into the config file');
+            }
+
+            // check the module layout existing
+            $moduleLayoutPath = !empty($updateModuleConfig['layout_path']) && $moduleInfo['layout_path']
+                ? $tmpDirName . '/' . $updateModuleConfig['layout_path']
+                : null;
+
+            if ($moduleLayoutPath && (!file_exists($moduleLayoutPath) || !is_dir($moduleLayoutPath))) {
+                throw new ApplicationException('Cannot define the module\'s layout path into the config file');
+            }
+
+            // install updates
             if ($moduleInstalled) {
                 // clear caches
                 $this->clearCaches((!empty($updateModuleConfig['clear_caches']) ? $updateModuleConfig['clear_caches'] : []));
@@ -913,22 +934,54 @@ class ApplicationModuleAdministration extends ApplicationBase
                     $this->createResourceDirs($updateModuleConfig['create_resources']);
                 }
 
-                // delete resources dirs
-                if (!empty($updateModuleConfig['delete_resources'])) {
-                    foreach ($updateModuleConfig['delete_resources'] as $dir) {
-                        if (file_exists(ApplicationService::getResourcesDir() . $dir['dir_name'])) {
-                            ApplicationFileSystemUtility::
-                                    deleteFiles(ApplicationService::getResourcesDir() . $dir['dir_name'], [], false, true);
-                        }
-                    }
-                }
-
                 // execute an update sql file
                 if (!empty($updateModuleConfig['update_sql'])) {
                     $this->executeSqlFile($tmpDirName . '/' . $updateModuleConfig['update_sql']);
                 }
+
+                // delete resources dirs
+                if (!empty($updateModuleConfig['delete_resources'])) {
+                    foreach ($updateModuleConfig['delete_resources'] as $dir) {
+                        if (!empty($dir['dir_name'])) {
+                            if (file_exists(ApplicationService::getResourcesDir() . $dir['dir_name'])) {
+                                ApplicationFileSystemUtility::
+                                        deleteFiles(ApplicationService::getResourcesDir() . $dir['dir_name'], [], false, true);
+                            }
+                        }
+                    }
+                }
             }
 
+            // update files via FTP
+            if ($modulePath || ($moduleLayoutPath && $moduleInfo['layout_path'])) {
+                $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
+
+                if ($modulePath) {
+                    $ftp->copyDirectory($modulePath, ApplicationService::getModulePath(false) . '/' . $moduleName);
+                }
+
+                if ($moduleLayoutPath && $moduleInfo['layout_path']) {
+                    $ftp->copyDirectory($moduleLayoutPath, basename(APPLICATION_PUBLIC)
+                            . '/' . ApplicationService::getBaseLayoutPath(false) . '/' . $moduleInfo['layout_path']);
+                }
+            }
+
+            if ($moduleInstalled) {
+                // update version
+                $update = $this->update()
+                    ->table('application_module')
+                    ->set([
+                        'version' => $moduleVersion
+                    ])
+                    ->where([
+                        'name' => $moduleName
+                    ]);
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+
+            // update files
             /*
             
             return [
@@ -1014,6 +1067,12 @@ class ApplicationModuleAdministration extends ApplicationBase
             // check the module existing
             if (!$modulePath || !file_exists($modulePath) || !is_dir($modulePath)) {
                 throw new ApplicationException('Cannot define the module\'s path into the config file');
+            }
+
+            if (!file_exists($modulePath . '/' . $this->moduleInstallConfig)
+                    || !file_exists($modulePath . '/' . $this->moduleConfig)) {
+
+                throw new ApplicationException('Module not found');
             }
 
             // check the module layout existing

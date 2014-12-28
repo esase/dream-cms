@@ -485,20 +485,21 @@ CREATE TABLE `application_module` (
     `vendor` VARCHAR(50) DEFAULT NULL,
     `vendor_email` VARCHAR(50) DEFAULT NULL,
     `description` VARCHAR(255) DEFAULT NULL,
+    `layout_path` VARCHAR(50) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `type` (`type`, `status`),
     UNIQUE `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`) VALUES
-(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Appliction module description'),
-(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'User module description'),
-(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'XmlRpc module description'),
-(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'File manager module description'),
-(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Page module description'),
-(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Layout module description'),
-(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Localization module description'),
-(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Acl module description');
+INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `layout_path`) VALUES
+(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Appliction module description', 'application'),
+(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'User module description', 'user'),
+(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'XmlRpc module description', null),
+(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'File manager module description', 'filemanager'),
+(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Page module description', 'page'),
+(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Layout module description', 'layout'),
+(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Localization module description', 'localization'),
+(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Acl module description', 'acl');
 
 CREATE TABLE `application_module_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -437,10 +437,12 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
      */
     public function uploadUpdatesAction()
     {
-        // TODO: CHECK ACL+
-        // TODO: MAKE vendor and vendor email required
+        // TODO: CHECK EVERYTHING AGAIN VERY CAREFULLY
+        // TODO: MAKE vendor and vendor email required (??)
         // TODO: FIRE EVENT
-        
+        // TODO: BE SURE THAT BROKEN UPDATES DOESNT BRAKE THE WHOLE SYSTEM
+        // TODO: CREATE EXAMPLE OF UPDATE FOR SYSTEM APPLICATION MODULE
+
         $request = $this->getRequest();
         $host = $request->getUri()->getHost();
 

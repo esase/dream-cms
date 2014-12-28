@@ -160,7 +160,8 @@ abstract class ApplicationAbstractBase extends Sql
                     'version',
                     'vendor',
                     'vendor_email',
-                    'description'
+                    'description',
+                    'layout_path'
                 ])
                 ->where(['name' => $moduleName]);
 
