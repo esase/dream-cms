@@ -129,7 +129,6 @@ class ApplicationModule extends ApplicationAbstractCustomForm
             $ftpUtility = $this->connectToFtp($value, $context['password']);
         }
         catch (Exception $e) {
-            echo $e->getMessage();
             return false;
         }
 
@@ -154,7 +153,6 @@ class ApplicationModule extends ApplicationAbstractCustomForm
             }
         }
         catch (Exception $e) {
-            echo $e->getMessage();
             return false;
         }
 

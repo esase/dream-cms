@@ -31,6 +31,12 @@ class ApplicationFtp
     protected $password;
 
     /**
+     * Is windows
+     * @var boolean
+     */
+    protected $isWindows;
+
+    /**
      * Connection
      * @var resource|boolean
      */
@@ -80,6 +86,8 @@ class ApplicationFtp
         if (true !== ($result = @ftp_login($this->connection, $this->login, $this->password))) {
             throw new ApplicationException('Ftp login failed');
         }
+
+        $this->isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 
     /**
@@ -127,10 +135,12 @@ class ApplicationFtp
         }
 
         // set permissions
-        if (false === ($result =
-                @ftp_chmod($this->connection, self::DIR_PERMISSIONS, $ftpDir))) {
+        if (!$this->isWindows) {
+            if (false === ($result =
+                    @ftp_chmod($this->connection, self::DIR_PERMISSIONS, $ftpDir))) {
 
-            throw new ApplicationException('Set permissions of "' . $ftpDir . '" failed');
+                throw new ApplicationException('Set permissions of "' . $ftpDir . '" failed');
+            }
         }
     }
 
@@ -152,10 +162,12 @@ class ApplicationFtp
         }
 
         // set permissions
-        if (false === ($result = @ftp_chmod($this->
-                connection, self::FILE_PERMISSIONS, $ftpFile))) {
+        if (!$this->isWindows) {
+            if (false === ($result = @ftp_chmod($this->
+                    connection, self::FILE_PERMISSIONS, $ftpFile))) {
 
-            throw new ApplicationException('Set permissions of "' . $ftpFile . '" failed');
+                throw new ApplicationException('Set permissions of "' . $ftpFile . '" failed');
+            }
         }
     }
 

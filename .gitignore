@@ -13,6 +13,7 @@ config/autoload/local.php
 config/autoload/*.local.php
 module/Example/*
 module/Example2/*
+public/layout/base/example/
 public/layout_cache/css/*
 !public/layout_cache/css/.htaccess
 public/layout_cache/js/*
@@ -27,3 +28,5 @@ public/resource/filemanager/*
 !public/resource/filemanager/.htaccess
 public/resource/membership/*
 !public/resource/membership/.htaccess
+public/resource/example/
+public/resource/example2/
