@@ -437,17 +437,6 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
      */
     public function uploadUpdatesAction()
     {
-        // TODO: MAKE vendor and vendor email are required +
-        // TODO: PREVENT UPLOAD UPDATES AS A MODULE +
-        // TODO: REMOVE TRANSACTION FROM INSTALL CMS +
-        // TODO: CHECK EVERYTHING AGAIN VERY CAREFULLY +
-        // TODO: BE SURE THAT BROKEN UPDATES DOESNT BRAKE THE WHOLE SYSTEM +
-        // TODO: FIRE EVENT +
-        // TODO: CREATE EXAMPLE OF UPDATE FOR SYSTEM APPLICATION MODULE +
-        
-        // TODO: WRITE COMMENTS ABOUT UPDATES AND MODULES CONFIG STRUCTURE
-        // TODO: TEST IT IN PRODUCATION MODE
-
         $request = $this->getRequest();
         $host = $request->getUri()->getHost();
 

@@ -67,8 +67,8 @@
 
 ## Upload custom module config structure.
 
-    1. Each custom module must be archived by ZIP
-    2. Each custom module must contains config.php into a root of archived module
+    1. Each uploadable custom module must be archived by ZIP
+    2. Each uploadable custom module must contains config.php into a root of archived module
 
         Example of config.php :
 
@@ -79,8 +79,8 @@
 
 ## Upload module updates config structure.
 
-    1. Each module updates must be archived by ZIP
-    2. Each module updates must contains update_config.php into a root of archived module
+    1. Each uploadable module updates must be archived by ZIP
+    2. Each uploadable module updates must contains update_config.php into a root of archived module
 
         Example of update_config.php :
 
