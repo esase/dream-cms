@@ -95,12 +95,19 @@ table.table {
   margin-top: 0;
   margin-bottom: 0;
 }
+table.table input[type="radio"],
+table.table input[type="checkbox"] {
+  margin: 5px !important;
+}
 table.table th.selector-items {
   width: 20px;
 }
 table.table th {
   border-bottom: 0 !important;
   white-space: nowrap;
+}
+table.table td {
+  vertical-align: middle !important;
 }
 table.table td.action {
   width: 24px;

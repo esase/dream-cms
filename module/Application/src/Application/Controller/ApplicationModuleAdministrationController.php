@@ -2,6 +2,7 @@
 namespace Application\Controller;
 
 use Application\Model\ApplicationAbstractBase as ApplicationAbstractBaseModel;
+use Application\Utility\ApplicationCache as ApplicationCacheUtility;
 use Zend\View\Model\ViewModel;
 
 class ApplicationModuleAdministrationController extends ApplicationAbstractAdministrationController
@@ -336,6 +337,8 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
             }
         }
 
+        ApplicationCacheUtility::clearDynamicCache();
+
         // redirect back
         return $this->redirectTo('modules-administration', 'list-installed', [], true);
     }
@@ -389,6 +392,8 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                 }
             }
         }
+
+        ApplicationCacheUtility::clearDynamicCache();
 
         // redirect back
         return $this->redirectTo('modules-administration', 'list-installed', [], true);

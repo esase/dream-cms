@@ -143,6 +143,11 @@ table.table {
     margin-top:0;
     margin-bottom:0;
 
+    input[type="radio"], 
+    input[type="checkbox"] {
+        margin: @table-grid-input-margin !important;
+    }
+
     th.selector-items {
         width: @table-grid-selector-items-width;
     }
@@ -150,6 +155,10 @@ table.table {
     th {
         border-bottom: 0 !important;
         white-space: nowrap;
+    }
+
+    td {
+        vertical-align: middle !important;
     }
 
     td.action {

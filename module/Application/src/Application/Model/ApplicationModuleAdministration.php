@@ -566,6 +566,8 @@ class ApplicationModuleAdministration extends ApplicationBase
                         $pattern['base_dir'], $pattern['pattern'], $pattern['text_domain']);
             }
         }
+
+        ApplicationCacheUtility::clearDynamicCache();
     }
     
     /**
@@ -608,6 +610,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             ? ApplicationEvent::fireActivateCustomModuleEvent($moduleName)
             : ApplicationEvent::fireDeactivateCustomModuleEvent($moduleName);
 
+            \Application\Utility\ApplicationCache::clearDynamicCache();
         return true;
     }
 
