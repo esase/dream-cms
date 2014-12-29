@@ -610,7 +610,6 @@ class ApplicationModuleAdministration extends ApplicationBase
             ? ApplicationEvent::fireActivateCustomModuleEvent($moduleName)
             : ApplicationEvent::fireDeactivateCustomModuleEvent($moduleName);
 
-            \Application\Utility\ApplicationCache::clearDynamicCache();
         return true;
     }
 
