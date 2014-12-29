@@ -89,7 +89,6 @@ class ApplicationModuleAdministration extends ApplicationBase
                 ],
                 'left'
             )
-            ->group('a.id')
             ->order($orderBy . ' ' . $orderType);
 
         // filter by status
