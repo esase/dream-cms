@@ -46,6 +46,11 @@ class ApplicationEvent extends ApplicationAbstractEvent
     const UPLOAD_CUSTOM_MODULE = 'application_upload_custom_module';
 
     /**
+     * Upload module updates event
+     */
+    const UPLOAD_MODULE_UPDATES = 'application_upload_module_updates';
+
+    /**
      * Fire send email notification event
      *
      * @param string $email
@@ -206,6 +211,27 @@ class ApplicationEvent extends ApplicationAbstractEvent
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
 
         self::fireEvent(self::UPLOAD_CUSTOM_MODULE, 
+                $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire upload module updates event
+     *
+     * @param string $module
+     * @return void
+     */
+    public static function fireUploadModuleUpdatesEvent($module)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - module updated by guest'
+            : 'Event - module updated by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$module]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
+
+        self::fireEvent(self::UPLOAD_MODULE_UPDATES, 
                 $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

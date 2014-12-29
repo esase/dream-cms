@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-28 14:42+0600\n"
+"PO-Revision-Date: 2014-12-29 14:23+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,11 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid ""
+"It is impossible to determine the module version, vendor or vendor email"
+msgstr ""
+"It is impossible to determine the module version, vendor or vendor email"
 
 msgid "This module updates are not necessary or not defined"
 msgstr "This module updates are not necessary or not defined"
@@ -829,6 +834,15 @@ msgstr "The input must contain only digits"
 
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
+
+msgid "Event - Uploading modules updates"
+msgstr "Uploading modules updates"
+
+msgid "Event - module updated by guest"
+msgstr "Guest uploaded updates for the module \"%s\""
+
+msgid "Event - module updated by user"
+msgstr "\"%s\" uploaded updates for the module \"%s\""
 
 msgid "Event - Uploading custom modules"
 msgstr "Uploading custom modules"

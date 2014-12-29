@@ -481,9 +481,9 @@ CREATE TABLE `application_module` (
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
     `status` ENUM('active','not_active') NOT NULL,
-    `version` VARCHAR(20) DEFAULT NULL,
-    `vendor` VARCHAR(50) DEFAULT NULL,
-    `vendor_email` VARCHAR(50) DEFAULT NULL,
+    `version` VARCHAR(20) NOT NULL,
+    `vendor` VARCHAR(50) NOT NULL,
+    `vendor_email` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255) DEFAULT NULL,
     `layout_path` VARCHAR(50) DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -1068,7 +1068,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (40, 'application_uninstall_custom_module', 1, 'Event - Uninstalling custom modules'),
 (41, 'application_activate_custom_module', 1, 'Event - Activating custom modules'),
 (42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules'),
-(43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules');
+(43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules'),
+(44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

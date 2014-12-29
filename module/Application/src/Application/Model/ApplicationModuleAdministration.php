@@ -398,9 +398,9 @@ class ApplicationModuleAdministration extends ApplicationBase
      * Check custom module depends
      *
      * @param array $installConfig
-     *      string version optional
-     *      string vendor optional
-     *      string vendor_email optional
+     *      string version 
+     *      string vendor 
+     *      string vendor_email 
      *      string description optional
      *      array module_depends optional
      *          string module
@@ -451,9 +451,9 @@ class ApplicationModuleAdministration extends ApplicationBase
      * Get not validated custom module system requirements
      *
      * @param array $installConfig
-     *      string version optional
-     *      string vendor optional
-     *      string vendor_email optional
+     *      string version 
+     *      string vendor 
+     *      string vendor_email 
      *      string description optional
      *      array module_depends optional
      *          string module
@@ -617,9 +617,9 @@ class ApplicationModuleAdministration extends ApplicationBase
      *
      * @param string $moduleName
      * @param array $moduleInstallConfig
-     *      string version optional
-     *      string vendor optional
-     *      string vendor_email optional
+     *      string version 
+     *      string vendor 
+     *      string vendor_email 
      *      string description optional
      *      array module_depends optional
      *          string module
@@ -696,9 +696,9 @@ class ApplicationModuleAdministration extends ApplicationBase
      *
      * @param string $moduleName
      * @param array $moduleInstallConfig
-     *      string version optional
-     *      string vendor optional
-     *      string vendor_email optional
+     *      string version 
+     *      string vendor 
+     *      string vendor_email 
      *      string description optional
      *      array module_depends optional
      *          string module
@@ -725,6 +725,22 @@ class ApplicationModuleAdministration extends ApplicationBase
     public function installCustomModule($moduleName, array $moduleInstallConfig)
     {
         try {
+            $version = !empty($moduleInstallConfig['version'])
+                ? trim($moduleInstallConfig['version'])
+                : null;
+
+            $vendor = !empty($moduleInstallConfig['vendor'])
+                ? trim($moduleInstallConfig['vendor'])
+                : null;
+
+            $vendorEmail = !empty($moduleInstallConfig['vendor_email'])
+                ? trim($moduleInstallConfig['vendor_email'])
+                : null;
+
+            if (!$version || !$vendor || !$vendorEmail) {
+                throw new ApplicationException('It is impossible to determine the module version, vendor or vendor email');
+            }
+
             // clear caches
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
 
@@ -737,9 +753,9 @@ class ApplicationModuleAdministration extends ApplicationBase
                     'name' => $moduleName,
                     'type' => self::MODULE_TYPE_CUSTOM,
                     'status' => self::MODULE_STATUS_ACTIVE,
-                    'version' => !empty($moduleInstallConfig['version']) ? $moduleInstallConfig['version'] : null,
-                    'vendor' => !empty($moduleInstallConfig['vendor']) ? $moduleInstallConfig['vendor'] : null,
-                    'vendor_email' => !empty($moduleInstallConfig['vendor_email']) ? $moduleInstallConfig['vendor_email'] : null,
+                    'version' => $version,
+                    'vendor' => $vendor,
+                    'vendor_email' => $vendorEmail,
                     'description' => !empty($moduleInstallConfig['description']) ? $moduleInstallConfig['description'] : null,
                     'layout_path' => !empty($moduleInstallConfig['layout_path']) ? $moduleInstallConfig['layout_path'] : null
                 ]);
@@ -859,12 +875,12 @@ class ApplicationModuleAdministration extends ApplicationBase
             $this->unzipFiles($formData['module']['tmp_name'], $tmpDirName);
 
             // check the module's config
-            if (!file_exists($tmpDirName . '/config.php')) {
+            if (!file_exists($tmpDirName . '/update_config.php')) {
                 throw new ApplicationException('Cannot define the module\'s config file');
             }
 
             // get the module's config
-            $updateModuleConfig = include $tmpDirName . '/config.php';
+            $updateModuleConfig = include $tmpDirName . '/update_config.php';
 
             $moduleName = !empty($updateModuleConfig['module']) ? $updateModuleConfig['module'] : null;
             $moduleVersion = !empty($updateModuleConfig['version']) ? $updateModuleConfig['version'] : null;
@@ -882,6 +898,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if (null == ($moduleInfo = $this->getModuleInfo($moduleName))) {
                 // get info from config
                 if (false === ($moduleInfo = $this->getCustomModuleConfig($moduleName))) {
+                    // nothing to update
                     throw new ApplicationException('Module not found');
                 }
 
@@ -939,7 +956,7 @@ class ApplicationModuleAdministration extends ApplicationBase
                     $this->executeSqlFile($tmpDirName . '/' . $updateModuleConfig['update_sql']);
                 }
 
-                // delete resources dirs
+                // delete unnecessary resources dirs
                 if (!empty($updateModuleConfig['delete_resources'])) {
                     foreach ($updateModuleConfig['delete_resources'] as $dir) {
                         if (!empty($dir['dir_name'])) {
@@ -980,41 +997,6 @@ class ApplicationModuleAdministration extends ApplicationBase
                 $statement = $this->prepareStatementForSqlObject($update);
                 $statement->execute();
             }
-
-            // update files
-            /*
-            
-            return [
-    'module' => 'Example',
-    'version' => '1.1.0',
-    'vendor' => 'eSASe',
-    'vendor_email' => 'alexermashev@gmail.com',
-	'module_path' => 'module',
-	'layout_path' => 'layout',
-    'update_sql' => 'update.sql',
-    'clear_caches' => [
-        'setting'       => false,
-        'time_zone'     => false,
-        'admin_menu'    => false,
-        'js_cache'      => false,
-        'css_cache'     => false,
-        'layout'        => false,
-        'localization'  => false,
-        'page'          => false,
-        'user'          => false,
-        'xmlrpc'        => false
-    ],
-    'resources' => [
-        [
-            'dir_name' => 'example/big',
-            'is_public' => false
-        ]
-    ],
-];
-            */
-            
-            //getCustomModuleConfig($module, $type = 'install', $checkExisting = true)
-            //'module' => 'Example',
         }
         catch (Exception $e) {            
             ApplicationErrorLogger::log($e);
@@ -1024,6 +1006,11 @@ class ApplicationModuleAdministration extends ApplicationBase
         // remove the tmp dir
         if (file_exists($tmpDirName)) {
             ApplicationFileSystemUtility::deleteFiles($tmpDirName, [], false, true);
+        }
+
+        // fire the upload module updates event
+        if (true === $uploadResult) {
+            ApplicationEvent::fireUploadModuleUpdatesEvent($moduleName);
         }
 
         return $uploadResult;
