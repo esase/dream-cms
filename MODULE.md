@@ -92,6 +92,28 @@
                 'module_path' => 'module', // it defines where the module directory located
                 'layout_path' => 'layout', // it defines where the module layout directory located
                 'update_sql' => 'update.sql', // update sql (run only for installed modules)
+                'update_intro' => 'Example update into', // Show this text after update
+                'system_requirements' => [ // list of system requirements
+                    'php_extensions' => [
+                        'intl',
+                        'curl'
+                    ],
+                    'php_settings' => [
+                        'allow_url_fopen' => 1,
+                        'file_uploads' => 1
+                    ],
+                    'php_enabled_functions' => [
+                        'exec'
+                    ],
+                    'php_version' => '5.4.0' // specify here needed PHP version or write null
+                ],
+                'module_depends' => [ // list dependent modules
+                    [
+                        'module' => 'Example2',
+                        'vendor' => 'eSASe',
+                        'vendor_email' => 'alexermashev@gmail.com'
+                    ]
+                ],
                 'clear_caches' => [ // clear caches (run only for installed modules)
                     'setting'       => true,
                     'time_zone'     => true,

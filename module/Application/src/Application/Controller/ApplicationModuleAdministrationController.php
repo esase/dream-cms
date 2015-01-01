@@ -469,12 +469,18 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                     return $result;
                 }
 
-                if (true === ($result =
-                        $this->getModel()->uploadModuleUpdates($moduleForm->getForm()->getData(), $host))) {
+                $result = $this->getModel()->uploadModuleUpdates($moduleForm->getForm()->getData(), $host);
 
+                if (is_array($result)) {
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Updates of module have been uploaded'));
+
+                    if (!empty($result['update_intro'])) {
+                        $this->flashMessenger()
+                            ->setNamespace('info')
+                            ->addMessage($this->getTranslator()->translate($result['update_intro']));
+                    }
                 }
                 else {
                     $this->flashMessenger()
@@ -542,6 +548,74 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
         }
 
         return new ViewModel([
+            'moduleForm' => $moduleForm->getForm()
+        ]);
+    }
+
+    /**
+     * Delete a module
+     */
+    public function deleteAction()
+    {
+        $moduleName = $this->getSlug();
+
+        // module should be not installed
+        if (null != ($moduleInfo = $this->getModel()->getModuleInfo($moduleName)) 
+                || null == ($installConfig = $this->getModel()->getCustomModuleConfig($moduleName))
+                || false === $this->getModel()->isCustomModule($moduleName)) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // add translations
+        $this->getModel()->addModuleTranslations($this->
+                getModel()->getCustomModuleConfig($moduleName, 'system', false));
+
+        $request = $this->getRequest();
+        $host = $request->getUri()->getHost();
+
+        // get an module form
+        $moduleForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Application\Form\ApplicationModule')
+            ->setHost($host)
+            ->setDeleteMode();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $moduleForm->getForm()->setData($request->getPost(), false);
+
+            // delete a module
+            if ($moduleForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // delete the module
+                if (true === ($result = $this->getModel()->
+                        deleteCustomModule($moduleName, $moduleForm->getForm()->getData(), $host, $installConfig))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Module has been deleted'));
+
+                    return $this->redirectTo('modules-administration', 'list-not-installed');
+                }
+
+                $this->flashMessenger()
+                    ->setNamespace('error')
+                    ->addMessage($this->getTranslator()->translate($result));
+
+                return $this->redirectTo('modules-administration', 'delete', [
+                    'slug' => $moduleName
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'module_name' => $moduleName,
             'moduleForm' => $moduleForm->getForm()
         ]);
     }

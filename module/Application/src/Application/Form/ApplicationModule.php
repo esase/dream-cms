@@ -27,6 +27,12 @@ class ApplicationModule extends ApplicationAbstractCustomForm
     protected $ftpUtility = false;
 
     /**
+     * Delete mode
+     * @var boolean
+     */
+    protected $deleteMode = false;
+
+    /**
      * Form elements
      * @var array
      */
@@ -70,15 +76,6 @@ class ApplicationModule extends ApplicationAbstractCustomForm
         // get form builder
         if (!$this->form) {
             // add extra validators
-            $this->formElements['module']['validators'] = [
-                [
-                    'name' => 'fileextension',
-                    'options' => [
-                        'extension' => 'zip'
-                    ]
-                ]
-            ];
-
             $this->formElements['login']['validators'] = [
                 [
                     'name' => 'callback',
@@ -97,6 +94,20 @@ class ApplicationModule extends ApplicationAbstractCustomForm
                 ]
             ];
 
+            if (!$this->deleteMode) {
+                $this->formElements['module']['validators'] = [
+                    [
+                        'name' => 'fileextension',
+                        'options' => [
+                            'extension' => 'zip'
+                        ]
+                    ]
+                ];
+            }
+            else {
+                unset($this->formElements['module']);
+            }
+
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
@@ -113,6 +124,17 @@ class ApplicationModule extends ApplicationAbstractCustomForm
     public function setHost($host)
     {
         $this->host = $host;
+        return $this;
+    }
+
+    /**
+     * Set delete mode
+     *
+     * @return object fluent interface
+     */
+    public function setDeleteMode()
+    {
+        $this->deleteMode = true;
         return $this;
     }
 

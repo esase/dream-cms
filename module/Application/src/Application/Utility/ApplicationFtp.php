@@ -172,6 +172,42 @@ class ApplicationFtp
     }
 
     /**
+     *  Remove directory
+     *
+     * @param string $ftpDir
+     * @return boolean|string
+     */
+    public function removeDirectory($ftpDir)
+    {
+        try {
+            // here we attempt to delete the file/directory
+            if (false === ($result = @ftp_rmdir($this->connection, $ftpDir)) 
+                    && false === ($result = @ftp_delete($this->connection, $ftpDir))) {
+
+                // perhaps it's a not empty directory    
+                if (null != ($listFiles = @ftp_nlist($this->connection, $ftpDir))) {
+                    foreach($listFiles as $file) {
+                        $this->removeDirectory($file);
+                    }
+
+                    //removeDirectory
+                    if (false === ($result = @ftp_rmdir($this->connection, $ftpDir)))  {
+                        throw new ApplicationException('Remove the directory "' . $ftpDir. '" failed');
+                    }
+                }
+                else {
+                    throw new ApplicationException('Remove the directory "' . $ftpDir. '" failed');
+                }
+            }
+        }
+        catch (Exception $e) {
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
      * Copy directory
      *
      * @param string $directory

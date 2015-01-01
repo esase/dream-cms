@@ -51,6 +51,11 @@ class ApplicationEvent extends ApplicationAbstractEvent
     const UPLOAD_MODULE_UPDATES = 'application_upload_module_updates';
 
     /**
+     * Delete custom module event
+     */
+    const DELETE_CUSTOM_MODULE = 'application_delete_custom_module';
+
+    /**
      * Fire send email notification event
      *
      * @param string $email
@@ -232,6 +237,27 @@ class ApplicationEvent extends ApplicationAbstractEvent
             : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
 
         self::fireEvent(self::UPLOAD_MODULE_UPDATES, 
+                $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire delete custom module event
+     *
+     * @param string $module
+     * @return void
+     */
+    public static function fireDeleteCustomModuleEvent($module)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Custom module deleted by guest'
+            : 'Event - Custom module deleted by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$module]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $module];
+
+        self::fireEvent(self::DELETE_CUSTOM_MODULE, 
                 $module, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

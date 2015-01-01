@@ -97,6 +97,13 @@
                 'controller' => 'modules-administration',
                 'action' => 'ajax-view-module-description',
                 'image' => $this->layoutAsset('icon/info_action.png', 'image')
+            ],
+            3 => [
+                'name' => $this->translate('Delete the module'),
+                'check_acl' => true,
+                'controller' => 'modules-administration',
+                'action' => 'delete',
+                'image' => $this->layoutAsset('icon/delete_action.png', 'image')
             ]
         ]
     ],

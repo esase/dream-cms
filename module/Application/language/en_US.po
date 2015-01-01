@@ -2,18 +2,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-29 14:23+0600\n"
+"PO-Revision-Date: 2015-01-01 15:48+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid ""
+"You have to install all dependent modules before apply these module updates. "
+"Check the readme file"
+msgstr ""
+"You have to install all dependent modules before apply these module updates. "
+"Check the readme file"
+
+msgid ""
+"You have to install all system requirements before apply these module "
+"updates. Check the readme file."
+msgstr ""
+"You have to install all system requirements before apply these module "
+"updates. Check the readme file."
+
+msgid "Module has been deleted"
+msgstr "Module has been deleted"
+
+msgid "Delete the module"
+msgstr "Delete the module"
 
 msgid ""
 "It is impossible to determine the module version, vendor or vendor email"
@@ -835,6 +855,15 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
+msgid "Event - Deleting custom modules"
+msgstr "Deleting custom modules"
+
+msgid "Event - Custom module deleted by guest"
+msgstr "Guest deleted custom module \"%s\""
+
+msgid "Event - Custom module deleted by user"
+msgstr "\"%s\" deleted custom module \"%s\""
+
 msgid "Event - Uploading modules updates"
 msgstr "Uploading modules updates"
 
@@ -956,3 +985,6 @@ msgstr "Deactivating modules in admin area"
 
 msgid "ACL - Uploading  updates of modules in admin area"
 msgstr "Uploading  updates of modules in admin area"
+
+msgid "ACL - Deleting modules in admin area"
+msgstr "Deleting modules in admin area"

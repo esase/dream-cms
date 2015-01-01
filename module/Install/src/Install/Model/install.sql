@@ -646,7 +646,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (63, 'modules_administration_uninstall', 'ACL - Uninstalling modules in admin area', 1),
 (64, 'modules_administration_activate', 'ACL - Activating modules in admin area', 1),
 (65, 'modules_administration_deactivate', 'ACL - Deactivating modules in admin area', 1),
-(66, 'modules_administration_upload_updates', 'ACL - Uploading  updates of modules in admin area', 1);
+(66, 'modules_administration_upload_updates', 'ACL - Uploading  updates of modules in admin area', 1),
+(67, 'modules_administration_delete', 'ACL - Deleting modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1069,7 +1070,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (41, 'application_activate_custom_module', 1, 'Event - Activating custom modules'),
 (42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules'),
 (43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules'),
-(44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates');
+(44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates'),
+(45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -129,7 +129,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if ($module['type'] == self::MODULE_TYPE_CUSTOM
                         && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                $this->addCustomModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+                $this->addModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
             }
         }
 
@@ -256,15 +256,15 @@ class ApplicationModuleAdministration extends ApplicationBase
                 'version' => !empty($moduleInstallConfig['version']) ? $moduleInstallConfig['version'] : null,
                 'description' => !empty($moduleInstallConfig['description']) ? $moduleInstallConfig['description'] : null,
                 'date' => $data->getMTime(),
-                'module_depends' => $this->checkCustomModuleDepends($moduleInstallConfig),
-                'system_requirements' => count($this->getNotValidatedCustomModuleSystemRequirements($moduleInstallConfig)) ? false : true
+                'module_depends' => $this->checkModuleDepends($moduleInstallConfig),
+                'system_requirements' => count($this->getNotValidatedModuleSystemRequirements($moduleInstallConfig)) ? false : true
             ];
 
             $processedModules[] = $moduleInfo; 
             $orderValues[]    = $moduleInfo[$orderBy];
 
             // load the module's translations
-            $this->addCustomModuleTranslations($this->getCustomModuleConfig($data->getFileName(), 'system', false));
+            $this->addModuleTranslations($this->getCustomModuleConfig($data->getFileName(), 'system', false));
         }
 
         array_multisort($orderValues, $orderType, $processedModules);
@@ -314,7 +314,7 @@ class ApplicationModuleAdministration extends ApplicationBase
                 if ($module['type'] == self::MODULE_TYPE_CUSTOM
                         && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                    $this->addCustomModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+                    $this->addModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
                 }
 
                 $modules[] = [
@@ -350,7 +350,7 @@ class ApplicationModuleAdministration extends ApplicationBase
                             if (false !== ($dependInstallConfig =
                                     $this->getCustomModuleConfig($module['module'], 'system'))) {
 
-                                $this->addCustomModuleTranslations($dependInstallConfig);
+                                $this->addModuleTranslations($dependInstallConfig);
                             }
                         }
                     }
@@ -374,7 +374,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if ($moduleInfo['type'] == self::MODULE_TYPE_CUSTOM
                     && $moduleInfo['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleInfo['name'], 'system', false));
+                $this->addModuleTranslations($this->getCustomModuleConfig($moduleInfo['name'], 'system', false));
             }
 
             return !empty($moduleInfo['description']) ? $moduleInfo['description'] : false;
@@ -383,7 +383,7 @@ class ApplicationModuleAdministration extends ApplicationBase
         // try to get description from the not installed module
         if (false !== ($moduleInstallConfig = $this->getCustomModuleConfig($module, 'install'))) {
             // load the module's translations
-            $this->addCustomModuleTranslations($this->getCustomModuleConfig($module, 'system', false));
+            $this->addModuleTranslations($this->getCustomModuleConfig($module, 'system', false));
 
             return !empty($moduleInstallConfig['description'])
                 ? $moduleInstallConfig['description']
@@ -394,39 +394,19 @@ class ApplicationModuleAdministration extends ApplicationBase
     }
 
     /**
-     * Check custom module depends
+     * Check module depends
      *
      * @param array $installConfig
-     *      string version 
-     *      string vendor 
-     *      string vendor_email 
-     *      string description optional
      *      array module_depends optional
      *          string module
      *          string vendor
      *          string vendor_email
-     *      array clear_caches optional
-     *      array resources optional
-     *          string dir_name
-     *          boolean is_public optional
-     *      string install_sql optional
-     *      string uninstall_sql optional
-     *      array system_requirements optional
-     *          array php_extensions optional
-     *          array php_settings optional
-     *          array php_enabled_functions optional
-     *          array php_version optional
-     *      string install_sql optional
-     *      string install_intro optional
-     *      string uninstall_sql optional
-     *      string uninstall_intro optional
-     *      string layout_path optional
      * @return boolean
      */
-    public function checkCustomModuleDepends(array $installConfig)
+    public function checkModuleDepends(array $config)
     {
-        if (!empty($installConfig['module_depends'])) {
-            foreach ($installConfig['module_depends'] as $module) {
+        if (!empty($config['module_depends'])) {
+            foreach ($config['module_depends'] as $module) {
                 if (!isset($module['module'], $module['vendor'], $module['vendor_email'])) {
                     continue;
                 }
@@ -447,40 +427,21 @@ class ApplicationModuleAdministration extends ApplicationBase
     }
 
     /**
-     * Get not validated custom module system requirements
+     * Get not validated module system requirements
      *
-     * @param array $installConfig
-     *      string version 
-     *      string vendor 
-     *      string vendor_email 
-     *      string description optional
-     *      array module_depends optional
-     *          string module
-     *          string vendor
-     *          string vendor_email
-     *      array clear_caches optional
-     *      array resources optional
-     *          string dir_name
-     *          boolean is_public optional
-     *      string install_sql optional
-     *      string uninstall_sql optional
+     * @param array $config
      *      array system_requirements optional
      *          array php_extensions optional
      *          array php_settings optional
      *          array php_enabled_functions optional
      *          array php_version optional
-     *      string install_sql optional
-     *      string install_intro optional
-     *      string uninstall_sql optional
-     *      string uninstall_intro optional
-     *      string layout_path optional
      * @return array
      */
-    public function getNotValidatedCustomModuleSystemRequirements(array $installConfig)
+    public function getNotValidatedModuleSystemRequirements(array $config)
     {
         $notValidatedRequirements = [];
-        $requirements = !empty($installConfig['system_requirements'])
-            ? $installConfig['system_requirements']
+        $requirements = !empty($config['system_requirements'])
+            ? $config['system_requirements']
             : null;
 
         if (!$requirements) {
@@ -548,12 +509,12 @@ class ApplicationModuleAdministration extends ApplicationBase
     }
 
     /**
-     * Add custom module translations
+     * Add  module translations
      *
      * @var array $moduleConfig
      * @return void
      */
-    protected function addCustomModuleTranslations(array $moduleConfig)
+    public function addModuleTranslations(array $moduleConfig)
     {
         $translator = ServiceLocatorService::getServiceLocator()->get('translator');
         $translationPattern = !empty($moduleConfig['translator']['translation_file_patterns'])
@@ -649,7 +610,7 @@ class ApplicationModuleAdministration extends ApplicationBase
         try {
             // clear caches
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
-            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
+            $this->addModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
 
             $query = $this->delete('application_module')
                 ->where([
@@ -746,7 +707,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
 
             // add translations
-            $this->addCustomModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
+            $this->addModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
 
             $insert = $this->insert()
                 ->into('application_module')
@@ -861,7 +822,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *      string password required
      *      array module required
      * @param string $host
-     * @return boolean|string
+     * @return array|string
      */
     public function uploadModuleUpdates(array $formData, $host)
     {
@@ -942,6 +903,17 @@ class ApplicationModuleAdministration extends ApplicationBase
                 throw new ApplicationException('Cannot define the module\'s layout path into the config file');
             }
 
+            // check system requirements
+            $requirements = $this->getNotValidatedModuleSystemRequirements($updateModuleConfig);
+            if (count($requirements)) {
+                throw new ApplicationException('You have to install all system requirements before apply these module updates. Check the readme file');
+            }
+
+            // check the module depends
+            if (false === ($result = $this->checkModuleDepends($updateModuleConfig))) {
+                throw new ApplicationException('You have to install all dependent modules before apply these module updates. Check the readme file');
+            }
+
             // install updates
             if ($moduleInstalled) {
                 // clear caches
@@ -1012,9 +984,70 @@ class ApplicationModuleAdministration extends ApplicationBase
         // fire the upload module updates event
         if (true === $uploadResult) {
             ApplicationEvent::fireUploadModuleUpdatesEvent($moduleName);
+            return $updateModuleConfig;
         }
 
+        // return an error description
         return $uploadResult;
+    }
+
+    /**
+     * Delete custom module
+     *
+     * @param string $moduleName
+     * @param array $formData
+     *      string login required
+     *      string password required
+     * @param string $host
+     * @param array $moduleInstallConfig
+     *      string version 
+     *      string vendor 
+     *      string vendor_email 
+     *      string description optional
+     *      array module_depends optional
+     *          string module
+     *          string vendor
+     *          string vendor_email
+     *      array clear_caches optional
+     *      array resources optional
+     *          string dir_name
+     *          boolean is_public optional
+     *      string install_sql optional
+     *      string uninstall_sql optional
+     *      array system_requirements optional
+     *          array php_extensions optional
+     *          array php_settings optional
+     *          array php_enabled_functions optional
+     *          array php_version optional
+     *      string install_sql optional
+     *      string install_intro optional
+     *      string uninstall_sql optional
+     *      string uninstall_intro optional
+     *      string layout_path optional
+     * @return boolean|string
+     */
+    public function deleteCustomModule($moduleName, array $formData, $host, array $moduleInstallConfig)
+    {
+        try {
+            $globalModulePath = ApplicationService::getModulePath(false) . '/' . $moduleName;
+
+            $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
+            $ftp->removeDirectory($globalModulePath);
+
+            if (!empty($moduleInstallConfig['layout_path'])) {
+                $globalModuleLayoutPath = basename(APPLICATION_PUBLIC) .
+                        '/' . ApplicationService::getBaseLayoutPath(false) . '/' . $moduleInstallConfig['layout_path'];
+
+                $ftp->removeDirectory($globalModuleLayoutPath);                
+            }
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+            return $e->getMessage();
+        }
+
+        ApplicationEvent::fireDeleteCustomModuleEvent($moduleName);
+        return true;
     }
 
     /**
@@ -1164,7 +1197,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if ($module['type'] == self::MODULE_TYPE_CUSTOM
                         && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                $this->addCustomModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+                $this->addModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
             }
         }
 
