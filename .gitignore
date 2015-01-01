@@ -26,7 +26,5 @@ public_html/resource/user/thumbnail/*
 !public_html/resource/user/.htaccess
 public_html/resource/filemanager/*
 !public_html/resource/filemanager/.htaccess
-public_html/resource/membership/*
-!public_html/resource/membership/.htaccess
 public_html/resource/example/
 public_html/resource/example2/
