@@ -357,8 +357,11 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->showFooterMenu(!$page['disable_footer_menu'])
             ->showUserMenu(!$page['disable_user_menu'])
             ->showVisibilitySettings(!$page['forced_visibility'])
-            ->showSeo(!$page['disable_seo'])
-            ->setPageSystemTitle($this->getTranslator()->translate($page['system_title']));
+            ->showSeo(!$page['disable_seo']);
+
+        if (!empty($page['system_title'])) {
+            $pageForm->setPageSystemTitle($this->getTranslator()->translate($page['system_title']));
+        }
 
         // fill the page parent info
         if ($parent) {
@@ -833,7 +836,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
-            ->getInstance('Page\Form\PageFilter');
+            ->getInstance('Page\Form\PageFilter')
+            ->setModel($this->getModel());
 
         $request = $this->getRequest();
         $filterForm->getForm()->setData($request->getQuery(), false);

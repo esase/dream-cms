@@ -79,8 +79,7 @@ class LayoutAsset extends AbstractHelper
                 $checkResourcePath = $baseResourcePath . $layout['name'] . '/' . $module . '/' . $type . '/' . $fileName;
 
                 if (file_exists($checkResourcePath)) {
-                    $resourcePath = $this->view->basePath() . '/' . $this->
-                            layoutDir . '/' . $layout['name'] . '/' . $module . '/' . $type . '/' . $fileName;
+                    $resourcePath = $this->layoutDir . '/' . $layout['name'] . '/' . $module . '/' . $type . '/' . $fileName;
 
                     // save data in dynamicCacheInstance
                     $this->dynamicCacheInstance->setItem($dynamicCacheInstanceName, $resourcePath);

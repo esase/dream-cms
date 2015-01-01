@@ -44,7 +44,7 @@ class PageWidgetFilter extends ApplicationAbstractCustomForm
     protected $formElements = [
         'modules' => [
             'name' => 'modules',
-            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_CHECKBOX,
+            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_SELECT,
             'label' => 'Module',
             'values' => []
         ],

@@ -4,6 +4,7 @@ namespace Page\Model;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
+use Application\Utility\ApplicationSlug as SlugUtility;
 use Page\Model\PageNestedSet;
 use Page\Event\PageEvent;
 use Zend\Db\ResultSet\ResultSet;
@@ -11,6 +12,7 @@ use Zend\Db\Sql\Predicate;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
+use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Exception;
 
 class PageAdministration extends PageBase
@@ -268,8 +270,7 @@ class PageAdministration extends PageBase
                 $update = $this->update()
                     ->table('page_structure')
                     ->set([
-                        'slug' => $this->generateSlug($page['id'], $formData['title'],
-                                'page_structure', 'id', self::PAGE_SLUG_LENGTH, ['language' => $this->getCurrentLanguage()])
+                        'slug' => $this->generatePageSlug($page['id'], $formData['title'])
                     ])
                     ->where([
                         'id' => $page['id']
@@ -384,14 +385,69 @@ class PageAdministration extends PageBase
      */
     public function changePublicWidgetPosition(array $oldConnectionInfo, $newOrder, $newPositionId)
     {
-        if ($newOrder == $oldConnectionInfo['order']
-                && $newPositionId == $oldConnectionInfo['position_id']) {
-
-            return true;
-        }
-
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            // get list of all active widgets
+            $select = $this->select();
+            $select->from(['a' => 'page_widget_connection'])
+                ->columns([
+                    'order'
+                ])
+                ->join(
+                    ['b' => 'page_widget'],
+                    'a.widget_id = b.id',
+                    []
+                )
+                ->join(
+                    ['c' => 'application_module'],
+                    new Expression('b.module = c.id and c.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                    []
+                )
+                ->join(
+                    ['d' => 'page_structure'],
+                    new Expression('d.system_page = b.depend_page_id and d.language = ? and d.active = ?', [
+                        $this->getCurrentLanguage(),
+                        PageNestedSet::PAGE_STATUS_ACTIVE
+                    ]),
+                    [],
+                    'left'
+                )
+                ->order('a.order')
+                ->where([
+                    'a.page_id' => $oldConnectionInfo['page_id'],
+                    'a.position_id' => $newPositionId
+                ])
+                ->where->nest
+                    ->isNull('b.depend_page_id')
+                    ->or
+                    ->isNotNull('b.depend_page_id')
+                    ->and
+                    ->isNotNull('d.system_page')
+                ->unnest;
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+
+            $index = 1;
+            $activeWidgets = [];
+            foreach ($result as $activeWidget) {
+                $activeWidgets[$index] = $activeWidget['order'];
+                $index++;
+            }
+
+            // change widget order value
+            if ($activeWidgets) {
+                $newOrder = isset($activeWidgets[$newOrder])
+                    ? $activeWidgets[$newOrder]
+                    : $activeWidgets[count($activeWidgets)] + 1;
+            }
+
+            if ($newOrder == $oldConnectionInfo['order']
+                    && $newPositionId == $oldConnectionInfo['position_id']) {
+
+                return true;
+            }
 
             $this->updateStructurePageEditedDate($oldConnectionInfo['page_id']);
 
@@ -658,8 +714,7 @@ class PageAdministration extends PageBase
                 $update = $this->update()
                     ->table('page_structure')
                     ->set([
-                        'slug' => $this->generateSlug($pageId, $page['title'],
-                                'page_structure', 'id', self::PAGE_SLUG_LENGTH, ['language' => $this->getCurrentLanguage()])
+                        'slug' => $this->generatePageSlug($pageId, $page['title'])
                     ])
                     ->where([
                         'id' => $pageId
@@ -799,6 +854,11 @@ class PageAdministration extends PageBase
                 new Expression('a.slug = d.slug and d.language = ?', [$this->getCurrentLanguage()]),
                 [],
                 'left'
+            )
+            ->join(
+                ['i' => 'application_module'],
+                new Expression('i.id = a.module and i.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
             )
             ->where->in('a.id', $pagesIds)
             ->where->isNull('d.id');
@@ -1367,13 +1427,15 @@ class PageAdministration extends PageBase
      * @param string $orderBy
      * @param string $orderType
      * @param array $filters
-     *  array modules
+     *      array modules
+     *      string slug
      * @return object
      */
     public function getSystemPages($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
         $orderFields = [
-            'id'
+            'id',
+            'slug'
         ];
 
         $orderType = !$orderType || $orderType == 'asc'
@@ -1388,18 +1450,22 @@ class PageAdministration extends PageBase
         $select->from(['a' => 'page_system'])
             ->columns([
                 'id',
-                'title'
+                'title',
+                'slug'
             ])
             ->join(
                 ['b' => 'application_module'],
-                'b.id = a.module',
+                new Expression('b.id = a.module and b.status = ?', [self::MODULE_STATUS_ACTIVE]),
                 [
                     'module_name' => 'name'
                 ]
             )
             ->join(
                 ['c' => 'page_structure'],
-                new Expression('a.slug = c.slug and c.language = ?', [$this->getCurrentLanguage()]),
+                new Expression('a.slug = c.slug and c.language = ? and c.type = ?', [
+                    $this->getCurrentLanguage(),
+                    PageNestedSet::PAGE_TYPE_SYSTEM
+                ]),
                 [],
                 'left'
             )
@@ -1411,6 +1477,14 @@ class PageAdministration extends PageBase
                 ],
                 'left'
             )
+            ->join(
+                ['i' => 'page_structure'],
+                new Expression('a.slug = i.slug and i.language = ?', [$this->getCurrentLanguage()]),
+                [
+                    'structure_slug' => 'slug'
+                ],
+                'left'
+            )
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
             ->where->isNull('c.id');
@@ -1418,6 +1492,13 @@ class PageAdministration extends PageBase
         // filter by modules
         if (!empty($filters['modules']) && is_array($filters['modules'])) {
             $select->where->in('a.module', $filters['modules']);
+        }
+
+        // filter by slug
+        if (!empty($filters['slug'])) {
+            $select->where([
+                'a.slug' => $filters['slug']
+            ]);
         }
 
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
@@ -1531,11 +1612,25 @@ class PageAdministration extends PageBase
                 [],
                 'left'
             )
+            ->join(
+                ['d' => 'application_module'],
+                new Expression('d.id = a.module and d.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
+            )
+            ->join(
+                ['i' => 'page_structure'],
+                new Expression('i.system_page = a.depend_page_id and i.language = ? and i.active = ?', [
+                    $this->getCurrentLanguage(),
+                    PageNestedSet::PAGE_STATUS_ACTIVE
+                ]),
+                [],
+                'left'
+            )
             ->group('a.id')
             ->order('a.id')
             ->where([
                 'a.type' => self::WIDGET_TYPE_PUBLIC
-            ])
+            ])            
             ->where
             ->nest
                 ->isNull('c.id')
@@ -1543,17 +1638,24 @@ class PageAdministration extends PageBase
                 ->isNotNull('c.id')
                 ->and
                 ->equalTo('a.duplicate', self::WIDGET_DUPLICATE)
+            ->unnest
+            ->nest
+                ->isNull('a.depend_page_id')
+                ->or
+                ->isNotNull('a.depend_page_id')
+                ->and
+                ->isNotNull('i.system_page')
             ->unnest;
 
         if ($systemPageId) {
             // don't show hidden widgets
             $select->join(
-                ['d' => 'page_system_widget_hidden'],
-                new Expression('d.page_id = ? and a.id = d.widget_id', [$systemPageId]),
+                ['f' => 'page_system_widget_hidden'],
+                new Expression('f.page_id = ? and a.id = f.widget_id', [$systemPageId]),
                 [],
                 'left'
             );
-            $select->where->isNull('d.id');
+            $select->where->isNull('f.id');
 
             $select->where([ // we need only specific widgets for the page or not specified         
                 new Predicate\PredicateSet([
@@ -1590,7 +1692,9 @@ class PageAdministration extends PageBase
      * @param string $orderBy
      * @param string $orderType
      * @param array $filters
+     *      array modules
      *      string status
+     *      string slug
      * @return object Paginator
      */
     public function getStructurePages($parentId = null, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
@@ -1598,7 +1702,7 @@ class PageAdministration extends PageBase
         $orderFields = [
             'id',
             'position',
-            'active',
+            'slug',
             'widgets'
         ];
 
@@ -1630,7 +1734,7 @@ class PageAdministration extends PageBase
                 'position' => 'left_key',
                 'type',
                 'title',
-                'active',
+                'slug',
                 'left_key',
                 'right_key',
                 'system_page',
@@ -1653,10 +1757,31 @@ class PageAdministration extends PageBase
             ->join(
                 ['d' => 'page_widget'],
                 new Expression('c.widget_id = d.id and d.type = ?', [self::WIDGET_TYPE_PUBLIC]),
+                [],
+                'left'
+            )
+            ->join(
+                ['dd' => 'page_structure'],
+                new Expression('dd.system_page = d.depend_page_id and dd.language = ? and dd.active = ?', [
+                    $this->getCurrentLanguage(),
+                    PageNestedSet::PAGE_STATUS_ACTIVE
+                ]),
+                [],
+                'left'
+            )
+            ->join(
+                ['i' => 'application_module'],
+                new Expression('i.id = d.module and i.status = ? and (d.depend_page_id is null
+                        or d.depend_page_id is not null and dd.system_page is not null)', [self::MODULE_STATUS_ACTIVE]),
                 [
-                    'widgets' => new Expression('count(d.id)') 
+                    'widgets' => new Expression('count(i.id)') 
                 ],
                 'left'
+            )
+            ->join(
+                ['f' => 'application_module'],
+                new Expression('f.id = a.module and f.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
             )
             ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
@@ -1667,6 +1792,11 @@ class PageAdministration extends PageBase
         null === $parentId
             ? $select->where->isNull('a.parent_id')
             : $select->where(['a.parent_id' => $parentId]);
+
+        // filter by modules
+        if (!empty($filters['modules']) && is_array($filters['modules'])) {
+            $select->where->in('f.id', $filters['modules']);
+        }
 
         // filter by status
         if (!empty($filters['status'])) {
@@ -1681,11 +1811,80 @@ class PageAdministration extends PageBase
             }
         }
 
+        // filter by slug
+        if (!empty($filters['slug'])) {
+            $select->where([
+                'a.slug' => $filters['slug']
+            ]);
+        }
+
         $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
         $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         return $paginator;
+    }
+
+    /**
+     * Generate page slug
+     *
+     * @param integer $pageId
+     * @param string $title
+     * @param string $spaceDevider
+     * @return string
+     */
+    public function generatePageSlug($pageId, $title, $spaceDevider = '-')
+    {
+        // generate a slug
+        $newSlug  = $slug = SlugUtility::slugify($title, self::PAGE_SLUG_LENGTH, $spaceDevider);
+        $slagSalt = null;
+
+        while (true) {
+            // check the slug existent in structure pages 
+            $select = $this->select();
+            $select->from('page_structure')
+                ->columns([
+                    'slug'
+                ])
+                ->where([
+                    'slug' => $newSlug,
+                    'language' => $this->getCurrentLanguage()
+                ]);
+
+            $select->where([
+                new NotInPredicate('id', [$pageId])
+            ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $structurePagesResultSet = new ResultSet;
+            $structurePagesResultSet->initialize($statement->execute());
+
+            // check the slug existent in system pages
+            $select = $this->select();
+            $select->from('page_system')
+                ->columns([
+                    'slug'
+                ])
+                ->where([
+                    'slug' => $newSlug
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($select);
+            $systemPagesResultSet = new ResultSet;
+            $systemPagesResultSet->initialize($statement->execute());
+
+            // generated slug not found
+            if (!$structurePagesResultSet->current() && !$systemPagesResultSet->current()) {
+                break;
+            }
+
+            $newSlug = $pageId . $spaceDevider . $slug . $slagSalt;
+
+            // add an extra slug
+            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugSaltLength); // add a salt
+        }
+
+        return $newSlug;
     }
 }

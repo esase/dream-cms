@@ -1,6 +1,8 @@
 <?php
 namespace Application\Model;
 
+use Application\Service\Application as ApplicationService;
+use Application\Exception\ApplicationException;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\Db\Sql\Sql;
@@ -10,6 +12,8 @@ use Application\Utility\ApplicationSlug as SlugUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Db\Adapter\Adapter as DbAdapter;
+use ZipArchive;
 
 abstract class ApplicationAbstractBase extends Sql
 {
@@ -37,6 +41,16 @@ abstract class ApplicationAbstractBase extends Sql
     const CACHE_MODULE_BY_NAME = 'Application_Module_By_Name_';
 
     /**
+     * Active modules
+     */
+    const CACHE_MODULES_ACTIVE = 'Application_Modules_Active';
+
+    /**
+     * Modules data cache tag
+     */
+    const CACHE_MODULES_DATA_TAG = 'Application_Modules_Data_Tag';
+
+    /**
      * Module active status flag
      */
     const MODULE_STATUS_ACTIVE = 'active';
@@ -45,6 +59,16 @@ abstract class ApplicationAbstractBase extends Sql
      * Module not active status flag
      */
     const MODULE_STATUS_NOT_ACTIVE = 'not_active';
+
+    /**
+     * Module type system
+     */
+    const MODULE_TYPE_SYSTEM = 'system';
+
+    /**
+     * MOdule type custom
+     */
+    const MODULE_TYPE_CUSTOM = 'custom';
 
     /**
      * Class constructor
@@ -137,17 +161,19 @@ abstract class ApplicationAbstractBase extends Sql
                     'vendor',
                     'vendor_email',
                     'description',
-                    'dependences'
+                    'layout_path'
                 ])
                 ->where(['name' => $moduleName]);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
             $resultSet->initialize($statement->execute());
-            $module = $resultSet->current();
 
-            // save data in cache
-            $this->staticCacheInstance->setItem($cacheName, $module);
+            if (null != ($module = $resultSet->current())) {
+                // save data in cache
+                $this->staticCacheInstance->setItem($cacheName, $module);
+                $this->staticCacheInstance->setTags($cacheName, [self::CACHE_MODULES_DATA_TAG]);
+            }
         }
 
         return $module;
@@ -160,25 +186,33 @@ abstract class ApplicationAbstractBase extends Sql
      */
     public function getActiveModulesList()
     {
-        $modulesList = [];
+        // generate cache name
+        $cacheName = CacheUtility::getCacheName(self::CACHE_MODULES_ACTIVE);
 
-        $select = $this->select();
-        $select->from('application_module')
-            ->columns([
-                'id',
-                'name'
+        // check data in cache
+        if (null === ($modulesList = $this->staticCacheInstance->getItem($cacheName))) {
+            $select = $this->select();
+            $select->from('application_module')
+                ->columns([
+                    'id',
+                    'name'
+                ])
+            ->where([
+                'status' => self::MODULE_STATUS_ACTIVE
             ])
-        ->where([
-            'status' => self::MODULE_STATUS_ACTIVE
-        ])
-        ->order('id');
+            ->order('id');
+    
+            $statement = $this->prepareStatementForSqlObject($select);
+            $resultSet = new ResultSet;
+            $resultSet->initialize($statement->execute());
+    
+            foreach ($resultSet as $module) {
+                $modulesList[$module->id] = $module->name;
+            }
 
-        $statement = $this->prepareStatementForSqlObject($select);
-        $resultSet = new ResultSet;
-        $resultSet->initialize($statement->execute());
-
-        foreach ($resultSet as $module) {
-            $modulesList[$module->id] = $module->name;
+            // save data in cache
+            $this->staticCacheInstance->setItem($cacheName, $modulesList);
+            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_MODULES_DATA_TAG]);
         }
 
         return $modulesList;
@@ -204,5 +238,98 @@ abstract class ApplicationAbstractBase extends Sql
     public function getAdapter()
     {
         return $this->adapter;
+    }
+
+    /**
+     * Generate tmp dir
+     *
+     * @return string
+     */
+    protected function generateTmpDir()
+    {
+        return ApplicationService::getTmpPath()
+                . '/' . time() . '_' . $this->generateRandString();
+    }
+
+    /**
+     * Unzip files
+     *
+     * @param string $file
+     * @param string $path
+     * @throws ApplicationException
+     * @return void
+     */
+    public function unzipFiles($file, $path)
+    {
+        // unzip a custom module into the tmp dir
+        $zip = new ZipArchive;
+
+        if (true !== ($result = $zip->open($file))) {
+            $zip->close();
+            throw new ApplicationException('Cannot open archived files');
+        }
+
+        if (true !== ($result = $zip->extractTo($path))) {
+            $zip->close();
+            throw new ApplicationException('Cannot extract archived files');
+        }
+
+        $zip->close();
+    }
+
+    /**
+     * Execute sql file
+     *
+     * @param string $filePath
+     * @param array $replace
+     *      string from
+     *      string to
+     * @throws ApplicationException
+     * @return void
+     */
+    protected function executeSqlFile($filePath, array $replace = [])
+    {
+        if(!file_exists($filePath) || !($handler = fopen($filePath, 'r'))) {
+            throw new ApplicationException('Sql file not found or permission denied');
+        }
+
+        $query = null;
+        $delimiter = ';';
+        $result = [];
+
+        // collect all queries
+        while(!feof($handler)) {
+            $str = trim(fgets($handler));
+
+            if(empty($str) || $str[0] == '' || $str[0] == '#' || ($str[0] == '-' && $str[1] == '-'))
+                continue;
+
+            // change delimiter
+            if(strpos($str, 'DELIMITER //') !== false || strpos($str, 'DELIMITER ;') !== false) {
+                $delimiter = trim(str_replace('DELIMITER', '', $str));
+                continue;
+            }
+
+            $query .= ' ' . $str;
+
+            // check for multiline query
+            if(substr($str, -strlen($delimiter)) != $delimiter) {
+                continue;
+            }
+
+            // execute query
+            if (!empty($replace['from']) && !empty($replace['to'])) {
+                $query = str_replace($replace['from'], $replace['to'], $query);
+            }
+
+            if($delimiter != ';') {
+                $query = str_replace($delimiter, '', $query);
+            }
+
+            $this->adapter->query(trim($query), DbAdapter::QUERY_MODE_EXECUTE);
+            $query = null;
+        }
+
+        fclose($handler);
     }
 }

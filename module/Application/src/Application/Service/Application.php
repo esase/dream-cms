@@ -4,13 +4,53 @@ namespace Application\Service;
 class Application
 {
     /**
-     * Get application url
+     * Get module path
      *
-     * @return array
+     * @return string
      */
-    public static function getApplicationUrl()
+    public static function getModulePath($full = true)
     {
-        return ApplicationServiceLocator::getServiceLocator()->get('Request')->getBaseUrl();
+        $basePath = ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['module'];
+
+        return $full
+            ? APPLICATION_ROOT .  '/' . $basePath
+            : $basePath;
+    }
+
+    /**
+     * Get base layout path
+     *
+     * @return string
+     */
+    public static function getBaseLayoutPath($full = true)
+    {
+        $basePath = ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['layout_base'];
+
+        return $full
+            ? APPLICATION_PUBLIC . '/' . $basePath
+            : $basePath;
+    }
+
+    /**
+     * Get custom module config
+     *
+     * @return string
+     */
+    public static function getCustomModuleConfig()
+    {
+        return APPLICATION_ROOT . '/' .
+                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['custom_module_config'];
+    }
+
+    /**
+     * Get tmp path
+     *
+     * @return string
+     */
+    public static function getTmpPath()
+    {
+        return APPLICATION_ROOT .
+                '/' . ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['tmp'];
     }
 
     /**
@@ -42,7 +82,6 @@ class Application
      */
     public static function getResourcesUrl()
     {
-        return self::getApplicationUrl() . '/' .
-                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['resource'] . '/';
+        return ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['resource'] . '/';
     }
 }

@@ -11,6 +11,13 @@ interface IPageWidget
     public function getContent();
 
     /**
+     * Is widget redirected
+     *
+     * @return boolean
+     */
+    public function isWidgetRedirected();
+
+    /**
      * Set current page id
      *
      * @param integer $pageId

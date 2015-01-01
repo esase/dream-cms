@@ -105,11 +105,12 @@ class PageBase extends ApplicationAbstractBase
      * Get all page structure children
      *
      * @param integer $pageId
+     * @param boolean $active
      * @return array|boolean
      */
-    public function getAllPageStructureChildren($pageId)
+    public function getAllPageStructureChildren($pageId, $active = false)
     {
-        return $this->getPageModel()->getAllPageChildren($pageId);
+        return $this->getPageModel()->getAllPageChildren($pageId, $active);
     }
 
     /**
@@ -203,6 +204,15 @@ class PageBase extends ApplicationAbstractBase
                     ]
                 )
                 ->join(
+                    ['cc' => 'page_structure'],
+                    new Expression('cc.system_page = c.depend_page_id and cc.language = ? and cc.active = ?', [
+                        $this->getCurrentLanguage(),
+                        PageNestedSet::PAGE_STATUS_ACTIVE
+                    ]),
+                    [],
+                    'left'
+                )
+                ->join(
                     ['d' => 'application_module'],
                     new Expression('c.module = d.id and d.status = ?', [self::MODULE_STATUS_ACTIVE]),
                     []
@@ -230,7 +240,14 @@ class PageBase extends ApplicationAbstractBase
                 ->order('a.order')
                 ->where->IsNull('a.page_id')
                     ->or->where->IsNotNull('a.page_id')
-                    ->and->where->IsNotNull('b.id');
+                    ->and->where->IsNotNull('b.id')
+                ->nest
+                    ->isNull('c.depend_page_id')
+                    ->or
+                    ->isNotNull('c.depend_page_id')
+                    ->and
+                    ->isNotNull('cc.system_page')
+                ->unnest;
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -347,11 +364,18 @@ class PageBase extends ApplicationAbstractBase
     {
         // check the slug in the list of system pages
         $select = $this->select();
-        $select->from('page_system')
+        $select->from(['a' => 'page_system'])
             ->columns([
                 'id'
             ])
-            ->where(['slug' => $slug]);
+            ->join(
+                ['b' => 'application_module'],
+                new Expression('a.module = b.id and b.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
+            )
+            ->where([
+                'slug' => $slug 
+            ]);
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
@@ -523,6 +547,11 @@ class PageBase extends ApplicationAbstractBase
                 ],
                 'left'
             )
+            ->join(
+                ['g' => 'application_module'],
+                new Expression('g.id = a.module and g.status = ?', [self::MODULE_STATUS_ACTIVE]),
+                []
+            )
             ->limit(1)
             ->order('a.parent_id desc');
 
@@ -581,8 +610,6 @@ class PageBase extends ApplicationAbstractBase
      */
     public function getUserMenu($language)
     {
-        // TODO: CLEAR THE 'CACHE_USER_MENU' AFTER ANY CHANGES IN PAGES STRUCTURE FOR A SELECTED LANGUAGE
-
         $cacheName = CacheUtility::getCacheName(self::CACHE_USER_MENU . $language);
 
         // check data in a cache
@@ -631,8 +658,6 @@ class PageBase extends ApplicationAbstractBase
      */
     public function getFooterMenu($language)
     {
-        // TODO: CLEAR THE 'CACHE_FOOTER_MENU' AFTER ANY CHANGES IN PAGES STRUCTURE FOR A SELECTED LANGUAGE
-
         $cacheName = CacheUtility::getCacheName(self::CACHE_FOOTER_MENU . $language);
 
         // check data in a cache
@@ -681,8 +706,6 @@ class PageBase extends ApplicationAbstractBase
      */
     public function getPagesTree($language)
     {
-        // TODO: CLEAR THE 'CACHE_PAGES_TREE' AFTER ANY CHANGES IN PAGES STRUCTURE FOR A SELECTED LANGUAGE
-
         if (isset(self::$pagesTree[$language])) {
             return self::$pagesTree[$language];
         }
@@ -695,6 +718,10 @@ class PageBase extends ApplicationAbstractBase
 
             // process pages map
             foreach ($this->getPagesMap($language) as $pageName => $pageOptions) {
+                if ($pageOptions['module_status'] != self::MODULE_STATUS_ACTIVE) {
+                    continue;
+                }
+
                 $this->processPagesTree($pagesTree, $pageName, $pageOptions);
             }
 
@@ -758,8 +785,6 @@ class PageBase extends ApplicationAbstractBase
      */
     public function getAllPagesMap()
     {
-        // TODO: CLEAR THE 'CACHE_PAGES_MAP' AFTER ANY CHANGES IN PAGES STRUCTURE FOR ALL LANGUAGES
-
         if (null !== self::$pagesMap) {
             return self::$pagesMap;
         }
@@ -821,6 +846,13 @@ class PageBase extends ApplicationAbstractBase
                     ],
                     'left'
                 )
+                ->join(
+                    ['c' => 'application_module'],
+                    'c.id = a.module',
+                    [
+                        'module_status' => 'status'
+                    ]
+                )
                 ->order('a.language, a.left_key');
 
             $statement = $this->prepareStatementForSqlObject($select);
@@ -845,6 +877,7 @@ class PageBase extends ApplicationAbstractBase
                     'slug' => $page->slug,
                     'system_title'  => $page->system_title,
                     'active' => $page->active,
+                    'module_status' => $page->module_status,
                     'level' => $page->level,
                     'privacy' => $page->privacy,
                     'pages_provider' => $page->pages_provider,

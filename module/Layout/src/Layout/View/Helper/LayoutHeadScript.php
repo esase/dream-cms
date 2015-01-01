@@ -109,7 +109,7 @@ class LayoutHeadScript extends BaseHeadScript
 
                         // add absolute path to file
                         if (empty($fileInfo['scheme'])) {
-                            $script->attributes['src'] = dirname(APPLICATION_ROOT) . $script->attributes['src'];
+                            $script->attributes['src'] = APPLICATION_PUBLIC . '/' . $script->attributes['src'];
                         }
 
                         $scriptsHash .= $script->attributes['src'];
@@ -149,8 +149,7 @@ class LayoutHeadScript extends BaseHeadScript
                 $itemInfo = new stdClass();
                 $itemInfo->type = $scriptType;
                 $itemInfo->attributes['conditional'] = $condition;
-                $itemInfo->attributes['src'] = $this->view->
-                        basePath() . '/' . LayoutService::getLayoutCacheDir('js') . '/' . $cacheFile;
+                $itemInfo->attributes['src'] = LayoutService::getLayoutCacheDir('js') . '/' . $cacheFile;
 
                 $items[] = $this->itemToString($itemInfo, $indent, $escapeStart, $escapeEnd);
             }

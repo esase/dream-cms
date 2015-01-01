@@ -1,0 +1,30 @@
+<?php $this->declareVars('systemRequirements') ?>
+<?php $this->systemRequirements = new ArrayObject ?>
+
+<?php foreach ($this->requirements as $name => $requirement): ?>
+    <?php
+        $this->systemRequirements[$name] = $this->partial('partial/table', [
+            'headers' => [
+                'Name',
+                'Current value',
+                'Desired value'
+            ],
+            'list' => $requirement,
+            'helpers' => [
+                'current' => 'translate',
+                'desired' => 'translate'
+            ]
+        ])
+    ?>
+<?php endforeach ?>
+
+<?php
+    echo $this->partial('partial/popup', [
+        'popup_id' => 'popup-module-system-requirements-window',
+        'title' => 'Module system requirements',
+        'body' => $this->partial('partial/accordion', [
+            'name' => 'system-requirements-accordion',
+            'items' => $this->systemRequirements
+        ])
+    ])
+?>

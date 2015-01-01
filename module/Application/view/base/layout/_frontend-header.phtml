@@ -1,12 +1,12 @@
 <?php $this->declareVars('localizationPages') ?>
 <?php $this->localizationPages = new ArrayObject ?>
-
 <?php echo $this->doctype() ?>
 <html dir="<?php echo $this->localization()->getCurrentLanguageDirection() ?>" lang="<?php echo $this->localization()->getCurrentLanguage() ?>">
     <head>
         <?php echo $this->pageInjectWidget('head') ?>
         <meta charset="utf-8">
         <?php echo $this->headTitle($this->applicationSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false)->setTranslatorEnabled(false) ?>
+        <base href="<?php echo $this->basePath() . '/' ?>" />
 
         <?php echo $this->headMeta()
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')

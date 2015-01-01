@@ -10,6 +10,12 @@ use Zend\View\Helper\AbstractHelper;
 class PageInjectWidget extends AbstractHelper
 {
     /**
+     * Redirect flag
+     * @var boolean
+     */
+    protected static $widgetRedirected = false;
+
+    /**
      * Widgets
      * @var array
      */
@@ -44,6 +50,11 @@ class PageInjectWidget extends AbstractHelper
      */
     protected function callWidget($position, $pageId, $userRole, array $widgetInfo, $useLayout = true)
     {
+        // don't call any widgets
+        if (true === self::$widgetRedirected) {
+            return $result;
+        }
+
         // check a widget visibility
         if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {
             if (!empty($widgetInfo['hidden']) && in_array($userRole, $widgetInfo['hidden'])) {
@@ -65,6 +76,8 @@ class PageInjectWidget extends AbstractHelper
             ->setWidgetConnectionId($widgetInfo['widget_connection_id']);
 
         if (false !== ($widgetContent = $widget->getContent())) {
+            self::$widgetRedirected = $widget->isWidgetRedirected();
+
             // add the widget's layout
             if (!empty($widgetInfo['widget_layout']) && $useLayout) {
                 $widgetContent = $this->getView()->partial($this->layoutPath . $widgetInfo['widget_layout'], [
@@ -89,7 +102,7 @@ class PageInjectWidget extends AbstractHelper
     {
         $result = null;
         $userRole = UserIdentityService::getCurrentUserIdentity()['role'];
-        
+
         // get only a specific widget info
         if ($widgetConnectionId) {
             // search the widget on the specific page

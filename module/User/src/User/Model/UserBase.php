@@ -14,7 +14,7 @@ use User\Event\UserEvent;
 use User\Service\Service as UserService;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Zend\Db\Sql\Predicate\isNull as IsNullPredicate;
+use Zend\Db\Sql\Predicate\IsNull as IsNullPredicate;
 use Exception;
 
 class UserBase extends ApplicationAbstractBase
@@ -406,7 +406,7 @@ class UserBase extends ApplicationAbstractBase
             }
 
             // clear caches
-            $this->removeUserCache($userId);
+            $this->removeUserCache($userInfo['user_id']);
             $this->clearActiveUsersCache();
 
             $this->adapter->getDriver()->getConnection()->commit();

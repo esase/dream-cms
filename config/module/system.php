@@ -1,6 +1,1 @@
-<?php
-
-    return [
-        'Install'
-    ];
-        
+<?php return ['Install'];

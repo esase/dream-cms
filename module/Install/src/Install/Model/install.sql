@@ -1,6 +1,7 @@
 SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE';
 
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `application_module_depend`;
 DROP TABLE IF EXISTS `acl_resource`;
 DROP TABLE IF EXISTS `acl_resource_action_track`;
 DROP TABLE IF EXISTS `acl_resource_connection`;
@@ -484,21 +485,34 @@ CREATE TABLE `application_module` (
     `vendor` VARCHAR(50) NOT NULL,
     `vendor_email` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255) DEFAULT NULL,
-    `dependences` VARCHAR(255) DEFAULT NULL,
+    `layout_path` VARCHAR(50) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `type` (`type`, `status`),
     UNIQUE `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `dependences`) VALUES
-(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL),
-(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', NULL, NULL);
+INSERT INTO `application_module` (`id`, `name`, `type`, `status`, `version`, `vendor`, `vendor_email`, `description`, `layout_path`) VALUES
+(1, 'Application', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Appliction module description', 'application'),
+(2, 'User', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'User module description', 'user'),
+(3, 'XmlRpc', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'XmlRpc module description', null),
+(4, 'FileManager', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'File manager module description', 'filemanager'),
+(5, 'Page', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Page module description', 'page'),
+(6, 'Layout', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Layout module description', 'layout'),
+(7, 'Localization', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Localization module description', 'localization'),
+(8, 'Acl', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com', 'Acl module description', 'acl');
+
+CREATE TABLE `application_module_depend` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `module_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `depend_module_id` SMALLINT(5) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`module_id`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_module_id`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE    
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `xmlrpc_class` (
     `namespace` VARCHAR(20) NOT NULL,
@@ -560,7 +574,7 @@ INSERT INTO `acl_role` (`id`, `name`, `type`) VALUES
 
 CREATE TABLE `acl_resource` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `resource` VARCHAR(50) NOT NULL,
+    `resource` VARCHAR(100) NOT NULL,
     `description` VARCHAR(150) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
@@ -621,7 +635,19 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (52, 'pages_administration_ajax_delete_widget', 'ACL - Deleting widgets on pages in admin area', 5),
 (53, 'pages_administration_ajax_view_dependent_widgets', 'ACL - Viewing dependent widgets in admin area', 5),
 (54, 'pages_administration_edit_widget_settings', 'ACL - Editing widgets settings in admin area', 5),
-(55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5);
+(55, 'pages_administration_settings', 'ACL - Editing pages settings in admin area', 5),
+(56, 'modules_administration_list_installed', 'ACL - Viewing installed modules in admin area', 1),
+(57, 'modules_administration_list_not_installed', 'ACL - Viewing not installed modules in admin area', 1),
+(58, 'modules_administration_upload', 'ACL - Uploading new modules in admin area', 1),
+(59, 'modules_administration_ajax_view_module_description', 'ACL - Viewing modules description in admin area', 1),
+(60, 'modules_administration_ajax_view_dependent_modules', 'ACL - Viewing dependent modules in admin area', 1),
+(61, 'modules_administration_ajax_view_module_system_requirements', 'ACL - Viewing modules system requirements in admin area', 1),
+(62, 'modules_administration_install', 'ACL - Installing modules in admin area', 1),
+(63, 'modules_administration_uninstall', 'ACL - Uninstalling modules in admin area', 1),
+(64, 'modules_administration_activate', 'ACL - Activating modules in admin area', 1),
+(65, 'modules_administration_deactivate', 'ACL - Deactivating modules in admin area', 1),
+(66, 'modules_administration_upload_updates', 'ACL - Uploading  updates of modules in admin area', 1),
+(67, 'modules_administration_delete', 'ACL - Deleting modules in admin area', 1);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -799,7 +825,7 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (21, 'application_max_per_page_range', 'Max per page range', NULL, 'integer', 1, 3, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Max per page range should be greater than 0'),
 (22, 'application_per_page_step', 'Per page step', NULL, 'integer', 1, 4, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Per page step should be greater than 0'),
 (23, 'application_page_range', 'Page range', NULL, 'integer', 1, 5, 6, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Page range should be greater than 0'),
-(24, 'application_dynamic_cache', 'Dynamic cache engine', 'It used for caching  template paths, language translations, etc', 'select', 1, 1, 2, 1, NULL, NULL, 'switch(''__value__'') {\r\n    case ''xcache'' :\r\n        return extension_loaded(''xcache'');\r\n    case ''wincache'' :\r\n        return extension_loaded(''wincache'');\r\n    case ''apc'' :\r\n        return (version_compare(''3.1.6'', phpversion(''apc'')) > 0) || !ini_get(''apc.enabled'') ? false : true;\r\n    default :\r\n        $v = (string) phpversion(''memcached'');\r\n        $extMemcachedMajorVersion = ($v !== '''') ? (int) $v[0] : 0;\r\n\r\n        return $extMemcachedMajorVersion < 1 ? false : true;\r\n}', 'Extension is not loaded'),
+(24, 'application_dynamic_cache', 'Dynamic cache engine', 'It used for caching  template paths, language translations, etc', 'select', NULL, 1, 2, 1, NULL, NULL, 'switch(''__value__'') {\r\n    case ''xcache'' :\r\n        return extension_loaded(''xcache'');\r\n    case ''wincache'' :\r\n        return extension_loaded(''wincache'');\r\n    case ''apc'' :\r\n        return (version_compare(''3.1.6'', phpversion(''apc'')) > 0) || !ini_get(''apc.enabled'') ? false : true;\r\n    default :\r\n        $v = (string) phpversion(''memcached'');\r\n        $extMemcachedMajorVersion = ($v !== '''') ? (int) $v[0] : 0;\r\n\r\n        return $extMemcachedMajorVersion < 1 ? false : true;\r\n}', 'Extension is not loaded'),
 (25, 'application_dynamic_cache_life_time', 'Dynamic cache life time', NULL, 'integer', 1, 2, 2, 1, NULL, NULL, NULL, NULL),
 (26, 'application_memcache_host', 'Memcache host', NULL, 'text', NULL, 3, 2, 1, NULL, NULL, NULL, NULL),
 (27, 'application_memcache_port', 'Memcache port', NULL, 'integer', NULL, 4, 2, 1, NULL, NULL, NULL, NULL),
@@ -1038,7 +1064,14 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (35, 'page_widget_add', 5, 'Event - Adding widgets'),
 (36, 'page_widget_change_position', 5, 'Event - Changing widgets positions'),
 (37, 'page_widget_delete', 5, 'Event - Deleting widgets'),
-(38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings');
+(38, 'page_widget_edit_settings', 5, 'Event - Editing widgets settings'),
+(39, 'application_install_custom_module', 1, 'Event - Installing custom modules'),
+(40, 'application_uninstall_custom_module', 1, 'Event - Uninstalling custom modules'),
+(41, 'application_activate_custom_module', 1, 'Event - Activating custom modules'),
+(42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules'),
+(43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules'),
+(44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates'),
+(45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1074,7 +1107,8 @@ INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) V
 (2, 'Access Control List', 8, 'acl_menu_item.png'),
 (3, 'Users', 2, 'user_group_menu_item.png'),
 (4, 'Files manager', 4, 'file_manager_menu_item.png'),
-(5, 'Pages management', 5, 'page_menu_item.png');
+(5, 'Pages management', 5, 'page_menu_item.png'),
+(6, 'Modules', 1, 'module_menu_item.png');
 
 CREATE TABLE `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1085,7 +1119,6 @@ CREATE TABLE `application_admin_menu` (
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED NOT NULL,
     `part` SMALLINT(5) UNSIGNED NOT NULL,
-    `icon` VARCHAR(100) NOT NULL DEFAULT '',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
@@ -1099,15 +1132,18 @@ CREATE TABLE `application_admin_menu` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
-(1, 'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
-(2, 'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
-(3, 'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
-(4, 'List of users', 'users-administration', 'list', 2, 4, 3, 1),
-(5, 'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
-(6, 'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
-(7, 'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
-(8, 'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
-(9, 'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2);
+(1,  'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
+(2,  'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
+(3,  'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
+(4,  'List of users', 'users-administration', 'list', 2, 4, 3, 1),
+(5,  'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
+(6,  'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
+(7,  'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
+(8,  'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
+(9,  'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2),
+(10, 'List of installed modules', 'modules-administration', 'list-installed', 1, 8, 6, 1),
+(11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1),
+(12, 'Upload updates', 'modules-administration', 'upload-updates', 1, 10, 6, 1);
 
 CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1197,36 +1233,6 @@ INSERT INTO `page_widget_position_connection` (`id`, `position_id`, `layout_id`)
 (29, 5, 11),
 (30, 7, 11);
 
-CREATE TABLE `page_widget` (
-    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL,
-    `module` SMALLINT(5) UNSIGNED NOT NULL,
-    `type` ENUM('system','public') NOT NULL,
-    `description` VARCHAR(100) NOT NULL,
-    `duplicate` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`) VALUES
-(1,  'pageHtmlWidget', 5, 'public', 'Html', 1, NULL),
-(2,  'userLoginWidget', 2, 'public', 'Login', NULL, 1),
-(3,  'userRegisterWidget', 2, 'public', 'Register', NULL, 1),
-(4,  'userActivateWidget', 2, 'public', 'User activate', NULL, 1),
-(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1),
-(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1),
-(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1),
-(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL),
-(9,  'userInfoWidget', 2, 'public', 'Account info', NULL, NULL),
-(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, NULL),
-(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1),
-(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1),
-(13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1),
-(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1);
-
 CREATE TABLE `page_system` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
@@ -1272,6 +1278,40 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`,
 (10, 'user', 'User profile', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, NULL, NULL, 1, NULL, 0, 1, NULL, NULL, 'User\\PageProvider\\UserPageProvider'),
 (11, 'user-edit', 'Edit account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, 1, NULL),
 (12, '404', '404 error', 5, NULL, NULL, 1, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL);
+
+CREATE TABLE `page_widget` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `type` ENUM('system','public') NOT NULL,
+    `description` VARCHAR(100) NOT NULL,
+    `duplicate` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `depend_page_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`depend_page_id`) REFERENCES `page_system`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
+(1,  'pageHtmlWidget', 5, 'public', 'Html', 1, NULL, NULL),
+(2,  'userLoginWidget', 2, 'public', 'Login', NULL, 1, NULL),
+(3,  'userRegisterWidget', 2, 'public', 'Register', NULL, 1, NULL),
+(4,  'userActivateWidget', 2, 'public', 'User activate', NULL, 1, NULL),
+(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1, NULL),
+(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1, NULL),
+(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1, NULL),
+(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL, NULL),
+(9,  'userInfoWidget', 2, 'public', 'Account info', NULL, NULL, NULL),
+(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, NULL, NULL),
+(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1, NULL),
+(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL),
+(13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL),
+(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

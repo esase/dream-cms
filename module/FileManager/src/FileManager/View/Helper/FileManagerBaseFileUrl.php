@@ -14,7 +14,6 @@ class FileManagerBaseFileUrl extends AbstractHelper
      */
     public function __invoke($currentPath = null)
     {
-        return $this->getView()->
-                serverUrl(FileManagerBaseModel::getUserBaseFilesUrl() . '/' . ($currentPath ? $currentPath . '/' : null));
+        return FileManagerBaseModel::getUserBaseFilesUrl() . '/' . ($currentPath ? $currentPath . '/' : null);
     }
 }

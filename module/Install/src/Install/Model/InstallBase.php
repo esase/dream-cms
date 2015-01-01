@@ -10,6 +10,21 @@ use Exception;
 class InstallBase
 {
     /**
+     * System modules
+     * @var array
+     */
+    protected $systemModules = [
+        'Application',
+        'Acl',
+        'User',
+        'Layout',
+        'Localization',
+        'Page',
+        'XmlRpc',
+        'FileManager'
+    ];
+
+    /**
      * Writable resources
      * @var array
      */
@@ -17,19 +32,18 @@ class InstallBase
         'data/cache/application',
         'data/cache/config',
         'data/session',
+        'data/tmp',
         'config/autoload',
         'config/module/custom.php',
         'config/module/system.php',
-        'public/resource',
-        'public/resource/filemanager',
-        'public/resource/user',
-        'public/resource/user/thumbnail',
-        'public/layout_cache/css',
-        'public/layout_cache/js',
-        'public/layout/base',
-        'public/layout',
-        'public/captcha',
-        'data/log',
+        '__public__/resource',
+        '__public__/resource/filemanager',
+        '__public__/resource/user',
+        '__public__/resource/user/thumbnail',
+        '__public__/layout_cache/css',
+        '__public__/layout_cache/js',
+        '__public__/captcha',
+        'data/log'
     ];
 
     /**
@@ -57,10 +71,10 @@ class InstallBase
     ];
 
     /**
-     * Disabled php functions
+     * Enabled php functions
      * @var array
      */
-    protected $phpDisabledFunctions = [
+    protected $phpEnabledFunctions = [
         'eval'
     ];
 
@@ -86,7 +100,7 @@ class InstallBase
         return [
             0 => [
                 'time'   => '*/5 * * * *',
-                'action' => APPLICATION_PUBLIC . '/index.php application send messages'
+                'action' => APPLICATION_PUBLIC . '/index.php application send messages &> /dev/null'
             ]
         ];
     }
@@ -160,21 +174,8 @@ class InstallBase
      */
     protected function generateSystemModulesConfig()
     {
-        $systemModules = "
-        <?php
-            return [
-                'Application',
-                'Acl',
-                'User',
-                'Layout',
-                'Localization',
-                'Page',
-                'XmlRpc',
-                'FileManager'
-            ];
-        ";
-
-        file_put_contents(APPLICATION_ROOT . '/config/module/system.php', $systemModules);
+        file_put_contents(APPLICATION_ROOT . '/config/module/system.php',
+                '<?php return ['. implode(',', array_map(function($value) {return "'" . $value . "'";}, $this->systemModules)) . '];');
     }
 
     /**
@@ -282,6 +283,8 @@ class InstallBase
      *
      * @param object $adapter
      * @param array $replace
+     *      string from
+     *      string to
      * @throws Exception
      * @return void
      */
@@ -372,11 +375,11 @@ class InstallBase
      */
     public function getPhpDisabledFunctions()
     {
-        asort($this->phpDisabledFunctions);
+        asort($this->phpEnabledFunctions);
         $disabledFunctions = [];
         $disabledList = explode(',', ini_get('disable_functions'));
 
-        foreach ($this->phpDisabledFunctions as $function) {
+        foreach ($this->phpEnabledFunctions as $function) {
             if (in_array($function, $disabledList)) {
                 $disabledFunctions[] = [
                     'function' => $function,
@@ -422,7 +425,10 @@ class InstallBase
         asort($this->writableResources);
         $resources = [];
 
+        $publicDir = basename(APPLICATION_PUBLIC);
         foreach ($this->writableResources as $path) {
+            $path = str_replace('__public__', $publicDir, $path);
+
             if (false === ($result = is_writable(APPLICATION_ROOT . '/' . $path))) {
                 $resources[] = [
                     'path' => $path,

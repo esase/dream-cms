@@ -1,6 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
+use Application\Model\ApplicationAbstractBase as ApplicationAbstractBaseModel;
 use Page\Model\PageNestedSet;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
 use User\Service\UserIdentity as UserIdentityService;
@@ -46,9 +47,10 @@ class PageUrl extends AbstractHelper
      * @param array $privacyOptions
      * @param string $language
      * @param boolean $trustedPrivacyData
+     * @param string $type
      * @return string|boolean
      */
-    public function __invoke($slug = null, array $privacyOptions = [], $language = null, $trustedPrivacyData = false)
+    public function __invoke($slug = null, array $privacyOptions = [], $language = null, $trustedPrivacyData = false, $type = null)
     {
         if (!$slug) {
             $slug = $this->homePage;
@@ -64,7 +66,7 @@ class PageUrl extends AbstractHelper
             return $this->definedUrls[$language][$slug];
         }
 
-        $pageUrl = $this->getPageUrl($slug, $privacyOptions, $language, $trustedPrivacyData);
+        $pageUrl = $this->getPageUrl($slug, $privacyOptions, $language, $trustedPrivacyData, $type);
 
         // compare the slug for the home page 
         if ($this->homePage == $slug && false !== $pageUrl) {
@@ -82,9 +84,10 @@ class PageUrl extends AbstractHelper
      * @param array $privacyOptions
      * @param string $language
      * @param boolean $trustedPrivacyData
+     * @param string $type
      * @return string|boolean
      */
-    protected function getPageUrl($slug, array $privacyOptions = [], $language, $trustedPrivacyData = false) 
+    protected function getPageUrl($slug, array $privacyOptions = [], $language, $trustedPrivacyData = false, $type = null) 
     {
         if (!isset($this->pagesMap[$language])
                 || !array_key_exists($slug, $this->pagesMap[$language])) {
@@ -96,8 +99,21 @@ class PageUrl extends AbstractHelper
         $page = $this->pagesMap[$language][$slug];
 
         // check the page's status
-        if ($page['active'] != PageNestedSet::PAGE_STATUS_ACTIVE) {
+        if ($page['active'] != PageNestedSet::PAGE_STATUS_ACTIVE
+                || $page['module_status'] != ApplicationAbstractBaseModel::MODULE_STATUS_ACTIVE) {
+
             return false;
+        }
+
+        switch ($type) {
+            case PageNestedSet::PAGE_TYPE_SYSTEM :
+            case PageNestedSet::PAGE_TYPE_CUSTOM :
+                if($page['type'] != $type) {
+                    return false;   
+                }
+                break;
+
+            default :
         }
 
         // check the page's privacy

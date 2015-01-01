@@ -213,12 +213,12 @@ class PageNestedSet extends ApplicationAbstractNestedSet
      * Get all page children
      *
      * @param integer $parentId
-     * @param string $language
+     * @param boolean $active
      * @return array|false
      */
-    public function getAllPageChildren($parentId)
+    public function getAllPageChildren($parentId, $active)
     {
-        return $this->getChildrenNodes($parentId, [], function (Select $select) {
+        return $this->getChildrenNodes($parentId, [], function (Select $select) use ($active) {
             $select->join(
                 ['b' => 'page_system'],
                 'b.id = ' . $this->tableGateway->table . '.system_page', 
@@ -228,6 +228,16 @@ class PageNestedSet extends ApplicationAbstractNestedSet
                 ],
                 'left'
             );
+
+            if ($active) {
+                $select->join(
+                    ['c' => 'application_module'],
+                    new Expression('c.id = ' . $this->tableGateway->table . '.module and c.status = ?', [
+                        ApplicationAbstractBase::MODULE_STATUS_ACTIVE
+                    ]),
+                    []
+                );
+            }
         });
     }
 

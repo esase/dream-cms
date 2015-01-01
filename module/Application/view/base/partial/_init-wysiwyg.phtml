@@ -15,14 +15,14 @@
     require(["<?php echo $this->layoutAsset('tinymce/jquery.tinymce.min.js') ?>"], function() {
         $('#<?php echo $this->form_name ?> .htmlarea').tinymce({
             directionality : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguageDirection()) ?>',
-            script_url : '<?php echo $this->escapeJs($this->layoutAsset('tinymce/tinymce.min.js')) ?>',
+            script_url : '<?php echo $this->escapeJs($this->basePath() . '/' . $this->layoutAsset('tinymce/tinymce.min.js')) ?>',
             language : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguage()) ?>',
             plugins: [<?php echo $this->plugins ?>],
             menubar : <?php echo $this->menuBar ?>,
             toolbar: "<?php echo $this->toolbar ?>",
-            convert_urls : false,
+            convert_urls : false
             <?php if ($this->aclCheckPermission('files_manager_embedded_list')): ?>
-                file_browser_callback: function(field_name, url, type, win) { 
+                , file_browser_callback: function(field_name, url, type, win) { 
                     tinymce.activeEditor.windowManager.open({
                         title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
                         url: '<?php echo $this->escapeJs($this->url('application/page', ['controller' => 'files-manager-embedded', 'action' => 'list'], ['force_canonical' => true])) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),

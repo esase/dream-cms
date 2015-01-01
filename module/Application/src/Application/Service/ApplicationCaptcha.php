@@ -33,7 +33,6 @@ class ApplicationCaptcha
      */
     public static function getCaptchaUrl()
     {
-        return Application::getApplicationUrl() . '/' .
-                ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['captcha'] . '/';
+        return ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['captcha'] . '/';
     }
 }

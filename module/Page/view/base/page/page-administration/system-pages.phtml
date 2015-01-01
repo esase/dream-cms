@@ -52,12 +52,17 @@
             'title' => $this->translate('Title')
         ],
         2 => [
+            'title' => $this->translate('Display name'),
+            'order_name' => 'slug'
+        ],
+        3 => [
             'title' => $this->translate('Module')
         ]
     ],
     'paginator' => $this->paginator,
     'skipped_fields' => [
-        'dependent_page'
+        'dependent_page',
+        'structure_slug'
     ],
     'helpers' => [
         'module_name' => 'translate',
@@ -90,7 +95,7 @@
                 'controller' => 'pages-administration',
                 'action' => 'ajax-view-dependent-pages',
                 'image' => $this->layoutAsset('icon/depend_action.png', 'image', 'page')
-            ],
+            ]
         ]
     ],
     'actions_options' => [
@@ -102,7 +107,12 @@
     ],
     'actions_extra_check' => [
         'multiple_actions' => [
+            'already_used' => [
+                'param' => 'structure_slug',
+                'condition' =>  'return "" == "__value__" ? true : false;'
+            ]
         ],
+        'multiple_actions_message' => $this->translate('A custom page already created with this page display name. Please remove or rename the custom page before you can add this page.'),
         'single_actions' => [
             'ajax-view-dependent-pages' => [
                 0 => [

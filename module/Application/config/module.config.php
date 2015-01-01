@@ -7,6 +7,7 @@ return [
             'settings-administration' => 'Application\Controller\ApplicationSettingAdministrationController',
             'error' => 'Application\Controller\ApplicationErrorController',
             'email-queue-console' => 'Application\Controller\ApplicationEmailQueueConsoleController',
+            'modules-administration' => 'Application\Controller\ApplicationModuleAdministrationController'
         ]
     ],
     'router' => [

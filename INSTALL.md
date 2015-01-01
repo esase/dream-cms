@@ -13,19 +13,18 @@
         1.  data/cache/application
         2.  data/cache/config
         3.  data/session
-        4.  config/module/custom.php
-        5.  public/resource
-        6.  public/layout_cache/css
-        7.  public/layout_cache/js
-        8.  public/layout/base
-        9.  public/layout
-        10. public/captcha
-        11. public/resource/user
-        12. public/resource/user/thumbnail
-        13. data/log
-        14. public/resource/filemanager
-        15. config/autoload
-        16. config/module/system.php
+        4.  data/log
+        5.  data/tmp
+        6.  public_html/resource
+        7.  public_html/layout_cache/css
+        8.  public_html/layout_cache/js
+        9.  public_html/captcha
+        10. public_html/resource/user
+        11. public_html/resource/user/thumbnail
+        12. public_html/resource/filemanager
+        13. config/autoload
+        14. config/module/system.php
+        15. config/module/custom.php
 
 ## APACHE SETTINGS
 
@@ -55,4 +54,4 @@
 
 ## CRON JOBS
 
-    1. */5 * * * * /replace/it/with/path/to/php/binary -q /replace/it/with/application/public/path/index.php application send messages
+    1. */5 * * * * /replace/it/with/path/to/php/binary -q /replace/it/with/application/public/path/index.php application send messages &> /dev/null

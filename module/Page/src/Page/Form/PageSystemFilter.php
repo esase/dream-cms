@@ -44,9 +44,14 @@ class PageSystemFilter extends ApplicationAbstractCustomForm
     protected $formElements = [
         'modules' => [
             'name' => 'modules',
-            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_CHECKBOX,
+            'type' => ApplicationCustomFormBuilder::FIELD_MULTI_SELECT,
             'label' => 'Module',
             'values' => []
+        ],
+        'slug' => [
+            'name' => 'slug',
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
+            'label' => 'Display name'
         ],
         'submit' => [
             'name' => 'submit',

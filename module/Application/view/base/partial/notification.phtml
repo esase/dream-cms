@@ -1,10 +1,26 @@
+<?php $this->declareVars('messageNamespace') ?>
 <?php foreach ($this->applicationFlashMessage() as $namespace => $messages) : ?>
+    <?php
+        switch ($namespace) {
+            case 'error' :
+                $this->messageNamespace = 'danger';
+                break;
+
+            case 'info' :
+            case 'success' :
+                $this->messageNamespace = $namespace;
+                break;
+
+            default :
+                $this->messageNamespace = null;
+        }
+    ?>
     <?php if (count($messages)) : ?>
         <?php foreach ($messages as $message) : ?>
-        <div class="alert alert-<?php echo ($namespace == 'error' ? 'danger' : $namespace) ?>">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <?php echo $this->escapeHtml($message); ?>
-        </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-<?php endforeach; ?>
+            <div class="alert <?php if ($this->messageNamespace): ?>alert-<?php echo $this->escapeHtmlAttr($this->messageNamespace) ?><?php endif ?>">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <?php echo $message ?>
+            </div>
+        <?php endforeach ?>
+    <?php endif ?>
+<?php endforeach ?>

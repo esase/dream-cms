@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-01 17:55+0600\n"
+"PO-Revision-Date: 2015-01-01 18:24+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,224 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid ""
+"You have to install all dependent modules before apply these module updates. "
+"Check the readme file"
+msgstr ""
+"Вы должны установить все зависимые модули, прежде чем применить обновления "
+"модуля. Проверьте файл README"
+
+msgid ""
+"You have to install all system requirements before apply these module "
+"updates. Check the readme file"
+msgstr ""
+"Вы должны установить все системные требования, прежде чем применить "
+"обновления модуля. Проверьте файл README"
+
+msgid "Module has been deleted"
+msgstr "Модуль был удален"
+
+msgid "Delete the module"
+msgstr "Удалить модуль"
+
+msgid ""
+"It is impossible to determine the module version, vendor or vendor email"
+msgstr "Нельзя определить версию модуля, поставщика или email поставщика"
+
+msgid "This module updates are not necessary or not defined"
+msgstr "Это обновление модуля не требуется или не определено"
+
+msgid "Module not found"
+msgstr "Модуль не найден"
+
+msgid "Updates of module have been uploaded"
+msgstr "Обновления модуля были загружены"
+
+msgid "Updates"
+msgstr "Обновления"
+
+msgid "Upload updates"
+msgstr "Загрузить обновления"
+
+msgid "Module has been uploaded"
+msgstr "Модуль был загружен"
+
+msgid "Cannot define the module's layout path into the config file"
+msgstr "Невозможно определить путь макета модуля в конфигурационном файле"
+
+msgid "Module already uploaded"
+msgstr "Модуль уже загружен"
+
+msgid "Cannot define the module's path into the config file"
+msgstr "Невозможно определить путь модуля в конфигурационном файле"
+
+msgid "Cannot define the module's config file"
+msgstr "Невозможно определить конфигурационный файл модуля"
+
+msgid "Cannot extract archived files"
+msgstr "Невозможно извлечь файлы из архива"
+
+msgid "Cannot open archived files"
+msgstr "Не удается открыть файлы из архива"
+
+msgid "Your FTP account does not allow use the system dirs"
+msgstr "Ваш FTP аккаунт не позволяет использовать системные каталоги"
+
+msgid "FTP server is not responding or you entered wrong login data"
+msgstr "FTP-сервер не отвечает, или вы ввели неправильный данные для входа"
+
+msgid "Upload"
+msgstr "Загрузить"
+
+msgid "Upload module description"
+msgstr "Пожалуйста, выберите файл в формате ZIP"
+
+msgid "FTP access"
+msgstr "FTP доступ"
+
+msgid "A new module"
+msgstr "Новый модуль"
+
+msgid "Selected modules have been deactivated"
+msgstr "Выбранные модули были дезактивированы"
+
+msgid "Selected modules have been activated"
+msgstr "Выбранные модули были активированы"
+
+msgid "Selected modules will be deactivated. Are you sure?"
+msgstr "Выбранные модули будут дезактивированы. Вы уверены?"
+
+msgid "Selected modules will be activated. Are you sure?"
+msgstr "Выбранные модули будут активированы. Вы уверены?"
+
+msgid "Deactivate selected"
+msgstr "Дезактивация выбранного"
+
+msgid "Activate selected"
+msgstr "Активация выбранного"
+
+msgid "Module uninstallation system pages warning"
+msgstr ""
+"Модуль '%s' содержит системные страницы в дереве страниц, которые должны "
+"быть удалены перед деинсталляцией"
+
+msgid "Selected modules have been uninstalled"
+msgstr "Выбранные модули были деинсталлированы"
+
+msgid ""
+"You cannot delete system modules. If you want delete, activate or deactivate "
+"custom module you have to delete all dependent modules"
+msgstr ""
+"Вы не можете удалять системные модули. Если вы хотите удалить, активировать "
+"или деактивировать пользовательский модуль, вы должны удалить все зависимости"
+
+msgid "Installed modules"
+msgstr "Установленные модули"
+
+msgid "Selected modules will be uninstalled. Are you sure?"
+msgstr "Выбранные модули будут деинсталлированы. Вы уверены?"
+
+msgid "Uninstall selected"
+msgstr "Деинсталляция выбранного"
+
+msgid "View installed modules dependents"
+msgstr "Просмотр зависящих модулей"
+
+msgid "Appliction module description"
+msgstr ""
+"Это один из модулей системы, который обеспечивает базовую функциональность"
+
+msgid "active"
+msgstr "Активен"
+
+msgid "not_active"
+msgstr "Не активен"
+
+msgid "Selected modules have been installed"
+msgstr "Выбранные модули были установлены"
+
+msgid "Selected modules will be installed. Are you sure?"
+msgstr "Выбранные модули будут установлены. Вы уверены?"
+
+msgid "View system requirements"
+msgstr "Просмотр системных требований"
+
+msgid "php_version"
+msgstr "Версия PHP"
+
+msgid "php_enabled_functions"
+msgstr "Отключеные функции PHP"
+
+msgid "php_settings"
+msgstr "Настройки PHP"
+
+msgid "php_extensions"
+msgstr "Расширения PHP"
+
+msgid "Enabled"
+msgstr "Включено"
+
+msgid "Disabled"
+msgstr "Отключено"
+
+msgid "Installed"
+msgstr "Установлено"
+
+msgid "Not installed"
+msgstr "Не установлено"
+
+msgid "Desired value"
+msgstr "Желаемое значение"
+
+msgid "Current value"
+msgstr "Текущее значение"
+
+msgid "Module system requirements"
+msgstr "Системные требования модуля"
+
+msgid "Install selected"
+msgstr "Установить выбранное"
+
+msgid ""
+"You have to install or activate all dependent modules or configure all "
+"module's system requirements before you can install this module"
+msgstr ""
+"Вы должны установить или активировать все зависимые модули или настроить все "
+"системные требования модуля, прежде чем вы сможете установить этот модуль"
+
+msgid "View dependent modules"
+msgstr "Просмотр зависимых модулей"
+
+msgid "Dependents"
+msgstr "Зависимости"
+
+msgid "View module description"
+msgstr "Посмотреть описание модуля"
+
+msgid "Module description"
+msgstr "Описание модуля"
+
+msgid "Version"
+msgstr "Версия"
+
+msgid "Vendor email"
+msgstr "Email поставщика"
+
+msgid "Vendor"
+msgstr "Поставщик"
+
+msgid "Not installed modules"
+msgstr "Не установленные модули"
+
+msgid "Upload a module"
+msgstr "Загрузить модуль"
+
+msgid "List of not installed modules"
+msgstr "Список не установленных модулей"
+
+msgid "List of installed modules"
+msgstr "Список установленных модулей"
 
 msgid "crammd5"
 msgstr "Crammd5"
@@ -417,10 +635,10 @@ msgid "Per page"
 msgstr "Результатов на странице"
 
 msgid "custom"
-msgstr "Пользовательский ресурс"
+msgstr "Пользовательский"
 
 msgid "system"
-msgstr "Системный ресурс"
+msgstr "Системный"
 
 msgid "Save"
 msgstr "Сохранить"
@@ -635,6 +853,69 @@ msgstr "Значение должно содержать только цифры
 msgid "The form submitted did not originate from the expected site"
 msgstr "Данные были присланы не с текущего сайта"
 
+msgid "Event - Deleting custom modules"
+msgstr "Удаление пользовательских модулей"
+
+msgid "Event - Custom module deleted by guest"
+msgstr "Гость удалил модуль \"%s\""
+
+msgid "Event - Custom module deleted by user"
+msgstr "\"%s\" удалил(а) модуль \"%s\""
+
+msgid "Event - Uploading modules updates"
+msgstr "Загрузка обновлений модулей"
+
+msgid "Event - module updated by guest"
+msgstr "Гость загрузил обновления для модуля \"%s\""
+
+msgid "Event - module updated by user"
+msgstr "\"%s\" загрузил(а) обновления для модуля \"%s\""
+
+msgid "Event - Uploading custom modules"
+msgstr "Загрузка пользовательских модулей"
+
+msgid "Event - Custom module uploaded by guest"
+msgstr "Гость загрузил пользовательский модуль \"%s\""
+
+msgid "Event - Custom module uploaded by user"
+msgstr "\"%s\" загрузил(а) пользовательский модуль \"%s\""
+
+msgid "Event - Activating custom modules"
+msgstr "Активация пользовательских модулей"
+
+msgid "Event - Custom module activated by guest"
+msgstr "Гость активировал пользовательский модуль \"%s\""
+
+msgid "Event - Custom module activated by user"
+msgstr "\"%s\" активировал(а) пользовательский модуль \"%s\""
+
+msgid "Event - Deactivating custom modules"
+msgstr "Дезактивация пользовательских модулей"
+
+msgid "Event - Custom module deactivated by guest"
+msgstr "Гость дезактивировал пользовательский модуль \"%s\""
+
+msgid "Event - Custom module deactivated by user"
+msgstr "\"%s\" дезактивировал(а) пользовательский модуль \"%s\""
+
+msgid "Event - Uninstalling custom modules"
+msgstr "Деинсталляция пользовательских модулей"
+
+msgid "Event - Custom module uninstalled by guest"
+msgstr "Гость деинсталлировал пользовательский модуль \"%s\""
+
+msgid "Event - Custom module uninstalled by user"
+msgstr "\"%s\" деинсталлировал(а) пользовательский модуль \"%s\""
+
+msgid "Event - Installing custom modules"
+msgstr "Установка пользовательских модулей"
+
+msgid "Event - Custom module installed by guest"
+msgstr "Гость установил пользовательский модуль \"%s\""
+
+msgid "Event - Custom module installed by user"
+msgstr "\"%s\" установил(а) пользовательский модуль \"%s\""
+
 msgid "Event - Editing settings"
 msgstr "Изменение настроек"
 
@@ -669,3 +950,39 @@ msgstr "Очистка кэша сайта в админке"
 
 msgid "ACL - Using js in forms"
 msgstr "Использование JS в формах"
+
+msgid "ACL - Uploading new modules in admin area"
+msgstr "Загрузка новых модулей в админке"
+
+msgid "ACL - Viewing not installed modules in admin area"
+msgstr "Просмотр не установленных модулей в админке"
+
+msgid "ACL - Viewing installed modules in admin area"
+msgstr "Просмотр установленных модулей в админке"
+
+msgid "ACL - Viewing modules description in admin area"
+msgstr "Просмотр описания модулей в админке"
+
+msgid "ACL - Viewing dependent modules in admin area"
+msgstr "Просмотр зависимых модулей в админке"
+
+msgid "ACL - Viewing modules system requirements in admin area"
+msgstr "Просмотр системных требований модулей в админке"
+
+msgid "ACL - Installing modules in admin area"
+msgstr "Установка модулей в админке"
+
+msgid "ACL - Uninstalling modules in admin area"
+msgstr "Деинсталляция модулей в админке"
+
+msgid "ACL - Activating modules in admin area"
+msgstr "Активация модулей в админке"
+
+msgid "ACL - Deactivating modules in admin area"
+msgstr "Дезактивация модулей в админке"
+
+msgid "ACL - Uploading  updates of modules in admin area"
+msgstr "Загрузка обновлений модулей в админке"
+
+msgid "ACL - Deleting modules in admin area"
+msgstr "Удаление модулей в админке"

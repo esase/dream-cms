@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-01 17:55+0600\n"
+"PO-Revision-Date: 2015-01-01 18:24+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,224 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid ""
+"You have to install all dependent modules before apply these module updates. "
+"Check the readme file"
+msgstr ""
+"You have to install all dependent modules before apply these module updates. "
+"Check the readme file"
+
+msgid ""
+"You have to install all system requirements before apply these module "
+"updates. Check the readme file."
+msgstr ""
+"You have to install all system requirements before apply these module "
+"updates. Check the readme file."
+
+msgid "Module has been deleted"
+msgstr "Module has been deleted"
+
+msgid "Delete the module"
+msgstr "Delete the module"
+
+msgid ""
+"It is impossible to determine the module version, vendor or vendor email"
+msgstr ""
+"It is impossible to determine the module version, vendor or vendor email"
+
+msgid "This module updates are not necessary or not defined"
+msgstr "This module updates are not necessary or not defined"
+
+msgid "Module not found"
+msgstr "Module not found"
+
+msgid "Updates of module have been uploaded"
+msgstr "Updates of module have been uploaded"
+
+msgid "Updates"
+msgstr "Updates"
+
+msgid "Upload updates"
+msgstr "Upload updates"
+
+msgid "Module has been uploaded"
+msgstr "Module has been uploaded"
+
+msgid "Cannot define the module's layout path into the config file"
+msgstr "Cannot define the module's layout path into the config file"
+
+msgid "Module already uploaded"
+msgstr "Module already uploaded"
+
+msgid "Cannot define the module's path into the config file"
+msgstr "Cannot define the module's path into the config file"
+
+msgid "Cannot define the module's config file"
+msgstr "Cannot define the module's config file"
+
+msgid "Cannot extract archived files"
+msgstr "Cannot extract archived files"
+
+msgid "Cannot open archived files"
+msgstr "Cannot open archived files"
+
+msgid "Your FTP account does not allow use the system dirs"
+msgstr "Your FTP account does not allow use the system dirs"
+
+msgid "FTP server is not responding or you entered wrong login data"
+msgstr "FTP server is not responding or you entered wrong login data"
+
+msgid "Upload"
+msgstr "Upload"
+
+msgid "Upload module description"
+msgstr "Please choose a file in the ZIP format"
+
+msgid "FTP access"
+msgstr "FTP access"
+
+msgid "A new module"
+msgstr "A new module"
+
+msgid "Selected modules have been deactivated"
+msgstr "Selected modules have been deactivated"
+
+msgid "Selected modules have been activated"
+msgstr "Selected modules have been activated"
+
+msgid "Selected modules will be deactivated. Are you sure?"
+msgstr "Selected modules will be deactivated. Are you sure?"
+
+msgid "Selected modules will be activated. Are you sure?"
+msgstr "Selected modules will be activated. Are you sure?"
+
+msgid "Deactivate selected"
+msgstr "Deactivate selected"
+
+msgid "Activate selected"
+msgstr "Activate selected"
+
+msgid "Module uninstallation system pages warning"
+msgstr ""
+"Module '%s' contains system pages in the pages tree that should be removed "
+"before the uninstallation"
+
+msgid "Selected modules have been uninstalled"
+msgstr "Selected modules have been uninstalled"
+
+msgid ""
+"You cannot delete system modules. If you want delete, activate or deactivate "
+"custom module you have to delete all dependent modules"
+msgstr ""
+"You cannot delete system modules. If you want delete, activate or deactivate "
+"custom module you have to delete all dependent modules"
+
+msgid "Installed modules"
+msgstr "Installed modules"
+
+msgid "Selected modules will be uninstalled. Are you sure?"
+msgstr "Selected modules will be uninstalled. Are you sure?"
+
+msgid "Uninstall selected"
+msgstr "Uninstall selected"
+
+msgid "View installed modules dependents"
+msgstr "View dependents modules"
+
+msgid "Appliction module description"
+msgstr "It one of the system  modules that provides basic functionality"
+
+msgid "active"
+msgstr "Active"
+
+msgid "not_active"
+msgstr "Not active"
+
+msgid "Selected modules have been installed"
+msgstr "Selected modules have been installed"
+
+msgid "Selected modules will be installed. Are you sure?"
+msgstr "Selected modules will be installed. Are you sure?"
+
+msgid "View system requirements"
+msgstr "View system requirements"
+
+msgid "php_version"
+msgstr "PHP version"
+
+msgid "php_enabled_functions"
+msgstr "PHP disabled functions"
+
+msgid "php_settings"
+msgstr "PHP settings"
+
+msgid "php_extensions"
+msgstr "PHP extensions"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "Installed"
+msgstr "Installed"
+
+msgid "Not installed"
+msgstr "Not installed"
+
+msgid "Desired value"
+msgstr "Desired value"
+
+msgid "Current value"
+msgstr "Current value"
+
+msgid "Module system requirements"
+msgstr "Module system requirements"
+
+msgid "Install selected"
+msgstr "Install selected"
+
+msgid ""
+"You have to install or activate all dependent modules or configure all "
+"module's system requirements before you can install this module"
+msgstr ""
+"You have to install or activate all dependent modules or configure all "
+"module's system requirements before you can install this module"
+
+msgid "View dependent modules"
+msgstr "View dependent modules"
+
+msgid "Dependents"
+msgstr "Dependents"
+
+msgid "View module description"
+msgstr "View module description"
+
+msgid "Module description"
+msgstr "Module description"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Vendor email"
+msgstr "Vendor email"
+
+msgid "Vendor"
+msgstr "Vendor"
+
+msgid "Not installed modules"
+msgstr "Not installed modules"
+
+msgid "Upload a module"
+msgstr "Upload a module"
+
+msgid "List of not installed modules"
+msgstr "List of not installed modules"
+
+msgid "List of installed modules"
+msgstr "List of installed modules"
 
 msgid "crammd5"
 msgstr "Crammd5"
@@ -637,6 +855,69 @@ msgstr "The input must contain only digits"
 msgid "The form submitted did not originate from the expected site"
 msgstr "The form submitted did not originate from the expected site"
 
+msgid "Event - Deleting custom modules"
+msgstr "Deleting custom modules"
+
+msgid "Event - Custom module deleted by guest"
+msgstr "Guest deleted custom module \"%s\""
+
+msgid "Event - Custom module deleted by user"
+msgstr "\"%s\" deleted custom module \"%s\""
+
+msgid "Event - Uploading modules updates"
+msgstr "Uploading modules updates"
+
+msgid "Event - module updated by guest"
+msgstr "Guest uploaded updates for the module \"%s\""
+
+msgid "Event - module updated by user"
+msgstr "\"%s\" uploaded updates for the module \"%s\""
+
+msgid "Event - Uploading custom modules"
+msgstr "Uploading custom modules"
+
+msgid "Event - Custom module uploaded by guest"
+msgstr "Guest uploaded custom module \"%s\""
+
+msgid "Event - Custom module uploaded by user"
+msgstr "\"%s\" uploaded custom module \"%s\""
+
+msgid "Event - Activating custom modules"
+msgstr "Activating custom modules"
+
+msgid "Event - Custom module activated by guest"
+msgstr "Guest activated custom module \"%s\""
+
+msgid "Event - Custom module activated by user"
+msgstr "\"%s\" activated custom module \"%s\""
+
+msgid "Event - Deactivating custom modules"
+msgstr "Deactivating custom modules"
+
+msgid "Event - Custom module deactivated by guest"
+msgstr "Guest deactivated custom module \"%s\""
+
+msgid "Event - Custom module deactivated by user"
+msgstr "\"%s\" deactivated custom module \"%s\""
+
+msgid "Event - Uninstalling custom modules"
+msgstr "Uninstalling custom modules"
+
+msgid "Event - Custom module uninstalled by guest"
+msgstr "Guest uninstalled custom module \"%s\""
+
+msgid "Event - Custom module uninstalled by user"
+msgstr "\"%s\" uninstalled custom module \"%s\""
+
+msgid "Event - Installing custom modules"
+msgstr "Installing custom modules"
+
+msgid "Event - Custom module installed by guest"
+msgstr "Guest installed custom module \"%s\""
+
+msgid "Event - Custom module installed by user"
+msgstr "\"%s\" installed custom module \"%s\""
+
 msgid "Event - Editing settings"
 msgstr "Editing settings"
 
@@ -671,3 +952,39 @@ msgstr "Clearing site's cache in admin area"
 
 msgid "ACL - Using js in forms"
 msgstr "Using js in forms"
+
+msgid "ACL - Uploading new modules in admin area"
+msgstr "Uploading new modules in admin area"
+
+msgid "ACL - Viewing not installed modules in admin area"
+msgstr "Viewing not installed modules in admin area"
+
+msgid "ACL - Viewing installed modules in admin area"
+msgstr "Viewing installed modules in admin area"
+
+msgid "ACL - Viewing modules description in admin area"
+msgstr "Viewing modules description in admin area"
+
+msgid "ACL - Viewing dependent modules in admin area"
+msgstr "Viewing dependent modules in admin area"
+
+msgid "ACL - Viewing modules system requirements in admin area"
+msgstr "Viewing modules system requirements in admin area"
+
+msgid "ACL - Installing modules in admin area"
+msgstr "Installing modules in admin area"
+
+msgid "ACL - Uninstalling modules in admin area"
+msgstr "Uninstalling modules in admin area"
+
+msgid "ACL - Activating modules in admin area"
+msgstr "Activating modules in admin area"
+
+msgid "ACL - Deactivating modules in admin area"
+msgstr "Deactivating modules in admin area"
+
+msgid "ACL - Uploading  updates of modules in admin area"
+msgstr "Uploading  updates of modules in admin area"
+
+msgid "ACL - Deleting modules in admin area"
+msgstr "Deleting modules in admin area"
