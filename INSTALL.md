@@ -13,18 +13,18 @@
         1.  data/cache/application
         2.  data/cache/config
         3.  data/session
-        4.  config/module/custom.php
-        5.  public/resource
-        6.  public/layout_cache/css
-        7.  public/layout_cache/js
-        8.  public/captcha
-        9.  public/resource/user
-        10. public/resource/user/thumbnail
-        11. data/log
-        12. public/resource/filemanager
+        4.  data/log
+        5.  data/tmp
+        6.  public_html/resource
+        7.  public_html/layout_cache/css
+        8.  public_html/layout_cache/js
+        9.  public_html/captcha
+        10. public_html/resource/user
+        11. public_html/resource/user/thumbnail
+        12. public_html/resource/filemanager
         13. config/autoload
         14. config/module/system.php
-        15. data/tmp
+        15. config/module/custom.php
 
 ## APACHE SETTINGS
 
