@@ -4,6 +4,7 @@ namespace Application\Controller;
 use Application\Model\ApplicationAbstractBase as ApplicationAbstractBaseModel;
 use Application\Utility\ApplicationCache as ApplicationCacheUtility;
 use Zend\View\Model\ViewModel;
+use Zend\Session\Container;
 
 class ApplicationModuleAdministrationController extends ApplicationAbstractAdministrationController
 {
@@ -91,10 +92,10 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
         }
 
         $module = $this->params()->fromQuery('id', -1);
-        $moduleConfig = $this->getModel()->getCustomModuleConfig($module);
+        $moduleConfig = $this->getModel()->getCustomModuleInstallConfig($module);
 
         if (false === $moduleConfig || null == ($requirements =
-                $this->getModel()->getNotValidatedCustomModuleSystemRequirements($moduleConfig))) {
+                $this->getModel()->getNotValidatedModuleSystemRequirements($moduleConfig))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }
@@ -168,7 +169,7 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                             break;
                         }
 
-                        $moduleInstallConfig = $this->getModel()->getCustomModuleConfig($module);
+                        $moduleInstallConfig = $this->getModel()->getCustomModuleInstallConfig($module);
 
                         // uninstall the module
                         if (true !== ($uninstallResult =
@@ -224,16 +225,16 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                 $installResult = false;
                 foreach ($modulesIds as $module) {
                     // get the module's config
-                    $moduleInstallConfig = $this->getModel()->getCustomModuleConfig($module);
+                    $moduleInstallConfig = $this->getModel()->getCustomModuleInstallConfig($module);
 
                     if (false === $moduleInstallConfig) {
                         continue;
                     }
 
                     // check the module depends and system requirements
-                    $moduleDepends = $this->getModel()->checkCustomModuleDepends($moduleInstallConfig);
+                    $moduleDepends = $this->getModel()->checkModuleDepends($moduleInstallConfig);
                     $moduleRequirements = $this->getModel()->
-                            getNotValidatedCustomModuleSystemRequirements($moduleInstallConfig);
+                            getNotValidatedModuleSystemRequirements($moduleInstallConfig);
 
                     // skip all not validated modules
                     if (true !== $moduleDepends || count($moduleRequirements)) {
@@ -442,6 +443,28 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
      */
     public function uploadUpdatesAction()
     {
+        $sessionContainer = new Container('application\module\update');
+
+        // show updates intro text
+        if (!empty($sessionContainer->module) && !empty($sessionContainer->intro)) {
+            // load translations
+            $this->getModel()->addModuleTranslations($this->
+                    getModel()->getSystemModuleConfig($sessionContainer->module, false));
+
+            $this->flashMessenger()
+                ->setNamespace('success')
+                ->addMessage($this->getTranslator()->translate('Updates of module have been uploaded'));
+
+            $this->flashMessenger()
+                ->setNamespace('info')
+                ->addMessage($this->getTranslator()->translate($sessionContainer->intro));
+
+            unset($sessionContainer->module);
+            unset($sessionContainer->intro);
+
+            return $this->redirectTo('modules-administration', 'upload-updates');
+        }
+
         $request = $this->getRequest();
         $host = $request->getUri()->getHost();
 
@@ -472,14 +495,14 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                 $result = $this->getModel()->uploadModuleUpdates($moduleForm->getForm()->getData(), $host);
 
                 if (is_array($result)) {
-                    $this->flashMessenger()
-                        ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Updates of module have been uploaded'));
-
                     if (!empty($result['update_intro'])) {
+                        $sessionContainer->module = $result['module'];
+                        $sessionContainer->intro = $result['update_intro'];
+                    }
+                    else {
                         $this->flashMessenger()
-                            ->setNamespace('info')
-                            ->addMessage($this->getTranslator()->translate($result['update_intro']));
+                            ->setNamespace('success')
+                            ->addMessage($this->getTranslator()->translate('Updates of module have been uploaded'));
                     }
                 }
                 else {
@@ -561,16 +584,14 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
 
         // module should be not installed
         if (null != ($moduleInfo = $this->getModel()->getModuleInfo($moduleName)) 
-                || null == ($installConfig = $this->getModel()->getCustomModuleConfig($moduleName))
+                || null == ($installConfig = $this->getModel()->getCustomModuleInstallConfig($moduleName))
                 || false === $this->getModel()->isCustomModule($moduleName)) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
         }
 
         // add translations
-        $this->getModel()->addModuleTranslations($this->
-                getModel()->getCustomModuleConfig($moduleName, 'system', false));
-
+        $this->getModel()->addModuleTranslations($this->getModel()->getSystemModuleConfig($moduleName, false));
         $request = $this->getRequest();
         $host = $request->getUri()->getHost();
 

@@ -129,7 +129,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if ($module['type'] == self::MODULE_TYPE_CUSTOM
                         && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                $this->addModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+                $this->addModuleTranslations($this->getSystemModuleConfig($module['name'], false));
             }
         }
 
@@ -150,26 +150,38 @@ class ApplicationModuleAdministration extends ApplicationBase
     }
 
     /**
-     * Get custom module config
+     * Get custom module install config
      *
      * @param string $module
+     * @param boolean $checkExisting
      * @return boolean|array
      */
-    public function getCustomModuleConfig($module, $type = 'install', $checkExisting = true)
+    public function getCustomModuleInstallConfig($module, $checkExisting = true)
     {
-        // is custom module
+        // is a custom module
         if ($checkExisting && false === ($result = $this->isCustomModule($module))) {
             return $result;
         }
 
-        switch ($type) {
-            case 'install' :
-                return include ApplicationService::getModulePath() . '/' . basename($module) . $this->moduleInstallConfig;
+        return include ApplicationService::getModulePath() . '/' . basename($module) . $this->moduleInstallConfig;
+    }
 
-            case 'system' :
-            default :
-                return include ApplicationService::getModulePath() . '/' . basename($module) . $this->moduleConfig;
+    /**
+     * Get system module config
+     *
+     * @param string $module
+     * @param boolean $checkExisting
+     * @return boolean|array
+     */
+    public function getSystemModuleConfig($module, $checkExisting = true)
+    {
+        $moduleDirectory = ApplicationService::getModulePath() . '/' . basename($module);
+
+        if ($checkExisting && false === file_exists($moduleDirectory . $this->moduleConfig)) {
+            return false;
         }
+
+        return include $moduleDirectory . $this->moduleConfig;
     }
 
     /**
@@ -247,7 +259,7 @@ class ApplicationModuleAdministration extends ApplicationBase
 
         // process not installed modules
         foreach($modules as $data) {
-            $moduleInstallConfig = $this->getCustomModuleConfig($data->getFileName(), 'install', false);
+            $moduleInstallConfig = $this->getCustomModuleInstallConfig($data->getFileName(), false);
 
             $moduleInfo = [
                 'name' => $data->getFileName(),
@@ -264,7 +276,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             $orderValues[]    = $moduleInfo[$orderBy];
 
             // load the module's translations
-            $this->addModuleTranslations($this->getCustomModuleConfig($data->getFileName(), 'system', false));
+            $this->addModuleTranslations($this->getSystemModuleConfig($data->getFileName(), false));
         }
 
         array_multisort($orderValues, $orderType, $processedModules);
@@ -314,7 +326,7 @@ class ApplicationModuleAdministration extends ApplicationBase
                 if ($module['type'] == self::MODULE_TYPE_CUSTOM
                         && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                    $this->addModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+                    $this->addModuleTranslations($this->getSystemModuleConfig($module['name'], false));
                 }
 
                 $modules[] = [
@@ -326,7 +338,7 @@ class ApplicationModuleAdministration extends ApplicationBase
         }
         else {
             // try to get dependent modules from the not installed module
-            if (false !== ($moduleInstallConfig = $this->getCustomModuleConfig($moduleName, 'install'))) {
+            if (false !== ($moduleInstallConfig = $this->getCustomModuleInstallConfig($moduleName))) {
                 if (!empty($moduleInstallConfig['module_depends'])) {
                     foreach ($moduleInstallConfig['module_depends'] as $module) {
                         if (!isset($module['module'], $module['vendor'], $module['vendor_email'])) {
@@ -347,9 +359,7 @@ class ApplicationModuleAdministration extends ApplicationBase
                             ];
 
                             // load the module's translations
-                            if (false !== ($dependInstallConfig =
-                                    $this->getCustomModuleConfig($module['module'], 'system'))) {
-
+                            if (false !== ($dependInstallConfig = $this->getSystemModuleConfig($module['module']))) {
                                 $this->addModuleTranslations($dependInstallConfig);
                             }
                         }
@@ -374,16 +384,17 @@ class ApplicationModuleAdministration extends ApplicationBase
             if ($moduleInfo['type'] == self::MODULE_TYPE_CUSTOM
                     && $moduleInfo['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                $this->addModuleTranslations($this->getCustomModuleConfig($moduleInfo['name'], 'system', false));
+
+                $this->addModuleTranslations($this->getSystemModuleConfig($moduleInfo['name'], false));
             }
 
             return !empty($moduleInfo['description']) ? $moduleInfo['description'] : false;
         }
 
         // try to get description from the not installed module
-        if (false !== ($moduleInstallConfig = $this->getCustomModuleConfig($module, 'install'))) {
+        if (false !== ($moduleInstallConfig = $this->getCustomModuleInstallConfig($module))) {
             // load the module's translations
-            $this->addModuleTranslations($this->getCustomModuleConfig($module, 'system', false));
+            $this->addModuleTranslations($this->getSystemModuleConfig($module, false));
 
             return !empty($moduleInstallConfig['description'])
                 ? $moduleInstallConfig['description']
@@ -557,7 +568,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             $this->generateCustomActiveModulesConfig();
 
             // clear caches
-            $moduleInstallConfig = $this->getCustomModuleConfig($moduleName, 'install', false);
+            $moduleInstallConfig = $this->getCustomModuleInstallConfig($moduleName, false);
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
         }
         catch (Exception $e) {
@@ -610,7 +621,7 @@ class ApplicationModuleAdministration extends ApplicationBase
         try {
             // clear caches
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
-            $this->addModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
+            $this->addModuleTranslations($this->getSystemModuleConfig($moduleName, false));
 
             $query = $this->delete('application_module')
                 ->where([
@@ -707,7 +718,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             $this->clearCaches((!empty($moduleInstallConfig['clear_caches']) ? $moduleInstallConfig['clear_caches'] : []));
 
             // add translations
-            $this->addModuleTranslations($this->getCustomModuleConfig($moduleName, 'system', false));
+            $this->addModuleTranslations($this->getSystemModuleConfig($moduleName, false));
 
             $insert = $this->insert()
                 ->into('application_module')
@@ -859,7 +870,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             // get module info from db
             if (null == ($moduleInfo = $this->getModuleInfo($moduleName))) {
                 // get info from config
-                if (false === ($moduleInfo = $this->getCustomModuleConfig($moduleName))) {
+                if (false === ($moduleInfo = $this->getCustomModuleInstallConfig($moduleName))) {
                     // nothing to update
                     throw new ApplicationException('Module not found');
                 }
@@ -1197,7 +1208,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if ($module['type'] == self::MODULE_TYPE_CUSTOM
                         && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
-                $this->addModuleTranslations($this->getCustomModuleConfig($module['name'], 'system', false));
+                $this->addModuleTranslations($this->getSystemModuleConfig($module['name'], false));
             }
         }
 

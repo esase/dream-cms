@@ -76,8 +76,8 @@ abstract class ApplicationAbstractCustomForm implements ApplicationCustomFormInt
     {
         // get form builder
         if (!$this->form) {
-            $this->form = new ApplicationCustomFormBuilder($this->formName, $this->formElements,
-                $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
+            $this->form = new ApplicationCustomFormBuilder($this->formName, $this->
+                    formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }
 
         return $this->form;
