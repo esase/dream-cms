@@ -1,9 +1,11 @@
 <?php
 namespace Page;
 
+use Page\Utility\PageCache as PageCacheUtility;
+use Localization\Service\Localization as LocalizationService;
+use Localization\Event\LocalizationEvent;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\ModuleManager\ModuleManagerInterface;
-use Localization\Service\Localization as LocalizationService;
 
 class Module
 {
@@ -22,6 +24,12 @@ class Module
     {
         // get service manager
         $this->serviceLocator = $moduleManager->getEvent()->getParam('ServiceManager');
+
+        // clear cache
+        $eventManager = LocalizationEvent::getEventManager();
+        $eventManager->attach(LocalizationEvent::DELETE, function ($e) {
+            PageCacheUtility::clearPageCache();
+        });
     }
 
     /**

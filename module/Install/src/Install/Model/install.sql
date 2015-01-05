@@ -1071,7 +1071,9 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules'),
 (43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules'),
 (44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates'),
-(45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules');
+(45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules'),
+(46, 'layout_delete', 6, 'Event - Deleting layouts'),
+(47, 'localization_delete', 7, 'Event - Deleting localizations');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

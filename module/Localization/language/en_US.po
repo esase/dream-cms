@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"localization\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-22 12:26+0600\n"
+"PO-Revision-Date: 2015-01-05 10:22+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -33,6 +33,15 @@ msgstr "Localizations"
 
 msgid "Select language"
 msgstr "Select a language"
+
+msgid "Event - Deleting localizations"
+msgstr "Deleting localizations"
+
+msgid "Event - Localization deleted by guest"
+msgstr "Guest deleted  the localization with id - \"%d\""
+
+msgid "Event - Localization deleted by user"
+msgstr "\"%s\" deleted  the localization with id - \"%d\""
 
 msgid "Event - Getting localizations via XmlRpc"
 msgstr "Getting localizations via XmlRpc"

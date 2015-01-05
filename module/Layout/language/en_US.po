@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-22 13:02+0600\n"
+"PO-Revision-Date: 2015-01-05 10:14+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -23,3 +23,12 @@ msgstr "Layouts"
 
 msgid "Layout"
 msgstr "Layout"
+
+msgid "Event - Deleting layouts"
+msgstr "Deleting layouts"
+
+msgid "Event - Layout deleted by guest"
+msgstr "Guest deleted  the layout with id - \"%d\""
+
+msgid "Event - Layout deleted by user"
+msgstr "\"%s\" deleted  the layout with id - \"%d\""
