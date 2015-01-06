@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle', 'mainPageTitle') ?>
+<?php $this->declareVars('subPageTitle', 'mainPageTitle', 'extraActions') ?>
 
 <?php $this->subPageTitle  = $this->translate((!$this->is_directory ? 'Edit the file' : 'Edit the directory')) ?>
 <?php $this->mainPageTitle = $this->translate('List of files') ?>
@@ -48,6 +48,39 @@
     <?php endif ?>
 <?php $this->placeholder('form')->captureEnd() ?>
 
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'controller' => 'files-manager-administration',
+        'action' => 'delete',
+        'query' => [
+            'path' => $this->path
+        ],
+        'name' => $this->translate('Delete'),
+        'check_acl' => true,
+        'confirm' => $this->translate('File or directory will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'files' : ['{$this->file_name}']}, function(){location.href='{$this->url('application/page', ['controller' => 'files-manager-administration', 'action' => 'list'], ['query' => ['path' => $this->path], 'force_canonical' => true])}'}) }"
+    ],
+    [
+        'controller' => 'files-manager-administration',
+        'action' => 'add-file',
+        'query' => [
+            'path' => $this->path
+        ],
+        'name' => $this->translate('Add a file'),
+        'check_acl' => true
+    ],
+    [
+        'controller' => 'files-manager-administration',
+        'action' => 'add-directory',
+        'query' => [
+            'path' => $this->path
+        ],
+        'name' => $this->translate('Add a directory'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
 <?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
     'user_directories' => $this->user_directories,
     'action' => $this->placeholder('form'),
@@ -56,5 +89,6 @@
     'filters' => [
         'file_path' => $this->file_path,
         'slug' => $this->file_name
-    ]
+    ],
+    'extra_actions' => $this->extraActions
 ]) ?>

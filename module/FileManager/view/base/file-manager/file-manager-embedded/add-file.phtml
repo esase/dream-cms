@@ -31,10 +31,24 @@
     <?php endif; ?>
 <?php $this->placeholder('form')->captureEnd() ?>
 
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'controller' => 'files-manager-embedded',
+        'action' => 'add-directory',
+        'query' => [
+            'path' => $this->path
+        ],
+        'name' => $this->translate('Add a directory'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
 <?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
     'user_directories' => $this->user_directories,
     'action' => $this->placeholder('form'),
     'action_title' => $this->translate('General info'),
     'path' => $this->path,
-    'filters' => []
+    'filters' => [],
+    'extra_actions' => $this->extraActions
 ]) ?>

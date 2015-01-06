@@ -14,6 +14,10 @@
             'title' => $this->translate('Directories tree'),
             'body' => $this->fileManagerDirectoriesTree($this->user_directories, $this->directoriesTreeId, $this->path, $this->filters)
         ]) ?>
+
+        <?php if (!empty($this->extra_actions)): ?>
+            <?php echo $this->extra_actions ?>
+        <?php endif ?>
     </div>
     <div class="col-md-8">
         <?php echo $this->partial('administration-partial/panel', [

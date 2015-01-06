@@ -101,6 +101,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             if (null !== ($pagesIds = $request->getPost('pages', null))) {
                 // get pages map
                 if (null != ($systemPagesMap = $this->getModel()->getSystemPagesMap($pagesIds))) {
+                    $addedPagesCount = 0;
+
                     // get the page info
                     $parentPage = $this->getModel()->
                             getStructurePageInfo($this->params()->fromQuery('page_id', null), true, true);
@@ -147,6 +149,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                             return $this->redirectTo('pages-administration', 'system-pages', [], true);
                         }
 
+                        $addedPagesCount++;
+
                         // add sub pages
                         foreach ($systemPagesMap as $page) {
                             // check the permission and increase permission's actions track
@@ -171,10 +175,12 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     
                                 return $this->redirectTo('pages-administration', 'system-pages', [], true);
                             }
+
+                            $addedPagesCount++;
                         }
                     }
                     else {
-                        // add pages
+                        // add pages                        
                         foreach ($systemPagesMap as $page) {
                             // check the permission and increase permission's actions track
                             if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
@@ -198,12 +204,17 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
                             // get updated parent page's info
                             $parentPage = $this->getModel()->getStructurePageInfo($parentPage['id']);
+                            $addedPagesCount++;
                         }
                     }
 
+                    $message = $addedPagesCount > 1
+                        ? 'Selected system pages have been added'
+                        : 'The selected system page has been added';
+
                     $this->flashMessenger()
-                            ->setNamespace('success')
-                            ->addMessage($this->getTranslator()->translate('Selected system pages have been added'));                    
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
@@ -222,6 +233,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         if ($request->isPost()) {
             if (null !== ($pagesIds = $request->getPost('pages', null))) {
                 // delete selected pages
+                $deleteResult = false;
+                $deletedCount = 0;
+
                 foreach ($pagesIds as $pageId) {
                     // get a page's info
                     $pageInfo = $this->getModel()->getStructurePageInfo($pageId);
@@ -251,18 +265,26 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
                         break;
                     }
+
+                    $deletedCount++;
                 }
 
                 if (true === $deleteResult) {
+                    $message = $deletedCount > 1
+                        ? 'Selected pages have been deleted'
+                        : 'The selected page has been deleted';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected pages have been deleted'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
 
         // redirect back
-        return $this->redirectTo('pages-administration', 'list', [], true);
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('pages-administration', 'list', [], true);
     }
 
     /**
@@ -456,6 +478,11 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Custom page has been added'));
+
+                    // redirect to the browse widgets page
+                    if ($this->aclCheckPermission('pages_administration_browse_widgets', false, false)) {
+                        return $this->redirectTo('pages-administration', 'browse-widgets', ['slug' => $result]);
+                    }
                 }
                 else {
                     $this->flashMessenger()

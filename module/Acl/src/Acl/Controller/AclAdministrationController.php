@@ -151,6 +151,9 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         if ($request->isPost()) {
             if (null !== ($rolesIds = $request->getPost('roles', null))) {
                 // delete selected roles
+                $deleteResult = false;
+                $deletedCount = 0;
+
                 foreach ($rolesIds as $roleId) {
                     // check the permission and increase permission's actions track
                     if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
@@ -170,18 +173,26 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
 
                         break;
                     }
+
+                    $deletedCount++;
                 }
 
                 if (true === $deleteResult) {
+                    $message = $deletedCount > 1
+                        ? 'Selected roles have been deleted'
+                        : 'The selected role has been deleted';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected roles have been deleted'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
 
         // redirect back
-        return $this->redirectTo('acl-administration', 'list', [], true);
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('acl-administration', 'list', [], true);
     }
 
     /**

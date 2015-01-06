@@ -14,6 +14,10 @@
             'title' => $this->translate('Pages tree'),
             'body' => $this->pageTree($this->pagesTreeId, $this->page_id, $this->add_root, $this->filters, $this->tree_disabled)
         ]) ?>
+
+        <?php if ($this->extra_actions): ?>
+            <?php echo $this->extra_actions ?>
+        <?php endif ?>
     </div>
     <div class="col-md-8">
         <?php echo $this->partial('administration-partial/panel', [

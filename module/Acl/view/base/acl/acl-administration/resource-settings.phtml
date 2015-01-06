@@ -1,4 +1,6 @@
-<?php $this->declareVars('subPageTitle', 'parentPageTitle') ?>
+<?php use Acl\Model\AclBase as AclBaseModel ?>
+
+<?php $this->declareVars('extraActions', 'subPageTitle', 'parentPageTitle') ?>
 <?php $this->parentPageTitle = $this->translate($this->resourceSettings['role_name']) ?>
 <?php $this->subPageTitle = $this->translate($this->resourceSettings['resource_description']) ?>
 
@@ -42,8 +44,59 @@
     ]
 ]) ?>
 
-<!-- render a form -->
-<?php echo $this->partial('administration-partial/panel', [
-    'title' => $this->translate('General info'),
-    'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
-]) ?>
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'hide_action' => AclBaseModel::ROLE_TYPE_SYSTEM == $this->resourceSettings['role_type'],
+        'controller' => 'acl-administration',
+        'action' => 'edit-role',
+        'params' => [
+            'slug' => $this->resourceSettings['role']
+        ],
+        'name' => $this->translate('Edit the role'),
+        'check_acl' => true
+    ],
+    [
+        'hide_action' => AclBaseModel::ROLE_TYPE_SYSTEM == $this->resourceSettings['role_type'],
+        'controller' => 'acl-administration',
+        'action' => 'delete-roles',
+        'name' => $this->translate('Delete the role'),
+        'check_acl' => true,
+        'confirm' => $this->translate('Role will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'roles' : [{$this->resourceSettings['role']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'acl-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
+    ],
+    [
+        'controller' => 'acl-administration',
+        'action' => 'add-role',
+        'name' => $this->translate('Add a role'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+    <?php if ($this->extraActions): ?>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
+        </div>
+        <div class="col-md-8">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('General info'),
+                'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
+            ]) ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-12">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('General info'),
+                'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>

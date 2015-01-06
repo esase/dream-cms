@@ -140,6 +140,8 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // uninstall selected modules
                 $uninstallResult = false;
+                $uninstalledCount = 0;
+
                 foreach ($modulesIds as $module) {
                     // get a module info
                     if (null != ($moduleInfo = $this->getModel()->getModuleInfo($module))) {
@@ -188,12 +190,18 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                             $uninstallIntroText[] = $this->getTranslator()->translate($moduleInstallConfig['uninstall_intro']);
                         }
                     }
+
+                    $uninstalledCount++;
                 }
 
                 if (true === $uninstallResult) {
+                    $message = $uninstalledCount > 1
+                        ? 'Selected modules have been uninstalled'
+                        : 'The selected module has been uninstalled';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected modules have been uninstalled'));
+                        ->addMessage($this->getTranslator()->translate($message));
 
                     if ($uninstallIntroText) {
                         foreach ($uninstallIntroText as $intro) {
@@ -223,6 +231,8 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // install selected modules
                 $installResult = false;
+                $installedCount = 0;
+
                 foreach ($modulesIds as $module) {
                     // get the module's config
                     $moduleInstallConfig = $this->getModel()->getCustomModuleInstallConfig($module);
@@ -266,12 +276,18 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                     if (!empty($moduleInstallConfig['install_intro'])) {
                         $installIntroText[] = $this->getTranslator()->translate($moduleInstallConfig['install_intro']);
                     }
+
+                    $installedCount++;
                 }
 
                 if (true === $installResult) {
+                    $message = $installedCount > 1
+                        ? 'Selected modules have been installed'
+                        : 'The selected module has been installed';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected modules have been installed'));
+                        ->addMessage($this->getTranslator()->translate($message));
 
                     if ($installIntroText) {
                         foreach ($installIntroText as $intro) {
@@ -299,6 +315,8 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // activate selected modules
                 $activateResult = false;
+                $activatedCount = 0;
+
                 foreach ($modulesIds as $module) {
                     // get a module info
                     if (null != ($moduleInfo = $this->getModel()->getModuleInfo($module))) {
@@ -328,12 +346,18 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                             break;
                         }
                     }
+
+                    $activatedCount++;
                 }
 
                 if (true === $activateResult) {
+                    $message = $activatedCount > 1
+                        ? 'Selected modules have been activated'
+                        : 'The selected module has been activated';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected modules have been activated'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
@@ -355,6 +379,8 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // deactivate selected modules
                 $deactivateResult = false;
+                $deactivatedCount = 0;
+
                 foreach ($modulesIds as $module) {
                     // get a module info
                     if (null != ($moduleInfo = $this->getModel()->getModuleInfo($module))) {
@@ -384,12 +410,18 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
                             break;
                         }
                     }
+
+                    $deactivatedCount++;
                 }
 
                 if (true === $deactivateResult) {
+                    $message = $deactivatedCount > 1
+                        ? 'Selected modules have been deactivated'
+                        : 'The selected module has been deactivated';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected modules have been deactivated'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }

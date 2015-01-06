@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle', 'parentPageTitle', 'moduleName') ?>
+<?php $this->declareVars('subPageTitle', 'parentPageTitle', 'moduleName', 'extraActions') ?>
 <?php $this->parentPageTitle = $this->translate('Not installed modules') ?>
 <?php $this->subPageTitle = $this->translate('Delete the module')  ?>
 <?php $this->moduleName = $this->translate($this->module_name) ?>
@@ -34,8 +34,40 @@
     ]
 ]) ?>
 
-<!-- render a form -->
-<?php echo $this->partial('administration-partial/panel', [
-    'title' => $this->subPageTitle,
-    'body' => $this->partial('partial/form', ['form' => $this->moduleForm])
-]) ?>
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'controller' => 'modules-administration',
+        'action' => 'upload',
+        'name' => $this->translate('Upload a module'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+   <?php if (!$this->extraActions): ?> 
+        <div class="col-md-12">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->subPageTitle,
+                'body' => $this->partial('partial/form', ['form' => $this->moduleForm])
+            ]) ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
+        </div>
+        <div class="col-md-8">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->subPageTitle,
+                'body' => $this->partial('partial/form', ['form' => $this->moduleForm])
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>

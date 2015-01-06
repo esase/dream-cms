@@ -479,7 +479,8 @@ class AclAdministration extends AclBase
                 ['b' => 'acl_role'],
                 'b.id = a.role',
                 [
-                    'role_name' => 'name'
+                    'role_name' => 'name',
+                    'role_type' => 'type'
                 ]
             )
             ->join(

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-22 13:30+0600\n"
+"PO-Revision-Date: 2015-01-06 11:42+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,18 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "The selected system page has been added"
+msgstr "The selected system page has been added"
+
+msgid "The selected page has been deleted"
+msgstr "The selected page has been deleted"
+
+msgid "Delete the page"
+msgstr "Delete the page"
+
+msgid "Page will be deleted. Are you sure?"
+msgstr "Page will be deleted. Are you sure?"
 
 msgid "Page module description"
 msgstr ""

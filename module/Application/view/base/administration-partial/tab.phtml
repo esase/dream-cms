@@ -17,7 +17,7 @@
 
         <li<?php if (!empty($this->active) &&  $this->active == $tab['action']): ?> class="active"<?php endif ?>>
             <a href="<?php echo $this->url('application/page', $this->baseUrl, ['force_canonical' => true]) ?>">
-                <?php echo $this->escapeHtml($tab['name']) ?>
+                <?php echo $tab['name'] ?>
             </a>
         </li>
     <?php endforeach ?>

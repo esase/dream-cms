@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle', 'parentPageTitle', 'settingsTitle', 'listPagesTitle') ?>
+<?php $this->declareVars('extraActions', 'subPageTitle', 'parentPageTitle', 'settingsTitle', 'listPagesTitle') ?>
 <?php $this->subPageTitle =  $this->pageWidgetTitle($this->widget_info) ?>
 <?php $this->parentPageTitle = $this->translate('Browse widgets') ?>
 <?php $this->settingsTitle = $this->translate('Settings') ?>
@@ -46,8 +46,70 @@
     ]
 ]) ?>
 
-<!-- render a form -->
-<?php echo $this->partial('administration-partial/panel', [
-    'title' => $this->translate('Settings'),
-    'body' => $this->partial('partial/form', ['form' => $this->settings_form])
-]) ?>
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'hide_action' => $this->widget_info['widget_depend_connection_id'] || $this->widget_info['widget_page_depend_connection_id'],
+        'controller' => 'pages-administration',
+        'action' => 'ajax-delete-widget',
+        'params' => [
+            'slug' => $this->widget_info['id']
+        ],
+        'name' => $this->translate('Delete widget'),
+        'check_acl' => true,
+        'confirm' => $this->translate('Widget will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), function(){location.href='{$this->url('application/page', ['controller' => 'pages-administration', 'action' => 'browse-widgets', 'slug' => $this->page_info['id']], ['force_canonical' => true])}'}) }"
+    ],
+    [
+        'controller' => 'pages-administration',
+        'action' => 'edit-page',
+        'params' => [
+            'slug' => $this->page_info['id']
+        ],
+        'name' => $this->translate('Edit the page'),
+        'check_acl' => true
+    ],
+    [
+        'hide_action' => $this->page_info['right_key'] - $this->page_info['left_key'] != 1 || $this->page_info['dependent_page'],
+        'controller' => 'pages-administration',
+        'action' => 'delete-pages',
+        'name' => $this->translate('Delete the page'),
+        'check_acl' => true,
+        'confirm' => $this->translate('Page will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'pages' : [{$this->page_info['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'pages-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
+    ],
+    [
+        'controller' => 'pages-administration',
+        'action' => 'add-custom-page',
+        'name' => $this->translate('Add a custom page'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+    <?php if ($this->extraActions): ?>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
+        </div>
+        <div class="col-md-8">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Settings'),
+                'body' => $this->partial('partial/form', ['form' => $this->settings_form])
+            ]) ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-12">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Settings'),
+                'body' => $this->partial('partial/form', ['form' => $this->settings_form])
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>
