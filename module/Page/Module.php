@@ -1,6 +1,7 @@
 <?php
 namespace Page;
 
+use Acl\Event\AclEvent;
 use Page\Utility\PageCache as PageCacheUtility;
 use Localization\Service\Localization as LocalizationService;
 use Localization\Event\LocalizationEvent;
@@ -24,6 +25,12 @@ class Module
     {
         // get service manager
         $this->serviceLocator = $moduleManager->getEvent()->getParam('ServiceManager');
+
+        // clear cache
+        $eventManager = AclEvent::getEventManager();
+        $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
+            PageCacheUtility::clearPageCache();
+        });
 
         // clear cache
         $eventManager = LocalizationEvent::getEventManager();

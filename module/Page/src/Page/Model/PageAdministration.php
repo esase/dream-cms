@@ -1,6 +1,7 @@
 <?php
 namespace Page\Model;
 
+use Acl\Service\Acl as AclService;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
@@ -43,7 +44,8 @@ class PageAdministration extends PageBase
         $defaultValues = [
             'slug' => '',
             'user_menu_order' => 0,
-            'footer_menu_order' => 0
+            'footer_menu_order' => 0,
+            'xml_map_priority' => 0
         ];
 
         $basicFields = [
@@ -826,22 +828,13 @@ class PageAdministration extends PageBase
                 'id',
                 'slug',
                 'module',
-                'user_menu',
-                'user_menu_order',
-                'menu',
-                'site_map',
-                'xml_map',
-                'footer_menu',
-                'footer_menu_order',
-                'layout'
+                'disable_user_menu',
+                'disable_menu',
+                'disable_site_map',
+                'disable_footer_menu',
+                'disable_xml_map',
+                'forced_visibility'
             ])
-            ->join(
-                ['b' => 'page_layout'],
-                'a.layout = b.id',
-                [
-                    'layout_default_position' => 'default_position'
-                ]
-            )
             ->join(
                 ['c' => 'page_widget_layout'],
                 new Expression('c.default  = ?', [PageWidget::DEFAULT_WIDGET_LAYOUT]),                
@@ -867,25 +860,55 @@ class PageAdministration extends PageBase
         $resultSet = new ResultSet;
         $resultSet->initialize($statement->execute());
 
+        // get home page
+        $homePage = $this->serviceLocator->get('Config')['home_page'];
+
+        // get default values
+        $defaultPageLayout = $this->getPageLayout(SettingService::getSetting('page_new_pages_layout'));
+        $defaultShowInMainMenu = (int) SettingService::getSetting('page_new_pages_in_main_menu');
+        $defaultShowInSiteMap = (int) SettingService::getSetting('page_new_pages_in_site_map');
+        $defaultShowInFooterMenu = (int) SettingService::getSetting('page_new_pages_in_footer_menu');
+        $defaultShowInUserMenu = (int) SettingService::getSetting('page_new_pages_in_user_menu');
+        $defaultShowInXmlMap = (int) SettingService::getSetting('page_new_pages_in_xml_map');
+        $defaultPageVisibility = SettingService::getSetting('page_new_pages_hidden_for');
+
+        // check the roles
+        if ($defaultPageVisibility) {
+            // get all ACL roles
+            $aclRoles = AclService::getAclRoles(false, true);
+
+            // compare them with a setting value
+            foreach ($defaultPageVisibility as $index => $roleId) {
+                if (!array_key_exists($roleId, $aclRoles)) {
+                    unset($defaultPageVisibility[$index]);
+                }
+            }
+        }
+
         foreach ($resultSet as $page) {
             $dependentPagesFilter[] = $page->id;
             $pages[$page->id] = [
                 'slug' =>  $page->slug,
                 'module' =>  $page->module,
-                'user_menu' =>  $page->user_menu,
-                'user_menu_order' =>  $page->user_menu_order,
-                'menu' =>  $page->menu,
-                'site_map' =>  $page->site_map,
-                'xml_map' =>  $page->xml_map,
-                'footer_menu' =>  $page->footer_menu,
-                'footer_menu_order' =>  $page->footer_menu_order,
-                'layout' =>  $page->layout,
-                'layout_default_position' =>  $page->layout_default_position,
+                'visibility_settings' => !$page->forced_visibility && $defaultPageVisibility ? $defaultPageVisibility : null,
+                'user_menu' =>  !$page->disable_user_menu && $defaultShowInUserMenu ? 1 : null,
+                'user_menu_order' =>  (int) SettingService::getSetting('page_new_pages_user_menu_order'),
+                'menu' =>  !$page->disable_menu && $defaultShowInMainMenu || $page->slug == $homePage ? 1 : null,
+                'site_map' =>  !$page->disable_site_map && $defaultShowInSiteMap || $page->slug == $homePage ? 1 : null,
+                'xml_map' => !$page->disable_xml_map && $defaultShowInXmlMap ? 1 : null,
+                'xml_map_update' => SettingService::getSetting('page_new_pages_xml_map_update'),
+                'xml_map_priority' => SettingService::getSetting('page_new_pages_xml_map_priority'),
+                'footer_menu' =>  !$page->disable_footer_menu && $defaultShowInFooterMenu ? 1 : null,
+                'footer_menu_order' =>  (int) SettingService::getSetting('page_new_pages_footer_menu_order'),
+                'layout' =>  !empty($defaultPageLayout['id']) ? $defaultPageLayout['id'] : null,
+                'layout_default_position' =>  !empty($defaultPageLayout['default_position']) ? $defaultPageLayout['default_position'] : null,
                 'widget_default_layout' => $page->widget_default_layout,
                 'order' => $order,
                 'system_page' => $page->id,
-                'active' => PageNestedSet::PAGE_STATUS_ACTIVE
-            ];
+                'active' => (int) SettingService::getSetting('page_new_pages_active')
+                    ? PageNestedSet::PAGE_STATUS_ACTIVE
+                    : null
+                ];
         }
 
         // check dependent pages

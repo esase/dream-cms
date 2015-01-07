@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2015-01-06 11:42+0600\n"
+"PO-Revision-Date: 2015-01-07 15:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,42 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Default new pages are hidden for"
+msgstr "По умолчанию новые страницы скрыты для"
+
+msgid "Default new pages priority"
+msgstr "Приоритет новых страниц по умолчанию"
+
+msgid "Default new pages update frequency"
+msgstr "Частота обновления страниц по умолчанию"
+
+msgid "Default show all new pages in the XML map"
+msgstr "По умолчанию показать все новые страницы в XML карте"
+
+msgid "Default order in the user menu"
+msgstr "По умолчанию сортировка в меню пользователя"
+
+msgid "Default show all new pages in the user menu"
+msgstr "По умолчанию показать все новые страницы в меню пользователя"
+
+msgid "Default order in the footer menu"
+msgstr "По умолчанию сортировка в меню подвала"
+
+msgid "Default show all new pages in the footer menu"
+msgstr "По умолчанию показать все новые страницы в меню подвала"
+
+msgid "Default show all new pages in the site map"
+msgstr "По умолчанию показать все новые страницы в карте сайта"
+
+msgid "Default show all new pages in the main menu"
+msgstr "По умолчанию показать все новые страницы в главном меню"
+
+msgid "Default pages layout"
+msgstr "Макет страниц по умолчанию"
+
+msgid "Default all new pages are active"
+msgstr "Все новые страницы будут активны по умолчанию"
 
 msgid "The selected system page has been added"
 msgstr "Выбранная системная страница была добавлена"
@@ -50,7 +86,7 @@ msgid "Meta robots"
 msgstr "Meta robots"
 
 msgid "Max rows in footer menu per column"
-msgstr "Максимальное количество строк в каждом столбце в нижнем меню"
+msgstr "Максимальное количество строк в каждом столбце в меню подвала"
 
 msgid "The page uses the system default title"
 msgstr "Страница использует системный заголовок по умолчанию - \"%s\""
@@ -122,27 +158,27 @@ msgid "Enter a correct priority value"
 msgstr "Введите правильное значение приоритета"
 
 msgid "Xml map priority description"
-msgstr "Приоритет должен быть больше или равен %d и меньше или равен  %d"
+msgstr "Приоритет должен быть больше или равен 0 и меньше или равен  1"
 
-msgid "Never"
+msgid "never"
 msgstr "Никогда"
 
-msgid "Yearly"
+msgid "yearly"
 msgstr "Ежегодно"
 
-msgid "Monthly"
+msgid "monthly"
 msgstr "Ежемесячно"
 
-msgid "Weekly"
+msgid "weekly"
 msgstr "Еженедельно"
 
-msgid "Daily"
+msgid "daily"
 msgstr "Ежедневно"
 
-msgid "Hourly"
+msgid "hourly"
 msgstr "Ежечасно"
 
-msgid "Always"
+msgid "always"
 msgstr "Всегда"
 
 msgid "Page priority"

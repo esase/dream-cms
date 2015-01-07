@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-06 11:42+0600\n"
+"PO-Revision-Date: 2015-01-07 15:58+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,42 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Default new pages are hidden for"
+msgstr "Default new pages are hidden for"
+
+msgid "Default new pages priority"
+msgstr "Default new pages priority"
+
+msgid "Default new pages update frequency"
+msgstr "Default new pages update frequency"
+
+msgid "Default show all new pages in the XML map"
+msgstr "Default show all new pages in the XML map"
+
+msgid "Default order in the user menu"
+msgstr "Default order in the user menu"
+
+msgid "Default show all new pages in the user menu"
+msgstr "Default show all new pages in the user menu"
+
+msgid "Default order in the footer menu"
+msgstr "Default order in the footer menu"
+
+msgid "Default show all new pages in the footer menu"
+msgstr "Default show all new pages in the footer menu"
+
+msgid "Default show all new pages in the site map"
+msgstr "Default show all new pages in the site map"
+
+msgid "Default show all new pages in the main menu"
+msgstr "Default show all new pages in the main menu"
+
+msgid "Default pages layout"
+msgstr "Default pages layout"
+
+msgid "Default all new pages are active"
+msgstr "Default all new pages are active"
 
 msgid "The selected system page has been added"
 msgstr "The selected system page has been added"
@@ -118,27 +154,27 @@ msgid "Enter a correct priority value"
 msgstr "Enter a correct priority value"
 
 msgid "Xml map priority description"
-msgstr "Priority should be more or equal %d and less or equal %d"
+msgstr "Priority should be more or equal 0 and less or equal 1"
 
-msgid "Never"
+msgid "never"
 msgstr "Never"
 
-msgid "Yearly"
+msgid "yearly"
 msgstr "Yearly"
 
-msgid "Monthly"
+msgid "monthly"
 msgstr "Monthly"
 
-msgid "Weekly"
+msgid "weekly"
 msgstr "Weekly"
 
-msgid "Daily"
+msgid "daily"
 msgstr "Daily"
 
-msgid "Hourly"
+msgid "hourly"
 msgstr "Hourly"
 
-msgid "Always"
+msgid "always"
 msgstr "Always"
 
 msgid "Page priority"
