@@ -11,7 +11,7 @@
     <div class="col-md-4">
         <?php echo $this->partial('administration-partial/panel', [
             'notification' => false,
-            'title' => $this->translate('Pages tree'),
+            'title' => empty($this->pagesTreeTitle) ? $this->translate('Pages tree') : $this->pagesTreeTitle,
             'body' => $this->pageTree($this->pagesTreeId, $this->page_id, $this->add_root, $this->filters, $this->tree_disabled)
         ]) ?>
 

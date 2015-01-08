@@ -1,6 +1,6 @@
-<?php $this->declareVars('addWidgets', 'extraActions') ?>
+<?php $this->declareVars('extraActions', 'pagesTreeId') ?>
 
-<?php $this->addWidgets = $this->aclCheckPermission('pages_administration_ajax_add_widget') ?>
+<?php $this->pagesTreeId = 'pages-tree' ?>
 <?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
     [
         'controller' => 'pages-administration',
@@ -33,44 +33,39 @@
 <?php echo $this->partial('partial/notification') ?>
 
 <div class="row">
-   <?php if (false === $this->addWidgets && !$this->extraActions): ?> 
-        <div class="col-md-12">
-            <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
-                'layouts' => $this->layouts,
-                'page_info' => $this->page_info,
-                'manage_layout' => $this->manage_layout,
-                'widgets_connections' => $this->widgets_connections
+    <div class="col-md-4">
+        <?php if (false !== $this->aclCheckPermission('pages_administration_ajax_add_widget')): ?>
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Widgets'),
+                'body' => $this->partial('page/administration-partial/_add-widgets', [
+                    'page_info' => $this->page_info,
+                    'paginator' => $this->paginator,
+                    'per_page' => $this->per_page,
+                    'filter_form' => $this->filter_form,
+                    'filters' => $filters
+                ])
             ]) ?>
-        </div>
-    <?php else: ?>
-        <div class="col-md-4">
-            <?php if (false !== $this->addWidgets): ?>
-                <?php echo $this->partial('administration-partial/panel', [
-                    'notification' => false,
-                    'title' => $this->translate('Widgets'),
-                    'body' => $this->partial('page/administration-partial/_add-widgets', [
-                        'page_info' => $this->page_info,
-                        'paginator' => $this->paginator,
-                        'per_page' => $this->per_page,
-                        'filter_form' => $this->filter_form,
-                        'filters' => $filters
-                    ])
-                ]) ?>
-            <?php endif ?>
+        <?php endif ?>
 
-            <?php if ($this->extraActions): ?>
-                <?php echo $this->extraActions ?>
-            <?php endif ?>
-        </div>
-        <div class="col-md-8">
-            <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
-                'layouts' => $this->layouts,
-                'page_info' => $this->page_info,
-                'manage_layout' => $this->manage_layout,
-                'widgets_connections' => $this->widgets_connections
-            ]) ?>
-        </div>
-    <?php endif ?>
+        <?php if ($this->extraActions): ?>
+            <?php echo $this->extraActions ?>
+        <?php endif ?>
+
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->translate('Viewing widgets'),
+            'body' => $this->pageTree($this->pagesTreeId, $this->page_info['id'], false, [], false, true)
+        ]) ?>
+    </div>
+    <div class="col-md-8">
+        <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
+            'layouts' => $this->layouts,
+            'page_info' => $this->page_info,
+            'manage_layout' => $this->manage_layout,
+            'widgets_connections' => $this->widgets_connections
+        ]) ?>
+    </div>
 </div>
 
 <script type="text/javascript">

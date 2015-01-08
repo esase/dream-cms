@@ -1,8 +1,14 @@
 <li>
     <?php if (!$this->active && !$this->disabled_tree) : ?>
-        <a href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->applicationRoute()->getParam('slug')], ['force_canonical' => true, 'query' => ['page_id' => $this->page_id] + $this->filters]) ?>">
-            <?php echo $this->title ?>
-        </a>
+        <?php if ($this->use_slug): ?>
+            <a href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->page_id], ['force_canonical' => true, 'query' => $this->filters]) ?>">
+                <?php echo $this->title ?>
+            </a>
+        <?php else: ?>
+            <a href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->applicationRoute()->getParam('slug')], ['force_canonical' => true, 'query' => ['page_id' => $this->page_id] + $this->filters]) ?>">
+                <?php echo $this->title ?>
+            </a>
+        <?php endif ?>
     <?php else: ?>
         <?php echo $this->title ?>
     <?php endif ?>

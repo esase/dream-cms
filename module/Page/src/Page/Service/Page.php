@@ -9,7 +9,13 @@ class Page
      * Page layouts
      * @var array
      */
-    protected static $layouts = null;
+    protected static $pageLayouts = null;
+
+    /**
+     * Widget layouts
+     * @var array
+     */
+    protected static $widgetLayouts = null;
 
     /**
      * Get page layouts
@@ -18,13 +24,30 @@ class Page
      */
     public static function getPageLayouts()
     {
-        if (null === self::$layouts) {
-            self::$layouts = ServiceLocatorService::getServiceLocator()
+        if (null === self::$pageLayouts) {
+            self::$pageLayouts = ServiceLocatorService::getServiceLocator()
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Page\Model\PageBase')
                 ->getPageLayouts();
         }
 
-        return self::$layouts;
+        return self::$pageLayouts;
+    }
+
+    /**
+     * Get widget layouts
+     *
+     * @return array
+     */
+    public static function getWidgetLayouts()
+    {
+        if (null === self::$widgetLayouts) {
+            self::$widgetLayouts = ServiceLocatorService::getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Page\Model\PageWidgetSetting')
+                ->getWidgetLayouts();
+        }
+
+        return self::$widgetLayouts;
     }
 }

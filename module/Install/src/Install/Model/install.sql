@@ -777,7 +777,8 @@ INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (18,  'Main settings', 5),
 (19,  'Navigation', 5),
 (20,  'Xml map', 5),
-(21,  'Visibility settings', 5);
+(21,  'Visibility settings', 5),
+(22,  'Widgets', 5);
 
 CREATE TABLE `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -894,7 +895,8 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (88, 'page_new_pages_in_xml_map', 'Default show all new pages in the XML map', NULL, 'checkbox', NULL, 1, 20, 5, NULL, NULL, NULL, NULL),
 (89, 'page_new_pages_xml_map_update', 'Default new pages update frequency', NULL, 'select', 1, 2, 20, 5, NULL, NULL, NULL, NULL),
 (90, 'page_new_pages_xml_map_priority', 'Default new pages priority', 'Xml map priority description', 'float', 1, 3, 20, 5, NULL, NULL, '$value =  (float) Localization\\Utility\\LocalizationLocale::convertFromLocalizedValue(''__value__'', ''float''); return $value >= 0 && $value <= 1;', 'Enter a correct priority value'),
-(91, 'page_new_pages_hidden_for', 'Default new pages are hidden for', NULL, 'multicheckbox', NULL, 1, 21, 5, NULL, 'return Acl\\Service\\Acl::getAclRoles(false, true);', NULL, NULL);
+(91, 'page_new_pages_hidden_for', 'Default new pages are hidden for', NULL, 'multicheckbox', NULL, 1, 21, 5, NULL, 'return Acl\\Service\\Acl::getAclRoles(false, true);', NULL, NULL),
+(92, 'page_new_widgets_layout', 'Default widgets layout', NULL, 'select', NULL, 1, 22, 5, NULL, 'return Page\\Service\\Page::getWidgetLayouts();', NULL, NULL);
 
 CREATE TABLE `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1011,7 +1013,8 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (98, 87, '100', NULL),
 (99, 88, '1', NULL),
 (100, 89, 'weekly', NULL),
-(101, 90, '0.5', NULL);
+(101, 90, '0.5', NULL),
+(102, 92, '1', NULL);
 
 CREATE TABLE `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1532,13 +1535,11 @@ CREATE TABLE `page_widget_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(30) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
-    `default` TINYINT(1) UNSIGNED NULL,
-    PRIMARY KEY (`id`),
-    KEY `default` (`default`)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget_layout` (`id`, `name`, `title`, `default`) VALUES
-(1, 'panel', 'Panel', 1);
+INSERT INTO `page_widget_layout` (`id`, `name`, `title`) VALUES
+(1, 'panel', 'Panel');
 
 CREATE TABLE `page_widget_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

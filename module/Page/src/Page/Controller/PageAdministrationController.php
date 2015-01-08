@@ -671,8 +671,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                             return $this->getResponse();
                         }
 
-                        $result = $this->getModel()->
-                                addPublicWidget($pageId, $widgetId, $page['layout_default_position'], $page['widget_default_layout']);
+                        $result = $this->getModel()->addPublicWidget($pageId, $widgetId, $page['layout_default_position']);
 
                         if (!is_numeric($result)) {
                             $this->flashMessenger()

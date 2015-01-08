@@ -62,11 +62,6 @@ class PageBase extends ApplicationAbstractBase
     const WIDGET_TYPE_SYSTEM = 'system';
 
     /**
-     * Default widget layout
-     */
-    const DEFAULT_WIDGET_LAYOUT = 1;
-
-    /**
      * Widget duplicate
      */
     const WIDGET_DUPLICATE = 1;
@@ -523,13 +518,6 @@ class PageBase extends ApplicationAbstractBase
                 [
                     'layout_default_position' => 'default_position',
                     'layout_name' => 'name'
-                ]
-            )
-            ->join(
-                ['i' => 'page_widget_layout'],
-                new Expression('i.default  = ?', [PageWidget::DEFAULT_WIDGET_LAYOUT]),                
-                [
-                    'widget_default_layout' => 'id'
                 ]
             )
             ->join(

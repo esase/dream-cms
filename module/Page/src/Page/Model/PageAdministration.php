@@ -605,15 +605,16 @@ class PageAdministration extends PageBase
      * @param integer $pageId
      * @param integer $widgetId
      * @param integer $layoutPosition
-     * @param integer $widgetlayout
      * @return integer|string
      */
-    public function addPublicWidget($pageId, $widgetId, $layoutPosition, $widgetlayout)
+    public function addPublicWidget($pageId, $widgetId, $layoutPosition)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             $this->updateStructurePageEditedDate($pageId);
+
+            $widgetLayout = SettingService::getSetting('page_new_widgets_layout');
 
             $insert = $this->insert()
                 ->into('page_widget_connection')
@@ -621,7 +622,7 @@ class PageAdministration extends PageBase
                     'page_id' => $pageId,
                     'widget_id' => $widgetId,
                     'position_id' => $layoutPosition,
-                    'layout' => $widgetlayout,
+                    'layout' => (int) $widgetLayout ? $widgetLayout : null,
                     'order' => $this->getMaxPublicWidgetOrder($pageId, $layoutPosition)
                 ]);
 
@@ -836,13 +837,6 @@ class PageAdministration extends PageBase
                 'forced_visibility'
             ])
             ->join(
-                ['c' => 'page_widget_layout'],
-                new Expression('c.default  = ?', [PageWidget::DEFAULT_WIDGET_LAYOUT]),                
-                [
-                    'widget_default_layout' => 'id'
-                ]
-            )
-            ->join(
                 ['d' => 'page_structure'],
                 new Expression('a.slug = d.slug and d.language = ?', [$this->getCurrentLanguage()]),
                 [],
@@ -865,11 +859,13 @@ class PageAdministration extends PageBase
 
         // get default values
         $defaultPageLayout = $this->getPageLayout(SettingService::getSetting('page_new_pages_layout'));
+        $defaultWidgetLayout = SettingService::getSetting('page_new_widgets_layout');
         $defaultShowInMainMenu = (int) SettingService::getSetting('page_new_pages_in_main_menu');
         $defaultShowInSiteMap = (int) SettingService::getSetting('page_new_pages_in_site_map');
         $defaultShowInFooterMenu = (int) SettingService::getSetting('page_new_pages_in_footer_menu');
         $defaultShowInUserMenu = (int) SettingService::getSetting('page_new_pages_in_user_menu');
         $defaultShowInXmlMap = (int) SettingService::getSetting('page_new_pages_in_xml_map');
+        $defaultPageVisibility = SettingService::getSetting('page_new_pages_hidden_for');
         $defaultPageVisibility = SettingService::getSetting('page_new_pages_hidden_for');
 
         // check the roles
@@ -902,7 +898,7 @@ class PageAdministration extends PageBase
                 'footer_menu_order' =>  (int) SettingService::getSetting('page_new_pages_footer_menu_order'),
                 'layout' =>  !empty($defaultPageLayout['id']) ? $defaultPageLayout['id'] : null,
                 'layout_default_position' =>  !empty($defaultPageLayout['default_position']) ? $defaultPageLayout['default_position'] : null,
-                'widget_default_layout' => $page->widget_default_layout,
+                'widget_default_layout' => $defaultWidgetLayout ? $defaultWidgetLayout : null,
                 'order' => $order,
                 'system_page' => $page->id,
                 'active' => (int) SettingService::getSetting('page_new_pages_active')
