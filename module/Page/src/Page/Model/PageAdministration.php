@@ -1047,9 +1047,10 @@ class PageAdministration extends PageBase
      * @param integer $widgetConnectionId
      * @param array $settingsList
      * @param array $formData
+     * @param string $currentlanguage
      * @return boolean|string
      */
-    public function saveWidgetSettings($widgetId, $pageId, $widgetConnectionId, array $settingsList, array $formData)
+    public function saveWidgetSettings($widgetId, $pageId, $widgetConnectionId, array $settingsList, array $formData, $currentlanguage)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -1126,7 +1127,7 @@ class PageAdministration extends PageBase
 
             // clear caches
             $this->clearLanguageSensitivePageCaches();
-            $this->clearWidgetsSettingsCache($pageId);
+            $this->clearWidgetsSettingsCache($pageId, $currentlanguage);
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {

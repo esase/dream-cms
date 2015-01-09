@@ -25,14 +25,27 @@ class PageContactFormWidget extends PageAbstractWidget
             $contactForm->getForm()->setData($this->getRequest()->getPost());
 
             if ($contactForm->getForm()->isValid()) {
-                // wrap a message
-                $message = $this->getView()->
-                        partial('page/widget/contact-message-wrapper', $contactForm->getForm()->getData());
+                $formData = $contactForm->getForm()->getData();
+
+                $sendResult = EmailNotificationUtility::sendNotification($this->getWidgetSetting('page_contact_form_email'),
+                    $this->getWidgetSetting('page_contact_form_title'),
+                    $this->getWidgetSetting('page_contact_form_message'), [
+                        'find' => [
+                            'RealName',
+                            'Email',
+                            'Phone',
+                            'Message'
+                        ],
+                        'replace' => [
+                            $formData['name'],
+                            $formData['email'],
+                            $formData['phone'],
+                            $formData['message']
+                        ]
+                    ]);
 
                 // send the message
-                if (true === ($result = EmailNotificationUtility::sendNotification($this->
-                        getWidgetSetting('page_contact_form_email'), $this->translate('A message from the contact form'), $message))) {
-
+                if (true === $sendResult) {
                     $this->getFlashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->translate('Your message has been sent'));

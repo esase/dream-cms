@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-09 13:41+0600\n"
+"PO-Revision-Date: 2015-01-09 18:41+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -15,14 +15,14 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Contact form notification"
+msgstr "Contact form notification"
+
+msgid "Message title"
+msgstr "Message title"
+
 msgid "Message cannot be sent. Please try again later"
 msgstr "Message cannot be sent. Please try again later"
-
-msgid "A message from the contact form"
-msgstr "A message from the contact form"
-
-msgid "User name"
-msgstr "User name"
 
 msgid "Your message has been sent"
 msgstr "Your message has been sent"

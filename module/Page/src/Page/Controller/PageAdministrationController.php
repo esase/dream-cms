@@ -2,6 +2,7 @@
 namespace Page\Controller;
 
 use Page\Model\PageNestedSet;
+use Localization\Service\Localization as LocalizationService;
 use Application\Controller\ApplicationAbstractAdministrationController;
 use Zend\View\Model\ViewModel;
 
@@ -770,6 +771,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             return $this->redirectTo('pages-administration', 'list');
         }
 
+        $currentlanguage = LocalizationService::getCurrentLocalization()['language'];
+
         // get settings model
         $settings = $this->getServiceLocator()
             ->get('Application\Model\ModelManager')
@@ -784,7 +787,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->setWidgetDescription($this->getTranslator()->translate($widget['widget_description']));
 
         // get settings list
-        $settingsList = $settings->getSettingsList($widget['id'], $widget['widget_id']);
+        $settingsList = $settings->getSettingsList($widget['id'], $widget['widget_id'], $currentlanguage);
         if (false !== $settingsList) {
             // add extra settings on the form
             $settingsForm->addFormElements($settingsList);
@@ -812,7 +815,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 }
 
                 if (true === ($result = $this->getModel()->saveWidgetSettings($widget['widget_id'],
-                        $widget['page_id'], $widget['id'], $settingsList, $settingsForm->getForm()->getData()))) {
+                        $widget['page_id'], $widget['id'], $settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')

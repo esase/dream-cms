@@ -56,17 +56,18 @@ class PageWidgetSetting extends ApplicationAbstractSetting
      * @param integer $pageId
      * @param integer $connectionId
      * @param string $settingName
+     * @param string $language
      * @return string|array|boolean
      */
-    public function getWidgetSetting($pageId, $connectionId, $settingName)
+    public function getWidgetSetting($pageId, $connectionId, $settingName, $language)
     {
         // get all settings
-        if (!isset(self::$settings[$pageId])) {
-            self::$settings[$pageId] = $this->getAllSettings($pageId);
+        if (!isset(self::$settings[$pageId][$language])) {
+            self::$settings[$pageId][$language] = $this->getAllSettings($pageId, $language);
         }
 
-        if (isset(self::$settings[$pageId][$connectionId][$settingName])) {
-            return self::$settings[$pageId][$connectionId][$settingName];
+        if (isset(self::$settings[$pageId][$language][$connectionId][$settingName])) {
+            return self::$settings[$pageId][$language][$connectionId][$settingName];
         }
 
         return false;
@@ -76,15 +77,32 @@ class PageWidgetSetting extends ApplicationAbstractSetting
      * Get all settings
      *
      * @param integer $pageId
+     * @param string $language
      * @return array
      */
-    protected function getAllSettings($pageId)
+    protected function getAllSettings($pageId, $language)
     {
         // get cache name
-        $cacheName = CacheUtility::getCacheName(PageBaseModel::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId);
+        $cacheName = CacheUtility::
+                getCacheName(PageBaseModel::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId . '_' . $language);
 
         // check data in cache
         if (null === ($settings = $this->staticCacheInstance->getItem($cacheName))) {
+            // get default value
+            $subQuery= $this->select();
+            $subQuery->from(['i' => 'page_widget_setting_default_value'])
+                ->columns([
+                    'id'
+                ])
+                ->limit(1)
+                ->order('i.language desc')
+                ->where(['b.id' => new Expression('i.setting_id')])
+                ->where
+                    ->and->equalTo('i.language', $language)
+                ->where
+                    ->or->equalTo('b.id', new Expression('i.setting_id'))
+                    ->and->isNull('i.language');
+
             $select = $this->select();
             $select->from(['a' => 'page_widget_connection'])
                 ->columns([
@@ -95,16 +113,23 @@ class PageWidgetSetting extends ApplicationAbstractSetting
                     'a.widget_id = b.widget',
                     [
                         'name',
-                        'type',
-                        'default_value'
+                        'type'
                     ]
                 )
                 ->join(
                     ['c' => 'page_widget_setting_value'],
                     'b.id = c.setting_id and a.id = c.widget_connection',
                     [
-                        'value',
-                        'value_id' => 'id'
+                        'value_id' => 'id',
+                        'value'
+                    ],
+                    'left'
+                )
+                ->join(
+                    ['d' => 'page_widget_setting_default_value'],
+                    new Expression('d.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
+                    [
+                        'default_value' => 'value'
                     ],
                     'left'
                 )
@@ -119,10 +144,9 @@ class PageWidgetSetting extends ApplicationAbstractSetting
             // convert strings
             $settings = [];
             foreach ($resultSet as $setting) {
-                if ($setting['value_id'] || $setting['default_value']) {
-                    $settings[$setting['id']][$setting['name']] = $setting['value_id']
-                        ? $this->convertString($setting['type'], $setting['value'])
-                        : $setting['default_value'];
+                if (!empty($setting['value_id']) || !empty($setting['default_value'])) {
+                    $settings[$setting['id']][$setting['name']] =
+                            $this->convertString($setting['type'], (!empty($setting['value_id']) ? $setting['value'] : $setting['default_value']));
                 }
             }
 
@@ -139,10 +163,26 @@ class PageWidgetSetting extends ApplicationAbstractSetting
      *
      * @param integer $widgetConnectionId
      * @param integer $widgetId
+     * @param string $language
      * @return array
      */
-    public function getSettingsList($widgetConnectionId, $widgetId)
-    {   
+    public function getSettingsList($widgetConnectionId, $widgetId, $language)
+    {
+        // get default value
+        $subQuery= $this->select();
+        $subQuery->from(['d' => 'page_widget_setting_default_value'])
+            ->columns([
+                'id'
+            ])
+            ->limit(1)
+            ->order('d.language desc')
+            ->where(['a.id' => new Expression('d.setting_id')])
+            ->where
+                ->and->equalTo('d.language', $language)
+            ->where
+                ->or->equalTo('a.id', new Expression('d.setting_id'))
+                ->and->isNull('d.language');
+
         $mainSelect = $this->select();
         $mainSelect->from(['a' => 'page_widget_setting'])
             ->columns([
@@ -155,23 +195,30 @@ class PageWidgetSetting extends ApplicationAbstractSetting
                 'required',
                 'values_provider',
                 'check',
-                'check_message',
-                'default_value'
+                'check_message'
             ])
             ->join(
                 ['b' => 'page_widget_setting_value'],
-                new Expression('a.id = b.setting_id and widget_connection = ?', [$widgetConnectionId]),
+                new Expression('b.setting_id = a.id and b.widget_connection = ?', [$widgetConnectionId]),
                 [
-                    'value',
-                    'value_id' => 'id'
+                    'value_id' => 'id',
+                    'value'
+                ],
+                'left'
+            )            
+            ->join(
+                ['c' => 'page_widget_setting_default_value'],
+                new Expression('c.id = (' .$this->getSqlStringForSqlObject($subQuery) . ')'),
+                [
+                    'default_value' => 'value'
                 ],
                 'left'
             )
             ->join(
-                ['d' => 'page_widget_setting_category'],
-                new Expression('a.category = d.id'),
+                ['i' => 'page_widget_setting_category'],
+                new Expression('a.category = i.id'),
                 [
-                    'category_name' => new Expression('d.name')
+                    'category_name' => new Expression('i.name')
                 ],
                 'left'
             )
@@ -187,10 +234,10 @@ class PageWidgetSetting extends ApplicationAbstractSetting
         // processing settings list
         $settings = [];
         foreach ($resultSet as $setting) {
-            // get setting value
+            // convert an array
             $settingValue = !$setting->value_id && $setting->default_value
-                ? $setting->default_value
-                : $this->convertString($setting->type, $setting->value); // convert an array
+                ? $this->convertString($setting->type, $setting->default_value)
+                : $this->convertString($setting->type, $setting->value);
 
             $settings[$setting->id] = [
                 'id' => $setting->id,

@@ -443,18 +443,39 @@ class PageBase extends ApplicationAbstractBase
      * Clear widgets settings cache
      *
      * @param integer $pageId
+     * @param string $language
      * @return boolean
      */
-    public function clearWidgetsSettingsCache($pageId)
+    public function clearWidgetsSettingsCache($pageId, $language = null)
     {
-        $cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId);
+        // clear all caches
+        if (!$language) {
+            // get all localizations
+            $localizations = LocalizationService::getLocalizations();
 
-        // clear a page's widgets settings cache
-        if ($this->staticCacheInstance->hasItem($cacheName)) {
-            return $this->staticCacheInstance->removeItem($cacheName);
+            foreach ($localizations as $localization) {
+                $cacheName = CacheUtility::
+                        getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId . '_' . $localization['language']);
+
+                // clear a page's widgets settings cache
+                if ($this->staticCacheInstance->hasItem($cacheName)) {
+                    if (false === ($result = $this->staticCacheInstance->removeItem($cacheName))) {
+                        return $result;
+                    }
+                }
+            }
+        }
+        else {
+            $cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId . '_' . $language);
+
+            if ($this->staticCacheInstance->hasItem($cacheName)) {
+                if (false === ($result = $this->staticCacheInstance->removeItem($cacheName))) {
+                    return $result;
+                }
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**

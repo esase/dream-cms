@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS `page_widget_setting_value`;
 DROP TABLE IF EXISTS `page_widget_visibility`;
 DROP TABLE IF EXISTS `user_list`;
 DROP TABLE IF EXISTS `xmlrpc_class`;
+DROP TABLE IF EXISTS `page_widget_setting_default_value`;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE `application_email_queue` (
@@ -1590,12 +1591,11 @@ CREATE TABLE `page_widget_setting` (
     `label` VARCHAR(150) DEFAULT NULL,
     `description` VARCHAR(255) DEFAULT NULL,
     `description_helper` TEXT DEFAULT NULL,
-    `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea') NOT NULL,
+    `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message') NOT NULL,
     `required` TINYINT(1) UNSIGNED DEFAULT NULL,
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `values_provider` VARCHAR(255) DEFAULT NULL,
-    `default_value` TEXT DEFAULT NULL,
     `check` TEXT DEFAULT NULL,
     `check_message` VARCHAR(150) DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -1608,10 +1608,12 @@ CREATE TABLE `page_widget_setting` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`, `default_value`, `description`) VALUES
-(1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1, NULL, NULL),
-(2, 'page_contact_form_email', 15, 'Email', 'email', 1, 1, 1, '__site_email_value__', 'Email address which uses for receiving messages from the contact form'),
-(3, 'page_contact_form_captcha', 15, 'Show captcha', 'checkbox', NULL, 2, 1, '1', NULL);
+INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`) VALUES
+(1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1, NULL),
+(2, 'page_contact_form_email', 15, 'Email', 'email', 1, 1, 1, 'Email address which uses for receiving messages from the contact form'),
+(3, 'page_contact_form_title', 15, 'Message title', 'notification_title', 1, 1, 1, 'Contact form notification'),
+(4, 'page_contact_form_message', 15, 'Message', 'notification_message', 1, 1, 1, NULL),
+(5, 'page_contact_form_captcha', 15, 'Show captcha', 'checkbox', NULL, 2, 1, NULL);
 
 CREATE TABLE `page_widget_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1636,6 +1638,28 @@ CREATE TABLE `page_widget_setting_value` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `page_widget_setting_default_value` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `value` TEXT NOT NULL,
+    `language` CHAR(2) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`setting_id`) REFERENCES `page_widget_setting`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_setting_default_value` (`id`, `setting_id`, `value`, `language`) VALUES
+(1, 2, '__site_email_value__', NULL),
+(2, 3, 'A message from the contact form', NULL),
+(3, 3, 'Сообщение из контактной формы', 'ru'),
+(4, 4, '<p><b>User name:</b> __RealName__</p>\r\n<p><b>Email:</b> __Email__</p>\r\n<p><b>Phone:</b> __Phone__</p>\r\n<br /><p>__Message__</p>', NULL),
+(5, 4, '<p><b>Имя пользователя:</b> __RealName__</p>\r\n<p><b>Email:</b> __Email__</p>\r\n<p><b>Телефон:</b> __Phone__</p>\r\n<br /><p>__Message__</p>', 'ru'),
+(6, 5, '1', NULL);
 
 CREATE TABLE `page_widget_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
