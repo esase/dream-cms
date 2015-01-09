@@ -95,15 +95,18 @@ class PageWidgetSetting extends ApplicationAbstractSetting
                     'a.widget_id = b.widget',
                     [
                         'name',
-                        'type'
+                        'type',
+                        'default_value'
                     ]
                 )
                 ->join(
                     ['c' => 'page_widget_setting_value'],
                     'b.id = c.setting_id and a.id = c.widget_connection',
                     [
-                        'value'
-                    ]
+                        'value',
+                        'value_id' => 'id'
+                    ],
+                    'left'
                 )
                 ->where([
                     'page_id' => $pageId
@@ -116,7 +119,11 @@ class PageWidgetSetting extends ApplicationAbstractSetting
             // convert strings
             $settings = [];
             foreach ($resultSet as $setting) {
-                $settings[$setting['id']][$setting['name']] = $this->convertString($setting['type'], $setting['value']);
+                if ($setting['value_id'] || $setting['default_value']) {
+                    $settings[$setting['id']][$setting['name']] = $setting['value_id']
+                        ? $this->convertString($setting['type'], $setting['value'])
+                        : $setting['default_value'];
+                }
             }
 
             // save data in cache
@@ -148,13 +155,15 @@ class PageWidgetSetting extends ApplicationAbstractSetting
                 'required',
                 'values_provider',
                 'check',
-                'check_message'
+                'check_message',
+                'default_value'
             ])
             ->join(
                 ['b' => 'page_widget_setting_value'],
                 new Expression('a.id = b.setting_id and widget_connection = ?', [$widgetConnectionId]),
                 [
-                    'value'
+                    'value',
+                    'value_id' => 'id'
                 ],
                 'left'
             )
@@ -178,8 +187,10 @@ class PageWidgetSetting extends ApplicationAbstractSetting
         // processing settings list
         $settings = [];
         foreach ($resultSet as $setting) {
-            // convert an array
-            $settingValue = $this->convertString($setting->type, $setting->value);
+            // get setting value
+            $settingValue = !$setting->value_id && $setting->default_value
+                ? $setting->default_value
+                : $this->convertString($setting->type, $setting->value); // convert an array
 
             $settings[$setting->id] = [
                 'id' => $setting->id,

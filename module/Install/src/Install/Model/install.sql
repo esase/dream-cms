@@ -1302,7 +1302,8 @@ INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `disable_menu`, `pri
 (9,  'sitemap', 'Sitemap', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (10, 'user', 'User profile', 2, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, 1, NULL, 'User\\PageProvider\\UserPageProvider'),
 (11, 'user-edit', 'Edit account', 2, NULL, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, 1, 1, NULL),
-(12, '404', '404 error', 5, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, 1, 1, 1, 1, NULL);
+(12, '404', '404 error', 5, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, 1, 1, 1, 1, NULL),
+(13, 'contact-form', 'Contact form', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 CREATE TABLE `page_widget` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1336,7 +1337,8 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1, NULL),
 (12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL),
 (13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL),
-(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL);
+(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL),
+(15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1364,7 +1366,8 @@ INSERT INTO `page_system_page_depend` (`id`, `page_id`, `depend_page_id`) VALUES
 (9, 9, 1),
 (10, 10, 1),
 (11, 11, 1),
-(12, 12, 1);
+(12, 12, 1),
+(13, 13, 1);
 
 CREATE TABLE `page_system_widget_hidden` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1427,7 +1430,8 @@ INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`, `order`) 
 (10, 7,  14, 2),
 (11, 11, 13, 1),
 (12, 10, 9, 2),
-(13, 10, 10, 1);
+(13, 10, 10, 1),
+(14, 13, 15, 1);
 
 CREATE TABLE `page_widget_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1591,6 +1595,7 @@ CREATE TABLE `page_widget_setting` (
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `values_provider` VARCHAR(255) DEFAULT NULL,
+    `default_value` TEXT DEFAULT NULL,
     `check` TEXT DEFAULT NULL,
     `check_message` VARCHAR(150) DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -1603,8 +1608,10 @@ CREATE TABLE `page_widget_setting` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`) VALUES
-(1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1);
+INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`, `default_value`, `description`) VALUES
+(1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1, NULL, NULL),
+(2, 'page_contact_form_email', 15, 'Email', 'email', 1, 1, 1, '__site_email_value__', 'Email address which uses for receiving messages from the contact form'),
+(3, 'page_contact_form_captcha', 15, 'Show captcha', 'checkbox', NULL, 2, 1, '1', NULL);
 
 CREATE TABLE `page_widget_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,

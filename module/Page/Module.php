@@ -89,7 +89,8 @@ class Module
                 'pageWidgetTitle' => 'Page\View\Helper\PageWidgetTitle',
                 'pagePosition' => 'Page\View\Helper\PagePosition',
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
-                'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'                
+                'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget',
+                'pageContactFormWidget' => 'Page\View\Widget\PageContactFormWidget'
             ],
             'factories' => [
                 'pageTree' =>  function() {
