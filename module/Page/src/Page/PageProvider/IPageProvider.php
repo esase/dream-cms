@@ -8,6 +8,7 @@ interface IPageProvider
      *
      * @param string $language
      * @return array
+     *      boolean url_active
      *      string url_title
      *      array url_params
      *      array xml_map

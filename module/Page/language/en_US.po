@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-09 18:41+0600\n"
+"PO-Revision-Date: 2015-01-10 17:37+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,27 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Show dynamic pages"
+msgstr "Show dynamic pages"
+
+msgid "You cannot move any pages inside dynamic pages"
+msgstr "You cannot move any pages inside dynamic pages"
+
+msgid "You cannot add any pages inside dynamic pages"
+msgstr "You cannot add any pages inside dynamic pages"
+
+msgid "sidebar_menu_subpages"
+msgstr "Show subpages of a current page"
+
+msgid "sidebar_menu_current_level"
+msgstr "Show pages of a current page level"
+
+msgid "Type of the sidebar menu"
+msgstr "Type of the sidebar menu"
+
+msgid "Sidebar menu"
+msgstr "Sidebar menu"
 
 msgid "Contact form notification"
 msgstr "Contact form notification"

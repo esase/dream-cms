@@ -79,8 +79,20 @@
     ],
     [
         'controller' => 'pages-administration',
+        'action' => 'system-pages',
+        'name' => $this->translate('Add system pages'),
+        'query' => [
+            'page_id' => $this->page_info['id']
+        ],
+        'check_acl' => true
+    ],
+    [
+        'controller' => 'pages-administration',
         'action' => 'add-custom-page',
         'name' => $this->translate('Add a custom page'),
+        'query' => [
+            'page_id' => $this->page_info['id']
+        ],
         'check_acl' => true
     ]]
 ]))

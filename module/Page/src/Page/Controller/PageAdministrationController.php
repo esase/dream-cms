@@ -183,6 +183,14 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     else {
                         // add pages                        
                         foreach ($systemPagesMap as $page) {
+                            if (!empty($parentPage['pages_provider'])) {
+                                $this->flashMessenger()
+                                    ->setNamespace('error')
+                                    ->addMessage($this->getTranslator()->translate('You cannot move any pages inside dynamic pages'));
+
+                                return $this->redirectTo('pages-administration', 'system-pages', [], true);
+                            }
+
                             // check the permission and increase permission's actions track
                             if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
                                 $this->flashMessenger()
@@ -330,6 +338,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
         return new ViewModel([
+            'pages_map' => $this->getModel()->getPagesMap($this->getModel()->getCurrentLanguage()),
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
@@ -402,6 +411,16 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
             // save data
             if ($pageForm->getForm()->isValid()) {
+                if (!empty($newParentPage['pages_provider'])) {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate('You cannot move any pages inside dynamic pages'));
+
+                    return $this->redirectTo('pages-administration', 'edit-page', [
+                        'slug' => $page['id']
+                    ]);
+                }
+
                 // check the permission and increase permission's actions track
                 if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
@@ -466,6 +485,14 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
             // save data
             if ($pageForm->getForm()->isValid()) {
+                if (!empty($page['pages_provider'])) {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate('You cannot add any pages inside dynamic pages'));
+
+                    return $this->redirectTo('pages-administration', 'add-custom-page', [], false, ['page_id' => $pageId]);
+                }
+
                 // check the permission and increase permission's actions track
                 if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;

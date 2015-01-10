@@ -90,7 +90,8 @@ class Module
                 'pagePosition' => 'Page\View\Helper\PagePosition',
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
                 'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget',
-                'pageContactFormWidget' => 'Page\View\Widget\PageContactFormWidget'
+                'pageContactFormWidget' => 'Page\View\Widget\PageContactFormWidget',
+                'pageSidebarMenuWidget' => 'Page\View\Widget\PageSidebarMenuWidget'
             ],
             'factories' => [
                 'pageTree' =>  function() {

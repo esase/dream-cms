@@ -664,9 +664,9 @@ abstract class ApplicationAbstractNestedSet
     public function getParentNodes($leftKey, $rightKey, array $filter = [], Closure $closure = null)
     {
         $resultSet = $this->tableGateway->select(function (Select $select) use ($leftKey, $rightKey, $filter, $closure) {
-            $select->where->lessThanOrEqualTo($this->left, $leftKey);
-            $select->where->greaterThanOrEqualTo($this->right, $rightKey);
-            $select->order($this->left);
+            $select->where->lessThanOrEqualTo($this->tableGateway->table . '.' . $this->left, $leftKey);
+            $select->where->greaterThanOrEqualTo($this->tableGateway->table . '.' . $this->right, $rightKey);
+            $select->order($this->tableGateway->table . '.' . $this->left);
 
             if ($filter) {
                 $select->where($filter);

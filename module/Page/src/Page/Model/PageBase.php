@@ -552,7 +552,8 @@ class PageBase extends ApplicationAbstractBase
                     'disable_footer_menu',
                     'disable_user_menu',
                     'forced_visibility',
-                    'disable_seo'
+                    'disable_seo',
+                    'pages_provider'
                 ],
                 'left'
             )
@@ -560,6 +561,14 @@ class PageBase extends ApplicationAbstractBase
                 ['g' => 'application_module'],
                 new Expression('g.id = a.module and g.status = ?', [self::MODULE_STATUS_ACTIVE]),
                 []
+            )
+            ->join(
+                ['h' => 'page_structure'],
+                'a.parent_id = h.id',
+                [
+                    'parent_slug' => 'slug'
+                ],
+                'left'
             )
             ->limit(1)
             ->order('a.parent_id desc');

@@ -18,6 +18,12 @@ class Page
     protected static $widgetLayouts = null;
 
     /**
+     * Current page
+     * @var array
+     */
+    protected static $currentPage = [];
+
+    /**
      * Get page layouts
      *
      * @return array
@@ -49,5 +55,26 @@ class Page
         }
 
         return self::$widgetLayouts;
+    }
+
+    /**
+     * Set current page
+     *
+     * @param array $page
+     * @return void
+     */
+    public function setCurrentPage(array $page)
+    {
+        self::$currentPage = $page;
+    }
+
+    /**
+     * Get current page
+     *
+     * @return array
+     */
+    public static function getCurrentPage()
+    {
+        return self::$currentPage;
     }
 }

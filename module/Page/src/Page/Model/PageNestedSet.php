@@ -204,7 +204,7 @@ class PageNestedSet extends ApplicationAbstractNestedSet
             $select = $this->getPageActiveFilter($select, $userRole, $language, false);
 
             if ($excludeHome) {
-                $select->where->notEqualTo('level', 1);
+                $select->where->notEqualTo($this->tableGateway->table . '.level', 1);
             }
         });
     }
@@ -307,9 +307,18 @@ class PageNestedSet extends ApplicationAbstractNestedSet
             'left'
         );
 
+        $select->join(
+            ['f' => 'page_structure'],
+            'f.id = ' . $this->tableGateway->table . '.parent_id', 
+            [
+                'parent_slug' => 'slug'
+            ],
+            'left'
+        );
+
         $select->where([
-            'language' => $language,
-            'active' => self::PAGE_STATUS_ACTIVE
+            $this->tableGateway->table  . '.language' => $language,
+            $this->tableGateway->table  . '.active' => self::PAGE_STATUS_ACTIVE
         ]);
 
         if ($userRole != AclBaseModel::DEFAULT_ROLE_ADMIN) {

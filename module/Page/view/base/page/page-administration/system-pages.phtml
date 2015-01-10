@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle', 'content') ?>
+<?php $this->declareVars('extraActions', 'subPageTitle', 'content') ?>
 <?php $this->subPageTitle = $this->translate('System pages')  ?>
 
 <?php $this->headTitle($this->subPageTitle) ?>
@@ -124,11 +124,26 @@
     ]
 ]) ?>
 
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'hide_action' => !count($this->pages_map),
+        'controller' => 'pages-administration',
+        'action' => 'add-custom-page',
+        'name' => $this->translate('Add a custom page'),
+        'query' => [
+            'page_id' => $this->page_id
+        ],
+        'check_acl' => true
+    ]]
+]))
+?>
+
 <?php echo $this->partial('page/administration-partial/page-wrapper', [
     'filters' => [],
     'add_root' => false,
     'page_id' => $this->page_id,
     'action' => $this->content,
     'action_title' => $this->subPageTitle,
-    'pagesTreeTitle' =>  $this->translate('Root of pages')
+    'pagesTreeTitle' =>  $this->translate('Root of pages'),
+    'extra_actions' => $this->extraActions
 ]) ?>

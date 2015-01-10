@@ -1339,7 +1339,8 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL),
 (13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL),
 (14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL),
-(15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL);
+(15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL),
+(16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1613,7 +1614,9 @@ INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `req
 (2, 'page_contact_form_email', 15, 'Email', 'email', 1, 1, 1, 'Email address which uses for receiving messages from the contact form'),
 (3, 'page_contact_form_title', 15, 'Message title', 'notification_title', 1, 1, 1, 'Contact form notification'),
 (4, 'page_contact_form_message', 15, 'Message', 'notification_message', 1, 1, 1, NULL),
-(5, 'page_contact_form_captcha', 15, 'Show captcha', 'checkbox', NULL, 2, 1, NULL);
+(5, 'page_contact_form_captcha', 15, 'Show captcha', 'checkbox', NULL, 2, 1, NULL),
+(6, 'page_sidebar_menu_type', 16, 'Type of the sidebar menu', 'select', 1, 1, 1, NULL),
+(7, 'page_sidebar_menu_show_dynamic', 16, 'Show dynamic pages', 'checkbox', NULL, 2, 1, NULL);
 
 CREATE TABLE `page_widget_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1623,6 +1626,10 @@ CREATE TABLE `page_widget_setting_predefined_value` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUES
+(6, 'sidebar_menu_subpages'),
+(6, 'sidebar_menu_current_level');
 
 CREATE TABLE `page_widget_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1659,7 +1666,8 @@ INSERT INTO `page_widget_setting_default_value` (`id`, `setting_id`, `value`, `l
 (3, 3, 'Сообщение из контактной формы', 'ru'),
 (4, 4, '<p><b>User name:</b> __RealName__</p>\r\n<p><b>Email:</b> __Email__</p>\r\n<p><b>Phone:</b> __Phone__</p>\r\n<br /><p>__Message__</p>', NULL),
 (5, 4, '<p><b>Имя пользователя:</b> __RealName__</p>\r\n<p><b>Email:</b> __Email__</p>\r\n<p><b>Телефон:</b> __Phone__</p>\r\n<br /><p>__Message__</p>', 'ru'),
-(6, 5, '1', NULL);
+(6, 5, '1', NULL),
+(7, 6, 'sidebar_menu_subpages', NULL);
 
 CREATE TABLE `page_widget_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
