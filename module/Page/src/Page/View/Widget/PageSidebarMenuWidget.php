@@ -3,6 +3,7 @@ namespace Page\View\Widget;
 
 use Localization\Service\Localization as LocalizationService;
 use Page\Utility\PageProvider as PageProviderUtility;
+use Page\Service\Page as PageService;
 
 class PageSidebarMenuWidget extends PageAbstractWidget
 {
@@ -33,7 +34,7 @@ class PageSidebarMenuWidget extends PageAbstractWidget
      */
     public function getContent() 
     {
-        if (null != ($currentPage = $this->getView()->layout()->page)) {
+        if (null != ($currentPage = PageService::getCurrentPage())) {
             $menuType = $this->getWidgetSetting('page_sidebar_menu_type');
             $showDynamicPages = (int) $this->getWidgetSetting('page_sidebar_menu_show_dynamic');
             $currentLanguage = LocalizationService::getCurrentLocalization()['language'];
