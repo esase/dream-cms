@@ -2,6 +2,7 @@
 namespace Page\Controller;
 
 use Page\Model\PageNestedSet;
+use Localization\Service\Localization as LocalizationService;
 use Application\Controller\ApplicationAbstractAdministrationController;
 use Zend\View\Model\ViewModel;
 
@@ -101,6 +102,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             if (null !== ($pagesIds = $request->getPost('pages', null))) {
                 // get pages map
                 if (null != ($systemPagesMap = $this->getModel()->getSystemPagesMap($pagesIds))) {
+                    $addedPagesCount = 0;
+
                     // get the page info
                     $parentPage = $this->getModel()->
                             getStructurePageInfo($this->params()->fromQuery('page_id', null), true, true);
@@ -147,6 +150,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                             return $this->redirectTo('pages-administration', 'system-pages', [], true);
                         }
 
+                        $addedPagesCount++;
+
                         // add sub pages
                         foreach ($systemPagesMap as $page) {
                             // check the permission and increase permission's actions track
@@ -171,11 +176,21 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     
                                 return $this->redirectTo('pages-administration', 'system-pages', [], true);
                             }
+
+                            $addedPagesCount++;
                         }
                     }
                     else {
-                        // add pages
+                        // add pages                        
                         foreach ($systemPagesMap as $page) {
+                            if (!empty($parentPage['pages_provider'])) {
+                                $this->flashMessenger()
+                                    ->setNamespace('error')
+                                    ->addMessage($this->getTranslator()->translate('You cannot move any pages inside dynamic pages'));
+
+                                return $this->redirectTo('pages-administration', 'system-pages', [], true);
+                            }
+
                             // check the permission and increase permission's actions track
                             if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
                                 $this->flashMessenger()
@@ -198,12 +213,17 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
                             // get updated parent page's info
                             $parentPage = $this->getModel()->getStructurePageInfo($parentPage['id']);
+                            $addedPagesCount++;
                         }
                     }
 
+                    $message = $addedPagesCount > 1
+                        ? 'Selected system pages have been added'
+                        : 'The selected system page has been added';
+
                     $this->flashMessenger()
-                            ->setNamespace('success')
-                            ->addMessage($this->getTranslator()->translate('Selected system pages have been added'));                    
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
@@ -222,6 +242,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         if ($request->isPost()) {
             if (null !== ($pagesIds = $request->getPost('pages', null))) {
                 // delete selected pages
+                $deleteResult = false;
+                $deletedCount = 0;
+
                 foreach ($pagesIds as $pageId) {
                     // get a page's info
                     $pageInfo = $this->getModel()->getStructurePageInfo($pageId);
@@ -251,18 +274,26 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
                         break;
                     }
+
+                    $deletedCount++;
                 }
 
                 if (true === $deleteResult) {
+                    $message = $deletedCount > 1
+                        ? 'Selected pages have been deleted'
+                        : 'The selected page has been deleted';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected pages have been deleted'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
 
         // redirect back
-        return $this->redirectTo('pages-administration', 'list', [], true);
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('pages-administration', 'list', [], true);
     }
 
     /**
@@ -307,6 +338,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
         return new ViewModel([
+            'pages_map' => $this->getModel()->getPagesMap($this->getModel()->getCurrentLanguage()),
             'filters' => $filters,
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
@@ -379,6 +411,16 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
             // save data
             if ($pageForm->getForm()->isValid()) {
+                if (!empty($newParentPage['pages_provider'])) {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate('You cannot move any pages inside dynamic pages'));
+
+                    return $this->redirectTo('pages-administration', 'edit-page', [
+                        'slug' => $page['id']
+                    ]);
+                }
+
                 // check the permission and increase permission's actions track
                 if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
@@ -443,6 +485,14 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
             // save data
             if ($pageForm->getForm()->isValid()) {
+                if (!empty($page['pages_provider'])) {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate('You cannot add any pages inside dynamic pages'));
+
+                    return $this->redirectTo('pages-administration', 'add-custom-page', [], false, ['page_id' => $pageId]);
+                }
+
                 // check the permission and increase permission's actions track
                 if (true !== ($result = $this->aclCheckPermission())) {
                     return $result;
@@ -456,6 +506,11 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     $this->flashMessenger()
                         ->setNamespace('success')
                         ->addMessage($this->getTranslator()->translate('Custom page has been added'));
+
+                    // redirect to the browse widgets page
+                    if ($this->aclCheckPermission('pages_administration_browse_widgets', false, false)) {
+                        return $this->redirectTo('pages-administration', 'browse-widgets', ['slug' => $result]);
+                    }
                 }
                 else {
                     $this->flashMessenger()
@@ -644,8 +699,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                             return $this->getResponse();
                         }
 
-                        $result = $this->getModel()->
-                                addPublicWidget($pageId, $widgetId, $page['layout_default_position'], $page['widget_default_layout']);
+                        $result = $this->getModel()->addPublicWidget($pageId, $widgetId, $page['layout_default_position']);
 
                         if (!is_numeric($result)) {
                             $this->flashMessenger()
@@ -744,6 +798,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             return $this->redirectTo('pages-administration', 'list');
         }
 
+        $currentlanguage = LocalizationService::getCurrentLocalization()['language'];
+
         // get settings model
         $settings = $this->getServiceLocator()
             ->get('Application\Model\ModelManager')
@@ -758,7 +814,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->setWidgetDescription($this->getTranslator()->translate($widget['widget_description']));
 
         // get settings list
-        $settingsList = $settings->getSettingsList($widget['id'], $widget['widget_id']);
+        $settingsList = $settings->getSettingsList($widget['id'], $widget['widget_id'], $currentlanguage);
         if (false !== $settingsList) {
             // add extra settings on the form
             $settingsForm->addFormElements($settingsList);
@@ -786,7 +842,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 }
 
                 if (true === ($result = $this->getModel()->saveWidgetSettings($widget['widget_id'],
-                        $widget['page_id'], $widget['id'], $settingsList, $settingsForm->getForm()->getData()))) {
+                        $widget['page_id'], $widget['id'], $settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')

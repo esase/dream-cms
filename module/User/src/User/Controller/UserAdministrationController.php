@@ -390,6 +390,9 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         if ($request->isPost()) {
             if (null !== ($usersIds = $request->getPost('users', null))) {
                 // delete selected users
+                $deleteResult = false;
+                $deletedCount = 0;
+
                 foreach ($usersIds as $userId) {
                     // default user should not be deleted
                     if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||
@@ -416,18 +419,26 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
 
                         break;
                     }
+
+                    $deletedCount++;
                 }
 
                 if (true === $deleteResult) {
+                    $message = $deletedCount > 1
+                        ? 'Selected users have been deleted'
+                        : 'The selected user has been deleted';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected users have been deleted'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
 
         // redirect back
-        return $this->redirectTo('users-administration', 'list', [], true);
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('users-administration', 'list', [], true);
     }
 
     /**
@@ -441,6 +452,8 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
             if (null !== ($usersIds = $request->getPost('users', null))) {
                 // approve selected users
                 $approveResult = false;
+                $approvedCount = 0;
+
                 foreach ($usersIds as $userId) {
                     // default user should not be touched
                     if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||
@@ -468,18 +481,26 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
 
                         break;
                     }
+
+                    $approvedCount++;
                 }
 
                 if (true === $approveResult) {
+                    $message = $approvedCount > 1
+                        ? 'Selected users have been approved'
+                        : 'The selected user has been approved';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected users have been approved'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
 
         // redirect back
-        return $this->redirectTo('users-administration', 'list', [], true);
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('users-administration', 'list', [], true);
     }
 
     /**
@@ -492,6 +513,9 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         if ($request->isPost()) {
             if (null !== ($usersIds = $request->getPost('users', null))) {
                 // disapprove selected users
+                $disapproveResult = false;
+                $disapprovedCount = 0;
+
                 foreach ($usersIds as $userId) {
                     if ($userId == UserAdministrationModel::DEFAULT_USER_ID ||
                                 null == ($userInfo = $this->getModel()->getUserInfo($userId))) { // default user should not be touched
@@ -518,18 +542,26 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
 
                         break;
                     }
+
+                    $disapprovedCount++;
                 }
 
                 if (true === $disapproveResult) {
+                    $message = $disapprovedCount > 1
+                        ? 'Selected users have been disapproved'
+                        : 'The selected user has been disapproved';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected users have been disapproved'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
 
         // redirect back
-        return $this->redirectTo('users-administration', 'list', [], true);
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('users-administration', 'list', [], true);
     }
 
     /**

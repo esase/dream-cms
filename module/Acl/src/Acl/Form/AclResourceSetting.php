@@ -122,6 +122,25 @@ class AclResourceSetting extends ApplicationAbstractCustomForm
                 unset($this->formElements['clean_counter']);
             }
 
+            // add extra validators
+            $this->formElements['actions_limit']['validators'] = [
+                [
+                    'name' => 'greaterThan',
+                    'options' => [
+                        'min' => -1
+                    ]
+                ]
+            ];
+
+            $this->formElements['actions_reset']['validators'] = [
+                [
+                    'name' => 'greaterThan',
+                    'options' => [
+                        'min' => -1
+                    ]
+                ]
+            ];
+
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }

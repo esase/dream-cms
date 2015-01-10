@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-22 13:30+0600\n"
+"PO-Revision-Date: 2015-01-10 17:37+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,111 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Show dynamic pages"
+msgstr "Show dynamic pages"
+
+msgid "You cannot move any pages inside dynamic pages"
+msgstr "You cannot move any pages inside dynamic pages"
+
+msgid "You cannot add any pages inside dynamic pages"
+msgstr "You cannot add any pages inside dynamic pages"
+
+msgid "sidebar_menu_subpages"
+msgstr "Show subpages of a current page"
+
+msgid "sidebar_menu_current_level"
+msgstr "Show pages of a current page level"
+
+msgid "Type of the sidebar menu"
+msgstr "Type of the sidebar menu"
+
+msgid "Sidebar menu"
+msgstr "Sidebar menu"
+
+msgid "Contact form notification"
+msgstr "Contact form notification"
+
+msgid "Message title"
+msgstr "Message title"
+
+msgid "Message cannot be sent. Please try again later"
+msgstr "Message cannot be sent. Please try again later"
+
+msgid "Your message has been sent"
+msgstr "Your message has been sent"
+
+msgid "Show captcha"
+msgstr "Show captcha"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Your name"
+msgstr "Your name"
+
+msgid "Email address which uses for receiving messages from the contact form"
+msgstr "Email address which uses for receiving messages from the contact form"
+
+msgid "Contact form"
+msgstr "Contact form"
+
+msgid "Root of pages"
+msgstr "Root of pages"
+
+msgid "Viewing widgets"
+msgstr "Viewing widgets"
+
+msgid "Default widgets layout"
+msgstr "Default widgets layout"
+
+msgid "Default new pages are hidden for"
+msgstr "Default new pages are hidden for"
+
+msgid "Default new pages priority"
+msgstr "Default new pages priority"
+
+msgid "Default new pages update frequency"
+msgstr "Default new pages update frequency"
+
+msgid "Default show all new pages in the XML map"
+msgstr "Default show all new pages in the XML map"
+
+msgid "Default order in the user menu"
+msgstr "Default order in the user menu"
+
+msgid "Default show all new pages in the user menu"
+msgstr "Default show all new pages in the user menu"
+
+msgid "Default order in the footer menu"
+msgstr "Default order in the footer menu"
+
+msgid "Default show all new pages in the footer menu"
+msgstr "Default show all new pages in the footer menu"
+
+msgid "Default show all new pages in the site map"
+msgstr "Default show all new pages in the site map"
+
+msgid "Default show all new pages in the main menu"
+msgstr "Default show all new pages in the main menu"
+
+msgid "Default pages layout"
+msgstr "Default pages layout"
+
+msgid "Default all new pages are active"
+msgstr "Default all new pages are active"
+
+msgid "The selected system page has been added"
+msgstr "The selected system page has been added"
+
+msgid "The selected page has been deleted"
+msgstr "The selected page has been deleted"
+
+msgid "Delete the page"
+msgstr "Delete the page"
+
+msgid "Page will be deleted. Are you sure?"
+msgstr "Page will be deleted. Are you sure?"
 
 msgid "Page module description"
 msgstr ""
@@ -106,27 +211,27 @@ msgid "Enter a correct priority value"
 msgstr "Enter a correct priority value"
 
 msgid "Xml map priority description"
-msgstr "Priority should be more or equal %d and less or equal %d"
+msgstr "Priority should be more or equal 0 and less or equal 1"
 
-msgid "Never"
+msgid "never"
 msgstr "Never"
 
-msgid "Yearly"
+msgid "yearly"
 msgstr "Yearly"
 
-msgid "Monthly"
+msgid "monthly"
 msgstr "Monthly"
 
-msgid "Weekly"
+msgid "weekly"
 msgstr "Weekly"
 
-msgid "Daily"
+msgid "daily"
 msgstr "Daily"
 
-msgid "Hourly"
+msgid "hourly"
 msgstr "Hourly"
 
-msgid "Always"
+msgid "always"
 msgstr "Always"
 
 msgid "Page priority"

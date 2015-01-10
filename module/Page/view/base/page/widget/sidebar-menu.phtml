@@ -1,0 +1,7 @@
+<div class="list-group" id="sidebar-menu">
+    <?php foreach ($this->pages as $page): ?>
+        <a class="list-group-item<?php if($page['active']): ?> disabled<?php endif ?>" href="<?php echo  $this->url('page', (!empty($page['params']) ? ['page_name' => $page['url']] + $page['params'] : ['page_name' => $page['url']]), ['force_canonical' => true]) ?>">
+            <?php echo $page['title'] ?>
+        </a>
+    <?php endforeach ?>     
+</div>

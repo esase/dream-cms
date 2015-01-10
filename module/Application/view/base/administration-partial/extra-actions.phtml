@@ -1,0 +1,44 @@
+<?php $this->declareVars('baseUrl', 'query') ?>
+
+<?php $this->placeholder('extraActionsContents')->captureStart() ?>
+    <div class="list-group">
+        <?php foreach ($this->aclRoutePermission($this->pages) as $action) : ?>
+            <?php
+                $this->query = [];
+
+                if (!empty($action['hide_action']) && true === $action['hide_action']) {
+                    continue;
+                }
+
+                // get a base url
+                $this->baseUrl = [
+                    'controller' => $action['controller'],
+                    'action' => $action['action']
+                ];
+
+                // get extra url params
+                if (!empty($action['params']) && is_array($action['params'])) {
+                    $this->baseUrl = array_merge($this->baseUrl, $action['params']);    
+                }
+
+                if (!empty($action['query']) && is_array($action['query'])) {
+                    $this->query = $action['query'];
+                }
+            ?>
+
+            <a <?php if(!empty($action['confirm']) && !empty($action['confirm_callback'])): ?>onclick="showConfirmPopup('<?php echo $this->escapeJs($this->translate('Yes')) ?>', '<?php echo $this->escapeJs($this->translate('No')) ?>', this, <?php echo $action['confirm_callback'] ?>); return false" confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif ?> href="<?php echo $this->url('application/page', $this->baseUrl, array_merge(['force_canonical' => true], ['query' => $this->query])) ?>" class="list-group-item">
+                <?php echo $action['name'] ?>
+            </a>
+        <?php endforeach ?>
+    </div>
+<?php $this->placeholder('extraActionsContents')->captureEnd() ?>
+
+<?php if ($this->baseUrl): ?>
+    <?php echo $this->partial('administration-partial/panel', [
+        'notification' => false,
+        'title' => $this->translate((empty($this->title) ? 'Extra actions' : $this->title)),
+        'body' => $this->placeholder('extraActionsContents')
+    ]) ?>
+<?php endif ?>
+
+

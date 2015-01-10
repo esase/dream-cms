@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS `page_widget_setting_value`;
 DROP TABLE IF EXISTS `page_widget_visibility`;
 DROP TABLE IF EXISTS `user_list`;
 DROP TABLE IF EXISTS `xmlrpc_class`;
+DROP TABLE IF EXISTS `page_widget_setting_default_value`;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE `application_email_queue` (
@@ -774,7 +775,11 @@ INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (15,  'Embedded mode', 4),
 (16,  'View images', 4),
 (17,  'Localization', 1),
-(18,  'Main settings', 5);
+(18,  'Main settings', 5),
+(19,  'Navigation', 5),
+(20,  'Xml map', 5),
+(21,  'Visibility settings', 5),
+(22,  'Widgets', 5);
 
 CREATE TABLE `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -876,10 +881,23 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (73, 'user_role_edited_send', 'Send notifications about editing users roles', NULL, 'checkbox', NULL, 17, 9, 2, NULL, NULL, NULL, NULL),
 (74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, NULL, NULL, NULL),
 (75, 'user_role_edited_message', 'User role edited message', NULL, 'notification_message', 1, 18, 9, 2, 1, NULL, NULL, NULL),
-(76, 'page_footer_menu_max_rows', 'Max rows in footer menu per column', NULL, 'integer', 1, 1, 18, 5, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(76, 'page_footer_menu_max_rows', 'Max rows in footer menu per column', NULL, 'integer', 1, 7, 19, 5, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (77, 'application_smtp_ssl', 'SMTP SSL', NULL, 'select', NULL, 6, 7, 1, NULL, NULL, NULL, NULL),
 (78, 'application_notifications_count', 'Count of notifications sent per time', NULL, 'integer', 1, 1, 7, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(79, 'application_smtp_login', 'SMTP login type', NULL, 'select', NULL, 7, 7, 1, NULL, NULL, NULL, NULL);
+(79, 'application_smtp_login', 'SMTP login type', NULL, 'select', NULL, 7, 7, 1, NULL, NULL, NULL, NULL),
+(80, 'page_new_pages_active', 'Default all new pages are active', NULL, 'checkbox', NULL, 1, 18, 5, NULL, NULL, NULL, NULL),
+(81, 'page_new_pages_layout', 'Default pages layout', NULL, 'select', 1, 2, 18, 5, NULL, 'return Page\\Service\\Page::getPageLayouts();', NULL, NULL),
+(82, 'page_new_pages_in_main_menu', 'Default show all new pages in the main menu', NULL, 'checkbox', NULL, 1, 19, 5, NULL, NULL, NULL, NULL),
+(83, 'page_new_pages_in_site_map', 'Default show all new pages in the site map', NULL, 'checkbox', NULL, 2, 19, 5, NULL, NULL, NULL, NULL),
+(84, 'page_new_pages_in_footer_menu', 'Default show all new pages in the footer menu', NULL, 'checkbox', NULL, 3, 19, 5, NULL, NULL, NULL, NULL),
+(85, 'page_new_pages_footer_menu_order', 'Default order in the footer menu', NULL, 'integer', NULL, 4, 19, 5, NULL, NULL, NULL, NULL),
+(86, 'page_new_pages_in_user_menu', 'Default show all new pages in the user menu', NULL, 'checkbox', NULL, 5, 19, 5, NULL, NULL, NULL, NULL),
+(87, 'page_new_pages_user_menu_order', 'Default order in the user menu', NULL, 'integer', NULL, 6, 19, 5, NULL, NULL, NULL, NULL),
+(88, 'page_new_pages_in_xml_map', 'Default show all new pages in the XML map', NULL, 'checkbox', NULL, 1, 20, 5, NULL, NULL, NULL, NULL),
+(89, 'page_new_pages_xml_map_update', 'Default new pages update frequency', NULL, 'select', 1, 2, 20, 5, NULL, NULL, NULL, NULL),
+(90, 'page_new_pages_xml_map_priority', 'Default new pages priority', 'Xml map priority description', 'float', 1, 3, 20, 5, NULL, NULL, '$value =  (float) Localization\\Utility\\LocalizationLocale::convertFromLocalizedValue(''__value__'', ''float''); return $value >= 0 && $value <= 1;', 'Enter a correct priority value'),
+(91, 'page_new_pages_hidden_for', 'Default new pages are hidden for', NULL, 'multicheckbox', NULL, 1, 21, 5, NULL, 'return Acl\\Service\\Acl::getAclRoles(false, true);', NULL, NULL),
+(92, 'page_new_widgets_layout', 'Default widgets layout', NULL, 'select', NULL, 1, 22, 5, NULL, 'return Page\\Service\\Page::getWidgetLayouts();', NULL, NULL);
 
 CREATE TABLE `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -987,7 +1005,17 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (89, 77, 'tls', NULL),
 (90, 78, '10', NULL),
 (91, 31, '587', NULL),
-(92, 79, 'plain', NULL);
+(92, 79, 'plain', NULL),
+(93, 80, '1', NULL),
+(94, 81, '1', NULL),
+(95, 82, '1', NULL),
+(96, 83, '1', NULL),
+(97, 85, '100', NULL),
+(98, 87, '100', NULL),
+(99, 88, '1', NULL),
+(100, 89, 'weekly', NULL),
+(101, 90, '0.5', NULL),
+(102, 92, '1', NULL);
 
 CREATE TABLE `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1012,7 +1040,14 @@ INSERT INTO `application_setting_predefined_value` (`setting_id`, `value`) VALUE
 (79, 'login'),
 (79, 'smtp'),
 (79, 'plain'),
-(79, 'crammd5');
+(79, 'crammd5'),
+(89, 'always'),
+(89, 'hourly'),
+(89, 'daily'),
+(89, 'weekly'),
+(89, 'monthly'),
+(89, 'yearly'),
+(89, 'never');
 
 CREATE TABLE `application_event` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1071,7 +1106,9 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (42, 'application_deactivate_custom_module', 1, 'Event - Deactivating custom modules'),
 (43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules'),
 (44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates'),
-(45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules');
+(45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules'),
+(46, 'layout_delete', 6, 'Event - Deleting layouts'),
+(47, 'localization_delete', 7, 'Event - Deleting localizations');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1239,45 +1276,35 @@ CREATE TABLE `page_system` (
     `title` VARCHAR(50) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_user_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `user_menu_order` SMALLINT(5) NOT NULL DEFAULT '0',    
-    `menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `footer_menu_order` SMALLINT(5) DEFAULT NULL,    
-    `layout` SMALLINT(5) UNSIGNED NOT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
     `disable_seo` TINYINT(1) UNSIGNED DEFAULT NULL,
-    `xml_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_xml_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `pages_provider` VARCHAR(50) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE (`slug`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
-        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `user_menu`, `menu`, `disable_menu`, `layout`, `privacy`, `forced_visibility`, `disable_user_menu`, `site_map`, `disable_site_map`, `footer_menu`, `disable_footer_menu`, `footer_menu_order`, `user_menu_order`, `disable_seo`, `xml_map`, `disable_xml_map`, `pages_provider`) VALUES
-(1,  'home', 'Home page', 5, NULL, 1, 1, 1, NULL, NULL, 1, 1, 1, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
-(2,  'login', 'Login', 2, NULL, 1, NULL, 1, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
-(3,  'user-register', 'Register', 2, NULL, 1, NULL, 1, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
-(4,  'user-forgot', 'Account recovery', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
-(5,  'user-activate', 'User activate', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL),
-(6,  'user-password-reset', 'Password reset', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL),
-(7,  'dashboard', 'User dashboard', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, NULL, 1, NULL),
-(8,  'user-delete', 'Delete your account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2, 1, NULL, 1, NULL),
-(9,  'sitemap', 'Sitemap', 5, NULL, 1, NULL, 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, 0, NULL, 1, NULL, NULL),
-(10, 'user', 'User profile', 2, NULL, NULL, 1, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, NULL, NULL, 1, NULL, 0, 1, NULL, NULL, 'User\\PageProvider\\UserPageProvider'),
-(11, 'user-edit', 'Edit account', 2, 1, NULL, NULL, 1, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, 1, NULL),
-(12, '404', '404 error', 5, NULL, NULL, 1, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, NULL, 1, NULL, 1, NULL, 0, 1, NULL, 1, NULL);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `disable_menu`, `privacy`, `forced_visibility`, `disable_user_menu`, `disable_site_map`, `disable_footer_menu`, `disable_seo`, `disable_xml_map`, `pages_provider`) VALUES
+(1,  'home', 'Home page', 5, 1, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL),
+(2,  'login', 'Login', 2, NULL, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL),
+(3,  'user-register', 'Register', 2, NULL, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL),
+(4,  'user-forgot', 'Account recovery', 2, NULL, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL),
+(5,  'user-activate', 'User activate', 2, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, 1, 1, 1, 1, NULL),
+(6,  'user-password-reset', 'Password reset', 2, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, 1, 1, 1, 1, NULL),
+(7,  'dashboard', 'User dashboard', 2, NULL, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, 1, 1, NULL),
+(8,  'user-delete', 'Delete your account', 2, NULL, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, 1, 1, NULL),
+(9,  'sitemap', 'Sitemap', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 'user', 'User profile', 2, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, 1, NULL, 'User\\PageProvider\\UserPageProvider'),
+(11, 'user-edit', 'Edit account', 2, NULL, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, 1, 1, NULL),
+(12, '404', '404 error', 5, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, 1, 1, 1, 1, NULL),
+(13, 'contact-form', 'Contact form', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 CREATE TABLE `page_widget` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1311,7 +1338,9 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1, NULL),
 (12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL),
 (13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL),
-(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL);
+(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL),
+(15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL),
+(16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1339,7 +1368,8 @@ INSERT INTO `page_system_page_depend` (`id`, `page_id`, `depend_page_id`) VALUES
 (9, 9, 1),
 (10, 10, 1),
 (11, 11, 1),
-(12, 12, 1);
+(12, 12, 1),
+(13, 13, 1);
 
 CREATE TABLE `page_system_widget_hidden` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1402,7 +1432,8 @@ INSERT INTO `page_system_widget_depend` (`id`, `page_id`, `widget_id`, `order`) 
 (10, 7,  14, 2),
 (11, 11, 13, 1),
 (12, 10, 9, 2),
-(13, 10, 10, 1);
+(13, 10, 10, 1),
+(14, 13, 15, 1);
 
 CREATE TABLE `page_widget_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1486,7 +1517,7 @@ CREATE TABLE `page_structure` (
         ON DELETE CASCADE,
     FOREIGN KEY (`layout`) REFERENCES `page_layout`(`id`)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
+        ON DELETE RESTRICT,
     FOREIGN KEY (`system_page`) REFERENCES `page_system`(`id`)
         ON UPDATE CASCADE
         ON DELETE RESTRICT
@@ -1510,13 +1541,11 @@ CREATE TABLE `page_widget_layout` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(30) NOT NULL,
     `title` VARCHAR(50) NOT NULL,
-    `default` TINYINT(1) UNSIGNED NULL,
-    PRIMARY KEY (`id`),
-    KEY `default` (`default`)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget_layout` (`id`, `name`, `title`, `default`) VALUES
-(1, 'panel', 'Panel', 1);
+INSERT INTO `page_widget_layout` (`id`, `name`, `title`) VALUES
+(1, 'panel', 'Panel');
 
 CREATE TABLE `page_widget_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1563,7 +1592,7 @@ CREATE TABLE `page_widget_setting` (
     `label` VARCHAR(150) DEFAULT NULL,
     `description` VARCHAR(255) DEFAULT NULL,
     `description_helper` TEXT DEFAULT NULL,
-    `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea') NOT NULL,
+    `type` ENUM('text', 'integer', 'float', 'email', 'textarea', 'password', 'radio', 'select', 'multiselect', 'checkbox', 'multicheckbox', 'url', 'date', 'date_unixtime', 'htmlarea', 'notification_title', 'notification_message') NOT NULL,
     `required` TINYINT(1) UNSIGNED DEFAULT NULL,
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     `category` SMALLINT(5) UNSIGNED DEFAULT NULL,
@@ -1580,8 +1609,14 @@ CREATE TABLE `page_widget_setting` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`) VALUES
-(1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1);
+INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`) VALUES
+(1, 'page_html_content', 1, 'Html content', 'htmlarea', NULL, 2, 1, NULL),
+(2, 'page_contact_form_email', 15, 'Email', 'email', 1, 1, 1, 'Email address which uses for receiving messages from the contact form'),
+(3, 'page_contact_form_title', 15, 'Message title', 'notification_title', 1, 1, 1, 'Contact form notification'),
+(4, 'page_contact_form_message', 15, 'Message', 'notification_message', 1, 1, 1, NULL),
+(5, 'page_contact_form_captcha', 15, 'Show captcha', 'checkbox', NULL, 2, 1, NULL),
+(6, 'page_sidebar_menu_type', 16, 'Type of the sidebar menu', 'select', 1, 1, 1, NULL),
+(7, 'page_sidebar_menu_show_dynamic', 16, 'Show dynamic pages', 'checkbox', NULL, 2, 1, NULL);
 
 CREATE TABLE `page_widget_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1591,6 +1626,10 @@ CREATE TABLE `page_widget_setting_predefined_value` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUES
+(6, 'sidebar_menu_subpages'),
+(6, 'sidebar_menu_current_level');
 
 CREATE TABLE `page_widget_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1606,6 +1645,29 @@ CREATE TABLE `page_widget_setting_value` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `page_widget_setting_default_value` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `value` TEXT NOT NULL,
+    `language` CHAR(2) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`setting_id`) REFERENCES `page_widget_setting`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `page_widget_setting_default_value` (`id`, `setting_id`, `value`, `language`) VALUES
+(1, 2, '__site_email_value__', NULL),
+(2, 3, 'A message from the contact form', NULL),
+(3, 3, 'Сообщение из контактной формы', 'ru'),
+(4, 4, '<p><b>User name:</b> __RealName__</p>\r\n<p><b>Email:</b> __Email__</p>\r\n<p><b>Phone:</b> __Phone__</p>\r\n<br /><p>__Message__</p>', NULL),
+(5, 4, '<p><b>Имя пользователя:</b> __RealName__</p>\r\n<p><b>Email:</b> __Email__</p>\r\n<p><b>Телефон:</b> __Phone__</p>\r\n<br /><p>__Message__</p>', 'ru'),
+(6, 5, '1', NULL),
+(7, 6, 'sidebar_menu_subpages', NULL);
 
 CREATE TABLE `page_widget_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

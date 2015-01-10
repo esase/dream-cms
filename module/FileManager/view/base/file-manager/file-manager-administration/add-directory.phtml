@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle', 'mainPageTitle') ?>
+<?php $this->declareVars('subPageTitle', 'mainPageTitle', 'extraActions') ?>
 
 <?php $this->subPageTitle  = $this->translate('Add a directory') ?>
 <?php $this->mainPageTitle = $this->translate('List of files') ?>
@@ -48,10 +48,24 @@
     <?php endif; ?>
 <?php $this->placeholder('form')->captureEnd() ?>
 
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'controller' => 'files-manager-administration',
+        'action' => 'add-file',
+        'query' => [
+            'path' => $this->path
+        ],
+        'name' => $this->translate('Add a file'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
 <?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
     'user_directories' => $this->user_directories,
     'action' => $this->placeholder('form'),
     'action_title' => $this->translate('General info'),
     'path' => $this->path,
-    'filters' => []
+    'filters' => [],
+    'extra_actions' => $this->extraActions
 ]) ?>

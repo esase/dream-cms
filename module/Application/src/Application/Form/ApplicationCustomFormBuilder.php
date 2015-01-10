@@ -252,7 +252,7 @@ class ApplicationCustomFormBuilder extends Form
                     throw new InvalidArgumentException('Values provider should return only an array');
                 }
 
-                $elementValues = array_merge($elementValues, $valuesProvider); 
+                $elementValues = $elementValues + $valuesProvider; 
             }
 
             if (!$elementType || !$elementName) {

@@ -62,11 +62,6 @@ class PageBase extends ApplicationAbstractBase
     const WIDGET_TYPE_SYSTEM = 'system';
 
     /**
-     * Default widget layout
-     */
-    const DEFAULT_WIDGET_LAYOUT = 1;
-
-    /**
      * Widget duplicate
      */
     const WIDGET_DUPLICATE = 1;
@@ -448,18 +443,39 @@ class PageBase extends ApplicationAbstractBase
      * Clear widgets settings cache
      *
      * @param integer $pageId
+     * @param string $language
      * @return boolean
      */
-    public function clearWidgetsSettingsCache($pageId)
+    public function clearWidgetsSettingsCache($pageId, $language = null)
     {
-        $cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId);
+        // clear all caches
+        if (!$language) {
+            // get all localizations
+            $localizations = LocalizationService::getLocalizations();
 
-        // clear a page's widgets settings cache
-        if ($this->staticCacheInstance->hasItem($cacheName)) {
-            return $this->staticCacheInstance->removeItem($cacheName);
+            foreach ($localizations as $localization) {
+                $cacheName = CacheUtility::
+                        getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId . '_' . $localization['language']);
+
+                // clear a page's widgets settings cache
+                if ($this->staticCacheInstance->hasItem($cacheName)) {
+                    if (false === ($result = $this->staticCacheInstance->removeItem($cacheName))) {
+                        return $result;
+                    }
+                }
+            }
+        }
+        else {
+            $cacheName = CacheUtility::getCacheName(self::CACHE_WIDGETS_SETTINGS_BY_PAGE . $pageId . '_' . $language);
+
+            if ($this->staticCacheInstance->hasItem($cacheName)) {
+                if (false === ($result = $this->staticCacheInstance->removeItem($cacheName))) {
+                    return $result;
+                }
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -526,13 +542,6 @@ class PageBase extends ApplicationAbstractBase
                 ]
             )
             ->join(
-                ['i' => 'page_widget_layout'],
-                new Expression('i.default  = ?', [PageWidget::DEFAULT_WIDGET_LAYOUT]),                
-                [
-                    'widget_default_layout' => 'id'
-                ]
-            )
-            ->join(
                 ['f' => 'page_system'],
                 'f.id = a.system_page',
                 [
@@ -543,7 +552,8 @@ class PageBase extends ApplicationAbstractBase
                     'disable_footer_menu',
                     'disable_user_menu',
                     'forced_visibility',
-                    'disable_seo'
+                    'disable_seo',
+                    'pages_provider'
                 ],
                 'left'
             )
@@ -551,6 +561,14 @@ class PageBase extends ApplicationAbstractBase
                 ['g' => 'application_module'],
                 new Expression('g.id = a.module and g.status = ?', [self::MODULE_STATUS_ACTIVE]),
                 []
+            )
+            ->join(
+                ['h' => 'page_structure'],
+                'a.parent_id = h.id',
+                [
+                    'parent_slug' => 'slug'
+                ],
+                'left'
             )
             ->limit(1)
             ->order('a.parent_id desc');

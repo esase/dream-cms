@@ -1,4 +1,7 @@
-<?php $this->declareVars('subPageTitle', 'parentSubPageTitle') ?>
+<?php use User\Model\UserBase as UserBaseModel ?>
+<?php use Acl\Model\AclBase as AclBaseModel ?>
+
+<?php $this->declareVars('extraActions', 'subPageTitle', 'parentSubPageTitle') ?>
 <?php $this->parentSubPageTitle = $this->translate('Browse allowed ACL resources') ?>
 <?php $this->subPageTitle = $this->translate($this->resourceSettings['resource_description']) ?>
 
@@ -44,8 +47,86 @@
     ]
 ]) ?>
 
-<!-- render a form -->
-<?php echo $this->partial('administration-partial/panel', [
-    'title' => $this->translate('General info'),
-    'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
-]) ?>
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'controller' => 'users-administration',
+        'action' => 'edit-user',
+        'params' => [
+          'slug' => $this->user['user_id']
+        ],
+        'name' => $this->translate('Edit the user'),
+        'check_acl' => true
+    ],
+    [
+        'hide_action' =>  UserBaseModel::DEFAULT_USER_ID == $this->user['user_id'],
+        'controller' => 'users-administration',
+        'action' => 'edit-role',
+        'params' => [
+            'slug' => $this->user['user_id']
+        ],
+        'name' => $this->translate('Edit the user\'s role'),
+        'check_acl' => true
+    ],
+    [
+        'hide_action' => UserBaseModel::DEFAULT_USER_ID == $this->user['user_id'],
+        'controller' => 'users-administration',
+        'action' => 'delete',
+        'name' => $this->translate('Delete the user'),
+        'check_acl' => true,
+        'confirm' => $this->translate('User will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'users' : [{$this->user['user_id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'users-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
+    ],
+    [
+        'hide_action' => UserBaseModel::STATUS_APPROVED == $this->user['status'],
+        'controller' => 'users-administration',
+        'action' => 'approve',
+        'name' => $this->translate('Approve the user'),
+        'check_acl' => true,
+        'confirm' => $this->translate('User will be approved. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'users' : [{$this->user['user_id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'users-administration', 'action' => 'acl-resource-settings', 'slug' => $this->resourceSettings['connection']], ['query' => ['user' => $this->user['user_id']], 'force_canonical' => true])}'}) }"
+    ],
+    [
+        'hide_action' => UserBaseModel::STATUS_APPROVED != $this->user['status'],
+        'controller' => 'users-administration',
+        'action' => 'disapprove',
+        'name' => $this->translate('Disapprove the user'),
+        'check_acl' => true,
+        'confirm' => $this->translate('User will be disapproved. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'users' : [{$this->user['user_id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'users-administration', 'action' => 'acl-resource-settings', 'slug' => $this->resourceSettings['connection']], ['query' => ['user' => $this->user['user_id']], 'force_canonical' => true])}'}) }"
+    ],
+    [
+        'controller' => 'users-administration',
+        'action' => 'add-user',
+        'name' => $this->translate('Add a user'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+   <?php if (!$this->extraActions): ?> 
+        <div class="col-md-12">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('General info'),
+                'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
+            ]) ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
+        </div>
+        <div class="col-md-8">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('General info'),
+                'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>

@@ -2,9 +2,11 @@
 namespace Application;
 
 use User\Service\UserIdentity as UserIdentityService;
+use Application\Utility\ApplicationCache as ApplicationCacheUtility;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
+use Localization\Event\LocalizationEvent;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Mvc\MvcEvent;
 use Zend\Log\Writer\FirePhp as FirePhp;
@@ -133,6 +135,11 @@ class Module implements ConsoleUsageProviderInterface
             // init session
             $this->initSession();
         }
+
+        $eventManager = LocalizationEvent::getEventManager();
+        $eventManager->attach(LocalizationEvent::DELETE, function ($e) {
+            ApplicationCacheUtility::clearSettingCache();
+        });
     }
 
     /**

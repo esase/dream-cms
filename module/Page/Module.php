@@ -1,9 +1,12 @@
 <?php
 namespace Page;
 
+use Acl\Event\AclEvent;
+use Page\Utility\PageCache as PageCacheUtility;
+use Localization\Service\Localization as LocalizationService;
+use Localization\Event\LocalizationEvent;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\ModuleManager\ModuleManagerInterface;
-use Localization\Service\Localization as LocalizationService;
 
 class Module
 {
@@ -22,6 +25,18 @@ class Module
     {
         // get service manager
         $this->serviceLocator = $moduleManager->getEvent()->getParam('ServiceManager');
+
+        // clear cache
+        $eventManager = AclEvent::getEventManager();
+        $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
+            PageCacheUtility::clearPageCache();
+        });
+
+        // clear cache
+        $eventManager = LocalizationEvent::getEventManager();
+        $eventManager->attach(LocalizationEvent::DELETE, function ($e) {
+            PageCacheUtility::clearPageCache();
+        });
     }
 
     /**
@@ -74,7 +89,9 @@ class Module
                 'pageWidgetTitle' => 'Page\View\Helper\PageWidgetTitle',
                 'pagePosition' => 'Page\View\Helper\PagePosition',
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
-                'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget'                
+                'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget',
+                'pageContactFormWidget' => 'Page\View\Widget\PageContactFormWidget',
+                'pageSidebarMenuWidget' => 'Page\View\Widget\PageSidebarMenuWidget'
             ],
             'factories' => [
                 'pageTree' =>  function() {

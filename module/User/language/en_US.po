@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"user\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2014-12-22 12:30+0600\n"
+"PO-Revision-Date: 2015-01-06 11:46+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,33 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "The selected user has been deleted"
+msgstr "The selected user has been deleted"
+
+msgid "The selected user has been approved"
+msgstr "The selected user has been approved"
+
+msgid "The selected user has been disapproved"
+msgstr "The selected user has been disapproved"
+
+msgid "User will be disapproved. Are you sure?"
+msgstr "User will be disapproved. Are you sure?"
+
+msgid "Disapprove the user"
+msgstr "Disapprove the user"
+
+msgid "User will be approved. Are you sure?"
+msgstr "User will be approved. Are you sure?"
+
+msgid "Approve the user"
+msgstr "Approve the user"
+
+msgid "Delete the user"
+msgstr "Delete the user"
+
+msgid "User will be deleted. Are you sure?"
+msgstr "User will be deleted. Are you sure?"
 
 msgid "User module description"
 msgstr "Module helps you to manage users (create, delete, approve, etc)"

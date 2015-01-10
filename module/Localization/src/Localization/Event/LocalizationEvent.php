@@ -12,6 +12,11 @@ class LocalizationEvent extends ApplicationAbstractEvent
     const GET_LOCALIZATIONS = 'localization_get_localizations_via_xmlrpc';
 
     /**
+     * Delete localization event
+     */
+    const DELETE = 'localization_delete';
+
+    /**
      * Fire get localizations via XmlRpc event
      *
      * @return void
@@ -29,5 +34,26 @@ class LocalizationEvent extends ApplicationAbstractEvent
 
         self::fireEvent(self::GET_LOCALIZATIONS, 
                 0, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire delete localization event
+     *
+     * @param integer $localizationId
+     * @return void
+     */
+    public static function fireDeleteLocalizationEvent($localizationId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Localization deleted by guest'
+            : 'Event - Localization deleted by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$localizationId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $localizationId];
+
+        self::fireEvent(self::DELETE, 
+                $localizationId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

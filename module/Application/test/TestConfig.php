@@ -5,6 +5,7 @@ return [
         'Application',
         'Acl',
         'User',
+        'Layout',
         'Localization'
     ],
     'module_listener_options' => [

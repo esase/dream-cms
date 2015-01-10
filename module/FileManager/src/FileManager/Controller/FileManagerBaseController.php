@@ -275,6 +275,9 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
                 $userPath = $this->getUserPath();
 
                 // process files names
+                $deleteResult = false;
+                $deletedCount = 0;
+
                 foreach ($fileNames as $file) {
                     // check the permission and increase permission's actions track
                     if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
@@ -294,18 +297,26 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
 
                         break;
                     }
+
+                    $deletedCount++;
                 }
 
                 if (true === $deleteResult) {
+                    $message = $deletedCount > 1
+                        ? 'Selected files and dirs have been deleted'
+                        : 'The selected file or dir has been deleted';
+
                     $this->flashMessenger()
                         ->setNamespace('success')
-                        ->addMessage($this->getTranslator()->translate('Selected files and dirs have been deleted'));
+                        ->addMessage($this->getTranslator()->translate($message));
                 }
             }
         }
 
         // redirect back
-        return $this->redirectTo(null, null, [], true);
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo(null, null, [], true);
     }
 
     /**

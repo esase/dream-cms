@@ -82,7 +82,7 @@ function showConfirmPopup(confirmTitle, cancelTitle, link, callback)
 
             switch($(this).attr('action')) {
                 case 'confirm' :
-                    callback.call();
+                    callback.call(this, link);
                     break;
             }
 

@@ -42,6 +42,12 @@ class PageTree extends AbstractHelper
     protected $disabledTree;
 
     /**
+     * Use slug
+     * @var boolean
+     */
+    protected $useSlug = false;
+
+    /**
      * Class constructor
      *
      * @param array $pagesTree
@@ -59,13 +65,15 @@ class PageTree extends AbstractHelper
      * @param boolean $addRootPage
      * @param array $filters
      * @param boolean $disabledTree
+     * @param boolean $useSlug
      * @return string
      */
-    public function __invoke($treeId, $activePageId = null, $addRootPage = true, array $filters = [], $disabledTree = false)
+    public function __invoke($treeId, $activePageId = null, $addRootPage = true, array $filters = [], $disabledTree = false, $useSlug = false)
     {
         $this->activePageId = $activePageId;
         $this->filters = $filters;
         $this->disabledTree = $disabledTree;
+        $this->useSlug = $useSlug;
 
         if (!$this->pages) {
             return $this->getView()->partial('page/partial/page-tree-empty');    
@@ -122,7 +130,8 @@ class PageTree extends AbstractHelper
                 'active' => $this->activePageId == $pageOptions['id'],
                 'title' => $this->getView()->pageTitle($pageOptions),
                 'filters' => $this->filters,
-                'disabled_tree' => $this->disabledTree
+                'disabled_tree' => $this->disabledTree,
+                'use_slug' => $this->useSlug
             ]);
 
             // check for children

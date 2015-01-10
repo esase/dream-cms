@@ -1,11 +1,12 @@
 <?php
 namespace Page\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Page\Service\Page as PageService;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
 use Page\Event\PageEvent;
 use Zend\Http\Response;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class PageController extends AbstractActionController
 {
@@ -116,6 +117,7 @@ class PageController extends AbstractActionController
         $viewModel->setTemplate($this->
                 getModel()->getLayoutPath() . $pageInfo['layout']);
 
+        PageService::setCurrentPage($pageInfo);
         return $viewModel;
     }
 

@@ -1,9 +1,10 @@
 <?php
 namespace Page\View\Widget;
- 
+
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationRouteParam as RouteParamUtility;
+use Localization\Service\Localization as LocalizationService;
 use Zend\Http\Response;
 use Zend\View\Helper\AbstractHelper;
 
@@ -214,8 +215,10 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
      */
     protected function getWidgetSetting($name)
     {
+        $currentlanguage = LocalizationService::getCurrentLocalization()['language'];
+
         return  $this->getWidgetSettingModel()->
-                getWidgetSetting($this->pageId, $this->widgetConnectionId, $name);
+                getWidgetSetting($this->pageId, $this->widgetConnectionId, $name, $currentlanguage);
     }
 
     /**

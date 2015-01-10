@@ -2,6 +2,7 @@
 namespace Page\Form;
 
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
+use Application\Service\ApplicationSetting as SettingService;
 use Application\Form\ApplicationAbstractCustomForm;
 use Application\Form\ApplicationCustomFormBuilder;
 use Localization\Utility\LocalizationLocale as LocalizationUtility;
@@ -39,16 +40,6 @@ class Page extends ApplicationAbstractCustomForm
      * Redirect url max string length
      */
     const REDIRECT_URL_MAX_LENGTH = 255;
-
-    /**
-     * Min xml map priority
-     */
-    const MIN_XML_MAP_PRIORITY = 0;
-
-    /**
-     * Max xml map priority
-     */
-    const MAX_XML_MAP_PRIORITY = 1;
 
     /**
      * Form name
@@ -291,15 +282,14 @@ class Page extends ApplicationAbstractCustomForm
             'label' => 'Page update frequency',
             'required' => true,
             'values' => [
-                'always' => 'Always',
-                'hourly' => 'Hourly',
-                'daily' => 'Daily',
-                'weekly' => 'Weekly',
-                'monthly' => 'Monthly',
-                'yearly' => 'Yearly',
-                'never' => 'Never',
+                'always' => 'always',
+                'hourly' => 'hourly',
+                'daily' => 'daily',
+                'weekly' => 'weekly',
+                'monthly' => 'monthly',
+                'yearly' => 'yearly',
+                'never' => 'never',
             ],
-            'value' => 'weekly',
             'category' => 'Xml map'
         ],
         'xml_map_priority' => [
@@ -307,7 +297,6 @@ class Page extends ApplicationAbstractCustomForm
             'type' => ApplicationCustomFormBuilder::FIELD_FLOAT,
             'label' => 'Page priority',
             'required' => true,
-            'value' => '0.5',
             'category' => 'Xml map',
             'description' => 'Xml map priority description',
             'description_params' => []
@@ -328,11 +317,19 @@ class Page extends ApplicationAbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // add descriptions params
-            $this->formElements['xml_map_priority']['description_params'] = [
-                self::MIN_XML_MAP_PRIORITY,
-                self::MAX_XML_MAP_PRIORITY
-            ];
+            // set default values
+            $this->formElements['active']['value'] = (int) SettingService::getSetting('page_new_pages_active');
+            $this->formElements['layout']['value'] = (int) SettingService::getSetting('page_new_pages_layout');
+            $this->formElements['menu']['value'] = (int) SettingService::getSetting('page_new_pages_in_main_menu');
+            $this->formElements['site_map']['value'] = (int) SettingService::getSetting('page_new_pages_in_site_map');
+            $this->formElements['footer_menu']['value'] = (int) SettingService::getSetting('page_new_pages_in_footer_menu');
+            $this->formElements['footer_menu_order']['value'] = (int) SettingService::getSetting('page_new_pages_footer_menu_order');
+            $this->formElements['user_menu']['value'] = (int) SettingService::getSetting('page_new_pages_in_user_menu');
+            $this->formElements['user_menu_order']['value'] = (int) SettingService::getSetting('page_new_pages_user_menu_order');
+            $this->formElements['xml_map']['value'] = (int) SettingService::getSetting('page_new_pages_in_xml_map');
+            $this->formElements['xml_map_update']['value'] = SettingService::getSetting('page_new_pages_xml_map_update');
+            $this->formElements['xml_map_priority']['value'] = (float) SettingService::getSetting('page_new_pages_xml_map_priority');
+            $this->formElements['visibility_settings']['value'] = SettingService::getSetting('page_new_pages_hidden_for');
 
             if ($this->isSystemPage) {
                 $this->formElements['title']['description'] = 'The page uses the system default title';
@@ -674,6 +671,6 @@ class Page extends ApplicationAbstractCustomForm
     public function validateXmlMapPriority($value, array $context = [])
     {
         $value = (float) LocalizationUtility::convertFromLocalizedValue($value, 'float');
-        return $value >= self::MIN_XML_MAP_PRIORITY && $value <= self::MAX_XML_MAP_PRIORITY;
+        return $value >= 0 && $value <= 1;
     }
 }

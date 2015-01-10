@@ -10,7 +10,10 @@ use Application\Service\Application as ApplicationService;
 use User\Event\UserEvent;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Model\UserBase as UserBaseModel;
+use User\Utility\UserCache as UserCacheUtility;
 use Localization\Module as LocalizationModule;
+use Layout\Event\LayoutEvent;
+use Localization\Event\LocalizationEvent;
 use Zend\ModuleManager\ModuleManagerInterface;
 use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Console\Request as ConsoleRequest;
@@ -73,6 +76,17 @@ class Module
 
         // init time zone
         $this->initTimeZone();
+
+        // clear users caches
+        $eventManager = LayoutEvent::getEventManager();
+        $eventManager->attach(LayoutEvent::DELETE, function ($e) {
+            UserCacheUtility::clearUserCache();
+        });
+
+        $eventManager = LocalizationEvent::getEventManager();
+        $eventManager->attach(LocalizationEvent::DELETE, function ($e) {
+            UserCacheUtility::clearUserCache();
+        });
     }
 
     /**
