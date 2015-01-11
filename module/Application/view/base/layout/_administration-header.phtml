@@ -98,7 +98,14 @@
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </ul>
-                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif; ?>">
+                    <ul class="nav navbar-nav navbar-<?php if ($this->localization()->isCurrentLanguageLtr()): ?>right<?php else: ?>left<?php endif ?>">
+                        <?php if($this->help_url): ?>
+                            <li>
+                                <a target="_blank" href="<?php echo $this->applicationConfig('support_url') ?>/<?php echo $this->localization()->getCurrentLanguage() . $this->help_url ?>" title="<?php echo $this->escapeHtmlAttr($this->translate('View help')) ?>">
+                                    <img src="<?php  echo $this->layoutAsset('icon/help_menu.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('View help')) ?>" />
+                                </a>
+                            </li>
+                        <?php endif ?>
                         <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
                             <!-- select language -->
                             <li class="dropdown">
