@@ -1,7 +1,8 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
     "hash": "e1271f65f799c601106f48e95496d363",
     "packages": [
@@ -11,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "b307f3d9ef0960b74ea8bd8d5bbdef2049368947"
+                "reference": "0c3e68dd0357321b5a5818c3aa832b1cc24a4b1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/b307f3d9ef0960b74ea8bd8d5bbdef2049368947",
-                "reference": "b307f3d9ef0960b74ea8bd8d5bbdef2049368947",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/0c3e68dd0357321b5a5818c3aa832b1cc24a4b1f",
+                "reference": "0c3e68dd0357321b5a5818c3aa832b1cc24a4b1f",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +48,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2014-10-23 22:36:02"
+            "time": "2014-12-09 02:30:54"
         },
         {
             "name": "firephp/firephp-core",
@@ -307,6 +308,8 @@
     "stability-flags": {
         "ezyang/htmlpurifier": 20
     },
+    "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.4.0"
     },

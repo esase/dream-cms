@@ -10,6 +10,7 @@ return [
     'Layout\View\Helper\LayoutHeadScript'        => __DIR__ . '/src/Layout/View/Helper/LayoutHeadScript.php',
     'Layout\View\Helper\LayoutHeadResource'      => __DIR__ . '/src/Layout/View/Helper/LayoutHeadResource.php',
     'Layout\Exception\LayoutException'           => __DIR__ . '/src/Layout/Exception/LayoutException.php',
+    'Layout\Event\LayoutEvent'                   => __DIR__ . '/src/Layout/Event/LayoutEvent.php',
     'Layout\Service\Layout'                      => __DIR__ . '/src/Layout/Service/Layout.php',
     'Layout\Model\LayoutBase'                    => __DIR__ . '/src/Layout/Model/LayoutBase.php',
     'Layout\Model\LayoutAdministration'          => __DIR__ . '/src/Layout/Model/LayoutAdministration.php',

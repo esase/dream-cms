@@ -1,36 +1,39 @@
 // RTL Media objects
 // --------------------------------------------------
 
-// Common styles
-// -------------------------
-
-// Clear the floats
-.media,
-.media-body {
-  overflow: hidden;
-  zoom: 1;
-}
-
 
 // Media image alignment
 // -------------------------
 
 .media {
   > .pull-left {
-    margin-right: @media-pull-margin;
+    margin-right: 10px;
     &.flip {
       margin-right: 0;
-      margin-left: @media-pull-margin;
+      margin-left: 10px;
     }
   }
   > .pull-right {
-      margin-left: @media-pull-margin;
+      margin-left: 10px;
     &.flip {
       margin-left: 0;
-      margin-right: @media-pull-margin;
+      margin-right: 10px;
     }
   }
 }
+
+.media-right,
+.media > .pull-right {
+  padding-right: 10px;
+  padding-left: initial;
+}
+
+.media-left,
+.media > .pull-left {
+  padding-left: 10px;
+  padding-right: initial;
+}
+
 
 // Media list variation
 // -------------------------
@@ -38,7 +41,7 @@
 // Undo default ul/ol styles
 .media-list {
   padding-right: 0;
-  padding-left: auto;
+  padding-left: initial;
   list-style: none;
 }
 

@@ -630,8 +630,9 @@ class PageAdministration extends PageBase
             $statement->execute();
             $connectionId = $this->adapter->getDriver()->getLastGeneratedValue();
 
-            // clear cache
+            // clear caches
             $this->clearLanguageSensitivePageCaches();
+            $this->clearWidgetsSettingsCache($pageId);
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {

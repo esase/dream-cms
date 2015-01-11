@@ -12,7 +12,7 @@
  */
 
 return [
-    'support_url' => 'http://dream-cms.com',
+    'support_url' => 'http://dream-cms.kg',
     'php_settings' => [
         'mbstring.internal_encoding' => 'UTF-8'
     ],
