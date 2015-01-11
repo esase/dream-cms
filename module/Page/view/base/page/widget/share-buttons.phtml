@@ -1,0 +1,18 @@
+<!-- AddToAny BEGIN -->
+<script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
+
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+    <?php if ($this->extra_buttons) : ?>
+        <a class="a2a_dd" href="https://www.addtoany.com/share_save"></a>
+    <?php endif ?>
+
+    <?php foreach($this->buttons as $button): ?>
+        <a class="a2a_button_<?php echo $this->escapeHtmlAttr(substr($button, strlen('share_'))) ?>"></a>
+    <?php endforeach ?>
+</div>
+
+<script type="text/javascript">
+    var a2a_config = a2a_config || {};
+    a2a_config.locale = "<?php echo $this->localization()->getCurrentLanguage() ?>";
+</script>
+<!-- AddToAny END -->

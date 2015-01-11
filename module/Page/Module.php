@@ -91,7 +91,8 @@ class Module
                 'pageHtmlWidget' => 'Page\View\Widget\PageHtmlWidget',
                 'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget',
                 'pageContactFormWidget' => 'Page\View\Widget\PageContactFormWidget',
-                'pageSidebarMenuWidget' => 'Page\View\Widget\PageSidebarMenuWidget'
+                'pageSidebarMenuWidget' => 'Page\View\Widget\PageSidebarMenuWidget',
+                'pageShareButtonsWidget' => 'Page\View\Widget\PageShareButtonsWidget'
             ],
             'factories' => [
                 'pageTree' =>  function() {

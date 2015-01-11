@@ -2,18 +2,342 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-10 17:37+0600\n"
+"PO-Revision-Date: 2015-01-11 13:05+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Show extra share buttons"
+msgstr "Show extra share buttons"
+
+msgid "Visible share buttons list"
+msgstr "Visible share buttons list"
+
+msgid "share_aim"
+msgstr "AIM"
+
+msgid "share_aol_mail"
+msgstr "AOL Mail"
+
+msgid "share_allvoices"
+msgstr "Allvoices"
+
+msgid "share_amazon_wish_list"
+msgstr "Amazon Wish List"
+
+msgid "share_app_net"
+msgstr "App.net"
+
+msgid "share_arto"
+msgstr "Arto"
+
+msgid "share_baidu"
+msgstr "Baidu"
+
+msgid "share_bebo"
+msgstr "Bebo"
+
+msgid "share_bibsonomy"
+msgstr "BibSonomy"
+
+msgid "share_bitty_browser"
+msgstr "Bitty Browser"
+
+msgid "share_blinklist"
+msgstr "Blinklist"
+
+msgid "share_blogmarks"
+msgstr "BlogMarks"
+
+msgid "share_blogger_post"
+msgstr "Blogger Post"
+
+msgid "share_bookmarks_fr"
+msgstr "Bookmarks.fr"
+
+msgid "share_box_net"
+msgstr "Box.net"
+
+msgid "share_buddymarks"
+msgstr "BuddyMarks"
+
+msgid "share_buffer"
+msgstr "Buffer"
+
+msgid "share_care2_news"
+msgstr "Care2 News"
+
+msgid "share_citeulike"
+msgstr "CiteULike"
+
+msgid "share_dzone"
+msgstr "DZone"
+
+msgid "share_delicious"
+msgstr "Delicious"
+
+msgid "share_design_float"
+msgstr "Design Float"
+
+msgid "share_diaspora"
+msgstr "Diaspora"
+
+msgid "share_digg"
+msgstr "Digg"
+
+msgid "share_diigo"
+msgstr "Diigo"
+
+msgid "share_email"
+msgstr "Email"
+
+msgid "share_evernote"
+msgstr "Evernote"
+
+msgid "share_facebook"
+msgstr "Facebook"
+
+msgid "share_fark"
+msgstr "Fark"
+
+msgid "share_flipboard"
+msgstr "Flipboard"
+
+msgid "share_folkd"
+msgstr "Folkd"
+
+msgid "share_friendfeed"
+msgstr "FriendFeed"
+
+msgid "share_funp"
+msgstr "FunP"
+
+msgid "share_google_bookmarks"
+msgstr "Google Bookmarks"
+
+msgid "share_google_gmail"
+msgstr "Google Gmail"
+
+msgid "share_google_plus"
+msgstr "Google +"
+
+msgid "share_hacker_news"
+msgstr "Hacker News"
+
+msgid "share_hatena"
+msgstr "Hatena"
+
+msgid "share_instapaper"
+msgstr "Instapaper"
+
+msgid "share_jamespot"
+msgstr "Jamespot"
+
+msgid "share_jumptags"
+msgstr "Jumptags"
+
+msgid "share_kakao"
+msgstr "Kakao"
+
+msgid "share_khabbr"
+msgstr "Khabbr"
+
+msgid "share_kindle_it"
+msgstr "Kindle It"
+
+msgid "share_line"
+msgstr "Line"
+
+msgid "share_linkagogo"
+msgstr "LinkaGoGo"
+
+msgid "share_linkatopia"
+msgstr "Linkatopia"
+
+msgid "share_linkedin"
+msgstr "LinkedIn"
+
+msgid "share_livejournal"
+msgstr "LiveJournal"
+
+msgid "share_mail_ru"
+msgstr "Mail.ru"
+
+msgid "share_mendeley"
+msgstr "Mendeley"
+
+msgid "share_meneame"
+msgstr "Meneame"
+
+msgid "share_mixi"
+msgstr "Mixi"
+
+msgid "share_myspace"
+msgstr "MySpace"
+
+msgid "share_netlog"
+msgstr "Netlog"
+
+msgid "share_netvouz"
+msgstr "Netvouz"
+
+msgid "share_newstrust"
+msgstr "NewsTrust"
+
+msgid "share_newsvine"
+msgstr "NewsVine"
+
+msgid "share_nowpublic"
+msgstr "NowPublic"
+
+msgid "share_odnoklassniki"
+msgstr "Odnoklassniki"
+
+msgid "share_oknotizie"
+msgstr "Oknotizie"
+
+msgid "share_orkut"
+msgstr "Orkut"
+
+msgid "share_outlook_com"
+msgstr "Outlook.com"
+
+msgid "share_phonefavs"
+msgstr "PhoneFavs"
+
+msgid "share_pinboard"
+msgstr "Pinboard"
+
+msgid "share_pinterest"
+msgstr "Pinterest"
+
+msgid "share_plurk"
+msgstr "Plurk"
+
+msgid "share_pocket"
+msgstr "Pocket"
+
+msgid "share_print"
+msgstr "Print"
+
+msgid "share_printfriendly"
+msgstr "PrintFriendly"
+
+msgid "share_protopage_bookmarks"
+msgstr "Protopage Bookmarks"
+
+msgid "share_pusha"
+msgstr "Pusha"
+
+msgid "share_qzone"
+msgstr "Qzone"
+
+msgid "share_reddit"
+msgstr "Reddit"
+
+msgid "share_rediff"
+msgstr "Rediff MyPage"
+
+msgid "share_segnalo"
+msgstr "Segnalo"
+
+msgid "share_sina_weibo"
+msgstr "Sina Weibo"
+
+msgid "share_sitejot"
+msgstr "SiteJot"
+
+msgid "share_slashdot"
+msgstr "Slashdot"
+
+msgid "share_springpad"
+msgstr "Springpad"
+
+msgid "share_startaid"
+msgstr "StartAid"
+
+msgid "share_stumbleupon"
+msgstr "StumbleUpon"
+
+msgid "share_stumpedia"
+msgstr "Stumpedia"
+
+msgid "share_symbaloo_feeds"
+msgstr "Symbaloo Feeds"
+
+msgid "share_technotizie"
+msgstr "Technotizie"
+
+msgid "share_tuenti"
+msgstr "Tuenti"
+
+msgid "share_tumblr"
+msgstr "Tumblr"
+
+msgid "share_twiddla"
+msgstr "Twiddla"
+
+msgid "share_twitter"
+msgstr "Twitter"
+
+msgid "share_typepad_post"
+msgstr "TypePad Post"
+
+msgid "share_vk"
+msgstr "VK"
+
+msgid "share_viadeo"
+msgstr "Viadeo"
+
+msgid "share_wanelo"
+msgstr "Wanelo"
+
+msgid "share_webnews"
+msgstr "Webnews"
+
+msgid "share_whatsapp"
+msgstr "WhatsApp"
+
+msgid "share_wists"
+msgstr "Wists"
+
+msgid "share_wordpress"
+msgstr "WordPress"
+
+msgid "share_wykop"
+msgstr "Wykop"
+
+msgid "share_xing"
+msgstr "XING"
+
+msgid "share_xerpi"
+msgstr "Xerpi"
+
+msgid "share_yahoo_bookmarks"
+msgstr "Yahoo Bookmarks"
+
+msgid "share_yahoo_mail"
+msgstr "Yahoo Mail"
+
+msgid "share_yahoo_messenger"
+msgstr "Yahoo Messenger"
+
+msgid "share_yoolink"
+msgstr "Yoolink"
+
+msgid "share_youmob"
+msgstr "YouMob"
+
+msgid "share_yummly"
+msgstr "Yummly"
 
 msgid "Show dynamic pages"
 msgstr "Show dynamic pages"

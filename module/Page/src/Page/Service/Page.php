@@ -63,7 +63,7 @@ class Page
      * @param array $page
      * @return void
      */
-    public function setCurrentPage(array $page)
+    public static function setCurrentPage(array $page)
     {
         self::$currentPage = $page;
     }
