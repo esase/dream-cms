@@ -109,16 +109,6 @@ class PageBase extends ApplicationAbstractBase
     }
 
     /**
-     * Get current language
-     *
-     * @return string
-     */
-    public function getCurrentLanguage()
-    {
-       return LocalizationService::getCurrentLocalization()['language']; 
-    }
-
-    /**
      * Get widgets connections
      *
      * @param string $language

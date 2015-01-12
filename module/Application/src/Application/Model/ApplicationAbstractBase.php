@@ -5,6 +5,7 @@ use Application\Service\Application as ApplicationService;
 use Application\Exception\ApplicationException;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Utility\ApplicationCache as CacheUtility;
+use Localization\Service\Localization as LocalizationService;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Cache\Storage\StorageInterface;
@@ -82,6 +83,16 @@ abstract class ApplicationAbstractBase extends Sql
 
         $this->serviceLocator = ServiceLocatorService::getServiceLocator();
         $this->staticCacheInstance = $staticCacheInstance;
+    }
+
+    /**
+     * Get current language
+     *
+     * @return string
+     */
+    public function getCurrentLanguage()
+    {
+       return LocalizationService::getCurrentLocalization()['language']; 
     }
 
     /**
