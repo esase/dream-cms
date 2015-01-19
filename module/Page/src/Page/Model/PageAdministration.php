@@ -1467,12 +1467,21 @@ class PageAdministration extends PageBase
             ? $orderBy
             : 'id';
 
+        $dependentCheckSelect = $this->select();
+        $dependentCheckSelect->from(['d' => 'page_system_page_depend'])
+            ->columns([
+                'id'
+            ])
+            ->where(['a.id' => new Expression('d.depend_page_id')])
+            ->limit(1);
+
         $select = $this->select();
         $select->from(['a' => 'page_system'])
             ->columns([
                 'id',
                 'title',
-                'slug'
+                'slug',
+                'dependent_page' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
             ])
             ->join(
                 ['b' => 'application_module'],
@@ -1491,14 +1500,6 @@ class PageAdministration extends PageBase
                 'left'
             )
             ->join(
-                ['d' => 'page_system_page_depend'],
-                'a.id = d.depend_page_id',
-                [
-                    'dependent_page' => 'id'
-                ],
-                'left'
-            )
-            ->join(
                 ['i' => 'page_structure'],
                 new Expression('a.slug = i.slug and i.language = ?', [$this->getCurrentLanguage()]),
                 [
@@ -1506,7 +1507,6 @@ class PageAdministration extends PageBase
                 ],
                 'left'
             )
-            ->group('a.id')
             ->order($orderBy . ' ' . $orderType)
             ->where->isNull('c.id');
 
