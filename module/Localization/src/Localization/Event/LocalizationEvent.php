@@ -39,10 +39,10 @@ class LocalizationEvent extends ApplicationAbstractEvent
     /**
      * Fire delete localization event
      *
-     * @param integer $localizationId
+     * @param string $language
      * @return void
      */
-    public static function fireDeleteLocalizationEvent($localizationId)
+    public static function fireDeleteLocalizationEvent($language)
     {
         // event's description
         $eventDesc = UserIdentityService::isGuest()
@@ -50,10 +50,10 @@ class LocalizationEvent extends ApplicationAbstractEvent
             : 'Event - Localization deleted by user';
 
         $eventDescParams = UserIdentityService::isGuest()
-            ? [$localizationId]
-            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $localizationId];
+            ? [$language]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $language];
 
         self::fireEvent(self::DELETE, 
-                $localizationId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+                $language, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }
