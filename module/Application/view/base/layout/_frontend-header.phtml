@@ -63,7 +63,7 @@
                     <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
 
                         <?php foreach($this->localization()->getAllLocalizations() as $language): ?>
-                            <?php if (false !== $this->pageUrl($this->page['slug'], [], $language['language'])): ?>
+                            <?php if (empty($this->page['pages_provider']) && false !== $this->pageUrl($this->page['slug'], [], $language['language'])): ?>
                                 <?php $this->localizationPages[$language['language']] = $this->pageUrl($this->page['slug'], [], $language['language']) ?>
                             <?php elseif (false !== $this->pageUrl(null, [], $language['language'])): ?>
                                 <?php $this->localizationPages[$language['language']] = $this->pageUrl(null, [], $language['language']) ?>

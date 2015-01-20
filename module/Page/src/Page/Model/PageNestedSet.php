@@ -302,6 +302,7 @@ class PageNestedSet extends ApplicationAbstractNestedSet
             'i.id = ' . $this->tableGateway->table . '.system_page', 
             [
                 'privacy',
+                'pages_provider',
                 'system_title' => 'title'
             ],
             'left'
