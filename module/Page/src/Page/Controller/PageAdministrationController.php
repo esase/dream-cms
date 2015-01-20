@@ -809,7 +809,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         $settingsForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Page\Form\PageWidgetSetting')
-            ->showVisibilitySettings(!$widget['widget_forced_visibility'])
+            ->showVisibilitySettings(!$widget['widget_forced_visibility'] && !$widget['widget_page_depend_connection_id'])
             ->setModel($settings)
             ->setWidgetDescription($this->getTranslator()->translate($widget['widget_description']));
 
