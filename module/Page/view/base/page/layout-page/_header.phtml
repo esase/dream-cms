@@ -1,4 +1,4 @@
-<?php $this->declareVars('description', 'keywords', 'robots', 'pageTitle') ?>
+<?php $this->declareVars('description', 'keywords', 'robots', 'pageTitle', 'defaultMetaDescription', 'defaultMetaKeywords') ?>
 <?php
     foreach ($this->headMeta()->getContainer() as $item) {
         if ($item->type === 'name'
@@ -11,17 +11,25 @@
 
 <?php $this->pageTitle = $this->pageTitle($this->page) ?>
 
+<?php $this->defaultMetaDescription = !empty($this->layout()->defaultMetaDescription) 
+    ? $this->layout()->defaultMetaDescription 
+    : $this->pageTitle ?>
+
+<?php $this->defaultMetaKeywords = !empty($this->layout()->defaultMetaKeywords) 
+    ? $this->layout()->defaultMetaKeywords
+    : $this->pageTitle ?>
+
 <?php if (!$this->description): ?>
     <?php $this->headMeta()->appendName('description', $this->page['meta_description'] 
         ? $this->page['meta_description'] 
-        : rtrim($this->pageTitle . '. ' . $this->applicationSetting('application_meta_description'), '. '))
+        : rtrim($this->defaultMetaDescription . '. ' . $this->applicationSetting('application_meta_description'), '. '))
     ?>
 <?php endif ?>
 
 <?php if (!$this->keywords): ?>
     <?php $this->headMeta()->appendName('keywords', $this->page['meta_keywords'] 
         ? $this->page['meta_keywords'] 
-        : rtrim($this->pageTitle . ',' . $this->applicationSetting('application_meta_keywords'), ','))
+        : rtrim($this->defaultMetaKeywords . ',' . $this->applicationSetting('application_meta_keywords'), ','))
     ?>
 <?php endif ?>
 
