@@ -40,4 +40,11 @@ interface IPageWidget
      * @return object fluent interface
      */
     public function setWidgetPosition($position);
+
+    /**
+     * Get widget connection url
+     *
+     * @return string
+     */
+    public function getWidgetConnectionUrl();
 }

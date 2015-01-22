@@ -330,6 +330,7 @@ class Module implements ConsoleUsageProviderInterface
     {
         return [
             'invokables' => [
+                'applicationCalendar' => 'Application\View\Helper\ApplicationCalendar',
                 'applicationSetting' => 'Application\View\Helper\ApplicationSetting',
                 'applicationRoute' => 'Application\View\Helper\ApplicationRoute',
                 'applicationRandId' => 'Application\View\Helper\ApplicationRandId',

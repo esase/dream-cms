@@ -266,4 +266,37 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     {
         return $this->widgetRedirected;
     }
+
+    /**
+     * Get widget connection url
+     * 
+     * @param array $removeParams
+     * @return string
+     */
+    public function getWidgetConnectionUrl($removeParams = [])
+    {
+        $url = parse_url($this->getView()->serverUrl(true));
+
+        // build url
+        $baseUrlParams = [];
+        $baseUrlParams['widget_connection'] = $this->widgetConnectionId;
+        $baseUrlParams['widget_position'] = $this->widgetPosition;
+
+        // merge url params
+        if (!empty($url['query'])) {
+            parse_str($url['query'], $urlParams);
+            
+            if (!empty($removeParams)) {
+                foreach ($removeParams as $param) {
+                    if (array_key_exists($param, $urlParams)) {
+                        unset($urlParams[$param]);
+                    }
+                }
+            }
+
+            $baseUrlParams = array_merge($urlParams, $baseUrlParams);
+        }
+
+        return $url['scheme'] . '://' . $url['host'] . $url['path'] . '?' . http_build_query($baseUrlParams);
+    }
 }

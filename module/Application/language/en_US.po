@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-17 14:35+0600\n"
+"PO-Revision-Date: 2015-01-21 19:17+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,27 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Sun"
+msgstr "Sun"
+
+msgid "Sat"
+msgstr "Sat"
+
+msgid "Fri"
+msgstr "Fri"
+
+msgid "Thu"
+msgstr "Thu"
+
+msgid "Wed"
+msgstr "Wed"
+
+msgid "Tue"
+msgstr "Tue"
+
+msgid "Mon"
+msgstr "Mon"
 
 msgid "Editing"
 msgstr "Editing"

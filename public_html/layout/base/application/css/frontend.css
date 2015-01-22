@@ -1,4 +1,7 @@
 @import "common.css";
+.relative-wrapper {
+  position: relative;
+}
 div.alert {
   margin-top: 0;
   margin-bottom: 20px;

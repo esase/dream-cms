@@ -1,0 +1,65 @@
+<?php $this->declareVars('index', 'rowsCount', 'calendarDay') ?>
+<?php $this->index = 1 ?>
+<?php $this->rowsCount = $this->days_in_month + $this->week_offset > 35 ? 6 : 5 ?>
+
+<?php if((int) $this->month < 10): ?>
+    <?php $this->month = '0' . $this->month ?>
+<?php endif ?>
+
+<p>
+    <?php if (!$this->localization()->isCurrentLanguageLtr()): ?>
+        <a class="btn btn-default btn-sm" href="javascript:void(0)" onclick="ajaxQuery('<?php echo $this->escapeJs($this->wrapper) ?>', '<?php echo $this->escapeJs($this->url) ?>', '', '', {'month' : <?php echo (int) $this->prev_month ?>, 'year' : <?php echo (int) $this->prev_year ?>})">
+            <span class="glyphicon glyphicon-arrow-right"></span>
+        </a>
+        <a class="btn btn-default btn-sm" href="javascript:void(0)" onclick="ajaxQuery('<?php echo $this->escapeJs($this->wrapper) ?>', '<?php echo $this->escapeJs($this->url) ?>', '', '', {'month' : <?php echo (int) $this->next_month ?>, 'year' : <?php echo (int) $this->next_year ?>})">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+        </a>
+    <?php else: ?>
+        <a class="btn btn-default btn-sm" href="javascript:void(0)" onclick="ajaxQuery('<?php echo $this->escapeJs($this->wrapper) ?>', '<?php echo $this->escapeJs($this->url) ?>', '', '', {'month' : <?php echo (int) $this->prev_month ?>, 'year' : <?php echo (int) $this->prev_year ?>})">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+        </a>
+        <a class="btn btn-default btn-sm" href="javascript:void(0)" onclick="ajaxQuery('<?php echo $this->escapeJs($this->wrapper) ?>', '<?php echo $this->escapeJs($this->url) ?>', '', '', {'month' : <?php echo (int) $this->next_month ?>, 'year' : <?php echo (int) $this->next_year ?>})">
+            <span class="glyphicon glyphicon-arrow-right"></span>
+        </a>
+    <?php endif ?>
+    <b><?php echo $this->escapeHtml($this->month_name) ?></b>
+</p>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class="text-center active"><?php echo $this->translate('Mon') ?></th>
+            <th class="text-center active"><?php echo $this->translate('Tue') ?></th>
+            <th class="text-center active"><?php echo $this->translate('Wed') ?></th>
+            <th class="text-center active"><?php echo $this->translate('Thu') ?></th>
+            <th class="text-center active"><?php echo $this->translate('Fri') ?></th>
+            <th class="text-center active"><?php echo $this->translate('Sat') ?></th>
+            <th class="text-center active"><?php echo $this->translate('Sun') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php for ($i = 1; $i <= $this->rowsCount; $i++): ?>
+            <tr>
+                <?php for ($j = 1; $j <= 7; $j++): ?>
+                    <?php if($this->index > $this->week_offset && $this->index - $this->week_offset <= $this->days_in_month): ?>
+                        <?php $this->calendarDay = $this->index - $this->week_offset ?>
+                        <?php $this->calendarDay = $this->year . '-' . $this->month . '-' . ($this->calendarDay < 10  ? '0' . $this->calendarDay : $this->calendarDay) ?>
+                        <td class="text-center <?php if ($this->calendarDay == $this->current_date): ?>active<?php endif ?>">
+                            <?php if (!empty($this->links) && !empty($this->links[$this->calendarDay])): ?>
+                                <a href="<?php echo $this->links[$this->calendarDay]['url'] ?>" title="<?php echo $this->escapeHtmlAttr($this->links[$this->calendarDay]['title']) ?>">
+                                    <?php echo $this->index - $this->week_offset ?>
+                                </a>
+                            <?php else: ?>
+                                <?php echo $this->index - $this->week_offset ?>
+                            <?php endif ?>
+                        </td>
+                    <?php else: ?>
+                        <td>&nbsp;</td>
+                    <?php endif ?>
+
+                    <?php $this->index++ ?>
+                <?php endfor ?>
+            </tr>
+        <?php endfor ?>
+    </tbody>
+</table>
