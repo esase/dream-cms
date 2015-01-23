@@ -64,9 +64,15 @@
 
                         <?php foreach($this->localization()->getAllLocalizations() as $language): ?>
                             <?php if (empty($this->page['pages_provider']) && false !== $this->pageUrl($this->page['slug'], [], $language['language'])): ?>
-                                <?php $this->localizationPages[$language['language']] = $this->pageUrl($this->page['slug'], [], $language['language']) ?>
+                                <?php 
+                                    $this->localizationPages[$language['language']]['url'] = $this->pageUrl($this->page['slug'], [], $language['language']); 
+                                    $this->localizationPages[$language['language']]['exists'] = true; 
+                                ?>
                             <?php elseif (false !== $this->pageUrl(null, [], $language['language'])): ?>
-                                <?php $this->localizationPages[$language['language']] = $this->pageUrl(null, [], $language['language']) ?>
+                                <?php 
+                                    $this->localizationPages[$language['language']]['url'] = $this->pageUrl(null, [], $language['language']);
+                                    $this->localizationPages[$language['language']]['exists'] = false;
+                                ?>
                             <?php endif ?>
                         <?php endforeach ?>
 
@@ -81,7 +87,7 @@
                                             <ul class="dropdown-menu <?php if ($this->localization()->isCurrentLanguageLtr()): ?>dropdown-menu-right<?php else: ?>dropdown-menu-left<?php endif ?>" role="menu">
                                                 <?php foreach ($this->localizationPages as $language => $page): ?>
                                                     <li role="presentation" <?php if ($language == $this->localization()->getCurrentLanguage()): ?>class="disabled"<?php endif ?>>
-                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['language' => $language, 'page_name' => $page], ['force_canonical' => true, 'query' => $this->applicationRoute()->getQuery()], true) ?>">
+                                                        <a role="menuitem" tabindex="-1" href="<?php echo $this->url('page', ['language' => $language, 'page_name' => $page['url']], ['force_canonical' => true, 'query' => ($page['exists'] ? $this->applicationRoute()->getQuery() : [])], true) ?>">
                                                             <img src="<?php  echo $this->layoutAsset('icon/flag/' . $this->escapeHtml($language) . '.gif', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->localization()->getAllLocalizations()[$language]['description']) ?>" />
                                                             <?php echo $this->escapeHtml($this->localization()->getAllLocalizations()[$language]['description']) ?>
                                                         </a>

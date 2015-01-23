@@ -35,16 +35,17 @@ return [
             'page' => [
                 'type'    => 'segment',
                 'options' => [
-                    'route'    => '/[:language[/:page_name[/_page/:page][/_per-page/:per_page][/_order-by/:order_by][/_category/:category][/_id/:slug][/_date/:date]]][:trailing_slash]',
+                    'route'    => '/[:language[/:page_name[/_category/:category][/_date/:date][/_id/:slug][/_page/:page][/_per-page/:per_page][/_order-by/:order_by][/_order-type/:order_type]]][:trailing_slash]',
                     'constraints' => [
                         'language' => '[a-z]{2}',
                         'page_name' => '[0-9a-z-/]*[0-9a-z-]{1}',
-                        'page' => '[0-9]+',
-                        'per_page' => '[0-9]+',
-                        'order_by' => '[a-z][a-z0-9-]*',
                         'category' => '[0-9a-zA-Z-]+',
                         'date'     => '[0-9]{4}/[0-9]{2}/[0-9]{2}',
                         'slug'     => '[0-9a-zA-Z-]+',
+                        'page'     => '[0-9]+',
+                        'per_page' => '[0-9]+',
+                        'order_by' => '[a-z][a-z0-9-]*',
+                        'order_type' => 'asc|desc',
                         'trailing_slash' => '/'
                         
                     ],

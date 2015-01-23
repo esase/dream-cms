@@ -1,0 +1,138 @@
+<?php use Application\Utility\ApplicationPagination as PaginationUtility ?>
+
+<?php $this->declareVars('perPageRanges', 'paginationCount', 'unitExtraParams', 'routeParams' , 'routeQueries', 'defaultRoute') ?>
+
+<?php 
+    // init pagination params
+    $this->paginationCount = $this->paginator ? $this->paginator->count() : 0;
+
+    $this->routeParams = !empty($this->route_params) && is_array($this->route_params) 
+        ? array_merge($this->applicationRoute()->getAllDefaultRouteParams(), $this->route_params)
+        : $this->applicationRoute()->getAllDefaultRouteParams();
+
+    $this->routeQueries = !empty($this->route_queries) && is_array($this->route_queries) 
+        ? array_merge($this->applicationRoute()->getQuery(), $this->route_queries)
+        : $this->applicationRoute()->getQuery();
+
+    $this->defaultRoute = !empty($this->route) ? $this->route : 'page';
+
+    // init a per page changer
+    $this->per_page = PaginationUtility::processPerPage($this->per_page);
+    $this->perPageRanges = PaginationUtility::getPerPageRanges();
+
+    // init data unit params
+    $this->unitExtraParams = !empty($this->unit_params) && is_array($this->unit_params) ? $this->unit_params : [];
+?>
+
+<div class="data-list">
+    <?php if ($this->paginationCount && ($this->paginator_per_page_show || ($this->paginator_order_list_show && !empty($this->paginator_order_list)))) : ?>
+        <ul class="nav nav-pills">
+            <?php if ($this->paginator_per_page_show && $this->paginationCount && count($this->perPageRanges) > 1) : ?>
+                <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-right<?php else: ?>pull-left<?php endif; ?>">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <?php echo $this->translate('Per page') ?> - <?php echo $this->per_page ?>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <?php foreach ($this->perPageRanges as $perPage) : ?>
+                            <li <?php if ($this->per_page == $perPage) : ?>class="disabled"<?php endif; ?>>
+                                <?php if (!$this->paginator_per_page_query): ?>
+                                    <a href="<?php echo $this->url($this->defaultRoute, array_merge($this->routeParams, ['per_page' => $perPage]), ['force_canonical' => true, 'query' => $this->routeQueries]) ?>">
+                                        <?php echo $perPage ?>
+                                    </a>
+                                <?php else: ?>
+                                    <a href="<?php echo $this->url($this->defaultRoute, $this->routeParams, ['force_canonical' => true, 'query' => [$this->paginator_per_page_query => $perPage] + $this->routeQueries]) ?>">
+                                        <?php echo $perPage ?>
+                                    </a>
+                                <?php endif ?>
+                            </li>
+                        <?php endforeach ?>
+                    </ul>
+                </li>
+            <?php endif ?>
+
+            <?php if ($this->paginator_order_list_show && !empty($this->paginator_order_list)) : ?>
+                <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-right<?php else: ?>pull-left<?php endif ?>">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <?php echo $this->translate('Order') ?><?php if (!empty($this->orderList[$this->order_by])) : ?> - <?php echo $this->translate($this->orderList[$this->order_by]) ?><?php endif ?>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <?php foreach ($this->paginator_order_list as $order => $orderTitle) : ?>
+                            <li <?php if ($this->order_by == $order) : ?>class="disabled"<?php endif ?>>
+                                <?php if (!$this->paginator_order_by_query): ?>
+                                    <a href="<?php echo $this->url($this->defaultRoute, array_merge($this->routeParams, ['order_by' => $order]), ['force_canonical' => true, 'query' => $this->routeQueries]) ?>">
+                                        <?php echo $this->translate($orderTitle) ?>
+                                    </a>
+                                <?php else: ?>
+                                    <a href="<?php echo $this->url($this->defaultRoute, $this->routeParams, ['force_canonical' => true, 'query' => [$this->paginator_order_by_query => $order] + $this->routeQueries]) ?>">
+                                        <?php echo $this->translate($orderTitle) ?>
+                                    </a>
+                                <?php endif ?>
+                            </li>
+                        <?php endforeach ?>
+                        <li class="divider"></li>
+                        <li <?php if ($this->order_type == 'asc') : ?>class="disabled"<?php endif ?>>
+                            <?php if (!$this->paginator_order_type_query): ?>
+                                <a href="<?php echo $this->url($this->defaultRoute, array_merge($this->routeParams, ['order_type' => 'asc']), ['force_canonical' => true, 'query' => $this->routeQueries]) ?>">
+                                    <?php echo $this->translate('Ascending') ?>
+                                </a>
+                            <?php else: ?>
+                                <a href="<?php echo $this->url($this->defaultRoute, $this->routeParams, ['force_canonical' => true, 'query' => [$this->paginator_order_type_query => 'asc'] + $this->routeQueries]) ?>">
+                                    <?php echo $this->translate('Ascending') ?>
+                                </a>
+                            <?php endif ?>
+                        </li>
+                        <li <?php if ($this->order_type == 'desc') : ?>class="disabled"<?php endif ?>>
+                            <?php if (!$this->paginator_order_type_query): ?>
+                                <a href="<?php echo $this->url($this->defaultRoute, array_merge($this->routeParams, ['order_type' => 'desc']), ['force_canonical' => true, 'query' => $this->routeQueries]) ?>">
+                                    <?php echo $this->translate('Descending') ?>
+                                </a>
+                            <?php else: ?>
+                                <a href="<?php echo $this->url($this->defaultRoute, $this->routeParams, ['force_canonical' => true, 'query' => [$this->paginator_order_type_query => 'desc'] + $this->routeQueries]) ?>">
+                                    <?php echo $this->translate('Descending') ?>
+                                </a>
+                            <?php endif ?>
+                        </li>
+                    </ul>
+                </li>
+            <?php endif ?>
+        </ul>
+    <?php endif ?>
+
+    <?php if ($this->paginationCount): ?>
+        <?php foreach ($this->paginator as $data) : ?>
+            <?php echo $this->partial($this->unit, array_merge(['data' => $data], $this->unitExtraParams)) ?>
+        <?php endforeach ?>
+
+        <?php
+            echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', [
+                'route'   => $this->defaultRoute,
+                'params'  => $this->routeParams,
+                'queries' => $this->routeQueries,
+                'paginator_page_query' => $this->paginator_page_query
+            ])
+        ?>
+    <?php else: ?>
+        <div class="alert alert-warning">
+            <?php echo $this->translate('Nothing found') ?>
+        </div>
+    <?php endif ?>
+</div>
+
+<?php if ($this->paginationCount && isset($this->ajax['wrapper_id'], $this->ajax['widget_connection'], $this->ajax['widget_position'])) : ?>
+    <script type="text/javascript">
+        // listen for all clicks
+        $('#<?php echo $this->escapeJs($this->ajax['wrapper_id']) ?>').find('.data-list .dropdown-menu a, .data-list ul.pagination a').bind('click', function(e){
+            e.preventDefault();
+            var url =  $(this).attr('href');
+            var paramDevider = url.match(/\?/); 
+
+            url += paramDevider 
+                ? '&widget_connection=<?php echo $this->escapeUrl($this->ajax['widget_connection']) ?>&widget_position=<?php echo $this->escapeUrl($this->ajax['widget_position']) ?>'
+                : '?widget_connection=<?php echo $this->escapeUrl($this->ajax['widget_connection']) ?>&widget_position=<?php echo $this->escapeUrl($this->ajax['widget_position']) ?>';
+
+            ajaxQuery('<?php echo $this->escapeJs($this->ajax['wrapper_id']) ?>', url<?php if ($this->ajax_callback) : ?>, <?php echo $this->ajax_callback ?><?php endif ?>);
+        });
+    </script>
+<?php endif ?>

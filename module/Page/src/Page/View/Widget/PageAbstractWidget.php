@@ -41,12 +41,6 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     protected $serviceLocator;
 
     /**
-     * Slug
-     * @var string
-     */
-    protected $slug = null;
-
-    /**
      * Request
      * @var object
      */
@@ -76,11 +70,19 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
      */
     protected function getSlug($defaultValue = null)
     {
-        if ($this->slug === null) {
-            $this->slug = RouteParamUtility::getParam('slug', $defaultValue);
-        }
+        return  RouteParamUtility::getParam('slug', $defaultValue);
+    }
 
-        return $this->slug; 
+    /**
+     * Get a route param
+     *
+     * @param string $paramName
+     * @param string $defaultValue
+     * @return string
+     */
+    protected function getRouteParam($paramName, $defaultValue = null)
+    {
+        return RouteParamUtility::getParam($paramName, $defaultValue);
     }
 
     /**
