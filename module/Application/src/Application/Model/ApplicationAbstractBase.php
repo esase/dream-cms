@@ -96,6 +96,20 @@ abstract class ApplicationAbstractBase extends Sql
     }
 
     /**
+     * Get date range
+     *
+     * @param string $date 
+     * @return array
+     */
+    public function getDateRange($date)
+    {
+        return [
+            strtotime($date),
+            strtotime($date . ' 23:59:59')
+        ];
+    }
+
+    /**
      * Generate slug
      *
      * @param integer $objectId
