@@ -86,6 +86,8 @@ class PageController extends AbstractActionController
         $widgetConnectionId = $this->params()->fromQuery('widget_connection', null);
         $widgetPosition = $this->params()->fromQuery('widget_position', null);
 
+        PageService::setCurrentPage($pageInfo);
+
         // get only a specific widget info
         if ($request->isXmlHttpRequest()
                     && null !== $widgetConnectionId && null !== $widgetPosition) {
@@ -117,7 +119,6 @@ class PageController extends AbstractActionController
         $viewModel->setTemplate($this->
                 getModel()->getLayoutPath() . $pageInfo['layout']);
 
-        PageService::setCurrentPage($pageInfo);
         return $viewModel;
     }
 
