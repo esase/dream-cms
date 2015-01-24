@@ -24,11 +24,35 @@ function uniformHeight(elements, bindWindowResize)
 }
 
 /**
+ * Data list query
+ *
+ * @param string container
+ * @param string url
+ * @param integer widgetConnectionId
+ * @param string widgetPosition
+ * @param string extraUrlParams
+ * @return void
+ */
+function dataListQuery(container, url, widgetConnectionId, widgetPosition, extraUrlParams)
+{
+    var paramDevider = url.match(/\?/);
+    url += paramDevider 
+        ? '&widget_connection=' + widgetConnectionId + '&widget_position=' + widgetPosition
+        : '?widget_connection=' + widgetConnectionId + '&widget_position=' + widgetPosition;
+
+    if (typeof extraUrlParams != 'undefined') {
+        url += '&' + extraUrlParams;
+    }
+
+    ajaxQuery(container, url);
+}
+
+/**
  * Ajax query
  *
  * @param string container
  * @param string url
- * @param string successCallback
+ * @param object successCallback
  * @param string method
  * @param object params
  * @param boolean replaceData
