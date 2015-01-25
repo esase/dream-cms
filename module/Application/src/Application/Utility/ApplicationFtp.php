@@ -185,9 +185,13 @@ class ApplicationFtp
                     && false === ($result = @ftp_delete($this->connection, $ftpDir))) {
 
                 // perhaps it's a not empty directory    
-                if (null != ($listFiles = @ftp_nlist($this->connection, $ftpDir))) {
+                if (null != ($listFiles = @ftp_nlist($this->connection, '-a ' . $ftpDir))) {
                     foreach($listFiles as $file) {
-                        $this->removeDirectory($file);
+                        $baseFileName = basename($file);
+
+                        if ($baseFileName != '.' && $baseFileName != '..') {
+                            $this->removeDirectory($file);    
+                        }                        
                     }
 
                     //removeDirectory
