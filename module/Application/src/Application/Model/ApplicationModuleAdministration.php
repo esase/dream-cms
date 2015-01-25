@@ -869,7 +869,6 @@ class ApplicationModuleAdministration extends ApplicationBase
 
             $moduleCompatable = !empty($updateModuleConfig['compatable']) ? $updateModuleConfig['compatable'] : null;
             $moduleName = !empty($updateModuleConfig['module']) ? $updateModuleConfig['module'] : null;
-            $moduleName = !empty($updateModuleConfig['module']) ? $updateModuleConfig['module'] : null;
             $moduleVersion = !empty($updateModuleConfig['version']) ? $updateModuleConfig['version'] : null;
             $moduleVendor = !empty($updateModuleConfig['vendor']) ? $updateModuleConfig['vendor'] : null;
             $moduleVendorEmail = !empty($updateModuleConfig['vendor_email']) ? $updateModuleConfig['vendor_email'] : null;
