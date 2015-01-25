@@ -867,6 +867,8 @@ class ApplicationModuleAdministration extends ApplicationBase
             // get the module's config
             $updateModuleConfig = include $tmpDirName . '/update_config.php';
 
+            $moduleCompatable = !empty($updateModuleConfig['compatable']) ? $updateModuleConfig['compatable'] : null;
+            $moduleName = !empty($updateModuleConfig['module']) ? $updateModuleConfig['module'] : null;
             $moduleName = !empty($updateModuleConfig['module']) ? $updateModuleConfig['module'] : null;
             $moduleVersion = !empty($updateModuleConfig['version']) ? $updateModuleConfig['version'] : null;
             $moduleVendor = !empty($updateModuleConfig['vendor']) ? $updateModuleConfig['vendor'] : null;
@@ -897,6 +899,12 @@ class ApplicationModuleAdministration extends ApplicationBase
                     || strcasecmp($moduleVendorEmail, $moduleInfo['vendor_email']) <> 0) {
 
                 throw new ApplicationException('Module not found');
+            }
+
+            if (!$moduleCompatable || true !== ($result =
+                    version_compare(SettingService::getSetting('application_generator_version'), $moduleCompatable, '>='))) {
+
+                throw new ApplicationException('These updates are not compatable with current CMS version');
             }
 
             // compare the module versions
