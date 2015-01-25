@@ -590,6 +590,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *
      * @param string $moduleName
      * @param array $moduleInstallConfig
+     *      string compatable
      *      string version 
      *      string vendor 
      *      string vendor_email 
@@ -669,6 +670,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *
      * @param string $moduleName
      * @param array $moduleInstallConfig
+     *      string compatable
      *      string version 
      *      string vendor 
      *      string vendor_email 
@@ -698,6 +700,10 @@ class ApplicationModuleAdministration extends ApplicationBase
     public function installCustomModule($moduleName, array $moduleInstallConfig)
     {
         try {
+            $compatable = !empty($moduleInstallConfig['compatable'])
+                ? trim($moduleInstallConfig['compatable'])
+                : null;
+
             $version = !empty($moduleInstallConfig['version'])
                 ? trim($moduleInstallConfig['version'])
                 : null;
@@ -709,6 +715,12 @@ class ApplicationModuleAdministration extends ApplicationBase
             $vendorEmail = !empty($moduleInstallConfig['vendor_email'])
                 ? trim($moduleInstallConfig['vendor_email'])
                 : null;
+
+            if (!$compatable || true !== ($result =
+                    version_compare(SettingService::getSetting('application_generator_version'), $compatable, '>='))) {
+
+                throw new ApplicationException('This module is not compatable with current CMS version');
+            }
 
             if (!$version || !$vendor || !$vendorEmail) {
                 throw new ApplicationException('It is impossible to determine the module version, vendor or vendor email');
@@ -1011,6 +1023,7 @@ class ApplicationModuleAdministration extends ApplicationBase
      *      string password required
      * @param string $host
      * @param array $moduleInstallConfig
+     *      string compatable
      *      string version 
      *      string vendor 
      *      string vendor_email 
