@@ -1,0 +1,20 @@
+@import "variables/frontend-site-disabled.less";
+
+// document
+body,
+html,
+div#container {
+    height: 100% !important;
+    
+    div#site-message-wrapper {
+        height:100%;
+        width:100%;
+        display:table;
+
+        div#site-message {
+            display:table-cell;
+            vertical-align:middle;
+            padding: @site-message-padding;
+        }
+    }
+}

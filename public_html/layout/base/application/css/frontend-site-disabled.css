@@ -1,0 +1,19 @@
+body,
+html,
+div#container {
+  height: 100% !important;
+}
+body div#site-message-wrapper,
+html div#site-message-wrapper,
+div#container div#site-message-wrapper {
+  height: 100%;
+  width: 100%;
+  display: table;
+}
+body div#site-message-wrapper div#site-message,
+html div#site-message-wrapper div#site-message,
+div#container div#site-message-wrapper div#site-message {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 20px;
+}

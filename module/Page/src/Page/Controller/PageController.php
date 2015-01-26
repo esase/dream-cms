@@ -1,6 +1,7 @@
 <?php
 namespace Page\Controller;
 
+use Application\Utility\ApplicationDisableSite as DisableSiteUtility;
 use Page\Service\Page as PageService;
 use Page\Utility\PagePrivacy as PagePrivacyUtility;
 use Page\Event\PageEvent;
@@ -69,6 +70,20 @@ class PageController extends AbstractActionController
                 $this->getPageBreadcrumb($pageParents, $pageInfo['level'] > 1))) {
 
             return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        // show a disabled site message
+        if (true !== DisableSiteUtility::isAllowedViewSite()) {
+            $this->getResponse()->setStatusCode(Response::STATUS_CODE_503);
+
+            // set the page variables
+            $viewModel = new ViewModel([
+                'message' => $this->applicationSetting('application_disable_site_message')
+            ]);
+
+            $viewModel->setTemplate($this->getModel()->getLayoutPath() . 'layout-disabled-site');
+            $this->layout('layout/blank');
+            return $viewModel;
         }
 
         // fire the page show event
