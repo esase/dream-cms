@@ -1,6 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
+use Application\Utility\ApplicationDisableSite as DisableSiteUtility;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Localization\Service\Localization as LocalizationService;
 use User\Service\UserIdentity as UserIdentityService;
@@ -41,10 +42,11 @@ class Page404 extends AbstractHelper
     public function __invoke()
     {
         $language = LocalizationService::getCurrentLocalization()['language'];
+        $page404  = false;
 
         // get a custom 404 page's url
-        if (false !== ($page404 = $this->
-                getView()->pageUrl(self::CUSTOM_404_PAGE, [], $language, true))) {
+        if (true === DisableSiteUtility::isAllowedViewSite()
+                && false !== ($page404 = $this->getView()->pageUrl(self::CUSTOM_404_PAGE, [], $language, true))) {
 
             $userRole = UserIdentityService::getCurrentUserIdentity()['role'];
 

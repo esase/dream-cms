@@ -779,7 +779,8 @@ INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (19,  'Navigation', 5),
 (20,  'Xml map', 5),
 (21,  'Visibility settings', 5),
-(22,  'Widgets', 5);
+(22,  'Widgets', 5),
+(23,  'Site disabling', 1);
 
 CREATE TABLE `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -897,7 +898,11 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (89, 'page_new_pages_xml_map_update', 'Default new pages update frequency', NULL, 'select', 1, 2, 20, 5, NULL, NULL, NULL, NULL),
 (90, 'page_new_pages_xml_map_priority', 'Default new pages priority', 'Xml map priority description', 'float', 1, 3, 20, 5, NULL, NULL, '$value =  (float) Localization\\Utility\\LocalizationLocale::convertFromLocalizedValue(''__value__'', ''float''); return $value >= 0 && $value <= 1;', 'Enter a correct priority value'),
 (91, 'page_new_pages_hidden_for', 'Default new pages are hidden for', NULL, 'multicheckbox', NULL, 1, 21, 5, NULL, 'return Acl\\Service\\Acl::getAclRoles(false, true);', NULL, NULL),
-(92, 'page_new_widgets_layout', 'Default widgets layout', NULL, 'select', NULL, 1, 22, 5, NULL, 'return Page\\Service\\Page::getWidgetLayouts();', NULL, NULL);
+(92, 'page_new_widgets_layout', 'Default widgets layout', NULL, 'select', NULL, 1, 22, 5, NULL, 'return Page\\Service\\Page::getWidgetLayouts();', NULL, NULL),
+(93, 'application_disable_site', 'Disable the site', 'Disable your website front-end and display a message to your visitors while still allowing back-end access', 'checkbox', NULL, 23, 23, 1, 1, NULL, NULL, NULL),
+(94, 'application_disable_site_message', 'Message', NULL, 'htmlarea', 1, 24, 23, 1, 1, NULL, NULL, NULL),
+(95, 'application_disable_site_acl', 'Allowed ACL roles', 'Members included in the list of allowed ACL roles can view the site', 'multiselect', NULL, 25, 23, 1, 1, 'return Acl\\Service\\Acl::getAclRoles(false, true);', NULL, NULL),
+(96, 'application_disable_site_ip', 'Allowed IPs', 'IP list separated by commas', 'textarea', NULL, 26, 23, 1, 1, NULL, NULL, NULL);
 
 CREATE TABLE `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1015,7 +1020,10 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (99, 88, '1', NULL),
 (100, 89, 'weekly', NULL),
 (101, 90, '0.5', NULL),
-(102, 92, '1', NULL);
+(102, 92, '1', NULL),
+(103, 46,  '1', NULL),
+(104, 94,  '<p style="text-align: center;">Website is currently unavailable.</p>', NULL),
+(105, 94,  '<p style="text-align: center;">Веб-сайт в настоящее время недоступен.</p>', 'ru');
 
 CREATE TABLE `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
