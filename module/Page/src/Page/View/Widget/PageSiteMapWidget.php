@@ -34,6 +34,22 @@ class PageSiteMapWidget extends PageAbstractWidget
     }
 
     /**
+     * Include js and css files
+     *
+     * @return void
+     */
+    public function includeJsCssFiles()
+    {
+        $this->getView()->layoutHeadScript()->appendFile($this->getView()->layoutAsset('jquery.treeview.js'));
+
+        $cssFile = $this->getView()->localization()->isCurrentLanguageLtr() 
+            ? 'jquery.treeview.css' 
+            : 'jquery.treeview.rtl.css';
+
+        $this->getView()->layoutHeadLink()->appendStylesheet($this->getView()->layoutAsset($cssFile, 'css'));
+    }
+
+    /**
      * Get widget content
      *
      * @return string|boolean
@@ -54,8 +70,8 @@ class PageSiteMapWidget extends PageAbstractWidget
     {
         if (null === $this->sitemap) {
             // process sitemap
-            $this->sitemap = $this->
-                    processSitemapItems($this->getModel()->getPagesTree($this->getCurrentLanguage()));
+            $this->sitemap = $this->processSitemapItems($this->
+                    getModel()->getPagesTree($this->getCurrentLanguage()));
         }
 
         return $this->sitemap;

@@ -11,8 +11,8 @@ return [
         'readable' => false
     ],
     'dynamic_cache' => [
-        'writable' => false,
-        'readable' => false
+        'writable' => true,
+        'readable' => true
     ],
     'view_manager' => [
         'display_not_found_reason' => true,

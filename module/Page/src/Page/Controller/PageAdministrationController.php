@@ -792,12 +792,12 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         $request = $this->getRequest();
 
         // get a widget info
-        if (null == ($widget =$this->getModel()->
+        if (null == ($widget = $this->getModel()->
                 getWidgetConnectionInfo($this->getSlug(), true))) {
 
             return $this->redirectTo('pages-administration', 'list');
         }
-
+        
         $currentlanguage = LocalizationService::getCurrentLocalization()['language'];
 
         // get settings model
@@ -810,6 +810,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->get('Application\Form\FormManager')
             ->getInstance('Page\Form\PageWidgetSetting')
             ->showVisibilitySettings(!$widget['widget_forced_visibility'] && !$widget['widget_page_depend_connection_id'])
+            ->showCacheSettings($widget['widget_allow_cache'])
             ->setModel($settings)
             ->setWidgetDescription($this->getTranslator()->translate($widget['widget_description']));
 
@@ -824,6 +825,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         $settingsForm->getForm()->setData([
             'title' => $widget['widget_title'],
             'layout' => $widget['layout'],
+            'cache_ttl' => $widget['cache_ttl'],
             'visibility_settings' => !empty($widget['visibility_settings'])
                 ? $widget['visibility_settings']
                 : null
@@ -841,8 +843,8 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     return $result;
                 }
 
-                if (true === ($result = $this->getModel()->saveWidgetSettings($widget['widget_id'],
-                        $widget['page_id'], $widget['id'], $settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
+                if (true === ($result = $this->getModel()->
+                        saveWidgetSettings($widget, $settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')

@@ -1,18 +1,9 @@
-<!-- include needed js and css files -->
-<?php $this->layoutHeadScript()->appendFile($this->layoutAsset('jquery.treeview.js')) ?>
-<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset(($this->localization()->isCurrentLanguageLtr()
-        ? 'jquery.treeview.css'
-        : 'jquery.treeview.rtl.css'), 'css')) ?>
-
-<?php $this->declareVars('sitemapId') ?>
-<?php $this->sitemapId = $this->applicationRandId('sitemap-') ?>
-
 <div id="sitemap-wrapper">
-    <ul id="<?php echo $this->escapeHtmlAttr($this->sitemapId) ?>">
+    <ul id="site-map">
         <?php echo $this->sitemap ?>
     </ul>
 </div>
 
-<?php $this->inlineScript()->captureStart() ?>
-    $("#<?php echo $this->escapeJs($this->sitemapId) ?>").treeview({});
-<?php $this->inlineScript()->captureEnd() ?>
+<script type="text/javascript">
+    $("#site-map").treeview({});
+</script>

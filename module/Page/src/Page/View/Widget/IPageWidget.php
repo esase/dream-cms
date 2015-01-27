@@ -4,6 +4,13 @@ namespace Page\View\Widget;
 interface IPageWidget
 {
     /**
+     * Include js and css files
+     *
+     * @return void
+     */
+    public function includeJsCssFiles();
+
+    /**
      * Get widget content
      *
      * @return string|boolean

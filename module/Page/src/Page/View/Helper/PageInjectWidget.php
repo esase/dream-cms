@@ -1,6 +1,8 @@
 <?php
 namespace Page\View\Helper;
- 
+
+use Application\Utility\ApplicationCache as CacheUtility;
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Acl\Model\AclBase as AclBaseModel;
 use Page\Exception\PageException;
 use Page\View\Widget\IPageWidget;
@@ -28,6 +30,12 @@ class PageInjectWidget extends AbstractHelper
     protected $layoutPath = 'page/layout-widget/';
 
     /**
+     * Dynamic cache instance
+     * @var object
+     */
+    protected $dynamicCache;
+
+    /**
      * Class constructor
      *
      * @param array $menu
@@ -35,6 +43,7 @@ class PageInjectWidget extends AbstractHelper
     public function __construct(array $widgets = [])
     {
         $this->widgets = $widgets;
+        $this->dynamicCache = ServiceLocatorService::getServiceLocator()->get('Application\Cache\Dynamic');
     }
 
     /**
@@ -52,7 +61,7 @@ class PageInjectWidget extends AbstractHelper
     {
         // don't call any widgets
         if (true === self::$widgetRedirected) {
-            return $result;
+            return false;
         }
 
         // check a widget visibility
@@ -73,7 +82,28 @@ class PageInjectWidget extends AbstractHelper
         // init the widget
         $widget->setPageId($pageId)
             ->setWidgetPosition($position)
-            ->setWidgetConnectionId($widgetInfo['widget_connection_id']);
+            ->setWidgetConnectionId($widgetInfo['widget_connection_id'])
+            ->includeJsCssFiles();
+
+        $widgetCacheName = null;
+
+        if ((int) $widgetInfo['widget_cache_ttl']) {
+            // generate a cache name
+            $widgetCacheName = CacheUtility::getCacheName($widgetInfo['widget_name'], [
+                $widgetInfo['widget_connection_id']
+            ]);
+
+            // check the widget data in a cache
+            if (null !== ($cachedWidgetData = $this->dynamicCache->getItem($widgetCacheName))) {
+                // check a local widget lifetime
+                if ($cachedWidgetData['widget_expire'] >= time()) {
+                    return $cachedWidgetData['widget_content'];
+                }
+
+                // clear cache
+                $this->dynamicCache->removeItem($widgetCacheName);
+            }
+        }
 
         if (false !== ($widgetContent = $widget->getContent())) {
             self::$widgetRedirected = $widget->isWidgetRedirected();
@@ -85,6 +115,14 @@ class PageInjectWidget extends AbstractHelper
                     'content' => $widgetContent
                 ]);
             }
+        }
+
+        // cache the widget data
+        if ($widgetCacheName) {
+            $this->dynamicCache->setItem($widgetCacheName, [
+                'widget_content' => $widgetContent,
+                'widget_expire'  => time() + $widgetInfo['widget_cache_ttl']
+            ]);
         }
 
         return $widgetContent;
