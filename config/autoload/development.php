@@ -7,8 +7,8 @@ return [
         'display_errors' => true
     ], 
     'static_cache' => [
-        'writable' => true,
-        'readable' => true
+        'writable' => false,
+        'readable' => false
     ],
     'dynamic_cache' => [
         'writable' => true,
