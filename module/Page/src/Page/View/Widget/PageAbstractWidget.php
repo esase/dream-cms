@@ -260,6 +260,14 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     }
 
     /**
+     * Include js and css files
+     *
+     * @return void
+     */
+    public function includeJsCssFiles()
+    {}
+
+    /**
      * Is widget redirected
      *
      * @return boolean

@@ -1,6 +1,7 @@
 <?php
 namespace Page\Form;
 
+use Application\Service\ApplicationSetting as SettingService;
 use Application\Form\ApplicationCustomFormBuilder;
 use Application\Form\ApplicationAbstractCustomForm;
 use Acl\Service\Acl as AclService;
@@ -19,6 +20,12 @@ class PageWidgetSetting extends ApplicationAbstractCustomForm
      * @var boolean
      */
     protected $showVisibilitySettings = true;
+
+    /**
+     * Show cache settings
+     * @var boolean
+     */
+    protected $showCacheSettings = false;
 
     /**
      * Widget description
@@ -68,6 +75,16 @@ class PageWidgetSetting extends ApplicationAbstractCustomForm
             'values' => [],
             'category' => 'Visibility settings'
         ],
+        'cache_ttl' => [
+            'name' => 'cache_ttl',
+            'type' => ApplicationCustomFormBuilder::FIELD_INTEGER,
+            'label' => 'Cache lifetime in seconds',
+            'required' => false,
+            'values' => [],
+            'category' => 'Cache',
+            'description' => 'Widget cache description',
+            'description_params' => []
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
@@ -84,17 +101,40 @@ class PageWidgetSetting extends ApplicationAbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // add descriptions params
+
+            // add extra options for the title
             $this->formElements['title']['description_params'] = [
                 $this->widgetDescription
             ];
 
-            if (false === $this->showVisibilitySettings) {
-                unset($this->formElements['visibility_settings']);
+            // add extra options for the cache ttl
+            if ($this->showCacheSettings) {
+                $this->formElements['cache_ttl']['description_params'] = [
+                    (int) SettingService::getSetting('application_dynamic_cache_life_time')
+                ];
+
+                // add extra validators
+                $this->formElements['cache_ttl']['validators'] = [
+                    [
+                        'name' => 'callback',
+                        'options' => [
+                            'callback' => [$this, 'validateCacheTtl'],
+                            'message' => 'Enter a correct value'
+                        ]
+                    ]
+                ];
             }
             else {
+                unset($this->formElements['cache_ttl']);
+            }
+
+            // add extra options for the visibility settings
+            if ($this->showVisibilitySettings) {
                 // add visibility settings
                 $this->formElements['visibility_settings']['values'] = AclService::getAclRoles(false, true);
+            }
+            else {
+                unset($this->formElements['visibility_settings']);
             }
 
             // fill the form with default values
@@ -108,6 +148,20 @@ class PageWidgetSetting extends ApplicationAbstractCustomForm
     }
 
     /**
+     * Validate cache ttl
+     *
+     * @param $value
+     * @param array $context
+     * @return boolean
+     */
+    public function validateCacheTtl($value, array $context = [])
+    {
+        $value = (int) $value;
+
+        return $value >= 0 && $value <= (int) SettingService::getSetting('application_dynamic_cache_life_time');
+    }
+
+    /**
      * Show visibility settings
      *
      * @param boolean $show
@@ -116,6 +170,18 @@ class PageWidgetSetting extends ApplicationAbstractCustomForm
     public function showVisibilitySettings($show)
     {
         $this->showVisibilitySettings = (bool) $show;
+        return $this;
+    }
+
+    /**
+     * Show cache settings
+     *
+     * @param boolean $show
+     * @return object fluent interface
+     */
+    public function showCacheSettings($show)
+    {
+        $this->showCacheSettings = (bool) $show;
         return $this;
     }
 

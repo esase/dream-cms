@@ -944,7 +944,7 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (22, 22, '10', NULL),
 (23, 23, '10', NULL),
 (24, 24, '__dynamic_cache_value__', NULL),
-(25, 25, '600', NULL),
+(25, 25, '1800', NULL),
 (26, 26, '__memcache_host_value__', NULL),
 (27, 27, '__memcache_port_value__', NULL),
 (28, 28, 'no_reply@mysite.com', NULL),
@@ -1323,6 +1323,7 @@ CREATE TABLE `page_widget` (
     `duplicate` TINYINT(1) UNSIGNED DEFAULT NULL,
     `forced_visibility` TINYINT(1) UNSIGNED DEFAULT NULL,
     `depend_page_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
+    `allow_cache` TINYINT(1) UNSIGNED DEFAULT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
         ON UPDATE CASCADE
@@ -1332,24 +1333,24 @@ CREATE TABLE `page_widget` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
-(1,  'pageHtmlWidget', 5, 'public', 'Html', 1, NULL, NULL),
-(2,  'userLoginWidget', 2, 'public', 'Login', NULL, 1, NULL),
-(3,  'userRegisterWidget', 2, 'public', 'Register', NULL, 1, NULL),
-(4,  'userActivateWidget', 2, 'public', 'User activate', NULL, 1, NULL),
-(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1, NULL),
-(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1, NULL),
-(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1, NULL),
-(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL, NULL),
-(9,  'userInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL),
-(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, 1, NULL),
-(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1, NULL),
-(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL),
-(13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL),
-(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL),
-(15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL),
-(16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL),
-(17, 'pageShareButtonsWidget', 5, 'public', 'Share buttons', NULL, NULL, NULL);
+INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`, `allow_cache`) VALUES
+(1,  'pageHtmlWidget', 5, 'public', 'Html', 1, NULL, NULL, 1),
+(2,  'userLoginWidget', 2, 'public', 'Login', NULL, 1, NULL, NULL),
+(3,  'userRegisterWidget', 2, 'public', 'Register', NULL, 1, NULL, NULL),
+(4,  'userActivateWidget', 2, 'public', 'User activate', NULL, 1, NULL, NULL),
+(5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1, NULL, NULL),
+(6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1, NULL, NULL),
+(7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1, NULL, NULL),
+(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL, NULL, 1),
+(9,  'userInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL, NULL),
+(10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, 1, NULL, NULL),
+(11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1, NULL, NULL),
+(12, 'userDashboardUserInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL, NULL),
+(13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL, NULL),
+(14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL, NULL),
+(15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL, NULL),
+(16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL, 1),
+(17, 'pageShareButtonsWidget', 5, 'public', 'Share buttons', NULL, NULL, NULL, 1);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1564,6 +1565,7 @@ CREATE TABLE `page_widget_connection` (
     `position_id` SMALLINT(5) UNSIGNED NOT NULL,
     `layout` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
+    `cache_ttl` INT(10) UNSIGNED NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     KEY `position` (`page_id`, `position_id`, `order`),
     FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)

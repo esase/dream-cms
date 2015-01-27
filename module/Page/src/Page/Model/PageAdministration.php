@@ -1,6 +1,7 @@
 <?php
 namespace Page\Model;
 
+use Application\Utility\ApplicationCache as CacheUtility;
 use Acl\Service\Acl as AclService;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
@@ -1043,18 +1044,24 @@ class PageAdministration extends PageBase
     /**
      * Save widget settings
      *
-     * @param integer $widgetId
-     * @param integer $pageId
-     * @param integer $widgetConnectionId
+     * @param array $widget
+     *      string widget_name
+     *      integer widget_id
+     *      integer page_id
+     *      integer id
      * @param array $settingsList
      * @param array $formData
      * @param string $currentlanguage
      * @return boolean|string
      */
-    public function saveWidgetSettings($widgetId, $pageId, $widgetConnectionId, array $settingsList, array $formData, $currentlanguage)
+    public function saveWidgetSettings(array $widget, array $settingsList, array $formData, $currentlanguage)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $widgetId = $widget['widget_id'];
+            $pageId = $widget['page_id'];
+            $widgetConnectionId = $widget['id'];
 
             $this->updateStructurePageEditedDate($pageId);
 
@@ -1063,7 +1070,8 @@ class PageAdministration extends PageBase
                 ->table('page_widget_connection')
                 ->set([
                     'title' => !empty($formData['title']) ? $formData['title'] : null,
-                    'layout' => !empty($formData['layout']) ? $formData['layout'] : null
+                    'layout' => !empty($formData['layout']) ? $formData['layout'] : null,
+                    'cache_ttl' => !empty($formData['cache_ttl']) ? $formData['cache_ttl'] : 0
                 ])
                 ->where([
                     'id' => $widgetConnectionId
@@ -1129,6 +1137,16 @@ class PageAdministration extends PageBase
             // clear caches
             $this->clearLanguageSensitivePageCaches();
             $this->clearWidgetsSettingsCache($pageId, $currentlanguage);
+
+            $dynamicCache = $this->serviceLocator->get('Application\Cache\Dynamic');
+            $widgetCacheName = CacheUtility::getCacheName($widget['widget_name'], [
+                $widgetConnectionId
+            ]);
+
+            if ($dynamicCache->hasItem($widgetCacheName)) {
+                $dynamicCache->removeItem($widgetCacheName);
+            }
+
             $this->adapter->getDriver()->getConnection()->commit();
         }
         catch (Exception $e) {
@@ -1176,6 +1194,7 @@ class PageAdministration extends PageBase
                 'position_id',
                 'widget_id',
                 'order',
+                'cache_ttl',
                 'widget_depend_connection_id' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
             ])
             ->join(
@@ -1189,8 +1208,10 @@ class PageAdministration extends PageBase
                 ['i' => 'page_widget'],
                 'a.widget_id = i.id',
                 [
+                    'widget_name' => 'name',
                     'widget_description' => 'description',
-                    'widget_forced_visibility' => 'forced_visibility'
+                    'widget_forced_visibility' => 'forced_visibility',
+                    'widget_allow_cache' => 'allow_cache',
                 ]
             )
             ->join(

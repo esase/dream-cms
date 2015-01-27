@@ -37,7 +37,7 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
      */
     public function indexAction()
     {
-        $this->clearJsCssCache();
+        $this->clearCaches();
 
         return new ViewModel([
             'settingsForm' => parent::settingsForm('application', 'settings-administration', 'index')
@@ -45,11 +45,11 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
     }
 
     /**
-     * Clear css and js caches
+     * Clear caches
      * 
      * @return void
      */
-    protected function clearJsCssCache()
+    protected function clearCaches()
     {
         // remember settings before changes 
         $jsCache = $this->applicationSetting('application_js_cache');
@@ -60,8 +60,8 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
 
         // clear js and css cache if needed
         $eventManager = ApplicationEvent::getEventManager();
-        $eventManager->attach(ApplicationEvent::CHANGE_SETTINGS, 
-                function ($e) use ($jsCache, $jsCacheGzip, $cssCache, $cssCacheGzip) {
+        $eventManager->attach(ApplicationEvent::CHANGE_SETTINGS, function ($e) use 
+                ($jsCache, $jsCacheGzip, $cssCache, $cssCacheGzip) {
 
             // get post values
             $post = $this->getRequest()->getPost();
@@ -82,6 +82,11 @@ class ApplicationSettingAdministrationController extends ApplicationAbstractAdmi
                 if (true === ($clearResult = CacheUtility::clearCssCache())) {
                     ApplicationEvent::fireClearCacheEvent(self::CACHE_CSS);
                 }
+            }
+
+            // clear dymanic cache
+            if (true === ($clearResult = CacheUtility::clearDynamicCache())) {
+                ApplicationEvent::fireClearCacheEvent(self::CACHE_DYNAMIC);
             }
         });
     }

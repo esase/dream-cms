@@ -169,6 +169,7 @@ class PageBase extends ApplicationAbstractBase
                     'widget_title' => 'title',
                     'widget_connection_id' => 'id',
                     'widget_id',
+                    'cache_ttl',
                     'widget_depend_connection_id' => new Expression('(' . $this->getSqlStringForSqlObject($dependentCheckSelect) . ')')
                 ])
                 ->join(
@@ -241,6 +242,7 @@ class PageBase extends ApplicationAbstractBase
             $widgetConnections = [];
             foreach ($resultSet as $connection) {
                 $widgetConnections[$connection->page_id][$connection->widget_position][$connection->widget_connection_id] = [
+                    'widget_cache_ttl' => $connection->cache_ttl,
                     'widget_name' => $connection->widget_name,
                     'widget_title' => $connection->widget_title,
                     'widget_id' => $connection->widget_id,
