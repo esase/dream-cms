@@ -32,6 +32,20 @@ class Application
     }
 
     /**
+     * Get layout path
+     *
+     * @return string
+     */
+    public static function getLayoutPath($full = true)
+    {
+        $layoutPath = ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['layout'];
+
+        return $full
+            ? APPLICATION_PUBLIC . '/' . $layoutPath
+            : $layoutPath;
+    }
+
+    /**
      * Get custom module config
      *
      * @return string

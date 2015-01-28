@@ -51,7 +51,7 @@ class ApplicationModule extends ApplicationAbstractCustomForm
             'required' => true,
             'category' => 'FTP access'
         ],
-        'module' => [
+        'file' => [
             'name' => 'module',
             'type' => ApplicationCustomFormBuilder::FIELD_FILE,
             'label' => 'Module',
@@ -95,7 +95,7 @@ class ApplicationModule extends ApplicationAbstractCustomForm
             ];
 
             if (!$this->deleteMode) {
-                $this->formElements['module']['validators'] = [
+                $this->formElements['file']['validators'] = [
                     [
                         'name' => 'fileextension',
                         'options' => [
@@ -105,7 +105,7 @@ class ApplicationModule extends ApplicationAbstractCustomForm
                 ];
             }
             else {
-                unset($this->formElements['module']);
+                unset($this->formElements['file']);
             }
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,

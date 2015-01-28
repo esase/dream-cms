@@ -2,19 +2,56 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-05 10:14+0600\n"
+"PO-Revision-Date: 2015-01-28 16:15+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "A new layout"
+msgstr "Новый макет"
+
+msgid "Upload layout description"
+msgstr "Пожалуйста, выберите файл в формате ZIP"
+
+msgid "Layout has been uploaded"
+msgstr "Макет был загружен"
+
+msgid "Upload a layout"
+msgstr "Загрузить макет"
+
+msgid ""
+"It is impossible to determine the layout version, vendor or vendor email"
+msgstr "Нельзя определить версию макета, поставщика или email поставщика"
+
+msgid "This layout is not compatible with current CMS version"
+msgstr "Этот макет не совместим с текущей версией CMS"
+
+msgid "The selected layout has been installed"
+msgstr "Выбранный макет был установлен"
+
+msgid "Selected layouts have been installed"
+msgstr "Выбранные макеты были установлены"
+
+msgid "Selected layouts will be installed. Are you sure?"
+msgstr "Выбранные макеты будут установлены. Вы уверены?"
+
+msgid "Not installed layouts"
+msgstr "Не установленные макеты"
+
+msgid "List of installed layouts"
+msgstr "Список установленных макетов"
+
+msgid "List of not installed layouts"
+msgstr "Список не установленных макетов"
 
 msgid "Layout module description"
 msgstr "Модуль позволяет управлять различными макетами сайта"
@@ -25,11 +62,29 @@ msgstr "Макеты сайта"
 msgid "Layout"
 msgstr "Макет сайта"
 
-msgid "Event - Deleting layouts"
-msgstr "Удаление макетов"
+msgid "Event - Installing custom layouts"
+msgstr "Установка пользовательских макетов"
 
-msgid "Event - Layout deleted by guest"
-msgstr "Гость удалил макет с идентификатором - \"%d\""
+msgid "Event - Custom layout installed by guest"
+msgstr "Гость установил пользовательский макет \"%s\""
 
-msgid "Event - Layout deleted by user"
-msgstr "\"%s\" удалил(а) макет с идентификатором - \"%d\""
+msgid "Event - Custom layout installed by user"
+msgstr "\"%s\" установил(а) пользовательский макет \"%s\""
+
+msgid "Event - Deleting custom layouts"
+msgstr "Удаление пользовательских макетов"
+
+msgid "Event - Custom layout deleted by guest"
+msgstr "Гость удалил пользовательский макет с идентификатором - \"%d\""
+
+msgid "Event - Custom layout deleted by user"
+msgstr "\"%s\" удалил(а) пользовательский макет с идентификатором - \"%d\""
+
+msgid "ACL - Viewing not installed layouts in admin area"
+msgstr "Просмотр не установленных макетов в админке"
+
+msgid "ACL - Installing layouts in admin area"
+msgstr "Установка макетов в админке"
+
+msgid "ACL - Uploading new layouts in admin area"
+msgstr "Загрузка новых макетов в админке"

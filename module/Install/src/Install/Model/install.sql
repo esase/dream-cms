@@ -548,8 +548,6 @@ CREATE TABLE `layout_list` (
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
     `status` ENUM('active','not_active') NOT NULL,
-    `title` VARCHAR(50) NOT NULL,
-    `description` VARCHAR(255) NOT NULL,
     `version` VARCHAR(20) NOT NULL,
     `vendor` VARCHAR(50) NOT NULL,
     `vendor_email` VARCHAR(50) NOT NULL,
@@ -558,8 +556,8 @@ CREATE TABLE `layout_list` (
     KEY `type` (`type`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `layout_list` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 'active', 'Base layout', 'Default base layout', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com');
+INSERT INTO `layout_list` (`name`, `type`, `status`, `version`, `vendor`, `vendor_email`) VALUES
+('base', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com');
 
 CREATE TABLE `acl_role` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -648,7 +646,10 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (64, 'modules_administration_activate', 'ACL - Activating modules in admin area', 1),
 (65, 'modules_administration_deactivate', 'ACL - Deactivating modules in admin area', 1),
 (66, 'modules_administration_upload_updates', 'ACL - Uploading  updates of modules in admin area', 1),
-(67, 'modules_administration_delete', 'ACL - Deleting modules in admin area', 1);
+(67, 'modules_administration_delete', 'ACL - Deleting modules in admin area', 1),
+(68, 'layouts_administration_list_not_installed', 'ACL - Viewing not installed layouts in admin area', 6),
+(69, 'layouts_administration_install', 'ACL - Installing layouts in admin area', 6),
+(70, 'layouts_administration_upload', 'ACL - Uploading new layouts in admin area', 6);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1115,8 +1116,9 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules'),
 (44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates'),
 (45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules'),
-(46, 'layout_delete', 6, 'Event - Deleting layouts'),
-(47, 'localization_delete', 7, 'Event - Deleting localizations');
+(46, 'layout_delete', 6, 'Event - Deleting custom layouts'),
+(47, 'localization_delete', 7, 'Event - Deleting localizations'),
+(48, 'layout_install', 6, 'Event - Installing custom layouts');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1153,7 +1155,8 @@ INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) V
 (3, 'Users', 2, 'user_group_menu_item.png'),
 (4, 'Files manager', 4, 'file_manager_menu_item.png'),
 (5, 'Pages management', 5, 'page_menu_item.png'),
-(6, 'Modules', 1, 'module_menu_item.png');
+(6, 'Modules', 1, 'module_menu_item.png'),
+(7, 'Layouts', 6, 'layout_menu.png');
 
 CREATE TABLE `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1188,7 +1191,10 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (9,  'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2),
 (10, 'List of installed modules', 'modules-administration', 'list-installed', 1, 8, 6, 1),
 (11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1),
-(12, 'Upload updates', 'modules-administration', 'upload-updates', 1, 10, 6, 1);
+(12, 'Upload updates', 'modules-administration', 'upload-updates', 1, 10, 6, 1),
+(13, 'List of installed layouts', 'layouts-administration', 'list-installed', 6, 11, 7, 1),
+(14, 'List of not installed layouts', 'layouts-administration', 'list-not-installed', 6, 12, 7, 1),
+(15, 'Upload updates', 'layouts-administration', 'upload-updates', 6, 13, 7, 1);
 
 CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

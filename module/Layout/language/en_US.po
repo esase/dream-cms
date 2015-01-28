@@ -2,18 +2,56 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-05 10:14+0600\n"
+"PO-Revision-Date: 2015-01-28 16:15+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "A new layout"
+msgstr "A new layout"
+
+msgid "Upload layout description"
+msgstr "Please choose a file in the ZIP format"
+
+msgid "Layout has been uploaded"
+msgstr "Layout has been uploaded"
+
+msgid "Upload a layout"
+msgstr "Upload a layout"
+
+msgid ""
+"It is impossible to determine the layout version, vendor or vendor email"
+msgstr ""
+"It is impossible to determine the layout version, vendor or vendor email"
+
+msgid "This layout is not compatible with current CMS version"
+msgstr "This layout is not compatible with current CMS version"
+
+msgid "The selected layout has been installed"
+msgstr "The selected layout has been installed"
+
+msgid "Selected layouts have been installed"
+msgstr "Selected layouts have been installed"
+
+msgid "Selected layouts will be installed. Are you sure?"
+msgstr "Selected layouts will be installed. Are you sure?"
+
+msgid "Not installed layouts"
+msgstr "Not installed layouts"
+
+msgid "List of installed layouts"
+msgstr "List of installed layouts"
+
+msgid "List of not installed layouts"
+msgstr "List of not installed layouts"
 
 msgid "Layout module description"
 msgstr "Module helps you to manage with different site layouts"
@@ -24,11 +62,29 @@ msgstr "Layouts"
 msgid "Layout"
 msgstr "Layout"
 
-msgid "Event - Deleting layouts"
-msgstr "Deleting layouts"
+msgid "Event - Installing custom layouts"
+msgstr "Installing custom layouts"
 
-msgid "Event - Layout deleted by guest"
-msgstr "Guest deleted  the layout with id - \"%d\""
+msgid "Event - Custom layout installed by guest"
+msgstr "Guest installed custom layout \"%s\""
 
-msgid "Event - Layout deleted by user"
-msgstr "\"%s\" deleted  the layout with id - \"%d\""
+msgid "Event - Custom layout installed by user"
+msgstr "\"%s\" installed custom layout \"%s\""
+
+msgid "Event - Deleting custom layouts"
+msgstr "Deleting custom layouts"
+
+msgid "Event - Custom layout deleted by guest"
+msgstr "Guest deleted  the custom layout with id - \"%d\""
+
+msgid "Event - Custom layout deleted by user"
+msgstr "\"%s\" deleted  the custom layout with id - \"%d\""
+
+msgid "ACL - Viewing not installed layouts in admin area"
+msgstr "Viewing not installed layouts in admin area"
+
+msgid "ACL - Installing layouts in admin area"
+msgstr "Installing layouts in admin area"
+
+msgid "ACL - Uploading new layouts in admin area"
+msgstr "Uploading new layouts in admin area"

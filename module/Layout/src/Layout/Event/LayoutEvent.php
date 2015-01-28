@@ -7,22 +7,48 @@ use User\Service\UserIdentity as UserIdentityService;
 class LayoutEvent extends ApplicationAbstractEvent
 {
     /**
-     * Delete layout event
+     * Delete custom layout event
      */
     const DELETE = 'layout_delete';
 
     /**
-     * Fire delete layout event
+     * Install custom layout event
+     */
+    const INSTALL = 'layout_install';
+
+    /**
+     * Fire install custom module event
+     *
+     * @param string $layout
+     * @return void
+     */
+    public static function fireInstallCustomLayoutEvent($layout)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Custom layout installed by guest'
+            : 'Event - Custom layout installed by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$layout]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $layout];
+
+        self::fireEvent(self::INSTALL, 
+                $layout, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire delete custom layout event
      *
      * @param integer $layoutId
      * @return void
      */
-    public static function fireDeleteLayoutEvent($layoutId)
+    public static function fireDeleteCustomLayoutEvent($layoutId)
     {
         // event's description
         $eventDesc = UserIdentityService::isGuest()
-            ? 'Event - Layout deleted by guest'
-            : 'Event - Layout deleted by user';
+            ? 'Event - Custom layout deleted by guest'
+            : 'Event - Custom layout deleted by user';
 
         $eventDescParams = UserIdentityService::isGuest()
             ? [$layoutId]

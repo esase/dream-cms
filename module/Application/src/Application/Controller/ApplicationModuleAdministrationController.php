@@ -217,7 +217,7 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
         // redirect back
         return $this->redirectTo('modules-administration', 'list-installed', [], true);
     }
-   
+
     /**
      * Install selected modules
      */
