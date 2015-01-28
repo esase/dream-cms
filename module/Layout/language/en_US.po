@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-28 16:15+0600\n"
+"PO-Revision-Date: 2015-01-28 17:27+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,18 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Layout already uploaded"
+msgstr "Layout already uploaded"
+
+msgid "Layout not found"
+msgstr "Layout not found"
+
+msgid "Cannot define the layout's path into the config file"
+msgstr "Cannot define the layout's path into the config file"
+
+msgid "Cannot define the layout's config file"
+msgstr "Cannot define the layout's config file"
 
 msgid "A new layout"
 msgstr "A new layout"
@@ -61,6 +73,15 @@ msgstr "Layouts"
 
 msgid "Layout"
 msgstr "Layout"
+
+msgid "Event - Uploading custom layouts"
+msgstr "Uploading custom layouts"
+
+msgid "Event - Custom layout uploaded by guest"
+msgstr "Guest uploaded custom layout \"%s\""
+
+msgid "Event - Custom layout uploaded by user"
+msgstr "\"%s\" uploaded custom layout \"%s\""
 
 msgid "Event - Installing custom layouts"
 msgstr "Installing custom layouts"

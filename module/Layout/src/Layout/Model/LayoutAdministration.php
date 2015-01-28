@@ -4,6 +4,8 @@ namespace Layout\Model;
 use Layout\Event\LayoutEvent;
 use Layout\Exception\LayoutException;
 use Layout\Utility\LayoutCache as LayoutCacheUtility;
+use Application\Utility\ApplicationFtp as ApplicationFtpUtility;
+use Application\Utility\ApplicationFileSystem as ApplicationFileSystemUtility;
 use Application\Utility\ApplicationErrorLogger;
 use Application\Utility\ApplicationCache as ApplicationCacheUtility;
 use Application\Utility\ApplicationPagination as PaginationUtility;
@@ -238,5 +240,83 @@ class LayoutAdministration extends LayoutBase
         // fire the install custom layout event
         LayoutEvent::fireInstallCustomLayoutEvent($layoutName);
         return true;
+    }
+
+    /**
+     * Upload custom layout
+     *
+     * @param array $formData
+     *      string login required
+     *      string password required
+     *      array layout required
+     * @param string $host
+     * @return boolean|string
+     */
+    public function uploadCustomLayout(array $formData, $host)
+    {
+        $uploadResult = true;
+
+        // TODO: upload modules templates
+
+        try {
+            // create a tmp dir
+            $tmpDirName = $this->generateTmpDir();
+            ApplicationFileSystemUtility::createDir($tmpDirName);
+
+            // unzip a custom layout into the tmp dir
+            $this->unzipFiles($formData['layout']['tmp_name'], $tmpDirName);
+
+            // check the layout's config
+            if (!file_exists($tmpDirName . '/layout_config.php')) {
+                throw new LayoutException('Cannot define the layout\'s config file');
+            }
+
+            // get the layout's config
+            $layoutConfig = include $tmpDirName . '/layout_config.php';
+
+            // get the layout's path
+            $layoutPath   = !empty($layoutConfig['layout_path'])
+                ? $tmpDirName . '/' . $layoutConfig['layout_path']
+                : null;
+
+            // check the layout existing
+            if (!$layoutPath || !file_exists($layoutPath) || !is_dir($layoutPath)) {
+                throw new LayoutException('Cannot define the layout\'s path into the config file');
+            }
+
+            if (!file_exists($layoutPath . '/' . $this->layoutInstallConfig)) {
+                throw new LayoutException('Layout not found');
+            }
+
+            // check the layout existing
+            $layoutName = basename($layoutPath);
+            $globalLayoutPath = basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getLayoutPath(false) . '/' . $layoutName;
+            $localLayoutPath = dirname(APPLICATION_PUBLIC) . '/' . $globalLayoutPath;
+
+            if (file_exists($localLayoutPath)) {
+                throw new LayoutException('Layout already uploaded');
+            }
+
+            // upload the layout via FTP 
+            $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
+            $ftp->createDirectory($globalLayoutPath);
+            $ftp->copyDirectory($layoutPath, $globalLayoutPath);
+        }
+        catch (Exception $e) {            
+            ApplicationErrorLogger::log($e);
+            $uploadResult = $e->getMessage();
+        }
+
+        // remove the tmp dir
+        if (file_exists($tmpDirName)) {
+            ApplicationFileSystemUtility::deleteFiles($tmpDirName, [], false, true);
+        }
+
+        // fire the upload custom layout event
+        if (true === $uploadResult) {
+            LayoutEvent::fireUploadCustomLayoutEvent($layoutName);
+        }
+
+        return $uploadResult;
     }
 }
