@@ -649,7 +649,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (67, 'modules_administration_delete', 'ACL - Deleting modules in admin area', 1),
 (68, 'layouts_administration_list_not_installed', 'ACL - Viewing not installed layouts in admin area', 6),
 (69, 'layouts_administration_install', 'ACL - Installing layouts in admin area', 6),
-(70, 'layouts_administration_upload', 'ACL - Uploading new layouts in admin area', 6);
+(70, 'layouts_administration_upload', 'ACL - Uploading new layouts in admin area', 6),
+(71, 'layouts_administration_delete', 'ACL - Deleting layouts in admin area', 6);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

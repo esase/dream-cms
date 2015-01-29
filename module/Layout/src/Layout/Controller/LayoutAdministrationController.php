@@ -163,4 +163,66 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
             'layout_form' => $layoutForm->getForm()
         ]);
     }
+
+    /**
+     * Delete a layout
+     */
+    public function deleteAction()
+    {
+        $layoutName = $this->getSlug();
+
+        // layout should be not installed
+        if (null != ($layoutInfo = $this->getModel()->getLayoutInfo($layoutName)) 
+                || false === ($layoutInstallConfig = $this->getModel()->getCustomLayoutInstallConfig($layoutName))) {
+
+            return $this->createHttpNotFoundModel($this->getResponse());
+        }
+
+        $request = $this->getRequest();
+        $host = $request->getUri()->getHost();
+
+        // get an layout form
+        $layoutForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Layout\Form\Layout')
+            ->setHost($host)
+            ->setDeleteMode();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $layoutForm->getForm()->setData($request->getPost(), false);
+
+            // delete a layout
+            if ($layoutForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                if (true === ($result = $this->getModel()->
+                        deleteCustomLayout($layoutName, $layoutForm->getForm()->getData(), $host))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Layout has been deleted'));
+
+                    return $this->redirectTo('layouts-administration', 'list-not-installed');
+                }
+
+                $this->flashMessenger()
+                    ->setNamespace('error')
+                    ->addMessage($this->getTranslator()->translate($result));
+
+                return $this->redirectTo('layouts-administration', 'delete', [
+                    'slug' => $layoutName
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'layout_name' => $layoutName,
+            'layout_form' => $layoutForm->getForm()
+        ]);
+    }
 }

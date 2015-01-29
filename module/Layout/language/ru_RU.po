@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-28 17:27+0600\n"
+"PO-Revision-Date: 2015-01-29 14:15+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,18 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Layout has been deleted"
+msgstr "Макет был удален"
+
+msgid "Delete the layout"
+msgstr "Удалить шаблон"
+
+msgid "Cannot define the layout's name into the config file"
+msgstr "Невозможно определить имя шаблона в конфигурационном файле"
+
+msgid "Cannot define the template's path into the config file"
+msgstr "Невозможно определить путь шаблона в конфигурационном файле"
 
 msgid "Layout already uploaded"
 msgstr "Макет уже загружен"
@@ -96,10 +108,10 @@ msgid "Event - Deleting custom layouts"
 msgstr "Удаление пользовательских макетов"
 
 msgid "Event - Custom layout deleted by guest"
-msgstr "Гость удалил пользовательский макет с идентификатором - \"%d\""
+msgstr "Гость удалил пользовательский макет \"%s\""
 
 msgid "Event - Custom layout deleted by user"
-msgstr "\"%s\" удалил(а) пользовательский макет с идентификатором - \"%d\""
+msgstr "\"%s\" удалил(а) пользовательский макет \"%s\""
 
 msgid "ACL - Viewing not installed layouts in admin area"
 msgstr "Просмотр не установленных макетов в админке"
@@ -109,3 +121,6 @@ msgstr "Установка макетов в админке"
 
 msgid "ACL - Uploading new layouts in admin area"
 msgstr "Загрузка новых макетов в админке"
+
+msgid "ACL - Deleting layouts in admin area"
+msgstr "Удаление макетов в админке"

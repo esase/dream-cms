@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-28 17:27+0600\n"
+"PO-Revision-Date: 2015-01-29 14:15+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,18 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Layout has been deleted"
+msgstr "Layout has been deleted"
+
+msgid "Delete the layout"
+msgstr "Delete the layout"
+
+msgid "Cannot define the layout's name into the config file"
+msgstr "Cannot define the layout's name into the config file"
+
+msgid "Cannot define the template's path into the config file"
+msgstr "Cannot define the template's path into the config file"
 
 msgid "Layout already uploaded"
 msgstr "Layout already uploaded"
@@ -96,10 +108,10 @@ msgid "Event - Deleting custom layouts"
 msgstr "Deleting custom layouts"
 
 msgid "Event - Custom layout deleted by guest"
-msgstr "Guest deleted  the custom layout with id - \"%d\""
+msgstr "Guest deleted  the custom layout \"%s\""
 
 msgid "Event - Custom layout deleted by user"
-msgstr "\"%s\" deleted  the custom layout with id - \"%d\""
+msgstr "\"%s\" deleted  the custom layout \"%s\""
 
 msgid "ACL - Viewing not installed layouts in admin area"
 msgstr "Viewing not installed layouts in admin area"
@@ -109,3 +121,6 @@ msgstr "Installing layouts in admin area"
 
 msgid "ACL - Uploading new layouts in admin area"
 msgstr "Uploading new layouts in admin area"
+
+msgid "ACL - Deleting layouts in admin area"
+msgstr "Deleting layouts in admin area"

@@ -118,4 +118,32 @@ class LayoutBase extends ApplicationAbstractBase
 
         return $layouts;
     }
+
+    /**
+     * Get layout info
+     *
+     * @param string $name
+     * @return array
+     */
+    public function getLayoutInfo($name)
+    {
+        $select = $this->select();
+        $select->from('layout_list')
+            ->columns([
+                'id',
+                'name',
+                'type',
+                'version',
+                'vendor',
+                'vendor_email'
+            ])
+            ->where([
+                'name' => $name
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
 }

@@ -18,6 +18,16 @@ class Application
     }
 
     /**
+     * Get module view dir
+     *
+     * @return string
+     */
+    public static function getModuleViewDir()
+    {
+        return ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['module_view'];
+    }
+
+    /**
      * Get base layout path
      *
      * @return string

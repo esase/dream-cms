@@ -22,6 +22,11 @@ class LayoutEvent extends ApplicationAbstractEvent
     const UPLOAD = 'layout_upload';
 
     /**
+     * Uninstall custom layout event
+     */
+    const UNINSTALL = 'layout_uninstall';
+
+    /**
      * Fire upload custom layout event
      *
      * @param string $layout
@@ -66,10 +71,10 @@ class LayoutEvent extends ApplicationAbstractEvent
     /**
      * Fire delete custom layout event
      *
-     * @param integer $layoutId
+     * @param string $layoutName
      * @return void
      */
-    public static function fireDeleteCustomLayoutEvent($layoutId)
+    public static function fireDeleteCustomLayoutEvent($layoutName)
     {
         // event's description
         $eventDesc = UserIdentityService::isGuest()
@@ -77,10 +82,10 @@ class LayoutEvent extends ApplicationAbstractEvent
             : 'Event - Custom layout deleted by user';
 
         $eventDescParams = UserIdentityService::isGuest()
-            ? [$layoutId]
-            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $layoutId];
+            ? [$layoutName]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $layoutName];
 
         self::fireEvent(self::DELETE, 
-                $layoutId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+                $layoutName, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
     }
 }

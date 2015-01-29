@@ -256,8 +256,6 @@ class LayoutAdministration extends LayoutBase
     {
         $uploadResult = true;
 
-        // TODO: upload modules templates
-
         try {
             // create a tmp dir
             $tmpDirName = $this->generateTmpDir();
@@ -273,6 +271,14 @@ class LayoutAdministration extends LayoutBase
 
             // get the layout's config
             $layoutConfig = include $tmpDirName . '/layout_config.php';
+            $layoutName = !empty($layoutConfig['layout_name']) 
+                ? mb_strtolower($layoutConfig['layout_name'])
+                : null;
+
+            // check the layout name
+            if (!$layoutName) {
+                throw new LayoutException('Cannot define the layout\'s name into the config file');
+            }
 
             // get the layout's path
             $layoutPath   = !empty($layoutConfig['layout_path'])
@@ -284,12 +290,12 @@ class LayoutAdministration extends LayoutBase
                 throw new LayoutException('Cannot define the layout\'s path into the config file');
             }
 
+            // check the layout install config
             if (!file_exists($layoutPath . '/' . $this->layoutInstallConfig)) {
                 throw new LayoutException('Layout not found');
             }
 
             // check the layout existing
-            $layoutName = basename($layoutPath);
             $globalLayoutPath = basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getLayoutPath(false) . '/' . $layoutName;
             $localLayoutPath = dirname(APPLICATION_PUBLIC) . '/' . $globalLayoutPath;
 
@@ -301,6 +307,33 @@ class LayoutAdministration extends LayoutBase
             $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
             $ftp->createDirectory($globalLayoutPath);
             $ftp->copyDirectory($layoutPath, $globalLayoutPath);
+
+            // check modules templates 
+            if (!empty($layoutConfig['module_path']) && is_array($layoutConfig['module_path'])) {
+                $globalModulePath = ApplicationService::getModulePath(false);
+                $localModulePath = APPLICATION_ROOT. '/' . $globalModulePath;
+
+                // upload modules templates
+                foreach ($layoutConfig['module_path'] as $moduleName => $template) {
+                    // skip non existing modules
+                    if (!file_exists($localModulePath . '/' . $moduleName)) {
+                        continue;
+                    }
+
+                    $templateDir = $tmpDirName . '/' . $template;
+
+                    // check the template existing
+                    if (!file_exists($templateDir) || !is_dir($templateDir)) {
+                        throw new LayoutException('Cannot define the template\'s path into the config file');
+                    }
+
+                    $moduleTemplateDir = $globalModulePath .  '/' . 
+                            $moduleName . '/' . ApplicationService::getModuleViewDir() . '/' . $layoutName;
+
+                    $ftp->createDirectory($moduleTemplateDir);
+                    $ftp->copyDirectory($templateDir, $moduleTemplateDir);
+                }
+            }
         }
         catch (Exception $e) {            
             ApplicationErrorLogger::log($e);
@@ -318,5 +351,51 @@ class LayoutAdministration extends LayoutBase
         }
 
         return $uploadResult;
+    }
+
+    /**
+     * Delete custom layout
+     *
+     * @param string $layoutName
+     * @param array $formData
+     *      string login required
+     *      string password required
+     * @param string $host
+     * @return boolean|string
+     */
+    public function deleteCustomLayout($layoutName, array $formData, $host)
+    {
+        try {
+            // delete a layout dir
+            $globalLayoutPath = basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getLayoutPath(false) . '/' . $layoutName;
+            $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
+            $ftp->removeDirectory($globalLayoutPath);
+
+            // delete modules templates
+            $globalModulePath  = ApplicationService::getModulePath(false);
+            $localModulePath   = ApplicationService::getModulePath(true);
+            $directoryIterator = new DirectoryIterator($localModulePath);
+
+            foreach($directoryIterator as $module) {
+                if ($module->isDot() || !$module->isDir()) {
+                    continue;
+                }
+
+                $moduleTemplateDir = $localModulePath . '/' . 
+                        $module->getFileName() . '/' . ApplicationService::getModuleViewDir() . '/' . $layoutName;
+
+                if (file_exists($moduleTemplateDir)) {
+                    $ftp->removeDirectory($globalModulePath .  '/' . 
+                            $module->getFileName() . '/' . ApplicationService::getModuleViewDir() . '/' . $layoutName);
+                }
+            }
+        }
+        catch (Exception $e) {
+            ApplicationErrorLogger::log($e);
+            return $e->getMessage();
+        }
+
+        LayoutEvent::fireDeleteCustomLayoutEvent($layoutName);
+        return true;
     }
 }
