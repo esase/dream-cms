@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-29 14:15+0600\n"
+"PO-Revision-Date: 2015-01-30 17:09+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,12 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Updates of layout have been uploaded"
+msgstr "Updates of layout have been uploaded"
+
+msgid "This layout updates are not necessary or not defined"
+msgstr "This layout updates are not necessary or not defined"
 
 msgid "Layout has been deleted"
 msgstr "Layout has been deleted"
@@ -86,6 +92,15 @@ msgstr "Layouts"
 msgid "Layout"
 msgstr "Layout"
 
+msgid "Event - Uploading layouts updates"
+msgstr "Uploading layouts updates"
+
+msgid "Event - layout updated by guest"
+msgstr "Guest uploaded updates for the layout \"%s\""
+
+msgid "Event - layout updated by user"
+msgstr "\"%s\" uploaded updates for the layout \"%s\""
+
 msgid "Event - Uploading custom layouts"
 msgstr "Uploading custom layouts"
 
@@ -124,3 +139,6 @@ msgstr "Uploading new layouts in admin area"
 
 msgid "ACL - Deleting layouts in admin area"
 msgstr "Deleting layouts in admin area"
+
+msgid "ACL - Uploading  updates of layouts in admin area"
+msgstr "Uploading  updates of layouts in admin area"

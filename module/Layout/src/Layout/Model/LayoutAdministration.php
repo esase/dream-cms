@@ -271,69 +271,15 @@ class LayoutAdministration extends LayoutBase
 
             // get the layout's config
             $layoutConfig = include $tmpDirName . '/layout_config.php';
-            $layoutName = !empty($layoutConfig['layout_name']) 
-                ? mb_strtolower($layoutConfig['layout_name'])
-                : null;
+            $layoutName = !empty($layoutConfig['layout_name']) ? mb_strtolower($layoutConfig['layout_name']) : null;
 
             // check the layout name
             if (!$layoutName) {
                 throw new LayoutException('Cannot define the layout\'s name into the config file');
             }
 
-            // get the layout's path
-            $layoutPath   = !empty($layoutConfig['layout_path'])
-                ? $tmpDirName . '/' . $layoutConfig['layout_path']
-                : null;
-
-            // check the layout existing
-            if (!$layoutPath || !file_exists($layoutPath) || !is_dir($layoutPath)) {
-                throw new LayoutException('Cannot define the layout\'s path into the config file');
-            }
-
-            // check the layout install config
-            if (!file_exists($layoutPath . '/' . $this->layoutInstallConfig)) {
-                throw new LayoutException('Layout not found');
-            }
-
-            // check the layout existing
-            $globalLayoutPath = basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getLayoutPath(false) . '/' . $layoutName;
-            $localLayoutPath = dirname(APPLICATION_PUBLIC) . '/' . $globalLayoutPath;
-
-            if (file_exists($localLayoutPath)) {
-                throw new LayoutException('Layout already uploaded');
-            }
-
-            // upload the layout via FTP 
-            $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
-            $ftp->createDirectory($globalLayoutPath);
-            $ftp->copyDirectory($layoutPath, $globalLayoutPath);
-
-            // check modules templates 
-            if (!empty($layoutConfig['module_path']) && is_array($layoutConfig['module_path'])) {
-                $globalModulePath = ApplicationService::getModulePath(false);
-                $localModulePath = APPLICATION_ROOT. '/' . $globalModulePath;
-
-                // upload modules templates
-                foreach ($layoutConfig['module_path'] as $moduleName => $template) {
-                    // skip non existing modules
-                    if (!file_exists($localModulePath . '/' . $moduleName)) {
-                        continue;
-                    }
-
-                    $templateDir = $tmpDirName . '/' . $template;
-
-                    // check the template existing
-                    if (!file_exists($templateDir) || !is_dir($templateDir)) {
-                        throw new LayoutException('Cannot define the template\'s path into the config file');
-                    }
-
-                    $moduleTemplateDir = $globalModulePath .  '/' . 
-                            $moduleName . '/' . ApplicationService::getModuleViewDir() . '/' . $layoutName;
-
-                    $ftp->createDirectory($moduleTemplateDir);
-                    $ftp->copyDirectory($templateDir, $moduleTemplateDir);
-                }
-            }
+            // upload layout's updates
+            $this->uploadLayoutFiles($layoutName, $layoutConfig, $tmpDirName, $host, $formData);
         }
         catch (Exception $e) {            
             ApplicationErrorLogger::log($e);
@@ -372,8 +318,8 @@ class LayoutAdministration extends LayoutBase
             $ftp->removeDirectory($globalLayoutPath);
 
             // delete modules templates
-            $globalModulePath  = ApplicationService::getModulePath(false);
-            $localModulePath   = ApplicationService::getModulePath(true);
+            $globalModulePath = ApplicationService::getModulePath(false);
+            $localModulePath = APPLICATION_ROOT. '/' . $globalModulePath;
             $directoryIterator = new DirectoryIterator($localModulePath);
 
             foreach($directoryIterator as $module) {
@@ -397,5 +343,191 @@ class LayoutAdministration extends LayoutBase
 
         LayoutEvent::fireDeleteCustomLayoutEvent($layoutName);
         return true;
+    }
+
+    /**
+     * Upload layout updates
+     *
+     * @param array $formData
+     *      string login required
+     *      string password required
+     *      array layout required
+     * @param string $host
+     * @return array|string
+     */
+    public function uploadLayoutUpdates(array $formData, $host)
+    {
+        $uploadResult = true;
+
+        try {
+            // create a tmp dir
+            $tmpDirName = $this->generateTmpDir();
+            ApplicationFileSystemUtility::createDir($tmpDirName);
+
+            // unzip a layout updates into the tmp dir
+            $this->unzipFiles($formData['layout']['tmp_name'], $tmpDirName);
+
+            // check the layout's config
+            if (!file_exists($tmpDirName . '/update_layout_config.php')) {
+                throw new LayoutException('Cannot define the layout\'s config file');
+            }
+
+            // get the layout's config
+            $updateLayoutConfig = include $tmpDirName . '/update_layout_config.php';
+
+            // get updates params
+            $layoutCompatable = !empty($updateLayoutConfig['compatable']) ? $updateLayoutConfig['compatable'] : null;
+            $layoutName = !empty($updateLayoutConfig['layout_name']) ? $updateLayoutConfig['layout_name'] : null;
+            $layoutVersion = !empty($updateLayoutConfig['version']) ? $updateLayoutConfig['version'] : null;
+            $layoutVendor = !empty($updateLayoutConfig['vendor']) ? $updateLayoutConfig['vendor'] : null;
+            $layoutVendorEmail = !empty($updateLayoutConfig['vendor_email']) ? $updateLayoutConfig['vendor_email'] : null;
+
+            // check the layout existing
+            if (!$layoutName) {
+                throw new LayoutException('Layout not found');
+            }
+
+            $layoutInstalled = true;
+
+            // get layout info from db
+            if (null == ($layoutInfo = $this->getLayoutInfo($layoutName))) {
+                // get info from config
+                if (false === ($layoutInfo = $this->getCustomLayoutInstallConfig($layoutName))) {
+                    // nothing to update
+                    throw new LayoutException('Layout not found');
+                }
+
+                $layoutInstalled = false;
+            }
+
+            // compare the layout options
+            if (!$layoutVendor || !$layoutVendorEmail
+                    || empty($layoutInfo['vendor']) || empty($layoutInfo['vendor_email'])
+                    || strcasecmp($layoutVendor, $layoutInfo['vendor']) <> 0
+                    || strcasecmp($layoutVendorEmail, $layoutInfo['vendor_email']) <> 0) {
+
+                throw new LayoutException('Layout not found');
+            }
+
+            if (!$layoutCompatable || true !== ($result =
+                    version_compare(SettingService::getSetting('application_generator_version'), $layoutCompatable, '>='))) {
+
+                throw new LayoutException('These updates are not compatible with current CMS version');
+            }
+
+            // compare the layout versions
+            if (!$layoutVersion
+                    || empty($layoutInfo['version'])
+                    || version_compare($layoutVersion, $layoutInfo['version']) <= 0) {
+
+                throw new LayoutException('This layout updates are not necessary or not defined');
+            }
+
+            // clear caches
+            $this->clearLayoutInstallCaches();
+
+            // upload layout's updates
+            $this->uploadLayoutFiles($layoutName, $updateLayoutConfig, $tmpDirName, $host, $formData);
+
+            // update version
+            if ($layoutInstalled) {
+                $update = $this->update()
+                    ->table('layout_list')
+                    ->set([
+                        'version' => $layoutVersion
+                    ])
+                    ->where([
+                        'name' => $layoutName
+                    ]);
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+        }
+        catch (Exception $e) {            
+            ApplicationErrorLogger::log($e);
+            $uploadResult = $e->getMessage();
+        }
+
+        // remove the tmp dir
+        if (file_exists($tmpDirName)) {
+            ApplicationFileSystemUtility::deleteFiles($tmpDirName, [], false, true);
+        }
+
+        // fire the upload layout updates event
+        if (true === $uploadResult) {
+            LayoutEvent::fireUploadLayoutUpdatesEvent($layoutName);
+        }
+
+        // return an error description
+        return $uploadResult;
+    }
+
+    /**
+     * Upload layout files
+     *
+     * @param string $layoutName
+     * @param array $layoutConfig
+     * @param string $tmpDirName
+     * @param string $host
+     * @param array $formData
+     *      string login required
+     *      string password required
+     *      array layout required
+     * @throws Layout\Exception\LayoutException
+     * return void
+     */
+    protected function uploadLayoutFiles($layoutName, array $layoutConfig, $tmpDirName, $host, array $formData)
+    {
+        // get the layout's path
+        $layoutPath = !empty($layoutConfig['layout_path']) 
+            ? $tmpDirName . '/' . $layoutConfig['layout_path'] 
+            : null;
+
+        // check the layout existing
+        if (!$layoutPath || !file_exists($layoutPath) || !is_dir($layoutPath)) {
+            throw new LayoutException('Cannot define the layout\'s path into the config file');
+        }
+
+        // check the layout install config
+        if (!file_exists($layoutPath . '/' . $this->layoutInstallConfig)) {
+            throw new LayoutException('Layout not found');
+        }
+
+        // check the layout existing
+        $globalLayoutPath = basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getLayoutPath(false) . '/' . $layoutName;
+        $localLayoutPath = dirname(APPLICATION_PUBLIC) . '/' . $globalLayoutPath;
+
+        // upload the layout via FTP 
+        $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
+        $ftp->createDirectory($globalLayoutPath, true);
+        $ftp->copyDirectory($layoutPath, $globalLayoutPath);
+
+        // check modules templates 
+        if (!empty($layoutConfig['module_path']) && is_array($layoutConfig['module_path'])) {
+            $globalModulePath = ApplicationService::getModulePath(false);
+            $localModulePath = APPLICATION_ROOT. '/' . $globalModulePath;
+
+            // upload modules templates
+            foreach ($layoutConfig['module_path'] as $moduleName => $template) {
+                // skip non existing modules
+                if (!file_exists($localModulePath . '/' . $moduleName)) {
+                    continue;
+                }
+
+                $templateDir = $tmpDirName . '/' . $template;
+
+                // check the template existing
+                if (!file_exists($templateDir) || !is_dir($templateDir)) {
+                    throw new LayoutException('Cannot define the template\'s path into the config file');
+                }
+
+                $moduleTemplateDir = $globalModulePath .  '/' . 
+                        $moduleName . '/' . ApplicationService::getModuleViewDir() . '/' . $layoutName;
+
+                $ftp->createDirectory($moduleTemplateDir, true);
+                $ftp->copyDirectory($templateDir, $moduleTemplateDir);
+            }
+        }
     }
 }

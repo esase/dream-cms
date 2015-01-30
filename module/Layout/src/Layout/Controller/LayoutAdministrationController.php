@@ -225,4 +225,58 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
             'layout_form' => $layoutForm->getForm()
         ]);
     }
+
+    /**
+     * Upload updates
+     */
+    public function uploadUpdatesAction()
+    {
+        $request = $this->getRequest();
+        $host = $request->getUri()->getHost();
+
+        // get an layout form
+        $layoutForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Layout\Form\Layout')
+            ->setHost($host);
+
+        // validate the form
+        if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            // fill the form with received values
+            $layoutForm->getForm()->setData($post, false);
+
+            // upload updates
+            if ($layoutForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                if (true === ($result = $this->
+                        getModel()->uploadLayoutUpdates($layoutForm->getForm()->getData(), $host))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Updates of layout have been uploaded'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('layouts-administration', 'upload-updates');
+            }
+        }
+
+        return new ViewModel([
+            'layout_form' => $layoutForm->getForm()
+        ]);
+    }
 }
