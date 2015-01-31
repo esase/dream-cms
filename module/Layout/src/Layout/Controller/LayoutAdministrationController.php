@@ -1,6 +1,7 @@
 <?php
 namespace Layout\Controller;
 
+use Layout\Model\LayoutBase as LayoutBaseModel;
 use Application\Controller\ApplicationAbstractAdministrationController;
 use Zend\View\Model\ViewModel;
 
@@ -278,5 +279,103 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
         return new ViewModel([
             'layout_form' => $layoutForm->getForm()
         ]);
+    }
+
+    /**
+     * List of installed layouts
+     */
+    public function listInstalledAction()
+    {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->aclCheckPermission())) {
+            return $result;
+        }
+
+        $filters = [];
+
+        // get a filter form
+        $filterForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Layout\Form\LayoutFilter');
+
+        $request = $this->getRequest();
+        $filterForm->getForm()->setData($request->getQuery(), false);
+
+        // check the filter form validation
+        if ($filterForm->getForm()->isValid()) {
+            $filters = $filterForm->getForm()->getData();
+        }
+
+        // get data
+        $paginator = $this->getModel()->getInstalledLayouts($this->getPage(),
+                $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
+
+        return new ViewModel([
+            'filter_form' => $filterForm->getForm(),
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        ]);
+    }
+
+    /**
+     * Uninstall selected layouts
+     */
+    public function uninstallAction()
+    {
+        // TODO: Event
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($layoutsIds = $request->getPost('layouts', null))) {
+                // uninstall selected layouts
+                $uninstallResult = false;
+                $uninstalledCount = 0;
+
+                foreach ($layoutsIds as $layout) {
+                    // get a layout info
+                    if (null != ($layoutInfo = $this->getModel()->getLayoutInfo($layout))) {
+                        if ($layoutInfo['type'] == LayoutBaseModel::LAYOUT_TYPE_SYSTEM) {
+                            continue;
+                        }
+
+                        // check the permission and increase permission's actions track
+                        if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                            break;
+                        }
+
+                        // uninstall the layout
+                        if (true !== ($uninstallResult = $this->getModel()->uninstallCustomLayout($layoutInfo))) {
+                            $this->flashMessenger()
+                                ->setNamespace('error')
+                                ->addMessage(($uninstallResult ? $this->getTranslator()->translate($uninstallResult)
+                                    : $this->getTranslator()->translate('Error occurred')));
+
+                            break;
+                        }
+                    }
+
+                    $uninstalledCount++;
+                }
+
+                if (true === $uninstallResult) {
+                    $message = $uninstalledCount > 1
+                        ? 'Selected layouts have been uninstalled'
+                        : 'The selected layout has been uninstalled';
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate($message));
+                }
+            }
+        }
+
+        // redirect back
+        return $this->redirectTo('layouts-administration', 'list-installed', [], true);
     }
 }

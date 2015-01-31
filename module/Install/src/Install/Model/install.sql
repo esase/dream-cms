@@ -651,7 +651,9 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (69, 'layouts_administration_install', 'ACL - Installing layouts in admin area', 6),
 (70, 'layouts_administration_upload', 'ACL - Uploading new layouts in admin area', 6),
 (71, 'layouts_administration_delete', 'ACL - Deleting layouts in admin area', 6),
-(72, 'layouts_administration_upload_updates', 'ACL - Uploading  updates of layouts in admin area', 6);
+(72, 'layouts_administration_upload_updates', 'ACL - Uploading  updates of layouts in admin area', 6),
+(73, 'layouts_administration_list_installed', 'ACL - Viewing installed layouts in admin area', 6),
+(74, 'layouts_administration_uninstall', 'ACL - Uninstalling layouts in admin area', 6);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1122,7 +1124,8 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (47, 'localization_delete', 7, 'Event - Deleting localizations'),
 (48, 'layout_install', 6, 'Event - Installing custom layouts'),
 (49, 'layout_upload', 6, 'Event - Uploading custom layouts'),
-(50, 'layout_upload_updates', 1, 'Event - Uploading layouts updates');
+(50, 'layout_upload_updates', 6, 'Event - Uploading layouts updates'),
+(51, 'layout_uninstall', 6, 'Event - Uninstalling custom layouts');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

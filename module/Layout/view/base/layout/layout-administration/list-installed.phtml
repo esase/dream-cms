@@ -1,0 +1,99 @@
+<?php use Layout\Model\LayoutBase as LayoutBaseModel ?>
+
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('List of installed layouts') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('layout/layout-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list-installed' // selected action is "list-installed"
+]) ?>
+
+<?php $this->content = $this->partial('partial/data-grid', [
+    'controller' => 'layouts-administration',
+    'action' => 'list-installed',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => [
+        [
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ],
+        [
+            'title' => $this->translate('Name'),
+            'order_name' => 'name'
+        ],
+        [
+            'title' => $this->translate('Type'),
+            'order_name' => 'type'
+        ],
+        [
+            'title' => $this->translate('Version'),
+            'order_name' => 'version'
+        ],
+        [
+            'title' => $this->translate('Vendor'),
+            'order_name' => 'vendor'
+        ],
+        [
+            'title' => $this->translate('Vendor email'),
+            'order_name' => 'email'
+        ],
+    ],
+    'paginator' => $this->paginator,
+    'skipped_fields' => [
+    ],
+    'helpers' => [
+        'type' => 'translate'
+    ],
+    'helpers_options' => [
+    ],
+    'actions' => [
+        'regular_actions' => [
+        ],
+        'multiple_actions' => [
+            [
+                'name' => $this->translate('Uninstall selected'),
+                'controller' => 'layouts-administration',
+                'action' => 'uninstall',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected layouts will be uninstalled. Are you sure?')
+            ]
+        ],
+        'single_actions' => [
+        ]
+    ],
+    'actions_options' => [
+        'action_identity' => 'name',
+        'form_name' => 'layouts',
+        'multiple_actions' => [
+            'items_name' => 'layouts[]'
+        ]
+    ],
+    'actions_extra_check' => [
+        'multiple_actions' => [
+            'manageable' => [
+                'function' => function($data) {
+                    return $data['type'] != LayoutBaseModel::LAYOUT_TYPE_SYSTEM;
+                }
+            ]
+        ],
+        'multiple_actions_message' => $this->translate('You cannot uninstall the system layout'),
+        'single_actions' => [
+        ]
+    ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Installed layouts'),
+    'body' => $this->content
+]) ?>

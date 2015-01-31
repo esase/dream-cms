@@ -32,6 +32,27 @@ class LayoutEvent extends ApplicationAbstractEvent
     const UPLOAD_UPDATES = 'layout_upload_updates';
 
     /**
+     * Fire uninstall custom layout event
+     *
+     * @param string $layout
+     * @return void
+     */
+    public static function fireUninstallCustomLayoutEvent($layout)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Custom layout uninstalled by guest'
+            : 'Event - Custom layout uninstalled by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$layout]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $layout];
+
+        self::fireEvent(self::UNINSTALL, 
+                $layout, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
      * Fire upload layout updates event
      *
      * @param string $layout

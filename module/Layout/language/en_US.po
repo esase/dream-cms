@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-31 15:27+0600\n"
+"PO-Revision-Date: 2015-01-31 17:27+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,21 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "The selected layout has been uninstalled"
+msgstr "The selected layout has been uninstalled"
+
+msgid "Selected layouts have been uninstalled"
+msgstr "Selected layouts have been uninstalled"
+
+msgid "Selected layouts will be uninstalled. Are you sure?"
+msgstr "Selected layouts will be uninstalled. Are you sure?"
+
+msgid "You cannot uninstall the system layout"
+msgstr "You cannot uninstall the system layout"
+
+msgid "Installed layouts"
+msgstr "Installed layouts"
 
 msgid "Nothing to update the layout"
 msgstr "Nothing to update the layout"
@@ -95,6 +110,15 @@ msgstr "Layouts"
 msgid "Layout"
 msgstr "Layout"
 
+msgid "Event - Uninstalling custom layouts"
+msgstr "Uninstalling custom layouts"
+
+msgid "Event - Custom layout uninstalled by guest"
+msgstr "Guest uninstalled custom layout \"%s\""
+
+msgid "Event - Custom layout uninstalled by user"
+msgstr "\"%s\" uninstalled custom layout \"%s\""
+
 msgid "Event - Uploading layouts updates"
 msgstr "Uploading layouts updates"
 
@@ -145,3 +169,9 @@ msgstr "Deleting layouts in admin area"
 
 msgid "ACL - Uploading  updates of layouts in admin area"
 msgstr "Uploading  updates of layouts in admin area"
+
+msgid "ACL - Viewing installed layouts in admin area"
+msgstr "Viewing installed layouts in admin area"
+
+msgid "ACL - Uninstalling layouts in admin area"
+msgstr "Uninstalling layouts in admin area"

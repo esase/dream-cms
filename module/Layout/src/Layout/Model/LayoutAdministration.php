@@ -14,6 +14,8 @@ use Application\Service\ApplicationSetting as SettingService;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
 use Zend\Paginator\Paginator;
+use Zend\Db\Sql\Predicate\Like as LikePredicate;
+use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use DirectoryIterator;
 use CallbackFilterIterator;
 use Exception;
@@ -543,5 +545,119 @@ class LayoutAdministration extends LayoutBase
         if (!$updated) {
             throw new LayoutException('Nothing to update the layout');
         }
+    }
+
+    /**
+     * Get installed layouts
+     *
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @param array $filters
+     *      string name
+     *      string type
+     * @return object
+     */
+    public function getInstalledLayouts($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
+    {
+        $orderFields = [
+            'id',
+            'name',
+            'type',
+            'version',
+            'vendor',
+            'email'
+        ];
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'id';
+
+        $select = $this->select();
+        $select->from('layout_list')
+            ->columns([
+                'id',
+                'name',
+                'type',
+                'version',
+                'vendor',
+                'email' => 'vendor_email'
+            ])
+            ->order($orderBy . ' ' . $orderType);
+
+        // filter by name
+        if (!empty($filters['name'])) {
+            $select->where([
+                new LikePredicate('name', '%' . $filters['name'] . '%')
+            ]);
+        }
+
+        // filter by type
+        if (!empty($filters['type'])) {
+            switch ($filters['type']) {
+                case self::LAYOUT_TYPE_CUSTOM :
+                case self::LAYOUT_TYPE_SYSTEM :
+                    $select->where([
+                        'type' => $filters['type']
+                    ]);
+                    break;
+
+                default :
+            }
+        }
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
+
+        return $paginator;
+    }
+
+    /**
+     * Uninnstall custom layout
+     *
+     * @param array $layout
+     *      integer id
+     *      string name
+     *      string type 
+     *      string version 
+     *      string vendor 
+     *      string vendor_email 
+     * @return boolean|string
+     */
+    public function uninstallCustomLayout(array $layout)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            // clear caches
+            $this->clearLayoutInstallCaches();
+
+            $query = $this->delete('layout_list')
+                ->where([
+                    'id' => $layout['id']
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($query);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+
+            ApplicationErrorLogger::log($e);
+            return $e->getMessage();
+        }
+
+        // fire the uninstall custom layout event
+        LayoutEvent::fireUninstallCustomLayoutEvent($layout['name']);
+        return true;
     }
 }
