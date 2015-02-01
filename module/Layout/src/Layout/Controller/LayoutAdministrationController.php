@@ -1,6 +1,8 @@
 <?php
 namespace Layout\Controller;
 
+use Application\Utility\ApplicationCache as ApplicationCacheUtility;
+use Application\Event\ApplicationEvent;
 use Layout\Model\LayoutBase as LayoutBaseModel;
 use Application\Controller\ApplicationAbstractAdministrationController;
 use Zend\View\Model\ViewModel;
@@ -25,6 +27,22 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
         }
 
         return $this->model;
+    }
+
+    /**
+     * Settings
+     */
+    public function settingsAction()
+    {
+        // clear a layout caches
+        $eventManager = ApplicationEvent::getEventManager();
+        $eventManager->attach(ApplicationEvent::CHANGE_SETTINGS, function ($e) {
+            $this->getModel()->clearLayoutCaches();
+        });
+
+        return new ViewModel([
+            'settings_form' => parent::settingsForm('layout', 'layouts-administration', 'settings')
+        ]);
     }
 
     /**
@@ -324,7 +342,6 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
      */
     public function uninstallAction()
     {
-        // TODO: Event
         $request = $this->getRequest();
 
         if ($request->isPost()) {

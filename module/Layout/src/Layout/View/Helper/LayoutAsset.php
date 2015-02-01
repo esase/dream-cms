@@ -1,9 +1,10 @@
 <?php
 namespace Layout\View\Helper;
 
+use Application\Utility\ApplicationCache as CacheUtility;
+use Layout\Service\Layout as LayoutService;
 use Zend\View\Helper\AbstractHelper;
 use Zend\Cache\Storage\StorageInterface;
-use Application\Utility\ApplicationCache as CacheUtility;
 
 class LayoutAsset extends AbstractHelper
 {
@@ -30,6 +31,12 @@ class LayoutAsset extends AbstractHelper
      * @var string
      */
     protected $layoutDir;
+
+    /**
+     * Current layout id
+     * var integer
+     */
+    protected static $currentLayoutId;
 
     /**
      * Default module
@@ -64,11 +71,17 @@ class LayoutAsset extends AbstractHelper
      */
     public function __invoke($fileName, $type = 'js', $module = self::DEFAULT_MODULE)
     {
+        if (!self::$currentLayoutId) {
+            $activeLayouts = LayoutService::getCurrentLayouts();
+            self::$currentLayoutId = end($activeLayouts)['name'];
+        }
+
         // generate a dynamicCacheInstance name
         $dynamicCacheInstanceName = CacheUtility::getCacheName(self::CACHE_RESOURCE_PATH, [
             $fileName,
             $type,
-            $module
+            $module,
+            self::$currentLayoutId
         ]);
 
         if (null === ($resourcePath = $this->dynamicCacheInstance->getItem($dynamicCacheInstanceName))) {

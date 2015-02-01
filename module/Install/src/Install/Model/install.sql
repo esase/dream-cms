@@ -547,17 +547,16 @@ CREATE TABLE `layout_list` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
-    `status` ENUM('active','not_active') NOT NULL,
     `version` VARCHAR(20) NOT NULL,
     `vendor` VARCHAR(50) NOT NULL,
     `vendor_email` VARCHAR(50) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`name`),
-    KEY `type` (`type`, `status`)
+    KEY `type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `layout_list` (`name`, `type`, `status`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 'active', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com');
+INSERT INTO `layout_list` (`name`, `type`, `version`, `vendor`, `vendor_email`) VALUES
+('base', 'system', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com');
 
 CREATE TABLE `acl_role` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -785,7 +784,8 @@ INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (20,  'Xml map', 5),
 (21,  'Visibility settings', 5),
 (22,  'Widgets', 5),
-(23,  'Site disabling', 1);
+(23,  'Site disabling', 1),
+(24,  'Main settings', 6);
 
 CREATE TABLE `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -882,7 +882,7 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (68, 'file_manager_window_height', 'Window height', NULL, 'integer', 1, 2, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (69, 'file_manager_window_image_width', 'Window width', NULL, 'integer', 1, 1, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (70, 'file_manager_window_image_height', 'Window height', NULL, 'integer', 1, 2, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 5, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 6, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (73, 'user_role_edited_send', 'Send notifications about editing users roles', NULL, 'checkbox', NULL, 17, 9, 2, NULL, NULL, NULL, NULL),
 (74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, NULL, NULL, NULL),
@@ -907,7 +907,10 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (93, 'application_disable_site', 'Disable the site', 'Disable your website front-end and display a message to your visitors while still allowing back-end access', 'checkbox', NULL, 23, 23, 1, 1, NULL, NULL, NULL),
 (94, 'application_disable_site_message', 'Message', NULL, 'htmlarea', 1, 24, 23, 1, 1, NULL, NULL, NULL),
 (95, 'application_disable_site_acl', 'Allowed ACL roles', 'Members included in the list of allowed ACL roles can view the site', 'multiselect', NULL, 25, 23, 1, 1, 'return Acl\\Service\\Acl::getAclRoles(false, true);', NULL, NULL),
-(96, 'application_disable_site_ip', 'Allowed IPs', 'IP list separated by commas', 'textarea', NULL, 26, 23, 1, 1, NULL, NULL, NULL);
+(96, 'application_disable_site_ip', 'Allowed IPs', 'IP list separated by commas', 'textarea', NULL, 26, 23, 1, 1, NULL, NULL, NULL),
+(97, 'layout_active', 'Active custom layout', NULL, 'select', NULL, 1, 24, 6, NULL, 'return Layout\\Service\\Layout::getLayouts(true);', NULL, NULL),
+(98, 'layout_select', 'Allow users select site layouts', NULL, 'checkbox', NULL, 2, 24, 6, NULL, NULL, NULL, NULL),
+(99, 'layout_select_cookie_time', 'The storage cookie time of selected layout in seconds', NULL, 'integer', 1, 3, 24, 6, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1028,7 +1031,9 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (102, 92, '1', NULL),
 (103, 46,  '1', NULL),
 (104, 94,  '<p style="text-align: center;">Website is currently unavailable.</p>', NULL),
-(105, 94,  '<p style="text-align: center;">Веб-сайт в настоящее время недоступен.</p>', 'ru');
+(105, 94,  '<p style="text-align: center;">Веб-сайт в настоящее время недоступен.</p>', 'ru'),
+(106, 98,  '1', NULL),
+(107, 99, '7776000', NULL);
 
 CREATE TABLE `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1201,7 +1206,8 @@ INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `mod
 (12, 'Upload updates', 'modules-administration', 'upload-updates', 1, 10, 6, 1),
 (13, 'List of installed layouts', 'layouts-administration', 'list-installed', 6, 11, 7, 1),
 (14, 'List of not installed layouts', 'layouts-administration', 'list-not-installed', 6, 12, 7, 1),
-(15, 'Upload updates', 'layouts-administration', 'upload-updates', 6, 13, 7, 1);
+(15, 'Upload updates', 'layouts-administration', 'upload-updates', 6, 13, 7, 1),
+(16, 'List of settings', 'layouts-administration', 'settings', 6, 14, 7, 1);
 
 CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

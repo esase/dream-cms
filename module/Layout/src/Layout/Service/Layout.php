@@ -12,6 +12,20 @@ class Layout
     protected static $currentLayouts;
 
     /**
+     * Get custom layouts
+     *
+     * @param boolean $onlyCustom
+     * @return array
+     */
+    public static function getLayouts($onlyCustom = true)
+    {
+        return ServiceLocatorService::getServiceLocator()
+            ->get('Application\Model\ModelManager')
+            ->getInstance('Layout\Model\LayoutBase')
+            ->getAllInstalledLayouts($onlyCustom);
+    }
+
+    /**
      * Get layout path
      *
      * @return string

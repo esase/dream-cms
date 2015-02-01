@@ -1,0 +1,27 @@
+<?php $this->declareVars('popupId') ?>
+<?php $this->popupId = 'select-layout' ?>
+
+<?php $this->placeholder('links')->captureStart() ?>
+    <div class="list-group">
+        <?php foreach ($this->layouts as $layoutId => $layoutName): ?>
+            <a class="list-group-item <?php if ($this->active == $layoutName): ?>disabled<?php endif ?>" href="javascript:void(0)" onclick="ajaxQuery('<?php echo $this->escapeJs($this->popupId) ?> .modal-dialog:first', '<?php echo $this->url('application/page', ['controller' => 'user-ajax', 'action' => 'ajax-select-layout', 'slug' => $layoutId]) ?>', function(){ $('#<?php echo $this->escapeJs($this->popupId) ?>').modal('hide'); location.reload() }, 'post', {}, false)">
+                <?php echo $this->escapeHtml($layoutName) ?>
+            </a>
+        <?php endforeach ?>     
+    </div>
+<?php $this->placeholder('links')->captureEnd() ?>
+
+<?php 
+    echo $this->partial('partial/popup', [
+        'popup_id' => $this->popupId,
+        'title' => 'Select layout',
+        'body' => $this->placeholder('links')
+    ]) 
+?>
+
+<?php $this->inlineScript()->captureStart() ?>
+    $("#<?php echo $this->escapeJs($this->link_id) ?>").bind("click", function(e) {
+        e.preventDefault();
+        $("#<?php echo $this->escapeJs($this->popupId) ?>").modal("show");
+    });
+<?php $this->inlineScript()->captureEnd() ?>

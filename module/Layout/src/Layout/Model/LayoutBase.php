@@ -4,6 +4,7 @@ namespace Layout\Model;
 use Application\Model\ApplicationAbstractBase;
 use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\ApplicationCache as CacheUtility;
+use Application\Service\ApplicationSetting as SettingService;
 
 class LayoutBase extends ApplicationAbstractBase
 {
@@ -33,14 +34,38 @@ class LayoutBase extends ApplicationAbstractBase
     const CACHE_LAYOUTS_DATA_TAG = 'Layout_Data_Tag';
 
     /**
-     * Active layout flag
-     */ 
-    const LAYOUT_STATUS_ACTIVE = 'active';
+     * Get all installed layouts
+     *
+     * @param boolean $onlyCustom
+     * @return array
+     */
+    public function getAllInstalledLayouts($onlyCustom = false)
+    {
+        $select = $this->select();
+        $select->from('layout_list')
+            ->columns([
+                'id',
+                'name'
+            ])
+        ->order('id');
 
-    /**
-     * Not active layout flag
-     */ 
-    const LAYOUT_STATUS_NOT_ACTIVE = 'not_active';
+        if ($onlyCustom) {
+            $select->where([
+                'type' => self::LAYOUT_TYPE_CUSTOM
+            ]);
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        $layoutsList = [];
+        foreach ($resultSet as $layout) {
+            $layoutsList[$layout->id] = $layout->name;
+        }
+
+        return $layoutsList;
+    }
 
     /**
      * Get layouts by id
@@ -65,8 +90,7 @@ class LayoutBase extends ApplicationAbstractBase
                     'id' => $layoutId
                 ])
                 ->where
-                    ->or->equalTo('type', self::LAYOUT_TYPE_SYSTEM)
-                    ->and->equalTo('status', self::LAYOUT_STATUS_ACTIVE);
+                    ->or->equalTo('type', self::LAYOUT_TYPE_SYSTEM);
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
@@ -93,6 +117,8 @@ class LayoutBase extends ApplicationAbstractBase
 
         // check data in cache
         if (null === ($layouts = $this->staticCacheInstance->getItem($cacheName))) {
+            $defaultActiveCustomLayout = (int) SettingService::getSetting('layout_active');
+
             $select = $this->select();
             $select->from('layout_list')
                 ->columns([
@@ -101,10 +127,13 @@ class LayoutBase extends ApplicationAbstractBase
                 ->order('type')
                 ->where([
                     'type' => self::LAYOUT_TYPE_SYSTEM
-                ])
-                ->where
-                    ->or->equalTo('type', self::LAYOUT_TYPE_CUSTOM)
-                    ->and->equalTo('status', self::LAYOUT_STATUS_ACTIVE);
+                ]);
+
+            if ($defaultActiveCustomLayout) {
+                $select->where->
+                    or->equalTo('id', $defaultActiveCustomLayout)->
+                    and->equalTo('type', self::LAYOUT_TYPE_CUSTOM);
+            }
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;

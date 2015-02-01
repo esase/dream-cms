@@ -29,33 +29,6 @@ class LayoutAdministration extends LayoutBase
     protected $layoutInstallConfig = '/layout.config.install.php';
 
     /**
-     * Get all installed layouts
-     *
-     * @return array
-     */
-    protected function getAllInstalledLayouts()
-    {
-        $select = $this->select();
-        $select->from('layout_list')
-            ->columns([
-                'id',
-                'name'
-            ])
-        ->order('id');
-
-        $statement = $this->prepareStatementForSqlObject($select);
-        $resultSet = new ResultSet;
-        $resultSet->initialize($statement->execute());
-
-        $layoutsList = [];
-        foreach ($resultSet as $layout) {
-            $layoutsList[$layout->id] = $layout->name;
-        }
-
-        return $layoutsList;
-    }
-
-    /**
      * Is custom layout
      *
      * @param string $layout
@@ -158,17 +131,17 @@ class LayoutAdministration extends LayoutBase
     }
 
     /**
-     * Clear layout install caches
+     * Clear layout caches
      *
      * @return void
      */
-    protected function clearLayoutInstallCaches()
+    public function clearLayoutCaches()
     {
-        ApplicationCacheUtility::clearDynamicCache();
         ApplicationCacheUtility::clearJsCache();
         ApplicationCacheUtility::clearCssCache();
-
         LayoutCacheUtility::clearLayoutCache();
+
+        ApplicationCacheUtility::clearDynamicCache();
     }
 
     /**
@@ -214,14 +187,13 @@ class LayoutAdministration extends LayoutBase
             }
 
             // clear caches
-            $this->clearLayoutInstallCaches();
+            $this->clearLayoutCaches();
 
             $insert = $this->insert()
                 ->into('layout_list')
                 ->values([
                     'name' => $layoutName,
                     'type' => self::LAYOUT_TYPE_CUSTOM,
-                    'status' => self::LAYOUT_STATUS_NOT_ACTIVE,
                     'version' => $version,
                     'vendor' => $vendor,
                     'vendor_email' => $vendorEmail
@@ -426,7 +398,7 @@ class LayoutAdministration extends LayoutBase
             }
 
             // clear caches
-            $this->clearLayoutInstallCaches();
+            $this->clearLayoutCaches();
 
             // upload layout's updates
             $this->uploadLayoutFiles($layoutName, $updateLayoutConfig, $tmpDirName, $host, $formData, false);
@@ -494,20 +466,23 @@ class LayoutAdministration extends LayoutBase
             throw new LayoutException('Cannot define the layout\'s path into the config file');
         }
 
+        $globalLayoutPath = basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getLayoutPath(false) . '/' . $layoutName;
+        $localLayoutPath = dirname(APPLICATION_PUBLIC) . '/' . $globalLayoutPath;
+
         // check the layout install config
         if ($checkInstallConfig) {
             if (!file_exists($layoutPath . '/' . $this->layoutInstallConfig)) {
                 throw new LayoutException('Layout not found');
+            }
+
+            if (file_exists($localLayoutPath)) {
+                throw new LayoutException('Layout already uploaded');
             }
         }
 
         $ftp = new ApplicationFtpUtility($host, $formData['login'], $formData['password']);
 
         if ($layoutPath) {
-            // check the layout existing
-            $globalLayoutPath = basename(APPLICATION_PUBLIC) . '/' . ApplicationService::getLayoutPath(false) . '/' . $layoutName;
-            $localLayoutPath = dirname(APPLICATION_PUBLIC) . '/' . $globalLayoutPath;
-
             // upload the layout via FTP 
             $ftp->createDirectory($globalLayoutPath, true);
             $ftp->copyDirectory($layoutPath, $globalLayoutPath);
@@ -637,7 +612,7 @@ class LayoutAdministration extends LayoutBase
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
             // clear caches
-            $this->clearLayoutInstallCaches();
+            $this->clearLayoutCaches();
 
             $query = $this->delete('layout_list')
                 ->where([

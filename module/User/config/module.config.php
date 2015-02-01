@@ -4,7 +4,7 @@ return [
     'controllers' => [
         'invokables' => [
             'users-administration' => 'User\Controller\UserAdministrationController',
-            'user-widget' => 'User\Controller\UserWidgetController'
+            'user-ajax' => 'User\Controller\UserAjaxController'
         ]
     ],
     'controller_plugins' => [

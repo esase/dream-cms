@@ -127,7 +127,7 @@
                                                 <li role="presentation" class="divider"></li>
                                             <?php endif ?>
                                             <li role="presentation">
-                                                <a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('logged-user-menu', '<?php echo $this->url('application/page', ['controller' => 'user-widget', 'action' => 'ajax-logout']) ?>', function(){location.href='<?php echo $this->url('page', [], ['force_canonical' => true]) ?>'}, 'post', {}, false)">
+                                                <a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('logged-user-menu', '<?php echo $this->url('application/page', ['controller' => 'user-ajax', 'action' => 'ajax-logout']) ?>', function(){location.href='<?php echo $this->url('page', [], ['force_canonical' => true]) ?>'}, 'post', {}, false)">
                                                     <?php echo $this->translate('Logout') ?>
                                                 </a>
                                             </li>

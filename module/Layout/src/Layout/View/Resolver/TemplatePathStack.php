@@ -1,7 +1,7 @@
 <?php
-
 namespace Layout\View\Resolver;
 
+use Layout\Service\Layout as LayoutService;
 use Zend\View\Resolver\TemplatePathStack as BaseTemplatePathStack;
 use Zend\View\Renderer\RendererInterface as Renderer;
 use Application\Utility\ApplicationCache as CacheUtility;
@@ -17,6 +17,12 @@ class TemplatePathStack extends BaseTemplatePathStack
      * @var object
      */
     protected $dynamicCacheInstance;
+
+    /**
+     * Current layout id
+     * var integer
+     */
+    protected static $currentLayoutId;
 
     /**
      * Template path
@@ -44,10 +50,16 @@ class TemplatePathStack extends BaseTemplatePathStack
      */
     public function resolve($name, Renderer $renderer = null)
     {
+        if (!self::$currentLayoutId) {
+            $activeLayouts = LayoutService::getCurrentLayouts();
+            self::$currentLayoutId = end($activeLayouts)['name'];
+        }
+
         // generate a cache name
         $cacheName = CacheUtility::getCacheName(self::CACHE_TEMPLATE_PATH, [
             $name,
-            $renderer
+            $renderer,
+            self::$currentLayoutId
         ]);
 
         // check data in cache
