@@ -14,7 +14,8 @@
 return [
     'support_url' => 'http://dream-cms.kg',
     'php_settings' => [
-        'mbstring.internal_encoding' => 'UTF-8'
+        'mbstring.internal_encoding' => 'UTF-8',
+        'default_charset' => 'UTF-8'
     ],
     'session' => [
         'config' => [
