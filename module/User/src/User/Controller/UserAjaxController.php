@@ -1,13 +1,12 @@
 <?php
 namespace User\Controller;
 
-use Layout\Module as LayoutModule;
+use Layout\Utility\LayoutCookie as LayoutCookieUtility;
 use Layout\Service\Layout as LayoutService;
 use Application\Controller\ApplicationAbstractBaseController;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Event\UserEvent;
 use Zend\View\Model\ViewModel;
-use Zend\Http\Header\SetCookie;
 
 class UserAjaxController extends ApplicationAbstractBaseController
 {
@@ -72,13 +71,7 @@ class UserAjaxController extends ApplicationAbstractBaseController
                         $this->getModel()->selectLayout($layoutId, $user['user_id']);
                     }
 
-                    $header = new SetCookie();
-                    $header->setName(LayoutModule::LAYOUT_COOKIE)
-                        ->setValue($layoutId)
-                        ->setPath('/')
-                        ->setExpires(time() + (int) $this->applicationSetting('layout_select_cookie_time'));
-
-                    $this->serviceLocator->get('Response')->getHeaders()->addHeader($header);
+                    LayoutCookieUtility::saveLayout($layoutId);
                 }
             }
         }

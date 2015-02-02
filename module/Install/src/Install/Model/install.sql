@@ -652,7 +652,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (71, 'layouts_administration_delete', 'ACL - Deleting layouts in admin area', 6),
 (72, 'layouts_administration_upload_updates', 'ACL - Uploading  updates of layouts in admin area', 6),
 (73, 'layouts_administration_list_installed', 'ACL - Viewing installed layouts in admin area', 6),
-(74, 'layouts_administration_uninstall', 'ACL - Uninstalling layouts in admin area', 6);
+(74, 'layouts_administration_uninstall', 'ACL - Uninstalling layouts in admin area', 6),
+(75, 'layouts_administration_settings', 'ACL - Editing layouts settings in admin area', 6);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1146,7 +1147,7 @@ CREATE TABLE `application_admin_menu_part` (
 
 INSERT INTO `application_admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'System', 1, 'system_menu.png'),
-(2, 'Pages', 5, 'page_menu.png'),
+(2, 'Site', 1, 'site_menu.png'),
 (3, 'Modules', 1, 'module_menu.png');
 
 CREATE TABLE `application_admin_menu_category` (
@@ -1194,9 +1195,9 @@ CREATE TABLE `application_admin_menu` (
 INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
 (1,  'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
 (2,  'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
-(3,  'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
-(4,  'List of users', 'users-administration', 'list', 2, 4, 3, 1),
-(5,  'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
+(3,  'List of roles', 'acl-administration', 'list', 1, 3, 2, 2),
+(4,  'List of users', 'users-administration', 'list', 2, 4, 3, 2),
+(5,  'List of settings', 'users-administration', 'settings', 2, 5, 3, 2),
 (6,  'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
 (7,  'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
 (8,  'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-02-01 18:08+0600\n"
+"PO-Revision-Date: 2015-02-02 11:04+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -187,3 +187,6 @@ msgstr "Просмотр установленных макетов в админ
 
 msgid "ACL - Uninstalling layouts in admin area"
 msgstr "Деинсталляция макетов в админке"
+
+msgid "ACL - Editing layouts settings in admin area"
+msgstr "Редактирование настроек макетов в админке"
