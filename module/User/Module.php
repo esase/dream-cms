@@ -79,7 +79,7 @@ class Module
 
         // clear users caches
         $eventManager = LayoutEvent::getEventManager();
-        $eventManager->attach(LayoutEvent::DELETE, function ($e) {
+        $eventManager->attach(LayoutEvent::UNINSTALL, function ($e) {
             UserCacheUtility::clearUserCache();
         });
 

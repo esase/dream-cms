@@ -43,7 +43,7 @@
     </head>
     <body>
         <!-- nav bar -->
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -142,7 +142,7 @@
                                         </li>
                                     <?php endif; ?>
                                     <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('logged-user-menu', '<?php echo $this->url('application/page', ['controller' => 'user-widget', 'action' => 'ajax-logout']) ?>', function(){location.href='<?php echo $this->url('application/page', ['controller' => 'login-administration'], ['force_canonical' => true]) ?>'}, 'post', {}, false)">
+                                        <a role="menuitem" tabindex="-1" href="javascript:void(0)" onclick="ajaxQuery('logged-user-menu', '<?php echo $this->url('application/page', ['controller' => 'user-ajax', 'action' => 'ajax-logout']) ?>', function(){location.href='<?php echo $this->url('application/page', ['controller' => 'login-administration'], ['force_canonical' => true]) ?>'}, 'post', {}, false)">
                                             <img src="<?php  echo $this->layoutAsset('icon/logout-menu.png', 'image', 'user') ?>" alt="logout" />
                                             <?php echo $this->translate('Logout') ?>
                                         </a>

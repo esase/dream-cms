@@ -122,23 +122,24 @@ class ApplicationFtp
      * Create directory
      *
      * @param string $ftpDir
+     * @param boolean $skipExisting
      * @thows ApplicationException
      * @return void
      */
-    public function createDirectory($ftpDir)
+    public function createDirectory($ftpDir, $skipExisting = false)
     {
-        // create a directory
-        if (false === ($result =
-                @ftp_mkdir($this->connection, $ftpDir))) {
+        if ($skipExisting && $this->isDirExists($ftpDir)) {
+            return;
+        }
 
+        // create a directory
+        if (false === ($result = @ftp_mkdir($this->connection, $ftpDir))) {
             throw new ApplicationException('Create dir "' . $ftpDir. '" failed');
         }
 
         // set permissions
         if (!$this->isWindows) {
-            if (false === ($result =
-                    @ftp_chmod($this->connection, self::DIR_PERMISSIONS, $ftpDir))) {
-
+            if (false === ($result = @ftp_chmod($this->connection, self::DIR_PERMISSIONS, $ftpDir))) {
                 throw new ApplicationException('Set permissions of "' . $ftpDir . '" failed');
             }
         }

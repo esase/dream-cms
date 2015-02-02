@@ -1,0 +1,102 @@
+<?php $this->declareVars('subPageTitle', 'content') ?>
+<?php $this->subPageTitle = $this->translate('List of not installed layouts') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('layout/layout-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list-not-installed' // selected action is "list-not-installed"
+]) ?>
+
+<!-- render a data grid -->
+<?php $this->content = $this->partial('partial/data-grid', [
+    'controller' => $this->applicationRoute()->getParam('controller'),
+    'action' => $this->applicationRoute()->getParam('action'),
+    'queries' => [
+    ],
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'name',
+    'default_order_type' => 'asc',
+    'headers' => [
+        [
+            'title' => $this->translate('Name'),
+            'order_name' => 'name'
+        ],
+        [
+            'title' => $this->translate('Vendor'),
+            'order_name' => 'vendor'
+        ],
+        [
+            'title' => $this->translate('Vendor email'),
+            'order_name' => 'email'
+        ],
+        [
+            'title' => $this->translate('Version'),
+            'order_name' => 'version'
+        ],
+        [
+            'title' => $this->translate('Modified date'),
+            'order_name' => 'date'
+        ]
+    ],
+    'paginator' => $this->paginator,
+    'skipped_fields' => [
+    ],
+    'helpers' => [
+        'date' => 'applicationDate'
+    ],
+    'helpers_options' => [
+    ],
+    'actions' => [
+        'regular_actions' => [
+            [
+                'name' => $this->translate('Upload a layout'),
+                'controller' => 'layouts-administration',
+                'action' => 'upload',
+                'check_acl' => true
+            ]
+        ],
+        'multiple_actions' => [
+            [
+                'name' => $this->translate('Install selected'),
+                'controller' => 'layouts-administration',
+                'action' => 'install',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected layouts will be installed. Are you sure?')
+            ]
+        ],
+        'single_actions' => [
+            [
+                'name' => $this->translate('Delete the layout'),
+                'check_acl' => true,
+                'controller' => 'layouts-administration',
+                'action' => 'delete',
+                'image' => $this->layoutAsset('icon/delete_action.png', 'image')
+            ]
+        ]
+    ],
+    'actions_options' => [
+        'action_identity' => 'name',
+        'form_name' => 'layouts',
+        'multiple_actions' => [
+            'items_name' => 'layouts[]'
+        ]
+    ],
+    'actions_extra_check' => [
+        'multiple_actions' => [
+        ],
+        'single_actions' => [
+        ]
+    ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Not installed layouts'),
+    'body' => $this->content
+]) ?>

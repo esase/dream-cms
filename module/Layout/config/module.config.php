@@ -3,6 +3,7 @@
 return [
     'controllers' => [
         'invokables' => [
+            'layouts-administration' => 'Layout\Controller\LayoutAdministrationController'
         ]
     ],
     'router' => [

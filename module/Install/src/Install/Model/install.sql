@@ -547,19 +547,16 @@ CREATE TABLE `layout_list` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     `type` ENUM('system','custom') NOT NULL,
-    `status` ENUM('active','not_active') NOT NULL,
-    `title` VARCHAR(50) NOT NULL,
-    `description` VARCHAR(255) NOT NULL,
     `version` VARCHAR(20) NOT NULL,
     `vendor` VARCHAR(50) NOT NULL,
     `vendor_email` VARCHAR(50) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`name`),
-    KEY `type` (`type`, `status`)
+    KEY `type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `layout_list` (`name`, `type`, `status`, `title`, `description`, `version`, `vendor`, `vendor_email`) VALUES
-('base', 'system', 'active', 'Base layout', 'Default base layout', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com');
+INSERT INTO `layout_list` (`name`, `type`, `version`, `vendor`, `vendor_email`) VALUES
+('base', 'system', '__cms_version_value__', 'eSASe', 'alexermashev@gmail.com');
 
 CREATE TABLE `acl_role` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -648,7 +645,15 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (64, 'modules_administration_activate', 'ACL - Activating modules in admin area', 1),
 (65, 'modules_administration_deactivate', 'ACL - Deactivating modules in admin area', 1),
 (66, 'modules_administration_upload_updates', 'ACL - Uploading  updates of modules in admin area', 1),
-(67, 'modules_administration_delete', 'ACL - Deleting modules in admin area', 1);
+(67, 'modules_administration_delete', 'ACL - Deleting modules in admin area', 1),
+(68, 'layouts_administration_list_not_installed', 'ACL - Viewing not installed layouts in admin area', 6),
+(69, 'layouts_administration_install', 'ACL - Installing layouts in admin area', 6),
+(70, 'layouts_administration_upload', 'ACL - Uploading new layouts in admin area', 6),
+(71, 'layouts_administration_delete', 'ACL - Deleting layouts in admin area', 6),
+(72, 'layouts_administration_upload_updates', 'ACL - Uploading  updates of layouts in admin area', 6),
+(73, 'layouts_administration_list_installed', 'ACL - Viewing installed layouts in admin area', 6),
+(74, 'layouts_administration_uninstall', 'ACL - Uninstalling layouts in admin area', 6),
+(75, 'layouts_administration_settings', 'ACL - Editing layouts settings in admin area', 6);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -780,7 +785,8 @@ INSERT INTO `application_setting_category` (`id`, `name`, `module`) VALUES
 (20,  'Xml map', 5),
 (21,  'Visibility settings', 5),
 (22,  'Widgets', 5),
-(23,  'Site disabling', 1);
+(23,  'Site disabling', 1),
+(24,  'Main settings', 6);
 
 CREATE TABLE `application_setting` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -877,7 +883,7 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (68, 'file_manager_window_height', 'Window height', NULL, 'integer', 1, 2, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (69, 'file_manager_window_image_width', 'Window width', NULL, 'integer', 1, 1, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (70, 'file_manager_window_image_height', 'Window height', NULL, 'integer', 1, 2, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 5, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 6, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (73, 'user_role_edited_send', 'Send notifications about editing users roles', NULL, 'checkbox', NULL, 17, 9, 2, NULL, NULL, NULL, NULL),
 (74, 'user_role_edited_title', 'User role edited title', 'An account role edited notification', 'notification_title', 1, 18, 9, 2, 1, NULL, NULL, NULL),
@@ -902,7 +908,10 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (93, 'application_disable_site', 'Disable the site', 'Disable your website front-end and display a message to your visitors while still allowing back-end access', 'checkbox', NULL, 23, 23, 1, 1, NULL, NULL, NULL),
 (94, 'application_disable_site_message', 'Message', NULL, 'htmlarea', 1, 24, 23, 1, 1, NULL, NULL, NULL),
 (95, 'application_disable_site_acl', 'Allowed ACL roles', 'Members included in the list of allowed ACL roles can view the site', 'multiselect', NULL, 25, 23, 1, 1, 'return Acl\\Service\\Acl::getAclRoles(false, true);', NULL, NULL),
-(96, 'application_disable_site_ip', 'Allowed IPs', 'IP list separated by commas', 'textarea', NULL, 26, 23, 1, 1, NULL, NULL, NULL);
+(96, 'application_disable_site_ip', 'Allowed IPs', 'IP list separated by commas', 'textarea', NULL, 26, 23, 1, 1, NULL, NULL, NULL),
+(97, 'layout_active', 'Active custom layout', NULL, 'select', NULL, 1, 24, 6, NULL, 'return Layout\\Service\\Layout::getLayouts(true);', NULL, NULL),
+(98, 'layout_select', 'Allow users select site layouts', NULL, 'checkbox', NULL, 2, 24, 6, NULL, NULL, NULL, NULL),
+(99, 'layout_select_cookie_time', 'The storage cookie time of selected layout in seconds', NULL, 'integer', 1, 3, 24, 6, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0');
 
 CREATE TABLE `application_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1023,7 +1032,9 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (102, 92, '1', NULL),
 (103, 46,  '1', NULL),
 (104, 94,  '<p style="text-align: center;">Website is currently unavailable.</p>', NULL),
-(105, 94,  '<p style="text-align: center;">Веб-сайт в настоящее время недоступен.</p>', 'ru');
+(105, 94,  '<p style="text-align: center;">Веб-сайт в настоящее время недоступен.</p>', 'ru'),
+(106, 98,  '1', NULL),
+(107, 99, '7776000', NULL);
 
 CREATE TABLE `application_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1115,8 +1126,12 @@ INSERT INTO `application_event` (`id`, `name`, `module`, `description`) VALUES
 (43, 'application_upload_custom_module', 1, 'Event - Uploading custom modules'),
 (44, 'application_upload_module_updates', 1, 'Event - Uploading modules updates'),
 (45, 'application_delete_custom_module', 1, 'Event - Deleting custom modules'),
-(46, 'layout_delete', 6, 'Event - Deleting layouts'),
-(47, 'localization_delete', 7, 'Event - Deleting localizations');
+(46, 'layout_delete', 6, 'Event - Deleting custom layouts'),
+(47, 'localization_delete', 7, 'Event - Deleting localizations'),
+(48, 'layout_install', 6, 'Event - Installing custom layouts'),
+(49, 'layout_upload', 6, 'Event - Uploading custom layouts'),
+(50, 'layout_upload_updates', 6, 'Event - Uploading layouts updates'),
+(51, 'layout_uninstall', 6, 'Event - Uninstalling custom layouts');
 
 CREATE TABLE `application_admin_menu_part` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1132,7 +1147,7 @@ CREATE TABLE `application_admin_menu_part` (
 
 INSERT INTO `application_admin_menu_part` (`id`, `name`, `module`, `icon`) VALUES
 (1, 'System', 1, 'system_menu.png'),
-(2, 'Pages', 5, 'page_menu.png'),
+(2, 'Site', 1, 'site_menu.png'),
 (3, 'Modules', 1, 'module_menu.png');
 
 CREATE TABLE `application_admin_menu_category` (
@@ -1153,7 +1168,8 @@ INSERT INTO `application_admin_menu_category` (`id`, `name`, `module`, `icon`) V
 (3, 'Users', 2, 'user_group_menu_item.png'),
 (4, 'Files manager', 4, 'file_manager_menu_item.png'),
 (5, 'Pages management', 5, 'page_menu_item.png'),
-(6, 'Modules', 1, 'module_menu_item.png');
+(6, 'Modules', 1, 'module_menu_item.png'),
+(7, 'Layouts', 6, 'layout_menu.png');
 
 CREATE TABLE `application_admin_menu` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1179,16 +1195,20 @@ CREATE TABLE `application_admin_menu` (
 INSERT INTO `application_admin_menu` (`id`, `name`, `controller`, `action`, `module`, `order`, `category`, `part`) VALUES
 (1,  'List of settings', 'settings-administration', 'index', 1, 1, 1, 1),
 (2,  'Clear cache', 'settings-administration', 'clear-cache', 1, 2, 1, 1),
-(3,  'List of roles', 'acl-administration', 'list', 1, 3, 2, 1),
-(4,  'List of users', 'users-administration', 'list', 2, 4, 3, 1),
-(5,  'List of settings', 'users-administration', 'settings', 2, 5, 3, 1),
+(3,  'List of roles', 'acl-administration', 'list', 1, 3, 2, 2),
+(4,  'List of users', 'users-administration', 'list', 2, 4, 3, 2),
+(5,  'List of settings', 'users-administration', 'settings', 2, 5, 3, 2),
 (6,  'List of files', 'files-manager-administration', 'list', 4, 6, 4, 1),
 (7,  'List of settings', 'files-manager-administration', 'settings', 4, 7, 4, 1),
 (8,  'List of pages', 'pages-administration', 'list', 5, 8, 5, 2),
 (9,  'List of settings', 'pages-administration', 'settings', 5, 9, 5, 2),
 (10, 'List of installed modules', 'modules-administration', 'list-installed', 1, 8, 6, 1),
 (11, 'List of not installed modules', 'modules-administration', 'list-not-installed', 1, 9, 6, 1),
-(12, 'Upload updates', 'modules-administration', 'upload-updates', 1, 10, 6, 1);
+(12, 'Upload updates', 'modules-administration', 'upload-updates', 1, 10, 6, 1),
+(13, 'List of installed layouts', 'layouts-administration', 'list-installed', 6, 11, 7, 1),
+(14, 'List of not installed layouts', 'layouts-administration', 'list-not-installed', 6, 12, 7, 1),
+(15, 'Upload updates', 'layouts-administration', 'upload-updates', 6, 13, 7, 1),
+(16, 'List of settings', 'layouts-administration', 'settings', 6, 14, 7, 1);
 
 CREATE TABLE `page_widget_position` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

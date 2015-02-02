@@ -60,7 +60,9 @@ return [
     'paths' => [
         'error_log' => APPLICATION_ROOT . '/data/log/log',
         'module' => 'module',
+        'module_view' => 'view',
         'custom_module_config' => 'config/module/custom.php',
+        'layout' => 'layout',
         'layout_base' => 'layout/base',
         'layout_cache_css' => 'layout_cache/css',
         'layout_cache_js' => 'layout_cache/js',

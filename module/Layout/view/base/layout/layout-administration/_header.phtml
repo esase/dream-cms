@@ -1,0 +1,41 @@
+<?php $this->layout()->help_url = '/docs/install/new-layouts' ?>
+<?php $this->declareVars('pageTitle') ?>
+<?php $this->pageTitle = $this->translate('Layouts') ?>
+
+<?php $this->headTitle($this->escapeHtml($this->pageTitle)) ?>
+
+<?php
+  $this->baseTabs = [
+        'list_installed' => [
+            'name' => $this->translate('List of installed layouts'),
+            'controller' => 'layouts-administration',
+            'action' => 'list-installed',
+            'check_acl' => true
+        ],
+        'list_not_installed' => [
+            'name' => $this->translate('List of not installed layouts'),
+            'controller' => 'layouts-administration',
+            'action' => 'list-not-installed',
+            'check_acl' => true
+        ],
+        'upload_updates' => [
+            'name' => $this->translate('Upload updates'),
+            'controller' => 'layouts-administration',
+            'action' => 'upload-updates',
+            'check_acl' => true
+        ],
+        'settings' => [
+            'name' => $this->translate('List of settings'),
+            'controller' => 'layouts-administration',
+            'action' => 'settings',
+            'check_acl' => true
+        ]
+    ];
+?>
+
+<div class="page-header">
+    <h1>
+        <img src="<?php echo $this->layoutAsset('icon/layout.png', 'image', 'layout') ?>" alt="<?php echo $this->escapeHtmlAttr($this->pageTitle) ?>" />    
+        <?php echo $this->escapeHtml($this->pageTitle) ?>
+    </h1>
+</div>

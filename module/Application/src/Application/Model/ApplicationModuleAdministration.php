@@ -719,7 +719,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if (!$compatable || true !== ($result =
                     version_compare(SettingService::getSetting('application_generator_version'), $compatable, '>='))) {
 
-                throw new ApplicationException('This module is not compatable with current CMS version');
+                throw new ApplicationException('This module is not compatible with current CMS version');
             }
 
             if (!$version || !$vendor || !$vendorEmail) {
@@ -903,7 +903,7 @@ class ApplicationModuleAdministration extends ApplicationBase
             if (!$moduleCompatable || true !== ($result =
                     version_compare(SettingService::getSetting('application_generator_version'), $moduleCompatable, '>='))) {
 
-                throw new ApplicationException('These updates are not compatable with current CMS version');
+                throw new ApplicationException('These updates are not compatible with current CMS version');
             }
 
             // compare the module versions

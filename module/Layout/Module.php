@@ -1,14 +1,15 @@
 <?php
 namespace Layout;
 
-use Zend\ModuleManager\ModuleManagerInterface;
-use Zend\ModuleManager\ModuleEvent as ModuleEvent;
-use Zend\Console\Request as ConsoleRequest;
+use Application\Utility\ApplicationErrorLogger;
+use Application\Service\ApplicationSetting as SettingService;
 use Layout\Service\Layout as LayoutService;
 use User\Service\UserIdentity as UserIdentityService;
 use Layout\View\Resolver\TemplatePathStack;
+use Zend\ModuleManager\ModuleManagerInterface;
+use Zend\Console\Request as ConsoleRequest;
+use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Exception;
-use Application\Utility\ApplicationErrorLogger;
 
 class Module
 {
@@ -23,6 +24,11 @@ class Module
      * @var object
      */
     protected $moduleManager;
+
+    /**
+     * Layout cookie
+     */ 
+    CONST LAYOUT_COOKIE = 'layout';
 
     /**
      * Init
@@ -75,10 +81,23 @@ class Module
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Layout\Model\LayoutBase');
 
-            // get default or user defined layouts
-            $activeLayouts = !empty(UserIdentityService::getCurrentUserIdentity()['layout'])
-                ? $layout->getLayoutsById(UserIdentityService::getCurrentUserIdentity()['layout'])
-                : $layout->getDefaultActiveLayouts();
+            $request = $this->serviceLocator->get('Request');
+
+            // get a layout from cookies
+            $allowSelectLayouts = (int) SettingService::getSetting('layout_select');
+            $cookieLayout = isset($request->getCookie()->{self::LAYOUT_COOKIE}) && $allowSelectLayouts
+                ? (int) $request->getCookie()->{self::LAYOUT_COOKIE}
+                : null;
+
+            // init a user selected layout
+            if ($cookieLayout) {
+                $activeLayouts = $layout->getLayoutsById($cookieLayout);
+            }
+            else {
+                $activeLayouts = !empty(UserIdentityService::getCurrentUserIdentity()['layout']) && $allowSelectLayouts
+                    ? $layout->getLayoutsById(UserIdentityService::getCurrentUserIdentity()['layout']) 
+                    : $layout->getDefaultActiveLayouts();
+            }
 
             // add layouts paths for each module
             foreach ($this->moduleManager->getModules() as $module) {
@@ -143,6 +162,13 @@ class Module
 
                     return new \Layout\View\Helper\LayoutAsset($cache, 
                             LayoutService::getLayoutPath(), LayoutService::getCurrentLayouts(), LayoutService::getLayoutDir());
+                },
+                'layoutList' =>  function() {
+                    $layouts = $this->serviceLocator
+                            ->get('Application\Model\ModelManager')
+                            ->getInstance('Layout\Model\LayoutBase');
+
+                    return new \Layout\View\Helper\LayoutList($layouts->getAllInstalledLayouts(), LayoutService::getCurrentLayouts());
                 },
             ]
         ];

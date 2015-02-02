@@ -18,6 +18,16 @@ class Application
     }
 
     /**
+     * Get module view dir
+     *
+     * @return string
+     */
+    public static function getModuleViewDir()
+    {
+        return ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['module_view'];
+    }
+
+    /**
      * Get base layout path
      *
      * @return string
@@ -29,6 +39,20 @@ class Application
         return $full
             ? APPLICATION_PUBLIC . '/' . $basePath
             : $basePath;
+    }
+
+    /**
+     * Get layout path
+     *
+     * @return string
+     */
+    public static function getLayoutPath($full = true)
+    {
+        $layoutPath = ApplicationServiceLocator::getServiceLocator()->get('Config')['paths']['layout'];
+
+        return $full
+            ? APPLICATION_PUBLIC . '/' . $layoutPath
+            : $layoutPath;
     }
 
     /**

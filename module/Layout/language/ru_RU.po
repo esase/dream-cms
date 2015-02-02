@@ -2,19 +2,116 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"layout\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-01-05 10:14+0600\n"
+"PO-Revision-Date: 2015-02-02 11:04+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "The storage cookie time of selected layout in seconds"
+msgstr "Время хранения куки выбранного макета в секундах"
+
+msgid "Allow users select site layouts"
+msgstr "Разрешить пользователям выбирать макеты сайта"
+
+msgid "Select layout"
+msgstr "Выберите макет"
+
+msgid "Active custom layout"
+msgstr "Активный пользовательский макет"
+
+msgid "The selected layout has been uninstalled"
+msgstr "Выбранный макет был деинсталлирован"
+
+msgid "Selected layouts have been uninstalled"
+msgstr "Выбранные макеты были деинсталлированы"
+
+msgid "Selected layouts will be uninstalled. Are you sure?"
+msgstr "Выбранные макеты будут деинсталлированы. Вы уверены?"
+
+msgid "You cannot uninstall the system layout"
+msgstr "Вы не можете деинсталлировать системный макет"
+
+msgid "Installed layouts"
+msgstr "Установленные макеты"
+
+msgid "Nothing to update the layout"
+msgstr "Нечего обновлять в макете"
+
+msgid "Updates of layout have been uploaded"
+msgstr "Обновления макета были загружены"
+
+msgid "This layout updates are not necessary or not defined"
+msgstr "Эти обновления макета не нужны или не определены"
+
+msgid "Layout has been deleted"
+msgstr "Макет был удален"
+
+msgid "Delete the layout"
+msgstr "Удалить шаблон"
+
+msgid "Cannot define the layout's name into the config file"
+msgstr "Невозможно определить имя шаблона в конфигурационном файле"
+
+msgid "Cannot define the template's path into the config file"
+msgstr "Невозможно определить путь шаблона в конфигурационном файле"
+
+msgid "Layout already uploaded"
+msgstr "Макет уже загружен"
+
+msgid "Layout not found"
+msgstr "Макет не найден"
+
+msgid "Cannot define the layout's path into the config file"
+msgstr "Невозможно определить путь макета в конфигурационном файле"
+
+msgid "Cannot define the layout's config file"
+msgstr "Невозможно определить конфигурационный файл макета"
+
+msgid "A new layout"
+msgstr "Новый макет"
+
+msgid "Upload layout description"
+msgstr "Пожалуйста, выберите файл в формате ZIP"
+
+msgid "Layout has been uploaded"
+msgstr "Макет был загружен"
+
+msgid "Upload a layout"
+msgstr "Загрузить макет"
+
+msgid ""
+"It is impossible to determine the layout version, vendor or vendor email"
+msgstr "Нельзя определить версию макета, поставщика или email поставщика"
+
+msgid "This layout is not compatible with current CMS version"
+msgstr "Этот макет не совместим с текущей версией CMS"
+
+msgid "The selected layout has been installed"
+msgstr "Выбранный макет был установлен"
+
+msgid "Selected layouts have been installed"
+msgstr "Выбранные макеты были установлены"
+
+msgid "Selected layouts will be installed. Are you sure?"
+msgstr "Выбранные макеты будут установлены. Вы уверены?"
+
+msgid "Not installed layouts"
+msgstr "Не установленные макеты"
+
+msgid "List of installed layouts"
+msgstr "Список установленных макетов"
+
+msgid "List of not installed layouts"
+msgstr "Список не установленных макетов"
 
 msgid "Layout module description"
 msgstr "Модуль позволяет управлять различными макетами сайта"
@@ -25,11 +122,71 @@ msgstr "Макеты сайта"
 msgid "Layout"
 msgstr "Макет сайта"
 
-msgid "Event - Deleting layouts"
-msgstr "Удаление макетов"
+msgid "Event - Uninstalling custom layouts"
+msgstr "Деинсталляция пользовательских макетов"
 
-msgid "Event - Layout deleted by guest"
-msgstr "Гость удалил макет с идентификатором - \"%d\""
+msgid "Event - Custom layout uninstalled by guest"
+msgstr "Гость деинсталлировал макет \"%s\""
 
-msgid "Event - Layout deleted by user"
-msgstr "\"%s\" удалил(а) макет с идентификатором - \"%d\""
+msgid "Event - Custom layout uninstalled by user"
+msgstr "\"%s\" деинсталлировал макет \"%s\""
+
+msgid "Event - Uploading layouts updates"
+msgstr "Загрузка обновлений макетов"
+
+msgid "Event - layout updated by guest"
+msgstr "Гость загрузил обновления для макета \"%s\""
+
+msgid "Event - layout updated by user"
+msgstr "\"%s\" загрузил(а) обновления для макета \"%s\""
+
+msgid "Event - Uploading custom layouts"
+msgstr "Загрузка пользовательских макетов"
+
+msgid "Event - Custom layout uploaded by guest"
+msgstr "Гость загрузил пользовательский макет \"%s\""
+
+msgid "Event - Custom layout uploaded by user"
+msgstr "\"%s\" загрузил(а) пользовательский макет \"%s\""
+
+msgid "Event - Installing custom layouts"
+msgstr "Установка пользовательских макетов"
+
+msgid "Event - Custom layout installed by guest"
+msgstr "Гость установил пользовательский макет \"%s\""
+
+msgid "Event - Custom layout installed by user"
+msgstr "\"%s\" установил(а) пользовательский макет \"%s\""
+
+msgid "Event - Deleting custom layouts"
+msgstr "Удаление пользовательских макетов"
+
+msgid "Event - Custom layout deleted by guest"
+msgstr "Гость удалил пользовательский макет \"%s\""
+
+msgid "Event - Custom layout deleted by user"
+msgstr "\"%s\" удалил(а) пользовательский макет \"%s\""
+
+msgid "ACL - Viewing not installed layouts in admin area"
+msgstr "Просмотр не установленных макетов в админке"
+
+msgid "ACL - Installing layouts in admin area"
+msgstr "Установка макетов в админке"
+
+msgid "ACL - Uploading new layouts in admin area"
+msgstr "Загрузка новых макетов в админке"
+
+msgid "ACL - Deleting layouts in admin area"
+msgstr "Удаление макетов в админке"
+
+msgid "ACL - Uploading  updates of layouts in admin area"
+msgstr "Загрузка обновлений макетов в админке"
+
+msgid "ACL - Viewing installed layouts in admin area"
+msgstr "Просмотр установленных макетов в админке"
+
+msgid "ACL - Uninstalling layouts in admin area"
+msgstr "Деинсталляция макетов в админке"
+
+msgid "ACL - Editing layouts settings in admin area"
+msgstr "Редактирование настроек макетов в админке"

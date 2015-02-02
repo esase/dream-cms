@@ -3,7 +3,21 @@
                 <?php echo $this->pageFooterMenu(4 /* max columns per row */) ?>
                 <br />
                 <div class="row">
-                    <p class="text-center">&copy; <?php echo date('Y') ?> <?php echo $this->applicationSetting('application_site_name') ?></p>
+                    <?php if ((int) $this->applicationSetting('layout_select')):  ?>
+                        <?php $this->declareVars('layoutsList') ?>
+                        <?php $this->layoutsList = $this->layoutList()->getLayouts() ?>
+                        <?php if (count($this->layoutsList) > 1): ?>
+                            <?php echo $this->layoutList()->getLayoutsSelectBox('select-layout-link') ?>
+                            <p class="text-center">
+                                &copy; <?php echo date('Y') ?> <?php echo $this->applicationSetting('application_site_name') ?>
+                                (<?php echo $this->translate('Layout') ?> - <a href="#" id="select-layout-link"><?php echo $this->escapeHtml($this->layoutList()->getActiveLayout()) ?></a>)
+                            </p>
+                        <?php else: ?>
+                            <p class="text-center">&copy; <?php echo date('Y') ?> <?php echo $this->applicationSetting('application_site_name') ?></p>
+                        <?php endif ?>
+                    <?php else: ?>
+                        <p class="text-center">&copy; <?php echo date('Y') ?> <?php echo $this->applicationSetting('application_site_name') ?></p>
+                    <?php endif ?>
                 </div>
             </footer>
         </div>
