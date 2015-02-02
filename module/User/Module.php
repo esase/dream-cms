@@ -84,7 +84,7 @@ class Module
         });
 
         $eventManager = LocalizationEvent::getEventManager();
-        $eventManager->attach(LocalizationEvent::DELETE, function ($e) {
+        $eventManager->attach(LocalizationEvent::UNINSTALL, function ($e) {
             UserCacheUtility::clearUserCache();
         });
     }
