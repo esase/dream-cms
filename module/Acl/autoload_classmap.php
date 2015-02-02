@@ -16,5 +16,4 @@ return [
     'Acl\Event\AclEvent'                         => __DIR__ . '/src/Acl/Event/AclEvent.php',
     'Acl\Service\Acl'                            => __DIR__ . '/src/Acl/Service/Acl.php',
     'Acl\Model\AclBase'                          => __DIR__ . '/src/Acl/Model/AclBase.php',
-    'Acl\Model\AclAdministration'                => __DIR__ . '/src/Acl/Model/AclAdministration.php',
-];
+  ];
