@@ -434,7 +434,7 @@ class InstallBase
         }
         else {
             // get current intl version
-            $intlVersion = phpversion('intl');
+            $intlVersion = preg_replace('/[^0-9\.]/', '', phpversion('intl'));
             $intlIcuVersion = $this->getIntlIcuVersion();
 
             if (false === version_compare($intlVersion, $this->intlVersion, '>=') 
