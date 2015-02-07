@@ -6,6 +6,7 @@ use Zend\Math\Rand;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Transliterator;
 use Exception;
+use ReflectionExtension;
 
 class InstallBase
 {
@@ -47,11 +48,10 @@ class InstallBase
     ];
 
     /**
-     * Php extensions
+     * Php basic extensions
      * @var array
      */
-    protected $phpExtensions = [
-        'intl',
+    protected $phpBasicExtensions = [
         'zlib',
         'gd',
         'fileinfo',
@@ -82,7 +82,19 @@ class InstallBase
      * Php version 
      * @var string
      */
-    protected $phpVersion = '5.4.0';
+    protected $phpVersion = '5.4.12';
+
+    /**
+     * Intl version
+     * @var string
+     */
+    protected $intlVersion = '1.1.0';
+
+    /**
+     * Intl icu version
+     * @var string
+     */
+    protected $intlIcuVersion = '50.1';
 
     /**
      * Install sql file
@@ -399,10 +411,10 @@ class InstallBase
      */
     public function getNotInstalledPhpExtensions()
     {
-        asort($this->phpExtensions);
+        asort($this->phpBasicExtensions);
         $extensions = [];
 
-        foreach ($this->phpExtensions as $extension) {
+        foreach ($this->phpBasicExtensions as $extension) {
             if (false === ($result = extension_loaded($extension))) {
                 $extensions[] = [
                     'extension' => $extension,
@@ -412,7 +424,52 @@ class InstallBase
             }
         }
 
+        // check the intl extension
+        if (false === ($result = extension_loaded('intl'))) {
+            $extensions[] = [
+                'extension' => 'intl',
+                'current' => 'Not installed',
+                'desired' => 'Installed'
+            ];
+        }
+        else {
+            // get current intl version
+            $intlVersion = phpversion('intl');
+            $intlIcuVersion = $this->getIntlIcuVersion();
+
+            if (false === version_compare($intlVersion, $this->intlVersion, '>=') 
+                    || false === version_compare($intlIcuVersion, $this->intlIcuVersion, '>=')) {
+
+                $extensions[] = [
+                    'extension' => 'intl',
+                    'current' => 'Intl ' . $intlVersion . ', ICU ' . $intlIcuVersion,
+                    'desired' => 'Intl ' . $this->intlVersion . ', ICU ' . $this->intlIcuVersion
+                ];
+            }
+        }
+
         return $extensions ? $extensions  : [];
+    }
+
+    /**
+     * Get intl icu version
+     *
+     * @return string
+     */
+    protected function getIntlIcuVersion()
+    {
+        if (defined('INTL_ICU_VERSION')) {
+            return INTL_ICU_VERSION;
+        } 
+
+        $reflector = new ReflectionExtension('intl');
+
+        ob_start();
+        $reflector->info();
+        $output = strip_tags(ob_get_clean());
+
+        preg_match('/^ICU version +(?:=> )?(.*)$/m', $output, $matches);
+        return $matches[1];
     }
 
     /**
