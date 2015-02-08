@@ -50,6 +50,11 @@ class UserBase extends ApplicationAbstractBase
     const CACHE_USER_DATA_TAG = 'User_Data_Tag';
 
     /**
+     * User specicific cache data tag
+     */
+    const CACHE_USER_SPECIFIC_DATA_TAG = 'User_Specific_Data_Tag_';
+
+    /**
      * Approved status
      */
     const STATUS_APPROVED = 'approved';
@@ -860,7 +865,10 @@ class UserBase extends ApplicationAbstractBase
 
             // save data in cache
             $this->staticCacheInstance->setItem($cacheName, $userInfo);
-            $this->staticCacheInstance->setTags($cacheName, [self::CACHE_USER_DATA_TAG]);
+            $this->staticCacheInstance->setTags($cacheName, [
+                self::CACHE_USER_DATA_TAG, 
+                self::CACHE_USER_SPECIFIC_DATA_TAG . $userInfo['user_id']
+            ]);
         }
 
         self::$userInfo[$userId][$field] = $userInfo;
@@ -875,10 +883,8 @@ class UserBase extends ApplicationAbstractBase
      */
     protected function removeUserCache($userId)
     {
-        // clear all cache kinds
-        foreach ($this->userInfoFields as $field) {
-            $cacheName = CacheUtility::getCacheName(self::CACHE_USER_INFO . $userId, [$field]);
-            $this->staticCacheInstance->removeItem($cacheName);
-        }
+        return $this->staticCacheInstance->clearByTags([
+            self::CACHE_USER_SPECIFIC_DATA_TAG . $userId
+        ]);
     }
 }
