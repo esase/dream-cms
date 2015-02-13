@@ -36,6 +36,12 @@ class PageInjectWidget extends AbstractHelper
     protected $dynamicCache;
 
     /**
+     * Request
+     * @var object
+     */
+    protected $request;
+
+    /**
      * Class constructor
      *
      * @param array $menu
@@ -44,6 +50,7 @@ class PageInjectWidget extends AbstractHelper
     {
         $this->widgets = $widgets;
         $this->dynamicCache = ServiceLocatorService::getServiceLocator()->get('Application\Cache\Dynamic');
+        $this->request = ServiceLocatorService::getServiceLocator()->get('Request');
     }
 
     /**
@@ -82,8 +89,7 @@ class PageInjectWidget extends AbstractHelper
         // init the widget
         $widget->setPageId($pageId)
             ->setWidgetPosition($position)
-            ->setWidgetConnectionId($widgetInfo['widget_connection_id'])
-            ->includeJsCssFiles();
+            ->setWidgetConnectionId($widgetInfo['widget_connection_id']);
 
         $widgetCacheName = null;
 
@@ -97,6 +103,12 @@ class PageInjectWidget extends AbstractHelper
             if (null !== ($cachedWidgetData = $this->dynamicCache->getItem($widgetCacheName))) {
                 // check a local widget lifetime
                 if ($cachedWidgetData['widget_expire'] >= time()) {
+
+                    // include widget's css and js files
+                    if (false !== $cachedWidgetData['widget_content'] && !$this->request->isXmlHttpRequest()) {
+                        $widget->includeJsCssFiles();
+                    }
+
                     return $cachedWidgetData['widget_content'];
                 }
 
@@ -107,6 +119,11 @@ class PageInjectWidget extends AbstractHelper
 
         if (false !== ($widgetContent = $widget->getContent())) {
             self::$widgetRedirected = $widget->isWidgetRedirected();
+
+            // include widget's css and js files
+            if (!$this->request->isXmlHttpRequest()) {
+                $widget->includeJsCssFiles();
+            }
 
             // add the widget's layout
             if (!empty($widgetInfo['widget_layout']) && $useLayout) {
