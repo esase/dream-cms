@@ -1363,7 +1363,7 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (5,  'userForgotWidget', 2, 'public', 'Account recovery', NULL, 1, NULL, NULL),
 (6,  'userPasswordResetWidget', 2, 'public', 'Password reset', NULL, 1, NULL, NULL),
 (7,  'userDeleteWidget', 2, 'public', 'Account delete', NULL, 1, NULL, NULL),
-(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL, NULL, 1),
+(8,  'pageSiteMapWidget', 5, 'public', 'Sitemap', NULL, NULL, NULL, NULL),
 (9,  'userInfoWidget', 2, 'public', 'Account info', NULL, 1, NULL, NULL),
 (10, 'userAvatarWidget', 2, 'public', 'Account avatar', NULL, 1, NULL, NULL),
 (11, 'userDashboardWidget', 2, 'public', 'User dashboard', NULL, 1, NULL, NULL),
@@ -1371,7 +1371,7 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (13, 'userEditWidget', 2, 'public', 'Account edit', NULL, 1, NULL, NULL),
 (14, 'userDashboardAdministrationWidget', 2, 'public', 'Administration', NULL, 1, NULL, NULL),
 (15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL, NULL),
-(16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL, 1),
+(16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL, NULL),
 (17, 'pageShareButtonsWidget', 5, 'public', 'Share buttons', NULL, NULL, NULL, 1);
 
 CREATE TABLE `page_system_page_depend` (
