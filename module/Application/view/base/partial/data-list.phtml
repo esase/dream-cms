@@ -153,6 +153,12 @@
                 'paginator_page_query' => $this->paginator_page_query
             ])
         ?>
+
+        <?php if(!empty($this->uniform_height)): ?>
+            <script type="text/javascript">
+                uniformHeight("<?php echo $this->escapeJs($this->uniform_height) ?>", true);
+            </script>
+        <?php endif ?>
     <?php else: ?>
         <div class="alert alert-warning">
             <?php echo $this->translate('Nothing found') ?>
