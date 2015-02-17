@@ -143,6 +143,8 @@
             <?php echo $this->partial($this->unit, array_merge(['data' => $data], $this->unitExtraParams)) ?>
         <?php endforeach ?>
 
+        <div class="clearfix"></div>
+
         <?php
             echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', [
                 'route'   => $this->defaultRoute,
