@@ -1,3 +1,10 @@
+.vertical-aligned {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
 div.panel-general {
   margin-top: 20px;
   margin-bottom: 0;
