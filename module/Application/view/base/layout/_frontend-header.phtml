@@ -34,6 +34,7 @@
 
         <!-- scripts -->
         <?php echo $this->layoutHeadScript()
+            ->prependFile($this->layoutAsset('jquery.waitforimages.js'))
             ->prependFile($this->layoutAsset('jquery.smartmenus.js'))
             ->prependFile($this->layoutAsset('functions.js'))
             ->prependFile($this->layoutAsset('require.js'))
