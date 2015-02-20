@@ -154,9 +154,11 @@
             ])
         ?>
 
-        <?php if(!empty($this->uniform_height)): ?>
+        <?php if (!empty($this->uniform_height)): ?>
             <script type="text/javascript">
-                uniformHeight("<?php echo $this->escapeJs($this->uniform_height) ?>", true);
+                $("<?php echo $this->escapeJs($this->uniform_height) ?>").waitForImages().done(function() {
+                    uniformHeight("<?php echo $this->escapeJs($this->uniform_height) ?>", true);
+                });
             </script>
         <?php endif ?>
     <?php else: ?>
