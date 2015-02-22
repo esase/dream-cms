@@ -50,7 +50,7 @@ function dataListQuery(container, url, widgetConnectionId, widgetPosition, extra
 /**
  * Ajax query
  *
- * @param string container
+ * @param string|object container
  * @param string url
  * @param object successCallback
  * @param string method
@@ -75,7 +75,12 @@ function ajaxQuery(container, url, successCallback, method, params, replaceData)
             }
             else {
                 // remove the loading box
-                $('#' + container).find('.loading-ajax-wrapper').remove();
+				if ($.type(container) === "string") {
+					$('#' + container).find('.loading-ajax-wrapper').remove()
+				}
+				else {
+					$(container).find('.loading-ajax-wrapper').remove();
+				}
             }
 
             // call a callback
