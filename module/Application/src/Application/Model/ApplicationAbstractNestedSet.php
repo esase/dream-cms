@@ -69,6 +69,26 @@ abstract class ApplicationAbstractNestedSet
     }
 
     /**
+     * Get left key
+     *
+     * @return string
+     */
+    public function getLeftKey()
+    {
+        return $this->left;
+    }
+    
+    /**
+     * Get right key
+     *
+     * @return string
+     */
+    public function getRightKey()
+    {
+        return $this->right;
+    }
+
+    /**
      * Update node
      *
      * @param integer $id
