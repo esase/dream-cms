@@ -710,16 +710,12 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $parentLeftKey
      * @param integer $parentRightKey     
      * @param object $closure
-     * @return array|boolean
+     * @return integer|boolean
      */
     public function getLastNode(array $filter = [], $parentLeftKey = null, $parentRightKey = null, Closure $closure = null)
     {
         $resultSet = $this->tableGateway->select(function (Select $select) use ($filter, $parentLeftKey, $parentRightKey, $closure) {
             $select->columns([
-                $this->nodeId,
-                $this->left,
-                $this->right,
-                $this->level,
                 'max' => new Expression('MAX(' . $this->right . ')')
             ]);
 
@@ -740,6 +736,6 @@ abstract class ApplicationAbstractNestedSet
             }
         });
 
-        return !empty($resultSet->current()['max']) ? $resultSet->current() : false;
+        return !empty($resultSet->current()['max']) ? $resultSet->current()['max'] : false;
     }    
 }
