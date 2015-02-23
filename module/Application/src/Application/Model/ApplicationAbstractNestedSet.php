@@ -702,4 +702,44 @@ abstract class ApplicationAbstractNestedSet
 
         return $resultSet->count() ? (array) $resultSet->current() : false;
     }
+
+    /**
+     * Get last node
+     *
+     * @param array $filter
+     * @param integer $parentLeftKey
+     * @param integer $parentRightKey     
+     * @param object $closure
+     * @return array|boolean
+     */
+    public function getLastNode(array $filter = [], $parentLeftKey = null, $parentRightKey = null, Closure $closure = null)
+    {
+        $resultSet = $this->tableGateway->select(function (Select $select) use ($filter, $parentLeftKey, $parentRightKey, $closure) {
+            $select->columns([
+                $this->nodeId,
+                $this->left,
+                $this->right,
+                $this->level,
+                'max' => new Expression('MAX(' . $this->right . ')')
+            ]);
+
+            if ($parentLeftKey) {
+                $select->where->greaterThan($this->left, $parentLeftKey);
+            }
+
+            if ($parentRightKey) {
+                $select->where->lessThan($this->right, $parentRightKey);
+            }
+
+            if ($filter) {
+                $select->where($filter);
+            }
+
+            if ($closure) {
+                $closure($select);
+            }
+        });
+
+        return !empty($resultSet->current()['max']) ? $resultSet->current() : false;
+    }    
 }
