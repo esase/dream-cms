@@ -50,9 +50,10 @@ class LocalizationLocale
      * @param string $value
      * @param string $type
      * @param string $outputDateFormat (Intl date format - http://www.php.net/manual/en/book.intl.php)
+     * @param string $locale
      * @return string
      */
-    public static function convertToLocalizedValue($value, $type, $outputDateFormat = IntlDateFormatter::MEDIUM)
+    public static function convertToLocalizedValue($value, $type, $outputDateFormat = IntlDateFormatter::MEDIUM, $locale = null)
     {
         if (!$value) {
             return $value;
@@ -60,7 +61,7 @@ class LocalizationLocale
 
         switch ($type) {
             case 'float' :
-                $filter = new NumberFormat(self::getLocale());
+                $filter = new NumberFormat(($locale ? $locale : self::getLocale()));
                 $filter->getFormatter()
                         ->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, self::MAX_FRACTION_DIGITS);
 
@@ -68,7 +69,7 @@ class LocalizationLocale
             case 'date' :
             case 'date_unixtime' :
                 $dateFormater = new IntlDateFormatter(
-                    self::getLocale(),
+                    ($locale ? $locale : self::getLocale()),
                     $outputDateFormat,
                     IntlDateFormatter::NONE,
                     date_default_timezone_get(),
@@ -90,9 +91,10 @@ class LocalizationLocale
      * @param string $type
      * @param string $inputDateFormat (Intl date format - http://www.php.net/manual/en/book.intl.php)
      * @param string $outputDateFormat (php date format)
+     * @param string $locale
      * @return mixed
      */
-    public static function convertFromLocalizedValue($value, $type, $inputDateFormat = IntlDateFormatter::MEDIUM, $outputDateFormat = 'Y-m-d')
+    public static function convertFromLocalizedValue($value, $type, $inputDateFormat = IntlDateFormatter::MEDIUM, $outputDateFormat = 'Y-m-d', $locale = null)
     {
         if (!$value) {
             return $value;
@@ -105,7 +107,7 @@ class LocalizationLocale
             case 'date' :
             case 'date_unixtime' :
                 $dateFormater = new IntlDateFormatter(
-                    self::getLocale(),
+                    ($locale ? $locale : self::getLocale()),
                     $inputDateFormat,
                     IntlDateFormatter::NONE,
                     date_default_timezone_get(),

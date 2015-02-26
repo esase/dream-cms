@@ -15,9 +15,10 @@ class ApplicationDate extends AbstractHelper
      * @param array $options
      *      string  type (date or date_unixtime)
      *      string format (full, long, medium, short)
+     * @param string $locale
      * @return string
      */
-    public function __invoke($date, array $options = [])
+    public function __invoke($date, array $options = [], $locale = null)
     {
         $type = !empty($options['type']) && $options['type'] == 'date'
             ? 'date'
@@ -48,6 +49,6 @@ class ApplicationDate extends AbstractHelper
                 $format = IntlDateFormatter::SHORT;
         }
 
-        return LocaleUtility::convertToLocalizedValue($date, $type, $format);
+        return LocaleUtility::convertToLocalizedValue($date, $type, $format, $locale);
     }
 }
