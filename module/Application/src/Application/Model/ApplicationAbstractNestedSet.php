@@ -8,6 +8,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Predicate as Predicate;
 use Exception;
 use Zend\Db\Sql\Expression as Expression;
+use Zend\Db\Sql\Update;
 use Closure;
 
 abstract class ApplicationAbstractNestedSet 
@@ -640,6 +641,51 @@ abstract class ApplicationAbstractNestedSet
     }
 
     /**
+     * Update siblings nodes
+     *
+     * @param array $data
+     * @param integer $leftKey
+     * @param integer $rightKey
+     * @param integer $level
+     * @param array $filter
+     * @param boolean $useTransaction
+     * @return boolean|string
+     */
+    public function updateSiblingsNodes(array $data, $leftKey, $rightKey, $level = null, array $filter = [], $useTransaction = true)
+    {
+        try {
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->beginTransaction();
+            }
+
+            $baseFilter = array_merge([
+                (new Predicate)->greaterThan($this->left, $leftKey),
+                (new Predicate)->lessThan($this->right, $rightKey)
+            ], $filter);
+
+            if ($level) {
+                $baseFilter[$this->level] = $level;
+            }
+
+            $this->tableGateway->update($data, $baseFilter);
+
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->commit();
+            }
+        }
+        catch (Exception $e) {
+            if ($useTransaction) {
+                $this->tableGateway->getAdapter()->getDriver()->getConnection()->rollback();
+            }
+
+            ApplicationErrorLogger::log($e);
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
      * Get siblings nodes
      *
      * @param integer $leftKey
@@ -647,11 +693,12 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $level
      * @param array $filter
      * @param object $closure
+     * @param integer $limit
      * @return boolean|array
      */
-    public function getSiblingsNodes($leftKey, $rightKey, $level = null, array $filter = [], Closure $closure = null)
+    public function getSiblingsNodes($leftKey, $rightKey, $level = null, array $filter = [], Closure $closure = null, $limit = null)
     {
-        $resultSet = $this->tableGateway->select(function (Select $select) use ($leftKey, $rightKey, $level, $closure) {
+        $resultSet = $this->tableGateway->select(function (Select $select) use ($leftKey, $rightKey, $level, $filter, $closure, $limit) {
             $select->where->greaterThan($this->left, $leftKey);
             $select->where->lessThan($this->right, $rightKey);
             $select->order($this->left);
@@ -666,6 +713,10 @@ abstract class ApplicationAbstractNestedSet
 
             if ($closure) {
                 $closure($select);
+            }
+
+            if ($limit) {
+                $select->limit($limit);
             }
         });
 
