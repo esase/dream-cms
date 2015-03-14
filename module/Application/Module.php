@@ -335,6 +335,7 @@ class Module implements ConsoleUsageProviderInterface
                 'applicationRoute' => 'Application\View\Helper\ApplicationRoute',
                 'applicationRandId' => 'Application\View\Helper\ApplicationRandId',
                 'applicationDate' => 'Application\View\Helper\ApplicationDate',
+                'applicationHumanDate' => 'Application\View\Helper\ApplicationHumanDate',
                 'applicationFileSize' => 'Application\View\Helper\ApplicationFileSize'
             ],
             'factories' => [

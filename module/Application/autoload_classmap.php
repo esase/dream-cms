@@ -33,6 +33,7 @@ return [
     'Application\View\Helper\ApplicationCalendar'                        => __DIR__ . '/src/Application/View/Helper/ApplicationCalendar.php',
     'Application\View\Helper\ApplicationRandId'                          => __DIR__ . '/src/Application/View/Helper/ApplicationRandId.php',
     'Application\View\Helper\ApplicationDate'                            => __DIR__ . '/src/Application/View/Helper/ApplicationDate.php',
+    'Application\View\Helper\ApplicationHumanDate'                       => __DIR__ . '/src/Application/View/Helper/ApplicationHumanDate.php',
     'Application\View\Helper\ApplicationAdminMenu'                       => __DIR__ . '/src/Application/View/Helper/ApplicationAdminMenu.php',
     'Application\View\Helper\ApplicationRoute'                           => __DIR__ . '/src/Application/View/Helper/ApplicationRoute.php',
     'Application\Exception\ApplicationException'                         => __DIR__ . '/src/Application/Exception/ApplicationException.php',

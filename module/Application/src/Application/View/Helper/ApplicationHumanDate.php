@@ -1,0 +1,102 @@
+<?php
+namespace Application\View\Helper;
+
+use Application\Service\ApplicationSetting as SettingService;
+use Zend\View\Helper\AbstractHelper;
+
+class ApplicationHumanDate extends AbstractHelper
+{
+    /**
+     * Minute in seconds
+     * @var integer
+     */
+    protected $minuteInSeconds = 60;
+
+    /**
+     * Hour in seconds
+     * @var integer
+     */
+    protected $hourInSeconds;
+
+    /**
+     * Day in seconds
+     * @var integer
+     */
+    protected $dayInSeconds;
+
+    /**
+     * Week in seconds
+     * @var integer
+     */
+    protected $weekInSeconds;
+
+    /**
+     * Year in seconds
+     * @var integer
+     */
+    protected $yearInSeconds;
+
+    /**
+     * Class constructor
+     */
+    public function __construct()
+    {
+        $this->hourInSeconds = 60 * $this->minuteInSeconds;
+        $this->dayInSeconds  = 24 * $this->hourInSeconds;
+        $this->weekInSeconds = 7 * $this->dayInSeconds;
+        $this->yearInSeconds = 365 * $this->dayInSeconds;
+    }
+
+    /**
+     * Get human date
+     *
+     * @param integer $date
+     * @param array $options
+     *      string format (full, long, medium, short)
+     * @param string $locale
+     * @param integer $diffDate
+     * @return string
+     */
+    public function __invoke($date, array $options = [], $locale = null, $diffDate = null)
+    {
+        if (!$diffDate) {
+            $diffDate = time();
+        }
+
+        $diff = (int) abs($date - $diffDate);
+
+        if ($diff < $this->hourInSeconds) {
+            if (($mins = round($diff / $this->minuteInSeconds)) <= 0) {
+                $mins = 1;
+            }
+
+            $since = sprintf($this->getView()->translatePlural('minute ago', 'minutes ago', $mins), $mins);
+        }
+        else if ($diff < $this->dayInSeconds && $diff >= $this->hourInSeconds) {
+            if (($hours = round($diff / $this->hourInSeconds)) <= 0) {
+                $hours = 1;
+            }
+
+            $since = sprintf($this->getView()->translatePlural('hour ago', 'hours ago', $hours), $hours);
+        }
+        else if ($diff < $this->weekInSeconds && $diff >= $this->dayInSeconds) {
+            if (($days = round($diff / $this->dayInSeconds)) <= 0) {
+                $days = 1;
+            }
+
+            $since = sprintf($this->getView()->translatePlural('day ago', 'days ago', $days), $days);
+        }
+        else if ($diff < 30 * $this->dayInSeconds && $diff >= $this->weekInSeconds ) {
+            if (($weeks = round($diff / $this->weekInSeconds)) <= 0) {
+                $weeks = 1;
+            }
+
+            $since = sprintf($this->getView()->translatePlural('week ago', 'weeks ago', $weeks), $weeks);
+        }
+        else {
+            $since = $this->getView()->applicationDate($date, $options, $locale);
+        }
+
+        return $since;
+    }
+}
