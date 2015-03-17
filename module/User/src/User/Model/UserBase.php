@@ -864,11 +864,13 @@ class UserBase extends ApplicationAbstractBase
             $userInfo = $resultSet->current() ? (array) $resultSet->current() : [];
 
             // save data in cache
-            $this->staticCacheInstance->setItem($cacheName, $userInfo);
-            $this->staticCacheInstance->setTags($cacheName, [
-                self::CACHE_USER_DATA_TAG, 
-                self::CACHE_USER_SPECIFIC_DATA_TAG . $userInfo['user_id']
-            ]);
+            if ($userInfo) {
+                $this->staticCacheInstance->setItem($cacheName, $userInfo);
+                $this->staticCacheInstance->setTags($cacheName, [
+                    self::CACHE_USER_DATA_TAG, 
+                    self::CACHE_USER_SPECIFIC_DATA_TAG . $userInfo['user_id']
+                ]);
+            }
         }
 
         self::$userInfo[$userId][$field] = $userInfo;
