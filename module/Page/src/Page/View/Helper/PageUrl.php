@@ -11,12 +11,6 @@ use Zend\View\Helper\AbstractHelper;
 class PageUrl extends AbstractHelper
 {
     /**
-     * List of defined urls
-     * @var array
-     */
-    protected $definedUrls = [];
-
-    /**
      * Pages map
      * @var array
      */
@@ -60,12 +54,6 @@ class PageUrl extends AbstractHelper
             $language = LocalizationService::getCurrentLocalization()['language'];
         }
 
-        if (isset($this->definedUrls[$language]) 
-                && array_key_exists($slug, $this->definedUrls[$language])) {
-
-            return $this->definedUrls[$language][$slug];
-        }
-
         $pageUrl = $this->getPageUrl($slug, $language, $privacyOptions, $trustedPrivacyData, $objectId);
 
         // compare the slug for the home page 
@@ -73,7 +61,6 @@ class PageUrl extends AbstractHelper
             $pageUrl = null;
         }
 
-        $this->definedUrls[$language][$slug] = $pageUrl;
         return $pageUrl;
     }
 
