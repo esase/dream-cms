@@ -18,10 +18,11 @@ class PagePrivacy
      * @param string $className
      * @param array $privacyOptions
      * @param boolean $trustedPrivacyData
+     * @param string|integer $objectId
      * @throws Page\Exception\PageException
      * @return boolean
      */
-    public static function checkPagePrivacy($className = null, array $privacyOptions = [], $trustedPrivacyData = false)
+    public static function checkPagePrivacy($className = null, array $privacyOptions = [], $trustedPrivacyData = false, $objectId = null)
     {
         if ($className) {
             if (!array_key_exists($className, self::$privacyInstances)) {
@@ -31,6 +32,8 @@ class PagePrivacy
                     throw new PageException(sprintf($className . ' must be an object implementing IPagePrivacy'));
                 }
             }
+
+            self::$privacyInstances[$className]->setObjectId($objectId);
 
             if (!self::$privacyInstances[$className]->isAllowedViewPage($privacyOptions, $trustedPrivacyData)) {
                 return false;

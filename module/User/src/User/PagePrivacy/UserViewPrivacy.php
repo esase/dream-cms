@@ -44,8 +44,8 @@ class UserViewPrivacy extends PageAbstractPagePrivacy
         }
 
         if (!$trustedData) {
-            $userId = !empty($privacyOptions['user_id']) 
-                ? $privacyOptions['user_id'] 
+            $userId = !empty($privacyOptions['user_id']) || $this->objectId
+                ? (!empty($privacyOptions['user_id']) ? $privacyOptions['user_id'] : $this->objectId) 
                 : RouteParamUtility::getParam('slug', -1);
     
             $userField = !empty($privacyOptions['user_id']) 

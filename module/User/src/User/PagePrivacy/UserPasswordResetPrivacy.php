@@ -43,8 +43,8 @@ class UserPasswordResetPrivacy extends PageAbstractPagePrivacy
         }    
 
         if (!$trustedData) {
-            $userInfo = $this->getModel()->
-                    getUserInfo(RouteParamUtility::getParam('slug', -1), UserWidgetModel::USER_INFO_BY_SLUG);
+            $userId = $this->objectId ? $this->objectId : RouteParamUtility::getParam('slug', -1);
+            $userInfo = $this->getModel()->getUserInfo($userId, UserWidgetModel::USER_INFO_BY_SLUG);
 
             if (null == $userInfo) {
                 return false;

@@ -38,8 +38,8 @@ class UserActivatePrivacy extends PageAbstractPagePrivacy
      */
     public function isAllowedViewPage(array $privacyOptions = [], $trustedData = false)
     {
-        $userId = !empty($privacyOptions['user_id']) 
-            ? $privacyOptions['user_id'] 
+        $userId = !empty($privacyOptions['user_id']) || $this->objectId
+            ? (!empty($privacyOptions['user_id']) ? $privacyOptions['user_id'] : $this->objectId) 
             : RouteParamUtility::getParam('slug', -1);
 
         $userField = !empty($privacyOptions['user_id']) 
