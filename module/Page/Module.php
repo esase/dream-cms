@@ -132,8 +132,8 @@ class Module
                         ->get('Application\Model\ModelManager')
                         ->getInstance('Page\Model\PageBase');
 
-                    return new \Page\View\Helper\PageUrl($model->
-                            getPagesMap(), $this->serviceLocator->get('Config')['home_page']);
+                    return new \Page\View\Helper\PageUrl($this->
+                            serviceLocator->get('Config')['home_page'], $model->getPagesMap());
                 },
                 'pageInjectWidget' =>  function() {
                     $model = $this->serviceLocator

@@ -31,13 +31,13 @@ class PageUrl extends AbstractHelper
     /**
      * Class constructor
      *
-     * @param array $pagesMap
      * @param string $homePage
+     * @param array $pagesMap
      */
-    public function __construct(array $pagesMap = [], $homePage)
+    public function __construct($homePage, array $pagesMap = [])
     {
-        $this->pagesMap = $pagesMap;
         $this->homePage = $homePage;
+        $this->pagesMap = $pagesMap;
     }
 
     /**
@@ -47,10 +47,10 @@ class PageUrl extends AbstractHelper
      * @param array $privacyOptions
      * @param string $language
      * @param boolean $trustedPrivacyData
-     * @param string $type
+     * @param string|integer $objectId
      * @return string|boolean
      */
-    public function __invoke($slug = null, array $privacyOptions = [], $language = null, $trustedPrivacyData = false, $type = null)
+    public function __invoke($slug = null, array $privacyOptions = [], $language = null, $trustedPrivacyData = false, $objectId = null)
     {
         if (!$slug) {
             $slug = $this->homePage;
@@ -66,7 +66,7 @@ class PageUrl extends AbstractHelper
             return $this->definedUrls[$language][$slug];
         }
 
-        $pageUrl = $this->getPageUrl($slug, $privacyOptions, $language, $trustedPrivacyData, $type);
+        $pageUrl = $this->getPageUrl($slug, $language, $privacyOptions, $trustedPrivacyData, $objectId);
 
         // compare the slug for the home page 
         if ($this->homePage == $slug && false !== $pageUrl) {
@@ -81,13 +81,13 @@ class PageUrl extends AbstractHelper
      * Get page url
      *
      * @param string $slug
-     * @param array $privacyOptions
      * @param string $language
+     * @param array $privacyOptions     
      * @param boolean $trustedPrivacyData
-     * @param string $type
+     * @param string $objectId
      * @return string|boolean
      */
-    protected function getPageUrl($slug, array $privacyOptions = [], $language, $trustedPrivacyData = false, $type = null) 
+    protected function getPageUrl($slug, $language, array $privacyOptions = [], $trustedPrivacyData = false, $objectId = null) 
     {
         if (!isset($this->pagesMap[$language])
                 || !array_key_exists($slug, $this->pagesMap[$language])) {
@@ -105,20 +105,9 @@ class PageUrl extends AbstractHelper
             return false;
         }
 
-        switch ($type) {
-            case PageNestedSet::PAGE_TYPE_SYSTEM :
-            case PageNestedSet::PAGE_TYPE_CUSTOM :
-                if($page['type'] != $type) {
-                    return false;   
-                }
-                break;
-
-            default :
-        }
-
         // check the page's privacy
-        if (false == ($result = PagePrivacyUtility::checkPagePrivacy($page['privacy'], 
-                $privacyOptions, $trustedPrivacyData))) {
+        if (false == ($result = PagePrivacyUtility::
+                checkPagePrivacy($page['privacy'], $privacyOptions, $trustedPrivacyData, $objectId))) {
 
             return false;
         }
@@ -132,7 +121,7 @@ class PageUrl extends AbstractHelper
 
         // check for a parent and 
         if (!empty($page['parent'])) {
-            if (false === ($parentUrl = $this->getPageUrl($page['parent'], [], $language, false))) {
+            if (false === ($parentUrl = $this->getPageUrl($page['parent'], $language, [], false))) {
                 return false;
             }
 

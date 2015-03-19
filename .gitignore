@@ -28,3 +28,4 @@ public_html/resource/filemanager/*
 !public_html/resource/filemanager/.htaccess
 public_html/resource/example/
 public_html/resource/example2/
+nbproject/
