@@ -47,13 +47,15 @@ class UserViewPrivacy extends PageAbstractPagePrivacy
             $userId = !empty($privacyOptions['user_id']) || $this->objectId
                 ? (!empty($privacyOptions['user_id']) ? $privacyOptions['user_id'] : $this->objectId) 
                 : RouteParamUtility::getParam('slug', -1);
-    
+
             $userField = !empty($privacyOptions['user_id']) 
                 ? UserWidgetModel::USER_INFO_BY_ID
                 : UserWidgetModel::USER_INFO_BY_SLUG;
-    
+
             // check an existing user
-            if (null == ($userInfo = $this->getModel()->getUserInfo($userId, $userField))) {
+            $userInfo = $this->getModel()->getUserInfo($userId, $userField);
+
+            if (!$userInfo || $userInfo['status'] != UserWidgetModel::STATUS_APPROVED) {
                 return false;
             }
         }
