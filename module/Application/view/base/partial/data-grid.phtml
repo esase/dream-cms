@@ -278,7 +278,7 @@
                                         if (isset($check['param'], $check['condition'])) {
                                             $this->value = is_object($data) ? $data->{$check['param']} : $data[$check['param']];
 
-                                            if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
+                                            if (false === ($result = eval(str_replace('__value__', addslashes($this->value), $check['condition'])))) {
                                                 $selectCheckbox->setAttributes([
                                                     'disabled' => 'disabled'
                                                 ]);
@@ -341,7 +341,7 @@
                                             if (isset($check['param'], $check['condition'])) {
                                                 $this->value = is_object($data) ? $data->{$check['param']} : $data[$check['param']];
 
-                                                if (false === ($result = eval(str_replace('__value__', $this->value, $check['condition'])))) {
+                                                if (false === ($result = eval(str_replace('__value__', addslashes($this->value), $check['condition'])))) {
                                                     continue 2;
                                                 }
                                             }
@@ -379,7 +379,7 @@
                                         <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                                     </a>
                                 <?php else: ?>
-                                    <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? $data[$action['param']] : $data[$this->actions_options['action_identity']]), $action['js']) ?>">
+                                    <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? addslashes($data[$action['param']]) : addslashes($data[$this->actions_options['action_identity']])), $action['js']) ?>">
                                         <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                                     </a>
                                 <?php endif; ?>
