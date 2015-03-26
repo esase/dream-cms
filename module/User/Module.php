@@ -7,7 +7,6 @@ use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Service\ApplicationTimeZone as TimeZoneService;
 use Application\Service\Application as ApplicationService;
-use User\Event\UserEvent;
 use User\Service\UserIdentity as UserIdentityService;
 use User\Model\UserBase as UserBaseModel;
 use User\Utility\UserCache as UserCacheUtility;
@@ -229,8 +228,14 @@ class Module
         return [
             'factories' => [
                 'User\AuthService' => function() {
-                    $authAdapter = new DbTableAuthAdapter($this->serviceLocator->get('Zend\Db\Adapter\Adapter'), 'user_list', 
-                            'nick_name', 'password', 'SHA1(CONCAT(MD5(?), salt)) AND status = "' . UserBaseModel::STATUS_APPROVED . '"');
+                    $adapter = $this->serviceLocator->get('Zend\Db\Adapter\Adapter');
+                    $authAdapter = new DbTableAuthAdapter($adapter, 'user_list', 
+                            'nick_name', 'password', 'SHA1(CONCAT(MD5(?), "' . $this->serviceLocator->get('Config')['site_salt'] . '"))');
+
+                    $select = $authAdapter->getDbSelect();
+                    $select->where([
+                        'status' =>  UserBaseModel::STATUS_APPROVED
+                    ]);
 
                     $authService = new AuthenticationService();
                     $authService->setAdapter($authAdapter);

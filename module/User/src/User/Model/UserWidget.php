@@ -20,13 +20,11 @@ class UserWidget extends UserBase
             $this->adapter->getDriver()->getConnection()->beginTransaction();
  
             $newPassword = $this->generateRandString();
-            $passwordSalt = $this->generateRandString();
  
             $update = $this->update()
                 ->table('user_list')
                 ->set([
-                    'salt' => $passwordSalt,
-                    'password' => $this->generatePassword($newPassword, $passwordSalt),
+                    'password' => $this->generatePassword($newPassword),
                     'activation_code' => null,
                     'date_edited' => date('Y-m-d')
                 ])

@@ -103,6 +103,36 @@ class InstallBase
     protected $installSqlFile = 'install.sql';
 
     /**
+     * Site salt
+     * @var string
+     */
+    protected $siteSalt;
+
+    /**
+     * Site salt length
+     */
+    CONST SITE_SALT_LENGTH = 15;
+
+    /**
+     * Site salt chars
+     */
+    CONST SITE_SALT_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789!@"#$%^&*()_-=+<>./|;:\'';
+
+    /**
+     * Get site salt
+     * 
+     * @return string
+     */
+    protected function getSiteSalt()
+    {
+        if (!$this->siteSalt) {
+            $this->siteSalt = self::generateRandomString(self::SITE_SALT_LENGTH, self::SITE_SALT_CHARS);
+        }
+
+        return $this->siteSalt;
+    }
+
+    /**
      * Get cron jobs
      * 
      * @return array
@@ -207,6 +237,7 @@ class InstallBase
         $configTemplate = file_get_contents(APPLICATION_ROOT . '/config/autoload/local.dist.php');
 
         $configFindKeys = [
+            '__SITE_SALT__',
             '__DB_NAME__',
             '__DB_HOST__',
             '__DB_USER_NAME__',
@@ -215,6 +246,7 @@ class InstallBase
         ];
 
         $configReplaceKeys = [
+            addslashes($this->getSiteSalt()),
             $formData['db_name'],
             $formData['db_host'],
             $formData['db_user'],
@@ -236,13 +268,10 @@ class InstallBase
      */
     protected function installSqlFile(array $formData, $cmsName, $cmsVersion)
     {
-        $passwordSalt = $this->generateRandomString();
-
         $sqlFindKeys = [
             '__admin_nick_name_value__',
             '__admin_nick_name_slug_value__',
             '__admin_password_value__',
-            '__admin_password_salt_value__',
             '__admin_api_key_value__',
             '__admin_api_secret_value__',
             '__admin_email_value__',
@@ -258,8 +287,7 @@ class InstallBase
         $sqlReplaysKeys = [
             $formData['admin_username'],
             $this->slugify($formData['admin_username']),
-            sha1(md5($formData['admin_password']) . $passwordSalt),
-            $passwordSalt,
+            sha1(md5($formData['admin_password']) . $this->getSiteSalt()),
             $this->generateRandomString(),
             $this->generateRandomString(),
             $formData['admin_email'],

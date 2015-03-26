@@ -1924,7 +1924,7 @@ class PageAdministration extends PageBase
             $newSlug = $pageId . $spaceDevider . $slug . $slagSalt;
 
             // add an extra slug
-            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugSaltLength); // add a salt
+            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugLength); // add a slug
         }
 
         return $newSlug;

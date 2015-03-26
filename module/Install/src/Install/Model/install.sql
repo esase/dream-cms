@@ -685,7 +685,6 @@ CREATE TABLE `user_list` (
     `last_name` VARCHAR(100) DEFAULT NULL,
     `address` VARCHAR(100) DEFAULT NULL,
     `password` VARCHAR(40) NOT NULL DEFAULT '',
-    `salt` VARCHAR(20) NOT NULL DEFAULT '',
     `role` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `language` CHAR(2) DEFAULT NULL,
     `time_zone` SMALLINT(5) UNSIGNED DEFAULT NULL,
@@ -716,8 +715,8 @@ CREATE TABLE `user_list` (
         ON DELETE SET NULL       
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `user_list` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `salt`, `role`, `api_key`, `api_secret`, `registered`) VALUES
-(1, '__admin_nick_name_value__', '__admin_nick_name_slug_value__', 'approved', '__admin_email_value__', '__admin_password_value__', '__admin_password_salt_value__', 1, '__admin_api_key_value__', '__admin_api_secret_value__', '__admin_registered_value__');
+INSERT INTO `user_list` (`user_id`, `nick_name`, `slug`, `status`, `email`, `password`, `role`, `api_key`, `api_secret`, `registered`) VALUES
+(1, '__admin_nick_name_value__', '__admin_nick_name_slug_value__', 'approved', '__admin_email_value__', '__admin_password_value__', 1, '__admin_api_key_value__', '__admin_api_secret_value__', '__admin_registered_value__');
 
 CREATE TABLE `acl_resource_connection_setting` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

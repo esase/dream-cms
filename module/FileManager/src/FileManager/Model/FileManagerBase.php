@@ -232,7 +232,7 @@ class FileManagerBase extends ApplicationAbstractBase
             : (int) SettingService::getSetting('file_manager_file_name_length');
 
         $slug = SlugUtility::slugify(($processFullName && $fileExtension
-                ? $fileName . '.' . $fileExtension : $fileName), $maxFileNameLength, $spaceDevider = '_', 0, self::$fileNamePattern);
+                ? $fileName . '.' . $fileExtension : $fileName), $maxFileNameLength, '_', 0, self::$fileNamePattern);
 
         if (!$slug && $addSalt) {
             $slug = SlugUtility::generateRandomSlug($maxFileNameLength);

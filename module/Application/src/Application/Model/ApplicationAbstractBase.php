@@ -12,7 +12,6 @@ use Zend\Cache\Storage\StorageInterface;
 use Application\Utility\ApplicationSlug as SlugUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use ZipArchive;
 
@@ -31,10 +30,10 @@ abstract class ApplicationAbstractBase extends Sql
     protected $staticCacheInstance;
 
     /**
-     * Slug salt length
+     * Slug length
      * @var integer
      */
-    protected $slugSaltLength = 10;
+    protected $slugLength = 10;
 
     /**
      * Module by name
@@ -156,7 +155,7 @@ abstract class ApplicationAbstractBase extends Sql
             }
 
             // add an extra slug
-            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugSaltLength); // add a salt
+            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugLength); // add a salt
         }
 
         return $newSlug;
