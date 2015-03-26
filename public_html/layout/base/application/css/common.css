@@ -61,8 +61,11 @@ div.panel-accordion div.list-group {
   margin-bottom: 0;
 }
 legend {
-  font-size: 14px;
-  margin-bottom: 10px;
+    font-size: 14px;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    font-weight: bold;
 }
 label {
   margin-top: 5px;

@@ -2,6 +2,7 @@
 namespace Page\View\Widget;
 
 use Application\Utility\ApplicationEmailNotification as EmailNotificationUtility;
+use User\Service\UserIdentity as UserIdentityService;
 
 class PageContactFormWidget extends PageAbstractWidget
 {
@@ -16,7 +17,8 @@ class PageContactFormWidget extends PageAbstractWidget
         $contactForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Page\Form\PageContact')
-            ->showCaptcha((int) $this->getWidgetSetting('page_contact_form_captcha'));
+            ->showCaptcha((int) $this->
+                    getWidgetSetting('page_contact_form_captcha') && UserIdentityService::isGuest());
 
         if ($this->getRequest()->isPost() &&
                 $this->getRequest()->getPost('form_name') == $contactForm->getFormName()) {
