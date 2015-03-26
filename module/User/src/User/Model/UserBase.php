@@ -5,13 +5,11 @@ use Acl\Model\AclBase as AclBaseModel;
 use Application\Utility\ApplicationCache as CacheUtility;
 use Application\Model\ApplicationAbstractBase;
 use Application\Service\ApplicationSetting as SettingService;
-use Localization\Service\Localization as LocalizationService;
 use Application\Utility\ApplicationFileSystem as FileSystemUtility;
 use Application\Utility\ApplicationImage as ImageUtility;
 use Application\Utility\ApplicationErrorLogger;
 use User\Exception\UserException;
 use User\Event\UserEvent;
-use User\Service\Service as UserService;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Sql\Predicate\IsNull as IsNullPredicate;
@@ -234,12 +232,8 @@ class UserBase extends ApplicationAbstractBase
 
             // regenerate the user's password
             if (!empty($formData['password'])) {
-                // generate a password salt
-                $passwordSalt = $this->generateRandString();
-
                 $extraValues = array_merge($extraValues, [
-                    'password' => $this->generatePassword($formData['password'], $passwordSalt),
-                    'salt' => $passwordSalt
+                    'password' => $this->generatePassword($formData['password'])
                 ]);
             }
             else {
@@ -448,9 +442,6 @@ class UserBase extends ApplicationAbstractBase
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-            // generate a password salt
-            $passwordSalt = $this->generateRandString();
-
             if (!$formData['time_zone']) {
                 $formData['time_zone'] = null;
             }
@@ -462,8 +453,7 @@ class UserBase extends ApplicationAbstractBase
                     'status' => $statusApproved ? self::STATUS_APPROVED : self::STATUS_DISAPPROVED,
                     'language' => $language,
                     'registered' => time(),
-                    'salt' => $passwordSalt,
-                    'password' => $this->generatePassword($formData['password'], $passwordSalt),
+                    'password' => $this->generatePassword($formData['password']),
                     'api_secret' => $this->generateRandString(),
                     'activation_code' => !$statusApproved // generate an activation code
                         ? $this->generateRandString()
@@ -527,12 +517,11 @@ class UserBase extends ApplicationAbstractBase
      * Generate a password
      *
      * @param string $password
-     * @param string $salt
      * @return string
      */
-    protected function generatePassword($password, $salt)
+    protected function generatePassword($password)
     {
-        return sha1(md5($password) . $salt);
+        return sha1(md5($password) . $this->serviceLocator->get('Config')['site_salt']);
     }
 
     /**
