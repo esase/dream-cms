@@ -1435,7 +1435,18 @@ INSERT INTO `page_system_widget_hidden` (`id`, `page_id`, `widget_id`) VALUES
 (16,  2,  13),
 (17,  12,  13),
 (18,  12,  2),
-(19,  12,  3);
+(19,  12,  3),
+(20,  2,  17),
+(21,  3,  17),
+(22,  4,  17),
+(23,  5,  17),
+(24,  6,  17),
+(25,  7,  17),
+(26,  8,  17),
+(27,  9,  17),
+(28,  11, 17),
+(29,  12, 17),
+(30,  13, 17);
 
 CREATE TABLE `page_system_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
