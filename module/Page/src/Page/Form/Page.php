@@ -17,6 +17,11 @@ class Page extends ApplicationAbstractCustomForm
     const TITLE_MAX_LENGTH = 50;
 
     /**
+     * Description max string length
+     */
+    const DESCRIPTION_MAX_LENGTH = 150;
+
+    /**
      * Slug max string length
      */
     const SLUG_MAX_LENGTH = 100;
@@ -138,6 +143,14 @@ class Page extends ApplicationAbstractCustomForm
             'description_params' => [],
             'required' => true,
             'max_length' => self::TITLE_MAX_LENGTH,
+            'category' => 'General info'
+        ],
+        'description' => [
+            'name' => 'description',
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
+            'label' => 'Description',
+            'required' => false,
+            'max_length' => self::DESCRIPTION_MAX_LENGTH,
             'category' => 'General info'
         ],
         'slug' => [
