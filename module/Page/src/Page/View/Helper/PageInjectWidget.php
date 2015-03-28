@@ -132,6 +132,12 @@ class PageInjectWidget extends AbstractHelper
                     'content' => $widgetContent
                 ]);
             }
+            else {
+                $widgetContent = $this->getView()->partial($this->layoutPath . 'default', [
+                    'title' => $this->getView()->pageWidgetTitle($widgetInfo),
+                    'content' => $widgetContent
+                ]);
+            }
         }
 
         // cache the widget data
