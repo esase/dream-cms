@@ -126,17 +126,19 @@ class PageInjectWidget extends AbstractHelper
             }
 
             // add the widget's layout
-            if (!empty($widgetInfo['widget_layout']) && $useLayout) {
-                $widgetContent = $this->getView()->partial($this->layoutPath . $widgetInfo['widget_layout'], [
-                    'title' => $this->getView()->pageWidgetTitle($widgetInfo),
-                    'content' => $widgetContent
-                ]);
-            }
-            else {
-                $widgetContent = $this->getView()->partial($this->layoutPath . 'default', [
-                    'title' => $this->getView()->pageWidgetTitle($widgetInfo),
-                    'content' => $widgetContent
-                ]);
+            if ($useLayout) {
+                if (!empty($widgetInfo['widget_layout'])) {
+                    $widgetContent = $this->getView()->partial($this->layoutPath . $widgetInfo['widget_layout'], [
+                        'title' => $this->getView()->pageWidgetTitle($widgetInfo),
+                        'content' => $widgetContent
+                    ]);
+                }
+                else {
+                    $widgetContent = $this->getView()->partial($this->layoutPath . 'default', [
+                        'title' => $this->getView()->pageWidgetTitle($widgetInfo),
+                        'content' => $widgetContent
+                    ]);
+                }
             }
         }
 
