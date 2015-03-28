@@ -1519,6 +1519,7 @@ CREATE TABLE `page_structure` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `slug` VARCHAR(100) NOT NULL,
     `title` VARCHAR(50) DEFAULT NULL,
+    `description` VARCHAR(150) DEFAULT NULL,
     `meta_description` VARCHAR(150) DEFAULT NULL,
     `meta_keywords` VARCHAR(150) DEFAULT NULL,
     `meta_robots` VARCHAR(50) DEFAULT NULL,

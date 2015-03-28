@@ -54,6 +54,7 @@ class PageAdministration extends PageBase
             'module',
             'layout',
             'title',
+            'description',
             'meta_description',
             'meta_keywords',
             'meta_robots',
@@ -232,6 +233,7 @@ class PageAdministration extends PageBase
      * @param array $formData
      *      integer layout required
      *      string title optional|required for custom pages
+     *      string description optional
      *      string slug optional|required for system pages
      *      string meta_description optional
      *      string meta_keywords optional
@@ -657,6 +659,7 @@ class PageAdministration extends PageBase
      * @param array $pageInfo
      *      integer layout required
      *      string title optional|required for custom pages
+     *      string description optional
      *      string slug optional|required for system pages
      *      integer module optional
      *      string meta_description optional

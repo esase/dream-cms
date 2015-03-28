@@ -500,6 +500,7 @@ class PageBase extends ApplicationAbstractBase
                 'id',
                 'slug',
                 'title',
+                'description',
                 'meta_description',
                 'meta_keywords',
                 'meta_robots',
