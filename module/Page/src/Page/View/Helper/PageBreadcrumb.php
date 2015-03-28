@@ -24,6 +24,12 @@ class PageBreadcrumb extends AbstractHelper
     protected $currentPageTitle = null;
 
     /**
+     * Hide last link
+     * @var boolean
+     */
+    protected $hideLastLink = false;
+
+    /**
      * Page breadcrumb
      *
      * @return object - fluent interface
@@ -42,6 +48,18 @@ class PageBreadcrumb extends AbstractHelper
     public function setBreadcrumb(array $breadcrumb)
     {
         $this->breadcrumb = $breadcrumb;
+        return $this;
+    }
+
+    /**
+     * Hide last link
+     *
+     * @param boolean $hide
+     * @return object - fluent interface
+     */
+    public function hideLastLink($hide)
+    {
+        $this->hideLastLink = $hide;
         return $this;
     }
 
@@ -80,8 +98,14 @@ class PageBreadcrumb extends AbstractHelper
             $processedBreadcrumb = [];
             $pageUrl = null;
 
+            $breadcrumbCount = count($this->breadcrumb);
+
             // process breadcrumb
             foreach($this->breadcrumb as $index => $page) {
+                if ($this->hideLastLink && $index + 1 >= $breadcrumbCount) {
+                    break;
+                }
+
                 $lastPage = !isset($this->breadcrumb[$index + 1]);
                 $pageUrl .= $page['slug'];
 
