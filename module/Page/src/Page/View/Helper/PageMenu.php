@@ -72,7 +72,7 @@ class PageMenu extends AbstractHelper
                         if (!empty($pageOptions['children']) && (!$this->maxLevel || $level < $this->maxLevel)) {
                             if (null !== ($children = $this->processMenuItems($pageOptions['children'], ($level + 1)))) {
                                 $childrenMenu = $this->getView()->partial('page/partial/menu-item-children', [
-                                    'children' => $children,
+                                    'children' => $children
                                 ]);
                             }
                         }
@@ -80,7 +80,8 @@ class PageMenu extends AbstractHelper
                         $menu .= $this->getView()->partial('page/partial/menu-item-start', [
                             'url' => $pageUrl,
                             'title' => $this->getView()->pageTitle($pageOptions),
-                            'children' => $childrenMenu !== null
+                            'children' => $childrenMenu !== null,
+                            'is_sub_item' => $level > 1
                         ]);
 
 
