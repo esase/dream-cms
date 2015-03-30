@@ -1,6 +1,7 @@
 <?php
 namespace Page\View\Helper;
 
+use Page\Service\Page as PageService;
 use Page\Model\PageNestedSet;
 use Zend\View\Helper\AbstractHelper;
 
@@ -19,6 +20,12 @@ class PageMenu extends AbstractHelper
     protected $maxLevel = 0;
 
     /**
+     * Current page
+     * @var array
+     */
+    protected $currentPage;
+
+    /**
      * Class constructor
      *
      * @param array $pagesTree
@@ -26,6 +33,7 @@ class PageMenu extends AbstractHelper
     public function __construct(array $pagesTree = [])
     {
         $this->pagesTree = $pagesTree;
+        $this->currentPage = PageService::getCurrentPage();
     }
 
     /**
@@ -81,7 +89,8 @@ class PageMenu extends AbstractHelper
                             'url' => $pageUrl,
                             'title' => $this->getView()->pageTitle($pageOptions),
                             'children' => $childrenMenu !== null,
-                            'is_sub_item' => $level > 1
+                            'is_sub_item' => $level > 1,
+                            'active' => $this->currentPage['slug'] == $pageOptions['slug']
                         ]);
 
 
