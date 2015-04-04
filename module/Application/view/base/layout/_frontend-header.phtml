@@ -6,7 +6,7 @@
         <?php echo $this->pageInjectWidget('head') ?>
         <meta charset="utf-8">
         <?php echo $this->headTitle($this->applicationSetting('application_site_name'))->setSeparator(' - ')->setAutoEscape(false)->setTranslatorEnabled(false) ?>
-        <base href="<?php echo $this->basePath() . '/' ?>" />
+        <base href="<?php echo $this->serverUrl() . $this->basePath() . '/' ?>" />
 
         <?php echo $this->headMeta()
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
