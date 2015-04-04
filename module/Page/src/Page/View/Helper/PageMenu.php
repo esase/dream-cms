@@ -90,9 +90,8 @@ class PageMenu extends AbstractHelper
                             'title' => $this->getView()->pageTitle($pageOptions),
                             'children' => $childrenMenu !== null,
                             'is_sub_item' => $level > 1,
-                            'active' => $this->currentPage['slug'] == $pageOptions['slug']
+                            'active' => !empty($this->currentPage['slug']) && $this->currentPage['slug'] == $pageOptions['slug']
                         ]);
-
 
                         if ($childrenMenu) {
                             $menu .= $childrenMenu;
