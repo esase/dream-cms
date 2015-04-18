@@ -116,7 +116,7 @@ class InstallBase
     /**
      * Site salt chars
      */
-    CONST SITE_SALT_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789!@"#$%^&*()_-=+<>./|;:\'';
+    CONST SITE_SALT_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789,._-=+:*';
 
     /**
      * Get site salt
