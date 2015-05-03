@@ -224,16 +224,21 @@ class PageBase extends ApplicationAbstractBase
                     'left'
                 )
                 ->order('a.order')
-                ->where->IsNull('a.page_id')
-                    ->or->where->IsNotNull('a.page_id')
-                    ->and->where->IsNotNull('b.id')
-                ->nest
-                    ->isNull('c.depend_page_id')
-                    ->or
-                    ->isNotNull('c.depend_page_id')
-                    ->and
-                    ->isNotNull('cc.system_page')
-                ->unnest;
+                ->where
+                    ->nest
+                        ->IsNull('a.page_id')
+                        ->or
+                        ->IsNotNull('a.page_id')
+                        ->and
+                        ->IsNotNull('b.id')
+                    ->unnest
+                    ->nest
+                        ->isNull('c.depend_page_id')
+                        ->or
+                        ->isNotNull('c.depend_page_id')
+                        ->and
+                        ->isNotNull('cc.system_page')
+                    ->unnest;
 
             $statement = $this->prepareStatementForSqlObject($select);
             $resultSet = new ResultSet;
