@@ -1309,6 +1309,7 @@ CREATE TABLE `page_system` (
     `disable_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_site_map` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_footer_menu` TINYINT(1) UNSIGNED DEFAULT NULL,
+    `dynamic_page` TINYINT(1) UNSIGNED DEFAULT NULL,
     `privacy` VARCHAR(50) DEFAULT NULL,
     `disable_seo` TINYINT(1) UNSIGNED DEFAULT NULL,
     `disable_xml_map` TINYINT(1) UNSIGNED DEFAULT NULL,
@@ -1320,20 +1321,20 @@ CREATE TABLE `page_system` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `disable_menu`, `privacy`, `forced_visibility`, `disable_user_menu`, `disable_site_map`, `disable_footer_menu`, `disable_seo`, `disable_xml_map`, `pages_provider`) VALUES
-(1,  'home', 'Home page', 5, 1, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL),
-(2,  'login', 'Login', 2, NULL, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL),
-(3,  'user-register', 'Register', 2, NULL, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL),
-(4,  'user-forgot', 'Account recovery', 2, NULL, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL),
-(5,  'user-activate', 'User activate', 2, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, 1, 1, 1, 1, NULL),
-(6,  'user-password-reset', 'Password reset', 2, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, 1, 1, 1, 1, NULL),
-(7,  'dashboard', 'User dashboard', 2, NULL, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, 1, 1, NULL),
-(8,  'user-delete', 'Delete your account', 2, NULL, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, 1, 1, NULL),
-(9,  'sitemap', 'Sitemap', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 'user', 'User profile', 2, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, 1, NULL, 'User\\PageProvider\\UserPageProvider'),
-(11, 'user-edit', 'Edit account', 2, NULL, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, 1, 1, NULL),
-(12, '404', '404 error', 5, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, 1, 1, 1, 1, NULL),
-(13, 'contact-form', 'Contact form', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `page_system` (`id`, `slug`, `title`, `module`, `disable_menu`, `privacy`, `forced_visibility`, `disable_user_menu`, `disable_site_map`, `disable_footer_menu`, `disable_seo`, `disable_xml_map`, `pages_provider`, `dynamic_page`) VALUES
+(1,  'home', 'Home page', 5, 1, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL), 
+(2,  'login', 'Login', 2, NULL, 'User\\PagePrivacy\\UserLoginPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(3,  'user-register', 'Register', 2, NULL, 'User\\PagePrivacy\\UserRegisterPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(4,  'user-forgot', 'Account recovery', 2, NULL, 'User\\PagePrivacy\\UserForgotPrivacy', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(5,  'user-activate', 'User activate', 2, 1, 'User\\PagePrivacy\\UserActivatePrivacy', 1, 1, 1, 1, 1, 1, NULL, 1),
+(6,  'user-password-reset', 'Password reset', 2, 1, 'User\\PagePrivacy\\UserPasswordResetPrivacy', 1, 1, 1, 1, 1, 1, NULL, 1),
+(7,  'dashboard', 'User dashboard', 2, NULL, 'User\\PagePrivacy\\UserDashboardPrivacy', 1, NULL, NULL, NULL, 1, 1, NULL, NULL),
+(8,  'user-delete', 'Delete your account', 2, NULL, 'User\\PagePrivacy\\UserDeletePrivacy', 1, NULL, NULL, NULL, 1, 1, NULL, NULL),
+(9,  'sitemap', 'Sitemap', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 'user', 'User profile', 2, 1, 'User\\PagePrivacy\\UserViewPrivacy', NULL, 1, NULL, 1, 1, NULL, 'User\\PageProvider\\UserPageProvider', 1),
+(11, 'user-edit', 'Edit account', 2, NULL, 'User\\PagePrivacy\\UserEditPrivacy', 1, NULL, NULL, NULL, 1, 1, NULL, NULL), 
+(12, '404', '404 error', 5, 1, 'Page\\PagePrivacy\\Page404Privacy', 1, 1, 1, 1, 1, 1, NULL, 1),
+(13, 'contact-form', 'Contact form', 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 CREATE TABLE `page_widget` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,

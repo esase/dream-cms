@@ -551,7 +551,8 @@ class PageBase extends ApplicationAbstractBase
                     'disable_user_menu',
                     'forced_visibility',
                     'disable_seo',
-                    'pages_provider'
+                    'pages_provider',
+                    'dynamic_page'
                 ],
                 'left'
             )
