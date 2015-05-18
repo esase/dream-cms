@@ -183,7 +183,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     else {
                         // add pages                        
                         foreach ($systemPagesMap as $page) {
-                            if (!empty($parentPage['pages_provider'])) {
+                            if (!empty($parentPage['dynamic_page'])) {
                                 $this->flashMessenger()
                                     ->setNamespace('error')
                                     ->addMessage($this->getTranslator()->translate('You cannot move any pages inside dynamic pages'));
@@ -411,7 +411,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
             // save data
             if ($pageForm->getForm()->isValid()) {
-                if (!empty($newParentPage['pages_provider'])) {
+                if (!empty($newParentPage['dynamic_page'])) {
                     $this->flashMessenger()
                         ->setNamespace('error')
                         ->addMessage($this->getTranslator()->translate('You cannot move any pages inside dynamic pages'));
@@ -485,7 +485,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
             // save data
             if ($pageForm->getForm()->isValid()) {
-                if (!empty($page['pages_provider'])) {
+                if (!empty($page['dynamic_page'])) {
                     $this->flashMessenger()
                         ->setNamespace('error')
                         ->addMessage($this->getTranslator()->translate('You cannot add any pages inside dynamic pages'));

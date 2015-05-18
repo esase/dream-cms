@@ -839,6 +839,7 @@ class PageAdministration extends PageBase
                 'disable_site_map',
                 'disable_footer_menu',
                 'disable_xml_map',
+                'dynamic_page',
                 'forced_visibility'
             ])
             ->join(
@@ -870,7 +871,6 @@ class PageAdministration extends PageBase
         $defaultShowInFooterMenu = (int) SettingService::getSetting('page_new_pages_in_footer_menu');
         $defaultShowInUserMenu = (int) SettingService::getSetting('page_new_pages_in_user_menu');
         $defaultShowInXmlMap = (int) SettingService::getSetting('page_new_pages_in_xml_map');
-        $defaultPageVisibility = SettingService::getSetting('page_new_pages_hidden_for');
         $defaultPageVisibility = SettingService::getSetting('page_new_pages_hidden_for');
 
         // check the roles
@@ -906,6 +906,7 @@ class PageAdministration extends PageBase
                 'widget_default_layout' => $defaultWidgetLayout ? $defaultWidgetLayout : null,
                 'order' => $order,
                 'system_page' => $page->id,
+                'dynamic_page' => $page->dynamic_page,
                 'active' => (int) SettingService::getSetting('page_new_pages_active')
                     ? PageNestedSet::PAGE_STATUS_ACTIVE
                     : null
