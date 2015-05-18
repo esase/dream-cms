@@ -303,6 +303,7 @@ class PageNestedSet extends ApplicationAbstractNestedSet
             [
                 'privacy',
                 'pages_provider',
+                'dynamic_page',
                 'system_title' => 'title'
             ],
             'left'

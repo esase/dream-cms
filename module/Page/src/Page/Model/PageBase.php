@@ -859,6 +859,7 @@ class PageBase extends ApplicationAbstractBase
                     [
                         'privacy',
                         'pages_provider',
+                        'dynamic_page',
                         'system_title' => 'title'
                     ],
                     'left'
@@ -898,6 +899,7 @@ class PageBase extends ApplicationAbstractBase
                     'level' => $page->level,
                     'privacy' => $page->privacy,
                     'pages_provider' => $page->pages_provider,
+                    'dynamic_page' => $page->dynamic_page,
                     'parent' => (isset($levels[$page->level - 1]) ? $levels[$page->level - 1] : null),
                     'site_map' => $page->site_map,
                     'xml_map' => $page->xml_map,
