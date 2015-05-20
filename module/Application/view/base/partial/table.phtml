@@ -14,9 +14,16 @@
                     <?php foreach ($this->list as $items): ?>
                         <tr>
                             <?php foreach ($items as $itemName => $itemValue) : ?>
+                                <?php if (!empty($this->skipped_fields) && in_array($itemName, $this->skipped_fields)):  ?>
+                                    <?php continue ?>
+                                <?php endif ?>
                                 <td>
                                     <?php if (!empty($this->helpers[$itemName])) : ?>
-                                        <?php echo $this->{$this->helpers[$itemName]}($itemValue) ?>
+                                        <?php if (!empty($this->helpers_set_array) && array_key_exists($itemName, $this->helpers_set_array) ): ?>
+                                             <?php echo $this->{$this->helpers[$itemName]}($items) ?>
+                                        <?php else: ?>
+                                             <?php echo $this->{$this->helpers[$itemName]}($itemValue) ?>
+                                        <?php endif ?>                                       
                                     <?php else: ?>
                                         <?php echo $this->escapeHtml($itemValue) ?>
                                     <?php endif ?>
