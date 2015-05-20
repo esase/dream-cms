@@ -4,14 +4,100 @@
 
 <?php
     // init base url params
-    $this->declareVars('baseUrlParams');
-    $this->baseUrlParams = [
-        'controller' => $this->controller,
-        'action' => $this->action,
-        'order_by' => $this->order_by,
-        'order_type' => $this->order_type,
-        'slug' => $this->slug
-    ];
+    $this->declareVars('baseRouteParams', 'defaultRoute', 'defaultQueryParams');
+    $this->defaultRoute = empty($this->page_name)   
+        ? 'application/page'
+        : 'page';
+
+    // init default route params
+    $categoryParamName = empty($this->category_param_name)
+        ? 'category'
+        : $this->category_param_name;
+
+    $dateParamName = empty($this->date_param_name)
+        ? 'date'
+        : $this->date_param_name;
+
+    $orderByParamName = empty($this->order_by_param_name)
+        ? 'order_by'
+        : $this->order_by_param_name;
+
+    $orderTypeParamName = empty($this->order_type_param_name)
+        ? 'order_type'
+        : $this->order_type_param_name;
+
+    $slugParamName = empty($this->slug_param_name)
+        ? 'slug'
+        : $this->slug_param_name;
+
+    $perPageParamName = empty($this->per_page_param_name)
+        ? 'per_page'
+        : $this->per_page_param_name;
+
+    $pageParamName = empty($this->page_param_name)
+        ? 'page'
+        : $this->page_param_name;
+
+    $this->defaultQueryParams = [];
+
+    // use the 'application/page' route
+    if (empty($this->page_name)) {
+        // all params will be injected as the route's params 
+        if (empty($this->use_query)) {
+            $this->baseRouteParams = [
+                'controller' => $this->controller,
+                'action' => $this->action,
+                $categoryParamName => $this->category,
+                $dateParamName => $this->date,
+                $orderByParamName => $this->order_by,
+                $orderTypeParamName => $this->order_type,
+                $slugParamName => $this->slug
+            ];
+        }
+        else {
+            $this->baseRouteParams = [
+                'controller' => $this->controller,
+                'action' => $this->action
+            ];
+
+            // injected params as url's queries
+            $this->defaultQueryParams = [
+                $categoryParamName => $this->category,
+                $dateParamName => $this->date,
+                $orderByParamName => $this->order_by,
+                $orderTypeParamName => $this->order_type,
+                $slugParamName => $this->slug
+            ];
+        }
+    }
+    else {
+        // use the 'page' route
+        if (empty($this->use_query)) {
+            // all params will be injected as the route's params
+            $this->baseRouteParams = [
+                'page_name' => $this->page_name,
+                $categoryParamName => $this->category,
+                $dateParamName => $this->date,
+                $orderByParamName => $this->order_by,
+                $orderTypeParamName => $this->order_type,
+                $slugParamName => $this->slug
+            ];
+        }
+        else {
+            $this->baseRouteParams = [
+                'page_name' => $this->page_name
+            ];
+
+            // injected params as url's queries
+            $this->defaultQueryParams = [
+                $categoryParamName => $this->category,
+                $dateParamName => $this->date,
+                $orderByParamName => $this->order_by,
+                $orderTypeParamName => $this->order_type,
+                $slugParamName => $this->slug
+            ];
+        }
+    }
 
     // init per page
     $this->per_page = PaginationUtility::processPerPage($this->per_page);
@@ -31,6 +117,8 @@
     $this->filterParams = !empty($this->filter_form) && $this->filter_form->isValid()
         ? $this->filter_form->getData(false)
         : [];
+
+    $this->filterParams = array_merge($this->filterParams, $this->defaultQueryParams);
 
     // init extra url queries
     if (!empty($this->queries)) {
@@ -115,10 +203,19 @@
         : $this->actions_options['form_name'];
 ?>
 
+<?php if(!empty($this->url_fragment)): ?>
+    <a name="<?php echo $this->escapeHtmlAttr($this->url_fragment) ?>"></a>
+<?php endif ?>
+
 <!-- filters, actions, etc -->
 <?php if ($this->paginationCount || !empty($this->filter_form) || $this->actionsInitialized) : ?>
     <ul class="nav nav-pills">
         <?php if (!empty($this->filter_form)) : ?>
+            <?php if (isset($this->ajax['wrapper_id'], $this->ajax['widget_connection'], $this->ajax['widget_position'])) : ?>
+                <?php $this->filter_form->setAttribute('action', $this->
+                        url($this->defaultRoute, $this->baseRouteParams, ['force_canonical' => true, 'query' => $this->filterParams])) ?>
+            <?php endif ?>
+
             <!-- filter form -->
             <li class="dropdown <?php if ($this->localization()->isCurrentLanguageLtr()) : ?>pull-left<?php else: ?>pull-right<?php endif; ?><?php if (!$this->filter_form->isValid()) : ?> open<?php endif; ?>">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -146,31 +243,38 @@
                     <?php if ($this->multipleActionsCount && $this->paginationCount) : ?>
                         <?php foreach ($this->multipleActions as $action) : ?>
                             <?php
-                                $this->multipleActionParams = [
-                                    'controller' => $action['controller'],
-                                    'action' => $action['action']  
-                                ];
+                                if (empty($action['page_name'])) {
+                                    $this->multipleActionParams = [
+                                        'controller' => $action['controller'],
+                                        'action' => $action['action']  
+                                    ];
+                                }
+                                else {
+                                    $this->multipleActionParams = [
+                                        'page_name' => $action['page_name']
+                                    ];
+                                }
 
                                 if (!empty($action['params']) && is_array($action['params'])) {
                                     $this->multipleActionParams = array_merge($this->multipleActionParams, $action['params']);
                                 }
                             ?>
                             <li>
-                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif; ?> class="multiple-actions" href="<?php echo $this->url('application/page', $this->multipleActionParams, ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">
+                                <a <?php if (!empty($action['confirm'])) : ?>confirm="<?php echo $this->escapeHtmlAttr($action['confirm']) ?>"<?php endif ?> class="multiple-actions" href="<?php echo $this->url($this->defaultRoute, $this->multipleActionParams, ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">
                                     <?php echo $action['name'] ?>
                                 </a>
                             </li>
-                        <?php endforeach; ?>
+                        <?php endforeach ?>
                         <?php if ($this->regularActionsCount) : ?>
                             <li class="divider"></li>
-                        <?php endif; ?>
-                    <?php endif; ?>
+                        <?php endif ?>
+                    <?php endif ?>
                     <!-- regular actions -->
                     <?php if ($this->regularActionsCount) : ?>
                         <?php foreach ($this->regularActions as $action) : ?>
                             <?php
                                 // extra check
-                                if (!empty($this->actions_extra_check['regular_actions'][$action['action']])) {
+                                if (!empty($action['action']) && !empty($this->actions_extra_check['regular_actions'][$action['action']])) {
                                     foreach ($this->actions_extra_check['regular_actions'][$action['action']] as $check) {                                        
                                         if (false === ($result = $check())) {
                                             continue 2;
@@ -180,17 +284,25 @@
                             ?>
                             <li>
                                 <?php if (empty($action['js'])) : ?>
-                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="<?php echo $this->url('application/page', ['controller' => $action['controller'], 'action' => $action['action']], ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">
-                                        <?php echo $action['name'] ?>
-                                    </a>
+
+                                    <?php if (empty($action['page_name'])) : ?>
+                                        <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach ?><?php endif ?> href="<?php echo $this->url('application/page', ['controller' => $action['controller'], 'action' => $action['action']], ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">
+                                            <?php echo $action['name'] ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach ?><?php endif ?> href="<?php echo $this->url('page', ['page_name' => $action['page_name']], ['force_canonical' => true, 'query' => (!empty($action['queries']) ? $action['queries'] : null)]) ?>">
+                                            <?php echo $action['name'] ?>
+                                        </a>
+                                    <?php endif ?>
+                                    
                                 <?php else: ?>
-                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach; ?><?php endif; ?> href="javascript:void(0)" onclick="<?php echo $action['js'] ?>">
+                                    <a <?php if (!empty($action['attrs']) && is_array($action['attrs'])) : ?><?php foreach ($action['attrs'] as $attr => $value) : ?><?php echo $attr ?>="<?php echo $this->escapeHtmlAttr($value) ?>" <?php endforeach ?><?php endif ?> href="javascript:void(0)" onclick="<?php echo $action['js'] ?>">
                                         <?php echo $action['name'] ?>
                                     </a>
-                                <?php endif; ?>
+                                <?php endif ?>
                             </li>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
                 </ul>
             </li>
         <?php endif; ?>
@@ -201,12 +313,16 @@
                     <?php echo $this->translate('Per page') ?> - <?php echo $this->per_page ?>
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu per-page-changer">
                     <?php foreach ($this->perPageRanges as $perPage) : ?>
-                        <li <?php if ($this->per_page == $perPage) : ?>class="disabled"<?php endif; ?>>
-                            <a href="<?php echo $this->url('application/page', array_merge($this->baseUrlParams, ['per_page' => $perPage]), ['force_canonical' => true, 'query' => $this->filterParams]) ?>"><?php echo $perPage ?></a>
+                        <li <?php if ($this->per_page == $perPage) : ?>class="disabled"<?php endif ?>>
+                            <?php if (empty($this->use_query)): ?>
+                                <a href="<?php echo $this->url($this->defaultRoute, array_merge($this->baseRouteParams, [$perPageParamName => $perPage]), ['force_canonical' => true, 'query' => $this->filterParams, 'fragment' => $this->url_fragment]) ?>"><?php echo $perPage ?></a>
+                            <?php else: ?>
+                                <a href="<?php echo $this->url($this->defaultRoute, $this->baseRouteParams, ['force_canonical' => true, 'query' => array_merge($this->filterParams, [$perPageParamName => $perPage]), 'fragment' => $this->url_fragment]) ?>"><?php echo $perPage ?></a>
+                            <?php endif ?>
                         </li>
-                    <?php endforeach; ?>
+                    <?php endforeach ?>
                 </ul>
             </li>
         <?php endif; ?>
@@ -222,7 +338,11 @@
         <?php $form->setAttribute('id', $this->formName) ?>
         <?php $form->setAttribute('name', $this->formName) ?>
         <?php echo $this->form()->openTag($form) ?>
-    <?php endif; ?>
+
+        <?php $formName = new Element\Hidden('form_name') ?>
+        <?php $formName->setValue($this->formName) ?>
+        <?php echo $this->formHidden($formName) ?>
+    <?php endif ?>
 
     <div class="table-responsive">
         <table class="table table-hover">
@@ -246,19 +366,28 @@
                     <?php if (empty($header['order_name'])) : ?>
                         <?php echo $header['title'] ?>
                     <?php else: ?>
-                        <a href="<?php echo $this->url('application/page', array_merge($this->baseUrlParams, [
-                            'per_page' => $this->per_page,
-                            'order_type' => ($this->order_type == 'asc' ? 'desc' : 'asc'),
-                            'order_by' => $header['order_name']
-                        ]), ['force_canonical' => true, 'query' => $this->filterParams]) ?>">
-                            <?php echo $header['title'] ?>
 
+                        <?php if (empty($this->use_query)): ?>
+                            <a href="<?php echo $this->url($this->defaultRoute, array_merge($this->baseRouteParams, [
+                                $perPageParamName => $this->per_page,
+                                $orderTypeParamName => ($this->order_type == 'asc' ? 'desc' : 'asc'),
+                                $orderByParamName => $header['order_name']
+                            ]), ['force_canonical' => true, 'query' => $this->filterParams, 'fragment' => $this->url_fragment]) ?>">
+                        <?php else: ?>
+                            <a href="<?php echo $this->url($this->defaultRoute, $this->baseRouteParams, ['force_canonical' => true, 'query' => array_merge($this->filterParams, [
+                                $perPageParamName => $this->per_page,
+                                $orderTypeParamName => ($this->order_type == 'asc' ? 'desc' : 'asc'),
+                                $orderByParamName => $header['order_name']]), 'fragment' => $this->url_fragment]) ?>">
+                        <?php endif ?>
+
+                            <?php echo $header['title'] ?>   
                             <!-- order direction icon -->
                             <?php if ($this->order_by == $header['order_name']): ?>
                                 <img src="<?php  echo $this->layoutAsset('icon/s_' . $this->order_type . '.png', 'image') ?>" alt="<?php echo $this->escapeHtmlAttr($this->order_type) ?>" />
-                            <?php endif; ?>
+                            <?php endif ?>
                         </a>
-                    <?php endif; ?>
+
+                    <?php endif ?>
                 </th>
             <?php endforeach; ?>
             </thead>
@@ -336,7 +465,7 @@
                             <td class="action">
                                 <?php
                                     // extra check
-                                    if (!empty($this->actions_extra_check['single_actions'][$action['action']])) {
+                                    if (!empty($action['action']) && !empty($this->actions_extra_check['single_actions'][$action['action']])) {
                                         foreach ($this->actions_extra_check['single_actions'][$action['action']] as $check) {
                                             if (isset($check['param'], $check['condition'])) {
                                                 $this->value = is_object($data) ? $data->{$check['param']} : $data[$check['param']];
@@ -365,29 +494,40 @@
                                         }
                                     ?>
 
-                                    <a class="single-actions" href="<?php echo $this->url('application/page', [
-                                            'controller' => $action['controller'],
-                                            'action' => $action['action'],
-                                            'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
-                                                ? !empty($action['param'])
-                                                    ? $data[$action['param']]
-                                                    : $data[$this->actions_options['action_identity']]
-                                                : null
-                                        ],
-                                        ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
-
+                                    <?php if (empty($action['page_name'])): ?>
+                                        <a class="single-actions" href="<?php echo $this->url('application/page', [
+                                                'controller' => $action['controller'],
+                                                'action' => $action['action'],
+                                                'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
+                                                    ? !empty($action['param'])
+                                                        ? $data[$action['param']]
+                                                        : $data[$this->actions_options['action_identity']]
+                                                    : null
+                                            ],
+                                            ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+                                     <?php else: ?>
+                                           <a class="single-actions" href="<?php echo $this->url('page', [
+                                                'page_name' => $action['page_name'],
+                                                'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
+                                                    ? !empty($action['param'])
+                                                        ? $data[$action['param']]
+                                                        : $data[$this->actions_options['action_identity']]
+                                                    : null
+                                            ],
+                                            ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+                                     <?php endif ?>
                                         <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                                     </a>
                                 <?php else: ?>
                                     <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? addslashes($data[$action['param']]) : addslashes($data[$this->actions_options['action_identity']])), $action['js']) ?>">
                                         <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                                     </a>
-                                <?php endif; ?>
+                                <?php endif ?>
                             </td>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
                 </tr>
-            <?php endforeach; ?>
+            <?php endforeach ?>
             </tbody>
         </table>
     </div>
@@ -396,13 +536,28 @@
         <?php echo $this->form()->closeTag() ?>
     <?php endif; ?>
  
-    <!-- a pagination -->
-    <?php
-        echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', [
-            'params' => array_merge($this->baseUrlParams, ['per_page' => $this->per_page]),
-            'queries' => $this->filterParams
-        ])
-    ?>
+    <!-- pagination -->
+    <?php if (empty($this->use_query)): ?>
+        <?php
+            echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', [
+                'route' => $this->defaultRoute,
+                'params' => array_merge($this->baseRouteParams, ['per_page' => $this->per_page]),
+                'queries' => $this->filterParams,
+                'url_fragment' => $this->url_fragment
+            ])
+        ?>
+    <?php else: ?>
+        <?php
+            echo $this->paginationControl($this->paginator, 'Sliding', 'partial/slide-paginator', [
+                'route' => $this->defaultRoute,
+                'params' => $this->baseRouteParams,
+                'queries' => array_merge($this->filterParams, [$perPageParamName => $this->per_page]),
+                'paginator_page_query' => $pageParamName,
+                'url_fragment' => $this->url_fragment
+            ])
+        ?>
+    <?php endif ?>
+
 <?php else: ?>
     <div class="alert alert-warning"><?php echo $this->translate('Nothing found') ?></div>
 <?php endif ?>
@@ -411,7 +566,7 @@
     <!-- append a data grid's js file -->
     <?php $this->layoutHeadScript()->appendFile($this->layoutAsset('data_grid.js')) ?>
 
-    <?php $this->inlineScript()->captureStart() ?>
+    <script type="text/javascript">
         var dataGrid = new DataGrid({
             'formId' : '#<?php echo $this->escapeJs($this->formName) ?>',
             'multipleActionsClass' : 'a.multiple-actions',
@@ -424,7 +579,7 @@
             'cancelButtonTitle' : '<?php echo $this->escapeJs($this->translate('No')) ?>',
             'langDirection' : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguageDirection()) ?>'
         });
-    <?php $this->inlineScript()->captureEnd() ?>
+    </script>
 <?php endif ?>
 
 <?php if ($this->initTooltip) : ?>
@@ -436,4 +591,33 @@
             'animation' : false
         });
     <?php $this->inlineScript()->captureEnd() ?>
+<?php endif ?>
+
+<?php if (($this->filter_form || $this->paginationCount) && isset($this->ajax['wrapper_id'], $this->ajax['widget_connection'], $this->ajax['widget_position'])) : ?>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var wrapperId           = '<?php echo $this->escapeJs($this->ajax['wrapper_id']) ?>';
+            var widgetConnectionId  = '<?php echo (int) $this->ajax['widget_connection'] ?>';
+            var widgetPosition      = '<?php echo $this->escapeJs($this->ajax['widget_position']) ?>';
+
+            <?php if ($this->filter_form): ?> 
+                $('#<?php echo $this->escapeJs($this->ajax['wrapper_id']) ?>').find("[name='<?php echo $this->escapeJs($this->filter_form->getName()) ?>']").submit(function(event) {
+                    event.preventDefault();
+
+                    // get data
+                    dataListQuery(wrapperId, $(this).attr('action'), widgetConnectionId, widgetPosition, $(this).serialize());
+                });
+            <?php endif ?>
+
+            <?php if ($this->paginationCount): ?>
+                // listen for all clicks
+                $('#<?php echo $this->escapeJs($this->ajax['wrapper_id']) ?>').find('.table th a, .per-page-changer a, ul.pagination a').bind('click', function(e){
+                    e.preventDefault();
+
+                    // get data
+                    dataListQuery(wrapperId, $(this).attr('href'), widgetConnectionId, widgetPosition);
+                });
+            <?php endif ?>
+        });
+    </script>
 <?php endif ?>

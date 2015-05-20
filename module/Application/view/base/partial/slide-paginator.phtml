@@ -14,9 +14,9 @@
         <li <?php if (!isset($this->previous)): ?>class="disabled"<?php endif ?>>
             <?php if (isset($this->previous)): ?>
                 <?php if (!$this->paginator_page_query): ?>
-                    <a href="<?php echo $this->url($this->defaultRoute, ['page' => $this->previous] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">&lt;</a>
+                    <a href="<?php echo $this->url($this->defaultRoute, ['page' => $this->previous] + $this->params, ['force_canonical' => true, 'query' => $this->queries, 'fragment' => $this->url_fragment]) ?>">&lt;</a>
                 <?php else: ?>
-                    <a href="<?php echo $this->url($this->defaultRoute, $this->params, ['force_canonical' => true, 'query' => [$this->paginator_page_query => $this->previous] + $this->queries]) ?>">&lt;</a>
+                    <a href="<?php echo $this->url($this->defaultRoute, $this->params, ['force_canonical' => true, 'query' => [$this->paginator_page_query => $this->previous] + $this->queries, 'fragment' => $this->url_fragment]) ?>">&lt;</a>
                 <?php endif ?>
             <?php else: ?>
                 <span>&lt;</span>
@@ -27,11 +27,11 @@
             <li <?php if ($page == $this->current): ?>class="active"<?php endif; ?>>
                 <?php if ($page != $this->current): ?>
                     <?php if (!$this->paginator_page_query): ?>
-                        <a href="<?php echo $this->url($this->defaultRoute, ['page' => $page] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">
+                        <a href="<?php echo $this->url($this->defaultRoute, ['page' => $page] + $this->params, ['force_canonical' => true, 'query' => $this->queries, 'fragment' => $this->url_fragment]) ?>">
                             <?php echo $page ?>
                         </a>
                     <?php else: ?>
-                        <a href="<?php echo $this->url($this->defaultRoute, $this->params, ['force_canonical' => true, 'query' => [$this->paginator_page_query => $page] + $this->queries]) ?>">
+                        <a href="<?php echo $this->url($this->defaultRoute, $this->params, ['force_canonical' => true, 'query' => [$this->paginator_page_query => $page] + $this->queries, 'fragment' => $this->url_fragment]) ?>">
                             <?php echo $page ?>
                         </a>
                     <?php endif ?>
@@ -44,9 +44,9 @@
         <li <?php if (!isset($this->next)): ?>class="disabled"<?php endif ?>>
             <?php if (isset($this->next)): ?>
                 <?php if (!$this->paginator_page_query): ?>
-                    <a href="<?php echo $this->url($this->defaultRoute, ['page' => $this->next] + $this->params, ['force_canonical' => true, 'query' => $this->queries]) ?>">&gt;</a>
+                    <a href="<?php echo $this->url($this->defaultRoute, ['page' => $this->next] + $this->params, ['force_canonical' => true, 'query' => $this->queries, 'fragment' => $this->url_fragment]) ?>">&gt;</a>
                 <?php else: ?>
-                    <a href="<?php echo $this->url($this->defaultRoute, ['page' => $this->next] + $this->params, ['force_canonical' => true, 'query' => [$this->paginator_page_query => $this->next] + $this->queries]) ?>">&gt;</a>
+                    <a href="<?php echo $this->url($this->defaultRoute, ['page' => $this->next] + $this->params, ['force_canonical' => true, 'query' => [$this->paginator_page_query => $this->next] + $this->queries, 'fragment' => $this->url_fragment]) ?>">&gt;</a>
                 <?php endif ?>
             <?php else: ?>
                 <span>&gt;</span>
