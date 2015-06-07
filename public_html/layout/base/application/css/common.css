@@ -5,15 +5,8 @@
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
 }
-div.panel-general {
-  margin-top: 20px;
-  margin-bottom: 0;
-}
-div.panel-general ul.nav-pills {
+ul.nav-pills {
   margin-bottom: 15px;
-}
-div.panel-general div.alert {
-  margin-top: 0;
 }
 input[type="radio"],
 input[type="checkbox"] {
@@ -37,10 +30,6 @@ div.loading-ajax-wrapper div.loading-ajax {
   background-image: url("../image/loading.gif");
   background-position: center center;
   background-repeat: no-repeat;
-}
-div.alert {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 div.filter-form {
   padding: 20px;

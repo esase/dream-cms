@@ -6,3 +6,14 @@ div.alert {
 ol.breadcrumb {
   margin-bottom: 0;
 }
+
+
+.panel {
+  margin-bottom: 0;
+  margin-top: 20px;
+}
+
+.panel div.alert {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
