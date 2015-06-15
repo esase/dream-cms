@@ -1,4 +1,19 @@
-<?php if (count($this->list)): ?>    
+<?php if (count($this->list)): ?>
+    <?php
+        // init data grid single actions
+        $this->declareVars('singleActions', 'singleActionsCount', 'urlQueries');
+
+        // process single actions
+        if (!empty($this->actions)) {
+            // check actions permissions
+            if (null != ($this->singleActions =
+                    $this->aclRoutePermission($this->actions))) {
+
+                $this->singleActionsCount = count($this->singleActions);
+            }
+        }
+    ?>
+
     <div class="table-responsive">
         <table class="table table-hover table-striped">
             <?php if (!empty($this->headers)): ?>
@@ -29,6 +44,72 @@
                                     <?php endif ?>
                                 </td>
                             <?php endforeach ?>
+                            <?php if ($this->singleActionsCount) : ?>
+                                <?php foreach ($this->singleActions as $action) : ?>
+                                    <td class="action">
+                                        <?php
+                                             // extra check
+                                             if (!empty($action['action']) && !empty($this->actions_check[$action['action']])) {
+                                                 foreach ($this->actions_check[$action['action']] as $check) {
+                                                     if (isset($check['param'], $check['condition'])) {
+                                                         $this->value = $items[$check['param']];
+
+                                                         if (false === ($result = eval(str_replace('__value__', addslashes($this->value), $check['condition'])))) {
+                                                             continue 2;
+                                                         }
+                                                     }
+                                                     else if (isset($check['function'])) {
+                                                         if (false === ($result = $check['function']($items))) {
+                                                             continue 2;
+                                                         }
+                                                     }
+                                                 }
+                                             }
+                                        ?>
+                                        <?php if (empty($action['js'])) : ?>
+                                            <?php $this->urlQueries = !empty($action['queries']) && is_array($action['queries']) ? $action['queries'] : [] ?>
+                                            <?php
+                                                if (!empty($action['slug_params']['use_query']) && $action['slug_params']['use_query'] === true) {
+                                                    $this->urlQueries = array_merge($this->urlQueries, [
+                                                        'slug' => !empty($action['param'])
+                                                            ? $items[$action['param']]
+                                                            : $items[$this->actions_options['action_identity']]
+                                                    ]);
+                                                }
+                                            ?>
+
+                                            <?php if (empty($action['page_name'])): ?>
+                                                <a class="single-actions" href="<?php echo $this->url('application/page', [
+                                                        'controller' => $action['controller'],
+                                                        'action' => $action['action'],
+                                                        'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
+                                                            ? !empty($action['param'])
+                                                                ? $items[$action['param']]
+                                                                : $items[$this->actions_options['action_identity']]
+                                                            : null
+                                                    ],
+                                                    ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+                                             <?php else: ?>
+                                                   <a class="single-actions" href="<?php echo $this->url('page', [
+                                                        'page_name' => $action['page_name'],
+                                                        'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
+                                                            ? !empty($action['param'])
+                                                                ? $items[$action['param']]
+                                                                : $items[$this->actions_options['action_identity']]
+                                                            : null
+                                                    ],
+                                                    ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
+                                             <?php endif ?>
+                                                <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
+                                            </a>
+                                        <?php else: ?>
+                                            <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? addslashes($items[$action['param']]) : addslashes($items[$this->actions_options['action_identity']])), $action['js']) ?>">
+                                                <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
+                                            </a>
+                                        <?php endif ?>
+                                    </td>
+                               <?php endforeach ?>
+                            <?php endif ?>
                         </tr>
                     <?php endforeach ?>
                 </tbody>
