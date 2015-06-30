@@ -25,18 +25,17 @@ class PageFooterMenu extends AbstractHelper
     /**
      * Page footer menu
      *
+     * @param integer $maxFooterRows
      * @param integer $maxFooterColumns
      * @return string
      */
-    public function __invoke($maxFooterColumns)
+    public function __invoke($maxFooterRows, $maxFooterColumns)
     {
-        $footerMenuMaxRows = (int) SettingService::getSetting('page_footer_menu_max_rows');
-
         $footerMenuProcessed = $footerMenu = null;
         $headerLink = true;
 
         $totalIndex = $index  = 0;
-        $maxAllowedRows = $maxFooterColumns * $footerMenuMaxRows;
+        $maxAllowedRows = $maxFooterColumns * $maxFooterRows;
 
         // process the footer menu
         foreach ($this->footerMenu as $menu) {
@@ -64,7 +63,7 @@ class PageFooterMenu extends AbstractHelper
                 $totalIndex++;
 
                 // check end of a column
-                if ($index == $footerMenuMaxRows) {
+                if ($index == $maxFooterRows) {
                     $footerMenu .= $this->getView()->partial('page/partial/footer-menu-end');
 
                     $headerLink = true;
