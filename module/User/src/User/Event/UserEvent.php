@@ -97,6 +97,9 @@ class UserEvent extends ApplicationAbstractEvent
         self::fireEvent(self::RESET_PASSWORD_REQUEST, 
             $userId, $userId, 'Event - User requested password reset', [$userInfo['nick_name'], $userId]);
 
+        $resetPageUrl =  ServiceLocatorService::getServiceLocator()->
+                get('viewHelperManager')->get('pageUrl')->__invoke('user-password-reset', [], null, true); 
+
         // send an email password reset notification
         EmailNotificationUtility::sendNotification($userInfo['email'],
             SettingService::getSetting('user_reset_password_title'),
@@ -109,7 +112,7 @@ class UserEvent extends ApplicationAbstractEvent
                 'replace' => [
                     $userInfo['nick_name'],
                     ServiceLocatorService::getServiceLocator()->get('viewHelperManager')->get('url')->
-                            __invoke('page', ['page_name' => 'user-password-reset', 'slug' => $userInfo['slug']], ['force_canonical' => true]),
+                            __invoke('page', ['page_name' => $resetPageUrl, 'slug' => $userInfo['slug']], ['force_canonical' => true]),
 
                     $activateCode
                 ]
