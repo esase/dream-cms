@@ -1,15 +1,7 @@
-;(function (factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
-    } else if (typeof exports === 'object') {
-        // CommonJS / nodejs module
-        module.exports = factory(require('jquery'));
-    } else {
-        // Browser globals
-        factory(jQuery);
-    }
-}(function ($) {
+/*! waitForImages jQuery Plugin - v2.0.0 - 2014-11-14
+* https://github.com/alexanderdickson/waitForImages
+* Copyright (c) 2014 Alex Dickson; Licensed MIT */
+;(function ($) {
     // Namespace all events.
     var eventNamespace = 'waitForImages';
 
@@ -25,23 +17,20 @@
         hasImageAttributes: ['srcset']
     };
 
-    // Custom selector to find all `img` elements with a valid `src` attribute.
-    $.expr[':']['has-src'] = function (obj) {
-        // Ensure we are dealing with an `img` element with a valid
-        // `src` attribute.
-        return $(obj).is('img[src][src!=""]');
-    };
-
-    // Custom selector to find images which are not already cached by the
-    // browser.
+    // Custom selector to find `img` elements that have a valid `src`
+    // attribute and have not already loaded.
     $.expr[':'].uncached = function (obj) {
         // Ensure we are dealing with an `img` element with a valid
         // `src` attribute.
-        if (!$(obj).is(':has-src')) {
+        if (!$(obj).is('img[src][src!=""]')) {
             return false;
         }
 
-        return !obj.complete;
+        // Firefox's `complete` property will always be `true` even if the
+        // image has not been downloaded. Doing it this way works in Firefox.
+        var img = new Image();
+        img.src = obj.src;
+        return !img.complete;
     };
 
     $.fn.waitForImages = function () {
@@ -108,7 +97,7 @@
 
                     // If an `img` element, add it. But keep iterating in
                     // case it has a background image too.
-                    if (element.is('img:has-src')) {
+                    if (element.is('img:uncached')) {
                         allImgs.push({
                             src: element.attr('src'),
                             element: element[0]
@@ -158,7 +147,7 @@
                 });
             } else {
                 // For images only, the task is simpler.
-                obj.find('img:has-src')
+                obj.find('img:uncached')
                     .each(function () {
                     allImgs.push({
                         src: this.src,
@@ -216,4 +205,4 @@
         return deferred.promise();
 
     };
-}));
+}(jQuery));
