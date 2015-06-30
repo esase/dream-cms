@@ -125,7 +125,7 @@ class ApplicationModuleAdministration extends ApplicationBase
         $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         // load the custom deactivated module's translations
-        foreach($paginator->getCurrentItems()->buffer() as $module) {
+        foreach($paginator->getCurrentItems() as $module) {
             if ($module['type'] == self::MODULE_TYPE_CUSTOM
                         && $module['status'] == self::MODULE_STATUS_NOT_ACTIVE) {
 
