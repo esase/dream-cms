@@ -2,7 +2,7 @@
     "require": {
         "php": ">=5.4.0",
         "imagine/imagine": "~0.5.0",
-        "zendframework/zendframework": "2.3.*",
+        "zendframework/zendframework": "2.5.*",
         "ezyang/htmlpurifier": "dev-master",
         "firephp/firephp-core": "*"
     }    

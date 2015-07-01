@@ -6,8 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Zend\\' => array($vendorDir . '/zendframework/zendframework/library'),
+    'phpDocumentor' => array($vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'ZendXml' => array($vendorDir . '/zendframework/zendxml/library'),
+    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Imagine' => array($vendorDir . '/imagine/imagine/lib'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );

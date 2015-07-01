@@ -2,7 +2,7 @@
 
 return [
     'cms_name' => 'Dream CMS',
-    'cms_version' => '2.2.3',
+    'cms_version' => '2.2.4',
     'install_languages' => [
         'ru' => [
             'language' => 'ru',
