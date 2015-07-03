@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"application\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-03-14 16:28+0600\n"
+"PO-Revision-Date: 2015-07-02 10:53+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,15 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Value should be greater than 0 and less or equals 100"
+msgstr "Значение должно быть больше 0 и меньше или равно 100"
+
+msgid "Window width (in percentages)"
+msgstr "Ширина окна (в процентах)"
+
+msgid "Window height (in pixels)"
+msgstr "Высота окна (в пикселях)"
 
 msgid "week ago"
 msgid_plural "weeks ago"
@@ -737,7 +746,7 @@ msgid "Name"
 msgstr "Название"
 
 msgid "Per page"
-msgstr "Результатов на странице"
+msgstr "На странице"
 
 msgid "custom"
 msgstr "Пользовательский"

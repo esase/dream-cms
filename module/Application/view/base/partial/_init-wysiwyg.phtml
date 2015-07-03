@@ -26,7 +26,7 @@
                     tinymce.activeEditor.windowManager.open({
                         title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
                         url: '<?php echo $this->escapeJs($this->url('application/page', ['controller' => 'files-manager-embedded', 'action' => 'list'], ['force_canonical' => true])) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
-                        width: <?php echo (int) $this->applicationSetting('file_manager_window_width') ?>,
+                        width: ($( window ).width() * <?php echo (int) $this->applicationSetting('file_manager_window_width') ?> / 100),
                         height: <?php echo (int) $this->applicationSetting('file_manager_window_height') ?>
                     }, {
                         oninsert: function(url) {
