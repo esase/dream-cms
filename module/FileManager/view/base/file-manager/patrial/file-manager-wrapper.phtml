@@ -8,6 +8,13 @@
 
 <!-- files manager wrapper -->
 <div class="row" id="files-manager-wrapper">
+    <div class="col-md-8">
+        <?php echo $this->partial('administration-partial/panel', [
+            'notification' => false,
+            'title' => $this->action_title,
+            'body' => $this->action
+        ]) ?>
+    </div>
     <div class="col-md-4">
         <?php echo $this->partial('administration-partial/panel', [
             'notification' => false,
@@ -18,12 +25,5 @@
         <?php if (!empty($this->extra_actions)): ?>
             <?php echo $this->extra_actions ?>
         <?php endif ?>
-    </div>
-    <div class="col-md-8">
-        <?php echo $this->partial('administration-partial/panel', [
-            'notification' => false,
-            'title' => $this->action_title,
-            'body' => $this->action
-        ]) ?>
     </div>
 </div>

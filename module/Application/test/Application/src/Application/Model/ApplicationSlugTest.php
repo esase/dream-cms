@@ -67,7 +67,8 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
     public function testSimilarSlugGeneration()
     {
         // generate a first test user
-        $firstUserSlug = 'terminator';
+        $testUserName = Rand::getString(15);
+        $firstUserSlug = $testUserName;
         $firstUserId   = 1000;
 
         $firstUserData = [
@@ -88,7 +89,7 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
         $this->userIds[] = $this->model->getAdapter()->getDriver()->getLastGeneratedValue();
 
         // generate a second test user
-        $secondUserSlug = '1002-terminator';
+        $secondUserSlug = '1002-' . $testUserName;
         $secondUserId   = 1001;
 
         $secondUserData = [
@@ -110,7 +111,7 @@ class ApplicationSlugTest extends PHPUnit_Framework_TestCase
 
         // generate slug for the third user
         $thirdUserId = 1002;
-        $thirdUserSlug = 'terminator';
+        $thirdUserSlug = $testUserName;
         $thirdUserSlug = $this->model->generateSlug($thirdUserId, $thirdUserSlug, 'user_list', 'user_id');
 
         $this->assertNotEquals($thirdUserSlug, $secondUserSlug);

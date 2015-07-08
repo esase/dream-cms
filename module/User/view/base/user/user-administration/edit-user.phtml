@@ -104,9 +104,6 @@
             ]) ?>
         </div>
     <?php else: ?>
-        <div class="col-md-4">
-            <?php echo $this->extraActions ?>
-        </div>
         <div class="col-md-8">
             <!-- render a form -->
             <?php echo $this->partial('administration-partial/panel', [
@@ -114,6 +111,9 @@
                 'title' => $this->translate('Edit account'),
                 'body' => $this->partial('partial/form', ['form' => $this->userForm])
             ]) ?>
+        </div>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
         </div>
     <?php endif ?>
 </div>

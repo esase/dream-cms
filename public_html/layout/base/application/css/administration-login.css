@@ -7,7 +7,7 @@ div#container div#login-form-wrapper {
   display: table;
   height: 100%;
   margin: 0 auto;
-  width: 350px;
+  width: 300px;
 }
 div#container div#login-form-wrapper div#login-form {
   display: table-cell;

@@ -879,9 +879,8 @@ INSERT INTO `application_setting` (`id`, `name`, `label`, `description`, `type`,
 (64, 'file_manager_file_name_length', 'The maximum length of the file name and directory', NULL, 'integer', 1, 2, 12, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (65, 'file_manager_image_extensions', 'Image extensions', 'It helps to filter only images files. You should separate values by a comma', 'textarea', 1, 1, 14, 4, NULL, NULL, NULL, NULL),
 (66, 'file_manager_media_extensions', 'Media extensions', 'It helps to filter only media files. You should separate values by a comma', 'textarea', 1, 2, 14, 4, NULL, NULL, NULL, NULL),
-(67, 'file_manager_window_width', 'Window width', NULL, 'integer', 1, 1, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(68, 'file_manager_window_height', 'Window height', NULL, 'integer', 1, 2, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
-(69, 'file_manager_window_image_width', 'Window width', NULL, 'integer', 1, 1, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
+(67, 'file_manager_window_width', 'Window width (in percentages)', NULL, 'integer', 1, 1, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0 && intval(''__value__'') <= 100;', 'Value should be greater than 0 and less or equals 100'),
+(68, 'file_manager_window_height', 'Window height (in pixels)', NULL, 'integer', 1, 2, 15, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (70, 'file_manager_window_image_height', 'Window height', NULL, 'integer', 1, 2, 16, 4, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (71, 'user_session_time', 'User\'s session time in seconds', 'This used when users select an option - "remember me"', 'integer', 1, 6, 8, 2, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (72, 'application_localization_cookie_time', 'Localization\'s cookie time', 'The storage time of the selected language', 'integer', 1, 1, 17, 1, NULL, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
@@ -949,8 +948,8 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (19, 19, '10', NULL),
 (20, 20, '10', NULL),
 (21, 21, '100', NULL),
-(22, 22, '10', NULL),
-(23, 23, '10', NULL),
+(22, 22, '5', NULL),
+(23, 23, '5', NULL),
 (24, 24, '__dynamic_cache_value__', NULL),
 (25, 25, '1800', NULL),
 (26, 26, '__memcache_host_value__', NULL),
@@ -1003,9 +1002,8 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (74, 64, '20', NULL),
 (75, 65, 'bmp,gif,jpg,png', NULL),
 (76, 66, 'mp3,wav,wma,3g2,3gp,avi,flv,mov,mp4,mpg,swf,vob,wmv', NULL),
-(77, 67, '1000', NULL),
+(77, 67, '60', NULL),
 (78, 68, '500', NULL),
-(79, 69, '500', NULL),
 (80, 70, '300', NULL),
 (81, 71, '7776000', NULL),
 (82, 72, '6912000', NULL),
@@ -1835,3 +1833,17 @@ CREATE TABLE `page_widget_visibility` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- INSTALL TMP DATA
+
+INSERT INTO `page_structure` (`id`, `slug`, `title`, `description`, `meta_description`, `meta_keywords`, `meta_robots`, `module`, `user_menu`, `user_menu_order`, `menu`, `site_map`, `xml_map`, `xml_map_update`, `xml_map_priority`, `footer_menu`, `footer_menu_order`, `active`, `type`, `language`, `layout`, `redirect_url`, `left_key`, `right_key`, `level`, `parent_id`, `system_page`, `date_edited`) VALUES
+(1, 'home', NULL, NULL, NULL, NULL, NULL, 5, NULL, 100, 1, 1, 1, 'weekly', 0.5, NULL, 100, 1, 'system', 'en', 1, NULL, 1, 2, 1, NULL, 1, '2015-07-08'),
+(2, 'home', NULL, NULL, NULL, NULL, NULL, 5, NULL, 100, 1, 1, 1, 'weekly', 0.5, NULL, 100, 1, 'system', 'ru', 1, NULL, 1, 2, 1, NULL, 1, '2015-07-08');
+
+INSERT INTO `page_widget_connection` (`id`, `title`, `page_id`, `widget_id`, `position_id`, `layout`, `order`, `cache_ttl`) VALUES
+(1, 'Installation is complete', 1, 1, 8, 1, 1, 0),
+(2, 'Установка завершена', 2, 1, 8, 1, 1, 0);
+
+INSERT INTO `page_widget_setting_value` (`id`, `setting_id`, `value`, `widget_connection`) VALUES
+(1, 1, '<p>Поздравляем вы только, что установили последнюю версию __cms_name_value__ __cms_version_value__. Для управления страницами или виджетами, перейдите в <a href="pages/ru/pages-administration/list">административную часть сайта</a>.</p>', 2),
+(2, 1, '<p>Congratulations, you just installed the latest version of __cms_name_value__ __cms_version_value__. To manage pages or widgets, go to the <a href="pages/en/pages-administration/list">administrative part of the site</a>.</p>', 1);

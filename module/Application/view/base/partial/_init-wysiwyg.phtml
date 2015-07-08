@@ -22,15 +22,15 @@
             toolbar: "<?php echo $this->toolbar ?>",
             convert_urls : false
             <?php if ($this->aclCheckPermission('files_manager_embedded_list')): ?>
-                , file_browser_callback: function(field_name, url, type, win) { 
+                , file_picker_callback: function(callback, value, meta) { 
                     tinymce.activeEditor.windowManager.open({
                         title: '<?php echo $this->escapeJs($this->translate('Files manager')) ?>',
-                        url: '<?php echo $this->escapeJs($this->url('application/page', ['controller' => 'files-manager-embedded', 'action' => 'list'], ['force_canonical' => true])) ?>' + '?file_type=' + (type == 'image' || type == 'media' ? type : ''),
-                        width: <?php echo (int) $this->applicationSetting('file_manager_window_width') ?>,
+                        url: '<?php echo $this->escapeJs($this->url('application/page', ['controller' => 'files-manager-embedded', 'action' => 'list'], ['force_canonical' => true])) ?>' + '?file_type=' + (meta.filetype == 'image' || meta.filetype == 'media' ? meta.filetype : ''),
+                        width: ($( window ).width() * <?php echo (int) $this->applicationSetting('file_manager_window_width') ?> / 100),
                         height: <?php echo (int) $this->applicationSetting('file_manager_window_height') ?>
                     }, {
                         oninsert: function(url) {
-                            win.document.getElementById(field_name).value = url;
+                            callback(url);
                         }
                     });
                 }
