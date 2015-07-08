@@ -1,5 +1,4 @@
 <?php use User\Model\UserBase as UserBaseModel ?>
-<?php use Acl\Model\AclBase as AclBaseModel ?>
 
 <?php $this->declareVars('extraActions', 'subPageTitle', 'content') ?>
 <?php $this->subPageTitle = $this->translate('Browse allowed ACL resources')  ?>
@@ -46,14 +45,14 @@
     'default_order_type' => 'desc',
     'filter_form' => $this->filter_form,
     'headers' => [
-        0 => [
+        [
             'title' => $this->translate('ID'),
             'order_name' => 'id'
         ],
-        1 => [
+        [
             'title' => $this->translate('Description')
         ],
-        2 => [
+        [
             'title' => $this->translate('Module')
         ]
     ],
@@ -73,7 +72,7 @@
         'multiple_actions' => [
         ],
         'single_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Resource\'s settings'),
                 'controller' => 'users-administration',
                 'action' => 'acl-resource-settings',
@@ -93,7 +92,7 @@
     'actions_extra_check' => [
         'single_actions' => [
             'resource-settings' => [
-                0 => [
+                [
                     'param' => 'conection',
                     'condition' =>  'return (int) "__value__" > 0;'
                 ]
@@ -172,9 +171,6 @@
             ]) ?>
         </div>
     <?php else: ?>
-        <div class="col-md-4">
-            <?php echo $this->extraActions ?>
-        </div>
         <div class="col-md-8">
             <!-- render a data grid -->
             <?php echo $this->partial('administration-partial/panel', [
@@ -182,6 +178,9 @@
                 'title' => $this->translate('Resources'),
                 'body' => $this->content
             ]) ?>
+        </div>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
         </div>
     <?php endif ?>
 </div>

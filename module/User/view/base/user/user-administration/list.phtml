@@ -24,27 +24,27 @@
     'default_order_type' => 'desc',
     'filter_form' => $this->filter_form,
     'headers' => [
-        0 => [
+        [
             'title' => $this->translate('ID'),
             'order_name' => 'id'
         ],
-        1 => [
+        [
             'title' => $this->translate('NickName'),
             'order_name' => 'nickname'
         ],
-        2 => [
+        [
             'title' => $this->translate('Email'),
             'order_name' => 'email'
         ],
-        3 => [
+        [
             'title' => $this->translate('Status'),
             'order_name' => 'status'
         ],
-        4 => [
+        [
             'title' => $this->translate('Registered date'),
             'order_name' => 'registered'
         ],
-        5 => [
+        [
             'title' => $this->translate('Role')
         ]
     ],
@@ -61,7 +61,7 @@
     ],
     'actions' => [
         'regular_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Add a user'),
                 'controller' => 'users-administration',
                 'action' => 'add-user',
@@ -69,19 +69,19 @@
             ]
         ],
         'multiple_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Approve selected'),
                 'controller' => 'users-administration',
                 'action' => 'approve',
                 'check_acl' => true
             ],
-            1 => [
+            [
                 'name' => $this->translate('Disapprove selected'),
                 'controller' => 'users-administration',
                 'action' => 'disapprove',
                 'check_acl' => true
             ],
-            2 => [
+            [
                 'name' => $this->translate('Delete selected'),
                 'controller' => 'users-administration',
                 'action' => 'delete',
@@ -90,21 +90,21 @@
             ]
         ],
         'single_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Edit the user\'s role'),
                 'controller' => 'users-administration',
                 'action' => 'edit-role',
                 'check_acl' => true,
                 'image' => $this->layoutAsset('icon/role_action.png', 'image', 'user')
             ],
-            1 => [
+            [
                 'name' => $this->translate('Browse allowed ACL resources'),
                 'controller' => 'users-administration',
                 'action' => 'browse-acl-resources',
                 'check_acl' => true,
                 'image' => $this->layoutAsset('icon/browse_action.png', 'image', 'acl')
             ],
-            2 => [
+            [
                 'name' => $this->translate('Edit the user'),
                 'controller' => 'users-administration',
                 'action' => 'edit-user',
@@ -130,13 +130,13 @@
         'multiple_actions_message' => $this->translate('You cannot delete, approve or disapprove the default user default user'),
         'single_actions' => [
             'browse-acl-resources' => [
-                0 => [
+                [
                     'param' => 'role_id',
                     'condition' =>  'return "__value__" == "' . AclBaseModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
                 ]
             ],
             'edit-role' => [
-                0 => [
+                [
                     'param' => 'id',
                     'condition' =>  'return "__value__" == "' . UserBaseModel::DEFAULT_USER_ID . '" ? false : true;'
                 ]

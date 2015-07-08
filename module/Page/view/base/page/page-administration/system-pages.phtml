@@ -44,18 +44,18 @@
     'default_order_type' => 'asc',
     'filter_form' => $this->filter_form,
     'headers' => [
-        0 => [
+        [
             'title' => $this->translate('ID'),
             'order_name' => 'id'
         ],
-        1 => [
+        [
             'title' => $this->translate('Title')
         ],
-        2 => [
+        [
             'title' => $this->translate('Display name'),
             'order_name' => 'slug'
         ],
-        3 => [
+        [
             'title' => $this->translate('Module')
         ]
     ],
@@ -76,7 +76,7 @@
         'regular_actions' => [
         ],
         'multiple_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Add selected'),
                 'controller' => 'pages-administration',
                 'action' => 'add-system-pages',
@@ -88,7 +88,7 @@
             ]
         ],
         'single_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('View dependent pages'),
                 'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-view-dependent-pages']) . '?check_structure=-1&page_id=__value__\', \'popup-page-depends-window\')',
                 'check_acl' => true,
@@ -115,7 +115,7 @@
         'multiple_actions_message' => $this->translate('A custom page already created with this page display name. Please remove or rename the custom page before you can add this page.'),
         'single_actions' => [
             'ajax-view-dependent-pages' => [
-                0 => [
+                [
                     'param' => 'dependent_page',
                     'condition' =>  'return (int) "__value__" ? true : false;'
                 ]

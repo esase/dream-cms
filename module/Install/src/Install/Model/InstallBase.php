@@ -281,7 +281,7 @@ class InstallBase
             '__memcache_host_value__',
             '__memcache_port_value__',
             '__cms_name_value__',
-            '__cms_version_value__',
+            '__cms_version_value__'
         ];
 
         $sqlReplaysKeys = [

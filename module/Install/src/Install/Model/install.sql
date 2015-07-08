@@ -949,7 +949,7 @@ INSERT INTO `application_setting_value` (`id`, `setting_id`, `value`, `language`
 (20, 20, '10', NULL),
 (21, 21, '100', NULL),
 (22, 22, '5', NULL),
-(23, 23, '10', NULL),
+(23, 23, '5', NULL),
 (24, 24, '__dynamic_cache_value__', NULL),
 (25, 25, '1800', NULL),
 (26, 26, '__memcache_host_value__', NULL),
@@ -1833,3 +1833,17 @@ CREATE TABLE `page_widget_visibility` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- INSTALL TMP DATA
+
+INSERT INTO `page_structure` (`id`, `slug`, `title`, `description`, `meta_description`, `meta_keywords`, `meta_robots`, `module`, `user_menu`, `user_menu_order`, `menu`, `site_map`, `xml_map`, `xml_map_update`, `xml_map_priority`, `footer_menu`, `footer_menu_order`, `active`, `type`, `language`, `layout`, `redirect_url`, `left_key`, `right_key`, `level`, `parent_id`, `system_page`, `date_edited`) VALUES
+(1, 'home', NULL, NULL, NULL, NULL, NULL, 5, NULL, 100, 1, 1, 1, 'weekly', 0.5, NULL, 100, 1, 'system', 'en', 1, NULL, 1, 2, 1, NULL, 1, '2015-07-08'),
+(2, 'home', NULL, NULL, NULL, NULL, NULL, 5, NULL, 100, 1, 1, 1, 'weekly', 0.5, NULL, 100, 1, 'system', 'ru', 1, NULL, 1, 2, 1, NULL, 1, '2015-07-08');
+
+INSERT INTO `page_widget_connection` (`id`, `title`, `page_id`, `widget_id`, `position_id`, `layout`, `order`, `cache_ttl`) VALUES
+(1, 'Installation is complete', 1, 1, 8, 1, 1, 0),
+(2, 'Установка завершена', 2, 1, 8, 1, 1, 0);
+
+INSERT INTO `page_widget_setting_value` (`id`, `setting_id`, `value`, `widget_connection`) VALUES
+(1, 1, '<p>Поздравляем вы только, что установили последнюю версию __cms_name_value__ __cms_version_value__. Для управления страницами или виджетами, перейдите в <a href="pages/ru/pages-administration/list">административную часть сайта</a>.</p>', 2),
+(2, 1, '<p>Congratulations, you just installed the latest version of __cms_name_value__ __cms_version_value__. To manage pages or widgets, go to the <a href="pages/en/pages-administration/list">administrative part of the site</a>.</p>', 1);

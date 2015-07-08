@@ -1,5 +1,4 @@
 <?php use User\Model\UserBase as UserBaseModel ?>
-<?php use Acl\Model\AclBase as AclBaseModel ?>
 
 <?php $this->declareVars('extraActions', 'subPageTitle', 'parentSubPageTitle') ?>
 <?php $this->parentSubPageTitle = $this->translate('Browse allowed ACL resources') ?>
@@ -117,9 +116,6 @@
             ]) ?>
         </div>
     <?php else: ?>
-        <div class="col-md-4">
-            <?php echo $this->extraActions ?>
-        </div>
         <div class="col-md-8">
             <!-- render a form -->
             <?php echo $this->partial('administration-partial/panel', [
@@ -127,6 +123,9 @@
                 'title' => $this->translate('General info'),
                 'body' => $this->partial('partial/form', ['form' => $this->aclResourceSettingsForm])
             ]) ?>
+        </div>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
         </div>
     <?php endif ?>
 </div>

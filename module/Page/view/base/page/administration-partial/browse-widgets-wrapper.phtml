@@ -45,6 +45,14 @@
 <?php echo $this->partial('partial/notification') ?>
 
 <div class="row">
+    <div class="col-md-8">
+        <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
+            'layouts' => $this->layouts,
+            'page_info' => $this->page_info,
+            'manage_layout' => $this->manage_layout,
+            'widgets_connections' => $this->widgets_connections
+        ]) ?>
+    </div>
     <div class="col-md-4">
         <?php if (false !== $this->aclCheckPermission('pages_administration_ajax_add_widget')): ?>
             <?php echo $this->partial('administration-partial/panel', [
@@ -68,14 +76,6 @@
             'notification' => false,
             'title' => $this->translate('Viewing widgets'),
             'body' => $this->pageTree($this->pagesTreeId, $this->page_info['id'], false, [], false, true)
-        ]) ?>
-    </div>
-    <div class="col-md-8">
-        <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
-            'layouts' => $this->layouts,
-            'page_info' => $this->page_info,
-            'manage_layout' => $this->manage_layout,
-            'widgets_connections' => $this->widgets_connections
         ]) ?>
     </div>
 </div>

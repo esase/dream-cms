@@ -24,22 +24,22 @@
     'default_order_type' => 'asc',
     'filter_form' => $this->filter_form,
     'headers' => [
-        0 => [
+        [
             'title' => $this->translate('ID'),
             'order_name' => 'id'
         ],
-        1 => [
+        [
             'title' => $this->translate('Position'),
             'order_name' => 'position'
         ],
-        2 => [
+        [
             'title' => $this->translate('Title')
         ],
-        3 => [
+        [
             'title' => $this->translate('Display name'),
             'order_name' => 'slug'
         ],
-        4 => [
+        [
             'title' => $this->translate('Widgets'),
             'order_name' => 'widgets'
         ]
@@ -71,7 +71,7 @@
     ],
     'actions' => [
         'regular_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Add system pages'),
                 'controller' => 'pages-administration',
                 'action' => 'system-pages',
@@ -80,7 +80,7 @@
                     'page_id' => $this->page_id
                 ]
             ],
-            1 => [
+            [
                 'name' => $this->translate('Add a custom page'),
                 'controller' => 'pages-administration',
                 'action' => 'add-custom-page',
@@ -91,7 +91,7 @@
             ],
         ],
         'multiple_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Delete selected'),
                 'controller' => 'pages-administration',
                 'action' => 'delete-pages',
@@ -100,7 +100,7 @@
             ]
         ],
         'single_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('View dependent pages'),
                 'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-view-dependent-pages']) . '?page_id=__value__\', \'popup-page-depends-window\')',
                 'check_acl' => true,
@@ -109,14 +109,14 @@
                 'action' => 'ajax-view-dependent-pages',
                 'image' => $this->layoutAsset('icon/depend_action.png', 'image', 'page')
             ],
-            1 => [
+            [
                 'name' => $this->translate('Edit the page'),
                 'controller' => 'pages-administration',
                 'action' => 'edit-page',
                 'check_acl' => true,
                 'image' => $this->layoutAsset('icon/edit_action.png', 'image')
             ],
-            2 => [
+            [
                 'name' => $this->translate('Browse widgets'),
                 'controller' => 'pages-administration',
                 'action' => 'browse-widgets',
@@ -135,7 +135,7 @@
     'actions_extra_check' => [
         'regular_actions' => [
             'add-custom-page' => [
-                0 => function() use ($pages_map) {
+                function() use ($pages_map) {
                     return count($pages_map)  > 0;
                 }
             ]
@@ -158,7 +158,7 @@
         'multiple_actions_message' => $this->translate('You have to delete subpages or dependent pages before you can delete this page'),
         'single_actions' => [
             'ajax-view-dependent-pages' => [
-                0 => [
+                [
                     'param' => 'dependent_page',
                     'condition' =>  'return (int) "__value__" ? true : false;'
                 ]
