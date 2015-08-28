@@ -1,5 +1,6 @@
 DreamCMS.komodoproject
 .komodotools/*
+.idea/*
 data/session/*
 data/log/*
 !data/log/.htaccess
@@ -8,7 +9,7 @@ data/cache/config/*
 data/tmp/*
 !data/cache/.htaccess
 !data/session/.htaccess
-!data/tmp/.htaccess
+clear!data/tmp/.htaccess
 config/autoload/local.php
 config/autoload/*.local.php
 module/Example/*
