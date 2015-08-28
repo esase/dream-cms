@@ -1,4 +1,5 @@
 <?php
+
 namespace Layout\View\Helper;
 
 trait LayoutHeadResource
@@ -36,7 +37,8 @@ trait LayoutHeadResource
      */
     protected function gzipContent($filePath, $content)
     {
-        $gzip = gzopen($filePath. $this->gzFileExtension, $this->gzCompressionLevel);
+        $functionName = function_exists('gzopen') ? 'gzopen' : 'gzopen64';
+        $gzip = $functionName($filePath. $this->gzFileExtension, $this->gzCompressionLevel);
         gzputs($gzip, $content);
         gzclose($gzip);
     }
