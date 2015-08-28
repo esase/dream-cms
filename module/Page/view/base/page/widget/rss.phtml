@@ -1,0 +1,25 @@
+<div id="<?php echo $this->escapeHtmlAttr($this->wrapper_id) ?>" class="relative-wrapper feed-wrapper"></div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var wrapperId = "<?php echo $this->escapeJs($this->wrapper_id) ?>";
+        showLoadingBox(wrapperId);
+
+        $("#" + wrapperId).rss("<?php echo $this->escapeJs($this->url) ?>", {
+            'limit': <?php echo (int) $this->limit ?>,
+            'layoutTemplate': '<div class="feed-items">{entries}</div>',
+            'entryTemplate': '<?php echo $this->escapeJs($this->partial('page/widget/rss-template', [
+                'show_description' => $this->show_description,
+                'short_description' => $this->short_description
+            ])) ?>',
+            'onData': function () {
+                $("#" + wrapperId).find(".loading-ajax-wrapper").remove();
+            },
+            tokens: {
+                'formatted_date': function (entry) {
+                    return new Date(entry.publishedDate).toLocaleString()
+                }
+            }
+        });
+    });
+</script>

@@ -49,4 +49,5 @@ return [
     'Page\Module'                                  => __DIR__ . '/Module.php',
     'Page\Test\PageBootstrap'                      => __DIR__ . '/test/Bootstrap.php',
     'Page\Test\Model\PageNestedSetTest'            => __DIR__ . '/test/Page/src/Page/Model/PageNestedSetTest.php',
+    'Page\View\Widget\PageRssWidget'               => __DIR__ . '/src/Page/View/Widget/PageRssWidget.php'
 ];

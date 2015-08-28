@@ -1,0 +1,13 @@
+<div class="media">
+    <div class="media-body">
+        <h4 class="media-heading"><a href="{url}">{title}</a></h4>
+        <?php if($this->show_description): ?>
+            <?php if($this->short_description): ?>
+                <p>{shortBodyPlain}</p>
+            <?php else: ?>
+                <p>{bodyPlain}</p>
+            <?php endif ?>
+        <?php endif ?>
+        <time datetime="{date}">{formatted_date}</time>
+    </div>
+</div>
