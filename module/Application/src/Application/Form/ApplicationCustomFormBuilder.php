@@ -417,19 +417,20 @@ class ApplicationCustomFormBuilder extends Form
                     break;
 
                 case self::FIELD_IMAGE :
-                    $validMimeTypes = [
-                        'image/gif',
-                        'image/jpeg',
-                        'image/png'
+                    $validExtensions = [
+                        'gif',
+                        'png',
+                        'jpeg',
+                        'jpg'
                     ];
 
                     $elementValidators[] = [
-                        'name' => 'fileMimeType',
+                        'name' => 'fileExtension',
                         'options' => [
                             'message' => sprintf($this->translator->
-                                    translate('Alowed mime types are: %s'), implode(',', $validMimeTypes)),
+                                    translate('Allowed images extensions: %s'), implode(',', $validExtensions)),
 
-                            'mimeType' => $validMimeTypes
+                            'extension' => $validExtensions
                         ]
                     ];
 

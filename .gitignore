@@ -1,5 +1,6 @@
 DreamCMS.komodoproject
 .komodotools/*
+.idea/*
 data/session/*
 data/log/*
 !data/log/.htaccess
