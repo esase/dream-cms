@@ -124,3 +124,6 @@ table.table dl dt:first-child {
 ol.breadcrumb {
   margin-top: 20px;
 }
+.feed-wrapper {
+  min-height:100px;
+}

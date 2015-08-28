@@ -1,4 +1,5 @@
 <?php
+
 namespace Page;
 
 use Acl\Event\AclEvent;
@@ -19,7 +20,7 @@ class Module
     /**
      * Init
      *
-     * @param object $moduleManager
+     * @param \Zend\ModuleManager\ModuleManagerInterface $moduleManager
      */
     public function init(ModuleManagerInterface $moduleManager)
     {
@@ -28,13 +29,13 @@ class Module
 
         // clear cache
         $eventManager = AclEvent::getEventManager();
-        $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
+        $eventManager->attach(AclEvent::DELETE_ROLE, function () use ($moduleManager) {
             PageCacheUtility::clearPageCache();
         });
 
         // clear cache
         $eventManager = LocalizationEvent::getEventManager();
-        $eventManager->attach(LocalizationEvent::UNINSTALL, function ($e) {
+        $eventManager->attach(LocalizationEvent::UNINSTALL, function () {
             PageCacheUtility::clearPageCache();
         });
     }
@@ -52,9 +53,9 @@ class Module
             ],
             'Zend\Loader\StandardAutoloader' => [
                 'namespaces' => [
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ],
-            ],
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
+                ]
+            ]
         ];
     }
 
@@ -92,7 +93,8 @@ class Module
                 'pageSiteMapWidget' => 'Page\View\Widget\PageSiteMapWidget',
                 'pageContactFormWidget' => 'Page\View\Widget\PageContactFormWidget',
                 'pageSidebarMenuWidget' => 'Page\View\Widget\PageSidebarMenuWidget',
-                'pageShareButtonsWidget' => 'Page\View\Widget\PageShareButtonsWidget'
+                'pageShareButtonsWidget' => 'Page\View\Widget\PageShareButtonsWidget',
+                'pageRssWidget' => 'Page\View\Widget\PageRssWidget'
             ],
             'factories' => [
                 'pageTree' =>  function() {
@@ -142,7 +144,7 @@ class Module
 
                     return new \Page\View\Helper\PageInjectWidget($model->
                             getWidgetsConnections(LocalizationService::getCurrentLocalization()['language']));
-                },
+                }
             ]
         ];
     }
