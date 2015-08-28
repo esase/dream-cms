@@ -9,7 +9,7 @@ data/cache/config/*
 data/tmp/*
 !data/cache/.htaccess
 !data/session/.htaccess
-clear!data/tmp/.htaccess
+!data/tmp/.htaccess
 config/autoload/local.php
 config/autoload/*.local.php
 module/Example/*
