@@ -94,7 +94,8 @@ class Module
                 'pageContactFormWidget' => 'Page\View\Widget\PageContactFormWidget',
                 'pageSidebarMenuWidget' => 'Page\View\Widget\PageSidebarMenuWidget',
                 'pageShareButtonsWidget' => 'Page\View\Widget\PageShareButtonsWidget',
-                'pageRssWidget' => 'Page\View\Widget\PageRssWidget'
+                'pageRssWidget' => 'Page\View\Widget\PageRssWidget',
+                'pageRatingWidget' => 'Page\View\Widget\PageRatingWidget'
             ],
             'factories' => [
                 'pageTree' =>  function() {

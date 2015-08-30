@@ -1369,7 +1369,8 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (15, 'pageContactFormWidget', 5, 'public', 'Contact form', NULL, NULL, NULL, NULL),
 (16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL, NULL),
 (17, 'pageShareButtonsWidget', 5, 'public', 'Share buttons', NULL, NULL, NULL, 1),
-(18, 'pageRssWidget', 5, 'public', 'Rss', 1, NULL, NULL, 1);
+(18, 'pageRssWidget', 5, 'public', 'Rss', 1, NULL, NULL, 1),
+(19, 'pageRatingWidget', 5, 'public', 'Rating', NULL, NULL, NULL, 1);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1443,7 +1444,19 @@ INSERT INTO `page_system_widget_hidden` (`id`, `page_id`, `widget_id`) VALUES
 (27,  9,  17),
 (28,  11, 17),
 (29,  12, 17),
-(30,  13, 17);
+(30,  13, 17),
+(31,  2,  19),
+(32,  3,  19),
+(33,  4,  19),
+(34,  5,  19),
+(35,  6,  19),
+(36,  7,  19),
+(37,  8,  19),
+(38,  9,  19),
+(39,  11, 19),
+(40,  12, 19),
+(41,  13, 19);
+
 
 CREATE TABLE `page_system_widget_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
