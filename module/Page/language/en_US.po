@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-06-30 14:58+0600\n"
+"PO-Revision-Date: 2015-08-31 19:53+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,24 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Rating"
+msgstr "Rating"
+
+msgid "small_rating"
+msgstr "Small"
+
+msgid "big_rating"
+msgstr "Big"
+
+msgid "Minimum rating step should be greater than 0 and less or equals than 1"
+msgstr "Minimum rating step should be greater than 0 and less or equals than 1"
+
+msgid "Minimum rating step"
+msgstr "Minimum rating step"
+
+msgid "Rating size"
+msgstr "Rating size"
 
 msgid "Password reset page is not allowed for you!"
 msgstr "Password reset page is not allowed for you!"

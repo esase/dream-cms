@@ -21,6 +21,8 @@ DROP TABLE IF EXISTS `application_setting_value`;
 DROP TABLE IF EXISTS `application_time_zone`;
 DROP TABLE IF EXISTS `layout_list`;
 DROP TABLE IF EXISTS `localization_list`;
+DROP TABLE IF EXISTS `page_rating_track`;
+DROP TABLE IF EXISTS `page_rating`;
 DROP TABLE IF EXISTS `page_layout`;
 DROP TABLE IF EXISTS `page_structure`;
 DROP TABLE IF EXISTS `page_system`;
@@ -1677,7 +1679,9 @@ INSERT INTO `page_widget_setting` (`id`, `name`, `widget`, `label`, `type`, `req
 (10, 'page_rss_url', 18, 'Rss url', 'url', 1, 1, 1, NULL, NULL, NULL),
 (11, 'page_rss_limit', 18, 'Items limit', 'integer', 1, 2, 1, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0'),
 (12, 'page_rss_show_desc', 18, 'Show description', 'checkbox', NULL, 3, 1, NULL, NULL, NULL),
-(13, 'page_rss_use_short_desc', 18, 'Use a short description', 'checkbox', NULL, 4, 1, NULL, NULL, NULL);
+(13, 'page_rss_use_short_desc', 18, 'Use a short description', 'checkbox', NULL, 4, 1, NULL, NULL, NULL),
+(14, 'page_rating_size', 19, 'Rating size', 'select', 1, 1, 1, NULL, NULL, NULL),
+(15, 'page_rating_min_step', 19, 'Minimum rating step', 'float', 1, 1, 1, NULL, '$value =  (float) Localization\\Utility\\LocalizationLocale::convertFromLocalizedValue(''__value__'', ''float''); return $value > 0 && $value <= 1;', 'Minimum rating step should be greater than 0 and less or equals than 1');
 
 CREATE TABLE `page_widget_setting_predefined_value` (
     `setting_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1796,7 +1800,9 @@ INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUE
 (8,  'share_yahoo_messenger'),
 (8,  'share_yoolink'),
 (8,  'share_youmob'),
-(8,  'share_yummly');
+(8,  'share_yummly'),
+(14, 'small_rating'),
+(14, 'big_rating');
 
 CREATE TABLE `page_widget_setting_value` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1839,7 +1845,9 @@ INSERT INTO `page_widget_setting_default_value` (`id`, `setting_id`, `value`, `l
 (9,  9,  '1', NULL),
 (10, 11, '5', NULL),
 (11, 12, '1', NULL),
-(12, 13, '1', NULL);
+(12, 13, '1', NULL),
+(13, 14, 'big_rating', NULL),
+(14, 15, '0.5', NULL);
 
 CREATE TABLE `page_widget_visibility` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1851,6 +1859,31 @@ CREATE TABLE `page_widget_visibility` (
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (`widget_connection`) REFERENCES `page_widget_connection`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `page_rating` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `slug` VARCHAR(255) DEFAULT NULL,
+    `total_rating` FLOAT NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `page` (`page_id`, `slug`),
+    FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `page_rating_track` (
+    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `rating_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `ip` VARBINARY(16) NOT NULL,
+    `rating` FLOAT NOT NULL,
+    `created` INT(10) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `visitor` (`rating_id`, `ip`),
+    FOREIGN KEY (`rating_id`) REFERENCES `page_rating`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
