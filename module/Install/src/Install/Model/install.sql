@@ -1588,7 +1588,7 @@ CREATE TABLE `page_visibility` (
     FOREIGN KEY (`hidden`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`page_id`) REFERENCES `palimitge_structure`(`id`)
+    FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
