@@ -1372,7 +1372,7 @@ INSERT INTO `page_widget` (`id`, `name`, `module`, `type`, `description`, `dupli
 (16, 'pageSidebarMenuWidget', 5, 'public', 'Sidebar menu', NULL, NULL, NULL, NULL),
 (17, 'pageShareButtonsWidget', 5, 'public', 'Share buttons', NULL, NULL, NULL, 1),
 (18, 'pageRssWidget', 5, 'public', 'Rss', 1, NULL, NULL, 1),
-(19, 'pageRatingWidget', 5, 'public', 'Rating', NULL, NULL, NULL, 1);
+(19, 'pageRatingWidget', 5, 'public', 'Rating', NULL, NULL, NULL, NULL);
 
 CREATE TABLE `page_system_page_depend` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1588,7 +1588,7 @@ CREATE TABLE `page_visibility` (
     FOREIGN KEY (`hidden`) REFERENCES `acl_role`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
+    FOREIGN KEY (`page_id`) REFERENCES `palimitge_structure`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1868,6 +1868,7 @@ CREATE TABLE `page_rating` (
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
     `slug` VARCHAR(255) DEFAULT NULL,
     `total_rating` FLOAT NOT NULL,
+    `total_count` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE `page` (`page_id`, `slug`),
     FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)

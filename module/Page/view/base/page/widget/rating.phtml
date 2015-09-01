@@ -1,21 +1,29 @@
-<center>
-    <div id="rateit" class="rateit bigstar"></div>
-</center>
+<div class="text-center">
+    <div id="rateit" class="rateit <?php if ($this->big_rating): ?>bigstar<?php endif ?>"></div>
+</div>
 
 <script type="text/javascript">
     $("#rateit").rateit({
-        "readonly" : false, // if we already voted than disabled it
+        "readonly" : <?php if ($this->disable_rating): ?>true<?php else: ?>false<?php endif ?>,
         "resetable": false,
-        //"max": 115, // do we need clear track after each settings changes?
-        "value": 1, // already voted
-        "step": 0.5, // step should be less than max value
-        "starwidth": 32, // or 32 for big stars
-        "starheight": 32 // or 32 for big stars
+        "value": "<?php echo $this->escapeJs($this->rating) ?>",
+        "step": "<?php echo $this->escapeJs($this->step_rating) ?>",
+        "starwidth": <?php if ($this->big_rating): ?>32<?php else: ?>16<?php endif ?>,
+        "starheight": <?php if ($this->big_rating): ?>32<?php else: ?>16<?php endif ?>,
     }).bind('rated', function (event, value) {
-        alert('You\'ve rated it: ' + value);
-        $(this).rateit('value', 4.5);
-        $(this).rateit('readonly', true);
+        var self = this;
+
+        $.post("<?php echo $this->escapeJs($this->widget_url) ?>", {"widget_action" : "add_rating", "value" : value}, function(data){
+            data = $.parseJSON(data);
+
+            if (data.status == 'error') {
+                alert(data.message);
+                return;
+            }
+
+            // update rating value and disable it
+            $(self).rateit('value', data.value);
+            $(self).rateit('readonly', true);
+        });
     });
 </script>
-
-<!-- http://www.radioactivethinking.com/rateit/example/example.htm#ex_a1 -->

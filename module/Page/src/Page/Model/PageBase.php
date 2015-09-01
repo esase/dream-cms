@@ -1,6 +1,8 @@
 <?php
+
 namespace Page\Model;
 
+use Application\Utility\ApplicationErrorLogger;
 use Application\Model\ApplicationAbstractBase;
 use Localization\Service\Localization as LocalizationService;
 use Zend\Db\ResultSet\ResultSet;
@@ -8,6 +10,8 @@ use Application\Utility\ApplicationCache as CacheUtility;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
+use Zend\Http\PhpEnvironment\RemoteAddress;
+use Exception;
 
 class PageBase extends ApplicationAbstractBase
 {
@@ -919,5 +923,155 @@ class PageBase extends ApplicationAbstractBase
 
         self::$pagesMap = $pagesMap;
         return $pagesMap;
+    }
+
+    /**
+     * Is page already rated
+     *
+     * @param integer $pageId
+     * @param string $slug
+     * @return boolean
+     */
+    public function isPageRated($pageId, $slug = null)
+    {
+        $remote = new RemoteAddress;
+        $remote->setUseProxy(true);
+        $visitorIp = inet_pton($remote->getIpAddress());
+
+        $select = $this->select();
+        $select->from(['a' => 'page_rating'])
+            ->columns([
+                'id'
+            ])
+            ->join(
+                ['b' => 'page_rating_track'],
+                new Expression('a.id = b.rating_id and b.ip = ?', [$visitorIp]),
+                [
+                    'track_id' => 'id'
+                ],
+                'left'
+            )
+            ->where([
+                'page_id' => $pageId,
+                'slug' => $slug
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+        $data = $resultSet->current();
+
+        if ($data && $data['track_id']) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Add page rating
+     *
+     * @param integer $pageId
+     * @param float $ratingValue
+     * @param string $slug
+     * @return string|float
+     */
+    public function addPageRating($pageId, $ratingValue, $slug = null)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $pageRatingId = 0;
+            $remote = new RemoteAddress;
+            $remote->setUseProxy(true);
+            $visitorIp = inet_pton($remote->getIpAddress());
+
+            // check the page's rating existing
+            if (null == ($pageRateInfo = $this->getPageRatingInfo($pageId, $slug))) {
+                // create a new page rating
+                $insert = $this->insert()
+                    ->into('page_rating')
+                    ->values([
+                        'page_id' => $pageId,
+                        'slug' => $slug,
+                        'total_rating' => $ratingValue,
+                        'total_count' => 1
+                    ]);
+
+                $statement = $this->prepareStatementForSqlObject($insert);
+                $statement->execute();
+                $pageRatingId = $this->adapter->getDriver()->getLastGeneratedValue();
+            }
+            else {
+                // update the existing page's rating
+                $update = $this->update()
+                    ->table('page_rating')
+                    ->set([
+                        'total_rating' => new Expression('total_rating + ?', [
+                            $ratingValue
+                        ]),
+                        'total_count' => new Expression('total_count + 1')
+                    ])
+                    ->where([
+                        'page_id' => $pageId,
+                        'slug' => $slug
+                    ]);
+
+                $statement = $this->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+
+            // add a track info
+            $insert = $this->insert()
+                ->into('page_rating_track')
+                ->values([
+                    'rating_id' => !empty($pageRateInfo['id']) ? $pageRateInfo['id'] : $pageRatingId,
+                    'ip' => $visitorIp,
+                    'rating' => $ratingValue,
+                    'created' => time()
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return !empty($pageRateInfo)
+            ? ($pageRateInfo['total_rating'] + $ratingValue) / ($pageRateInfo['total_count'] + 1)
+            : $ratingValue;
+    }
+
+    /**
+     * Get page rating info
+     *
+     * @param integer $pageId
+     * @param string $slug
+     * @return array
+     */
+    public function getPageRatingInfo($pageId, $slug = null)
+    {
+        $select = $this->select();
+        $select->from('page_rating')
+            ->columns([
+                'id',
+                'total_rating',
+                'total_count'
+            ])
+            ->where([
+                'page_id' => $pageId,
+                'slug' => $slug
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
     }
 }

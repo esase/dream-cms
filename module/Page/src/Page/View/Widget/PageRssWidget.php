@@ -22,10 +22,8 @@ class PageRssWidget extends PageAbstractWidget
     public function getContent() 
     {
         if (null != ($rssUrl = trim($this->getWidgetSetting('page_rss_url')))) {
-            $wrapperId = 'rss-list-' . $this->widgetConnectionId;
-
             return $this->getView()->partial('page/widget/rss', [
-                'wrapper_id' => $wrapperId,
+                'wrapper_id' => 'rss-list-' . $this->widgetConnectionId,
                 'url' => $rssUrl,
                 'limit' => (int) $this->getWidgetSetting('page_rss_limit'),
                 'show_description' => (int) $this->getWidgetSetting('page_rss_show_desc') ? true : false,
