@@ -116,7 +116,7 @@ class UserEvent extends ApplicationAbstractEvent
 
                     $activateCode
                 ]
-            ]);
+            ], true);
     }
 
     /**
@@ -135,7 +135,7 @@ class UserEvent extends ApplicationAbstractEvent
         self::fireEvent(self::RESET_PASSWORD, 
                 $userId, $userId, 'Event - User reseted password', [$userInfo['nick_name'], $userId]);
 
-        // send an email password reseted notification
+        // send an email password reset notification
         EmailNotificationUtility::sendNotification($userInfo['email'],
             SettingService::getSetting('user_password_reseted_title'),
             SettingService::getSetting('user_password_reseted_message'), [
@@ -147,7 +147,7 @@ class UserEvent extends ApplicationAbstractEvent
                     $userInfo['nick_name'],
                     $newPassword
                 ]
-            ]);
+            ], true);
     }
 
     /**
@@ -251,7 +251,7 @@ class UserEvent extends ApplicationAbstractEvent
                         'replace' => [
                             $userInfo['nick_name']
                         ]
-                    ]);
+                    ], true);
         }
     }
 
@@ -298,7 +298,7 @@ class UserEvent extends ApplicationAbstractEvent
                             $userInfo['nick_name'],
                             $userInfo['email']
                         ]
-                    ]);
+                    ], true);
         }
     }
 
@@ -341,7 +341,7 @@ class UserEvent extends ApplicationAbstractEvent
                         $userInfo['nick_name'],
                         $userInfo['email']
                     ]
-                ]);
+                ], true);
     }
 
     /**
@@ -486,7 +486,7 @@ class UserEvent extends ApplicationAbstractEvent
                         ServiceLocatorService::getServiceLocator()->get('Translator')->
                                 translate($roleName, 'default', LocalizationService::getLocalizations()[$notificationLanguage]['locale'])
                     ]
-                ]);
+                ], true);
         }
     }
 }
