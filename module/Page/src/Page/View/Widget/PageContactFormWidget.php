@@ -44,7 +44,7 @@ class PageContactFormWidget extends PageAbstractWidget
                             $formData['phone'],
                             $formData['message']
                         ]
-                    ]);
+                    ], true);
 
                 // send the message
                 if (true === $sendResult) {

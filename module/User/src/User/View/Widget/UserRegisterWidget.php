@@ -71,7 +71,7 @@ class UserRegisterWidget extends UserAbstractWidget
                                             $this->getView()->url('page', ['page_name' => $activateUrl, 'slug' => $userInfo['slug']], ['force_canonical' => true]),
                                             $userInfo['activation_code']
                                         ]
-                                    ]);
+                                    ], true);
 
                                 $this->getFlashMessenger()
                                     ->setNamespace('success')
