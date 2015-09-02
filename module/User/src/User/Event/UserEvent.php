@@ -251,7 +251,7 @@ class UserEvent extends ApplicationAbstractEvent
                         'replace' => [
                             $userInfo['nick_name']
                         ]
-                    ], true);
+                    ]);
         }
     }
 
@@ -298,7 +298,7 @@ class UserEvent extends ApplicationAbstractEvent
                             $userInfo['nick_name'],
                             $userInfo['email']
                         ]
-                    ], true);
+                    ]);
         }
     }
 
@@ -341,7 +341,7 @@ class UserEvent extends ApplicationAbstractEvent
                         $userInfo['nick_name'],
                         $userInfo['email']
                     ]
-                ], true);
+                ]);
     }
 
     /**
@@ -486,7 +486,7 @@ class UserEvent extends ApplicationAbstractEvent
                         ServiceLocatorService::getServiceLocator()->get('Translator')->
                                 translate($roleName, 'default', LocalizationService::getLocalizations()[$notificationLanguage]['locale'])
                     ]
-                ], true);
+                ]);
         }
     }
 }
