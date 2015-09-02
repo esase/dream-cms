@@ -1,0 +1,29 @@
+<div class="text-center">
+    <div id="rateit" class="rateit <?php if ($this->big_rating): ?>bigstar<?php endif ?>"></div>
+</div>
+
+<script type="text/javascript">
+    $("#rateit").rateit({
+        "readonly" : <?php if ($this->disable_rating): ?>true<?php else: ?>false<?php endif ?>,
+        "resetable": false,
+        "value": "<?php echo $this->escapeJs($this->rating) ?>",
+        "step": "<?php echo $this->escapeJs($this->step_rating) ?>",
+        "starwidth": <?php if ($this->big_rating): ?>32<?php else: ?>16<?php endif ?>,
+        "starheight": <?php if ($this->big_rating): ?>32<?php else: ?>16<?php endif ?>,
+    }).bind('rated', function (event, value) {
+        var self = this;
+
+        $.post("<?php echo $this->escapeJs($this->widget_url) ?>", {"widget_action" : "add_rating", "value" : value}, function(data){
+            data = $.parseJSON(data);
+            $(self).rateit('readonly', true);
+
+            if (data.status == 'error') {
+                alert(data.message);
+                return;
+            }
+
+            // update rating
+            $(self).rateit('value', data.value);
+        });
+    });
+</script>
