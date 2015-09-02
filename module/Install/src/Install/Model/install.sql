@@ -656,7 +656,8 @@ INSERT INTO `acl_resource` (`id`, `resource`, `description`, `module`) VALUES
 (72, 'layouts_administration_upload_updates', 'ACL - Uploading  updates of layouts in admin area', 6),
 (73, 'layouts_administration_list_installed', 'ACL - Viewing installed layouts in admin area', 6),
 (74, 'layouts_administration_uninstall', 'ACL - Uninstalling layouts in admin area', 6),
-(75, 'layouts_administration_settings', 'ACL - Editing layouts settings in admin area', 6);
+(75, 'layouts_administration_settings', 'ACL - Editing layouts settings in admin area', 6),
+(76, 'pages_use_rating', 'ACL - Using rating on pages', 5);
 
 CREATE TABLE `acl_resource_connection` (
     `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -674,7 +675,9 @@ CREATE TABLE `acl_resource_connection` (
 
 INSERT INTO `acl_resource_connection` (`id`, `role`, `resource`) VALUES
 (1,  3, 39),
-(2,  2, 39);
+(2,  2, 39),
+(3,  3, 76),
+(4,  2, 76);
 
 CREATE TABLE `user_list` (
     `user_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1866,12 +1869,16 @@ CREATE TABLE `page_widget_visibility` (
 CREATE TABLE `page_rating` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `page_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `widget_connection` SMALLINT(5) UNSIGNED NOT NULL,
     `slug` VARCHAR(255) DEFAULT NULL,
     `total_rating` FLOAT NOT NULL,
     `total_count` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE `page` (`page_id`, `slug`),
     FOREIGN KEY (`page_id`) REFERENCES `page_structure`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`widget_connection`) REFERENCES `page_widget_connection`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

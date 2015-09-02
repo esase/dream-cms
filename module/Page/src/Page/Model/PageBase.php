@@ -972,11 +972,12 @@ class PageBase extends ApplicationAbstractBase
      * Add page rating
      *
      * @param integer $pageId
+     * @param integer $widgetConnectionId
      * @param float $ratingValue
      * @param string $slug
      * @return string|float
      */
-    public function addPageRating($pageId, $ratingValue, $slug = null)
+    public function addPageRating($pageId, $widgetConnectionId, $ratingValue, $slug = null)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -993,6 +994,7 @@ class PageBase extends ApplicationAbstractBase
                     ->into('page_rating')
                     ->values([
                         'page_id' => $pageId,
+                        'widget_connection' => $widgetConnectionId,
                         'slug' => $slug,
                         'total_rating' => $ratingValue,
                         'total_count' => 1

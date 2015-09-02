@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"page\" module\n"
 "POT-Creation-Date: 2013-07-22 00:12+0600\n"
-"PO-Revision-Date: 2015-09-01 11:25+0600\n"
+"PO-Revision-Date: 2015-09-02 10:30+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -930,3 +930,6 @@ msgstr "Редактирование настроек виджетов в адм
 
 msgid "ACL - Editing pages settings in admin area"
 msgstr "Редактирование настроек страниц в админке"
+
+msgid "ACL - Using rating on pages"
+msgstr "Использование рейтинга на страницах"

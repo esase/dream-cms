@@ -3,6 +3,7 @@
 namespace Page\View\Widget;
 
 use Page\Service\Page as PageService;
+use Acl\Service\Acl as AclService;
 
 class PageRatingWidget extends PageAbstractWidget
 {
@@ -54,8 +55,8 @@ class PageRatingWidget extends PageAbstractWidget
      */
     public function getContent() 
     {
-        // TODO: DO WE NEED ACL FOR RATE ??? - yes, not allowed visitors can only view rating. Don't forget also increase acl track after making rate
-        // TODO: Don't allow visitors vote twice
+        $disableRating = !AclService::checkPermission('pages_use_rating')
+                || $this->getModel()->isPageRated($this->pageId, $this->getPageSlug());
 
         // process actions
         if ($this->getRequest()->isPost()) {
@@ -64,7 +65,7 @@ class PageRatingWidget extends PageAbstractWidget
 
                 switch ($action) {
                     case 'add_rating' :
-                        return $this->getView()->json($this->addPageRating());
+                        return $this->getView()->json($this->addPageRating($disableRating));
 
                     default :
                 }
@@ -73,32 +74,33 @@ class PageRatingWidget extends PageAbstractWidget
 
         // get current page's rating info
         $pageRating = $this->getModel()->getPageRatingInfo($this->pageId, $this->getPageSlug());
+        $currentRating = $pageRating
+            ? $this->processRatingValue($pageRating['total_rating'] / $pageRating['total_count'])
+            : 0;
 
         return $this->getView()->partial('page/widget/rating', [
-            'rating' => $pageRating
-                ? $this->processRatingValue($pageRating['total_rating'] / $pageRating['total_count'])
-                : 0,
+            'rating' => $currentRating,
             'widget_url' => $this->getWidgetConnectionUrl(),
             'big_rating' => $this->getWidgetSetting('page_rating_size') == 'big_rating',
             'step_rating' => (float) $this->getWidgetSetting('page_rating_min_step'),
-            'disable_rating' => $this->getModel()->isPageRated($this->pageId, $this->getPageSlug())
+            'disable_rating' => $disableRating
         ]);
     }
 
     /**
      * Add page rating
      *
+     * @param boolean $disableRating
      * @return array
      */
-    protected function addPageRating()
+    protected function addPageRating($disableRating)
     {
         $ratingValue = (float) $this->getRequest()->getPost('value');
 
-        if ($ratingValue > 0 && $ratingValue <= self::MAX_RATING_VALUE
-                    && !$this->getModel()->isPageRated($this->pageId, $this->getPageSlug())) {
-
-            $value = $this->getModel()->
-                    addPageRating($this->pageId, $ratingValue, $this->getPageSlug());
+        if (!$disableRating && $ratingValue > 0 && $ratingValue <= self::MAX_RATING_VALUE) {
+            // add rating
+            $value = $this->getModel()->addPageRating($this->
+                    pageId, $this->widgetConnectionId, $ratingValue, $this->getPageSlug());
 
             if (!is_string($value)) {
                 return [

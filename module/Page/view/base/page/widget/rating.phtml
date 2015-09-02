@@ -15,15 +15,15 @@
 
         $.post("<?php echo $this->escapeJs($this->widget_url) ?>", {"widget_action" : "add_rating", "value" : value}, function(data){
             data = $.parseJSON(data);
+            $(self).rateit('readonly', true);
 
             if (data.status == 'error') {
                 alert(data.message);
                 return;
             }
 
-            // update rating value and disable it
+            // update rating
             $(self).rateit('value', data.value);
-            $(self).rateit('readonly', true);
         });
     });
 </script>
