@@ -1,0 +1,19 @@
+<?php $this->placeholder('body')->captureStart() ?>
+    <iframe frameborder="0" width="100%" height="500" src="<?php echo  $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'edit-page', 'slug' => $this->page_id], ['force_canonical' => true]) ?>?embed_mode=true"></iframe>
+<?php $this->placeholder('body')->captureEnd() ?>
+
+<?php
+    echo $this->partial('partial/popup', [
+        'popup_id' => 'popup-page-manager-window',
+        'title' => 'Edit the page',
+        'body' => $this->placeholder('body'),
+        'large' => true,
+        'hide_footer' => true
+    ])
+?>
+
+<script type="text/javascript">
+    $('#popup-page-manager-window').on('hidden.bs.modal', function () {
+        location.reload();
+    });
+</script>

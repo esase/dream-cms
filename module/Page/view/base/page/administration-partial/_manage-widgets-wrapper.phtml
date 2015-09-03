@@ -10,7 +10,8 @@
         'widgets_connections' => $this->widgets_connections,
         'allow_delete' => $this->aclCheckPermission('pages_administration_ajax_delete_widget'),
         'allow_view_dependents' => $this->aclCheckPermission('pages_administration_ajax_view_dependent_widgets'),
-        'allow_edit_settings' => $this->aclCheckPermission('pages_administration_edit_widget_settings')
+        'allow_edit_settings' => $this->aclCheckPermission('pages_administration_edit_widget_settings'),
+        'embed_mode' => $this->embed_mode
     ])?>
 <?php $this->placeholder('content')->captureEnd() ?>
 

@@ -1,0 +1,81 @@
+<?php $this->declareVars('extraActions') ?>
+
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'hide_action' => $this->widget_info['widget_depend_connection_id'] || $this->widget_info['widget_page_depend_connection_id'],
+        'controller' => 'pages-administration',
+        'action' => 'ajax-delete-widget',
+        'params' => [
+            'slug' => $this->widget_info['id']
+        ],
+        'name' => $this->translate('Delete widget'),
+        'check_acl' => true,
+        'confirm' => $this->translate('Widget will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), function(){location.href='{$this->url('application/page', ['controller' => 'pages-administration', 'action' => 'browse-widgets', 'slug' => $this->page_info['id']], ['force_canonical' => true, 'query' => ['embed_mode' => true]])}'}) }"
+    ]]
+]))
+?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'edit_page' => [
+            'name' => $this->pageTitle($this->page_info) . ' - ' . $this->translate('Edit the page'),
+            'controller' => 'pages-administration',
+            'action' => 'edit-page',
+            'check_acl' => true,
+            'params' => [
+                'slug' => $this->page_info['id']
+            ],
+            'queries' => [
+                'embed_mode' => true
+            ]
+        ],
+        'browse_widgets' => [
+            'name' => $this->pageTitle($this->page_info) . ' - ' . $this->translate('Browse widgets'),
+            'controller' => 'pages-administration',
+            'action' => 'browse-widgets',
+            'check_acl' => true,
+            'params' => [
+                'slug' => $this->page_info['id']
+            ],
+            'queries' => [
+                'embed_mode' => true
+            ]
+        ],
+        'widget_settings' => [
+            'name' =>  $this->pageWidgetTitle($this->widget_info) . ' - ' . $this->translate('Settings'),
+            'controller' => 'pages-administration',
+            'action' => 'widget-settings',
+            'check_acl' => true
+        ]
+    ]
+]) ?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+    <?php if ($this->extraActions): ?>
+        <div class="col-md-8">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Settings'),
+                'body' => $this->partial('partial/form', ['form' => $this->settings_form])
+            ]) ?>
+        </div>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-12">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Settings'),
+                'body' => $this->partial('partial/form', ['form' => $this->settings_form])
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>

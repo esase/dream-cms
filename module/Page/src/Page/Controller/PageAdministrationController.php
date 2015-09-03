@@ -366,6 +366,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
         // get a new selected page id
         $newParentId = $this->params()->fromQuery('page_id', null);
+        $embedMode   = $this->params()->fromQuery('embed_mode', null);
 
         // get a new parent info
         if ($newParentId && $newParentId != $parent['id']) {
@@ -440,18 +441,24 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('pages-administration', 'edit-page', [
-                    'slug' => $page['id']
-                ]);
+                return $this->redirectTo('pages-administration', 'edit-page', [], true);
             }
         }
 
-        return new ViewModel([
+        $view = new ViewModel([
             'page' => $page,
-            'pageForm' => $pageForm->getForm(),
+            'page_form' => $pageForm->getForm(),
             'page_id' => !empty($parent) ? $parent['id'] : null,
             'tree_disabled' => $page['level'] - 1 == PageNestedSet::ROOT_LEVEl
         ]);
+
+        // init embed mode
+        if ($embedMode) {
+            $this->layout('layout/blank');
+            $view->setTemplate('page/page-administration/embed-edit-page');
+        }
+
+        return $view;
     }
 
     /**
@@ -743,12 +750,17 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             return $this->redirectTo('pages-administration', 'list');
         }
 
-        $filters = [];
- 
+        $embedMode = $this->params()->fromQuery('embed_mode', null);
+        $filters   = [];
+
         // get a filter form
         $filterForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Page\Form\PageWidgetFilter');
+
+        if ($embedMode) {
+            $filterForm->setEmbedMode();
+        }
 
         $filterForm->setModel($this->getModel());
 
@@ -777,8 +789,19 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                     getModel()->getWidgetsConnections($this->getModel()->getCurrentLanguage())
         ]);
 
-        if ($request->isXmlHttpRequest()) {
-            $viewModel->setTemplate('page/administration-partial/browse-widgets-wrapper');
+        // init embed mode
+        if ($embedMode) {
+            $this->layout('layout/blank');
+            $viewModel->setTemplate('page/page-administration/embed-browse-widgets');
+
+            if ($request->isXmlHttpRequest()) {
+                $viewModel->setTemplate('page/administration-partial/embed-browse-widgets-wrapper');
+            }
+        }
+        else {
+            if ($request->isXmlHttpRequest()) {
+                $viewModel->setTemplate('page/administration-partial/browse-widgets-wrapper');
+            }
         }
 
         return $viewModel;
@@ -797,8 +820,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
 
             return $this->redirectTo('pages-administration', 'list');
         }
-        
-        $currentlanguage = LocalizationService::getCurrentLocalization()['language'];
+
+        $embedMode = $this->params()->fromQuery('embed_mode', null);
+        $currentLanguage = LocalizationService::getCurrentLocalization()['language'];
 
         // get settings model
         $settings = $this->getServiceLocator()
@@ -815,7 +839,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             ->setWidgetDescription($this->getTranslator()->translate($widget['widget_description']));
 
         // get settings list
-        $settingsList = $settings->getSettingsList($widget['id'], $widget['widget_id'], $currentlanguage);
+        $settingsList = $settings->getSettingsList($widget['id'], $widget['widget_id'], $currentLanguage);
         if (false !== $settingsList) {
             // add extra settings on the form
             $settingsForm->addFormElements($settingsList);
@@ -844,7 +868,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 }
 
                 if (true === ($result = $this->getModel()->
-                        saveWidgetSettings($widget, $settingsList, $settingsForm->getForm()->getData(), $currentlanguage))) {
+                        saveWidgetSettings($widget, $settingsList, $settingsForm->getForm()->getData(), $currentLanguage))) {
 
                     $this->flashMessenger()
                         ->setNamespace('success')
@@ -861,11 +885,19 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
             }
         }
 
-        return new ViewModel([
+        $viewModel = new ViewModel([
             'settings_form' => $settingsForm->getForm(),
             'page_info' => $this->getModel()->getStructurePageInfo($widget['page_id']),
             'widget_info' => $widget
         ]);
+
+        // init embed mode
+        if ($embedMode) {
+            $this->layout('layout/blank');
+            $viewModel->setTemplate('page/page-administration/embed-edit-widget-settings');
+        }
+
+        return $viewModel;
     }
 
     /**
