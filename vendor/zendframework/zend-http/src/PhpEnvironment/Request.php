@@ -217,7 +217,7 @@ class Request extends HttpRequest
         }
 
         // set headers
-        $headers = array();
+        $headers = [];
 
         foreach ($server as $key => $value) {
             if ($value || (!is_array($value) && strlen($value))) {
@@ -278,11 +278,11 @@ class Request extends HttpRequest
             }
 
             // set up a validator that check if the hostname is legal (not spoofed)
-            $hostnameValidator = new HostnameValidator(array(
+            $hostnameValidator = new HostnameValidator([
                 'allow'       => HostnameValidator::ALLOW_ALL,
                 'useIdnCheck' => false,
                 'useTldCheck' => false,
-            ));
+            ]);
             // If invalid. Reset the host & port
             if (!$hostnameValidator->isValid($host)) {
                 $host = null;
@@ -389,9 +389,9 @@ class Request extends HttpRequest
      */
     protected function mapPhpFiles()
     {
-        $files = array();
+        $files = [];
         foreach ($_FILES as $fileName => $fileParams) {
-            $files[$fileName] = array();
+            $files[$fileName] = [];
             foreach ($fileParams as $param => $data) {
                 if (!is_array($data)) {
                     $files[$fileName][$param] = $data;
@@ -513,6 +513,11 @@ class Request extends HttpRequest
                 $basePos  = strpos($path, $basename) ?: 0;
                 $baseUrl .= substr($path, 0, $basePos) . $basename;
             }
+        }
+
+        // If the baseUrl is empty, then simply return it.
+        if (empty($baseUrl)) {
+            return '';
         }
 
         // Does the base URL have anything in common with the request URI?

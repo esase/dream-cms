@@ -13,30 +13,30 @@ use Traversable;
 
 class CollectionInputFilter extends InputFilter
 {
-    /*
+    /**
      * @var bool
      */
     protected $isRequired = false;
 
-    /*
+    /**
      * @var int
      */
     protected $count = null;
 
-    /*
-     * @var array
+    /**
+     * @var array[]
      */
-    protected $collectionValues = array();
+    protected $collectionValues = [];
 
-    /*
-     * @var array
+    /**
+     * @var array[]
      */
-    protected $collectionRawValues = array();
+    protected $collectionRawValues = [];
 
-    /*
+    /**
      * @var array
      */
-    protected $collectionMessages = array();
+    protected $collectionMessages = [];
 
     /**
      * @var BaseInputFilter
@@ -60,7 +60,7 @@ class CollectionInputFilter extends InputFilter
             throw new Exception\RuntimeException(sprintf(
                 '%s expects an instance of %s; received "%s"',
                 __METHOD__,
-                'Zend\InputFilter\BaseInputFilter',
+                BaseInputFilter::class,
                 (is_object($inputFilter) ? get_class($inputFilter) : gettype($inputFilter))
             ));
         }
@@ -140,6 +140,8 @@ class CollectionInputFilter extends InputFilter
     public function setData($data)
     {
         $this->data = $data;
+
+        return $this;
     }
 
     /**
@@ -171,7 +173,7 @@ class CollectionInputFilter extends InputFilter
 
         foreach ($this->data as $key => $data) {
             if (!is_array($data)) {
-                $data = array();
+                $data = [];
             }
             $inputFilter->setData($data);
 
@@ -226,21 +228,21 @@ class CollectionInputFilter extends InputFilter
     /**
      * Clear collectionValues
      *
-     * @access public
+     * @return array[]
      */
     public function clearValues()
     {
-        return $this->collectionValues = array();
+        return $this->collectionValues = [];
     }
 
     /**
      * Clear collectionRawValues
      *
-     * @access public
+     * @return array[]
      */
     public function clearRawValues()
     {
-        return $this->collectionRawValues = array();
+        return $this->collectionRawValues = [];
     }
 
     /**

@@ -3,7 +3,7 @@
 ## SYSTEM REQUIREMENTS
 
     1. Apache WEB server 2 or later.
-    2. PHP 5.4.0 or later.
+    2. PHP 5.5 or later.
     3. MySQL 5 or later with InnoDb support.
     4. Memcached latest version or some of different cache engines such as: APC, WinCache, XCache.
 
