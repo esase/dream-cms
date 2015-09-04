@@ -1,4 +1,5 @@
 <?php
+
 namespace Page\Form;
 
 use Application\Form\ApplicationAbstractCustomForm;
@@ -7,6 +8,12 @@ use Page\Model\PageBase as PageBaseModel;
 
 class PageWidgetFilter extends ApplicationAbstractCustomForm 
 {
+    /**
+     * Embed mode
+     * @var boolean
+     */
+    protected $embedMode = false;
+
     /**
      * Form name
      * @var string
@@ -27,7 +34,7 @@ class PageWidgetFilter extends ApplicationAbstractCustomForm
 
     /**
      * Model
-     * @var object
+     * @var \Page\Model\PageBase
      */
     protected $model;
 
@@ -48,6 +55,11 @@ class PageWidgetFilter extends ApplicationAbstractCustomForm
             'label' => 'Module',
             'values' => []
         ],
+        'embed' => [
+            'name' => 'embed_mode',
+            'type' => ApplicationCustomFormBuilder::FIELD_HIDDEN,
+            'value' => true
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
@@ -58,7 +70,7 @@ class PageWidgetFilter extends ApplicationAbstractCustomForm
     /**
      * Get form instance
      *
-     * @return object
+     * @return \Application\Form\ApplicationCustomFormBuilder
      */
     public function getForm()
     {
@@ -67,6 +79,10 @@ class PageWidgetFilter extends ApplicationAbstractCustomForm
             if ($this->model) {
                 // fill the form with default values
                 $this->formElements['modules']['values'] = $this->model->getActiveModulesList();
+            }
+
+            if (!$this->embedMode) {
+                unset($this->formElements['embed']);
             }
 
             $this->form = new ApplicationCustomFormBuilder($this->formName,
@@ -79,12 +95,25 @@ class PageWidgetFilter extends ApplicationAbstractCustomForm
     /**
      * Set model
      *
-     * @param object $model
-     * @return object fluent interface
+     * @param \Page\Model\PageBase $model
+     * @return \Page\Form\PageWidgetFilter
      */
     public function setModel(PageBaseModel $model)
     {
         $this->model = $model;
+
         return $this;
+    }
+
+    /**
+     * Set embed mode
+     *
+     * @return \Page\Form\PageWidgetFilter
+     */
+    public function setEmbedMode()
+    {
+        $this->embedMode = true;
+
+        return true;
     }
 }

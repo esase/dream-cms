@@ -24,7 +24,7 @@
         e.preventDefault();
 
         // insert selected url to tinyMce
-        top.tinymce.activeEditor.windowManager.getParams().oninsert($(this).attr('href'));
-        top.tinymce.activeEditor.windowManager.close();
+        parent.tinymce.activeEditor.windowManager.getParams().oninsert($(this).attr('href'));
+        parent.tinymce.activeEditor.windowManager.close();
     });
 <?php $this->inlineScript()->captureEnd() ?>

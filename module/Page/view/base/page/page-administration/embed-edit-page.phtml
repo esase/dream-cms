@@ -1,0 +1,45 @@
+<?php $this->declareVars('extraActions') ?>
+<?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration.css', 'css', 'page')) ?>
+
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'controller' => 'pages-administration',
+        'action' => 'browse-widgets',
+        'params' => [
+            'slug' => $this->page['id']
+        ],
+        'query' => [
+            'embed_mode' => true
+        ],
+        'name' => $this->translate('Browse widgets'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<!-- pages wrapper -->
+<div class="row" id="pages-wrapper">
+    <?php if ($this->extraActions): ?>
+        <div class="col-md-8">
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Edit the page'),
+                'body' => $this->partial('partial/form', ['form' => $this->page_form])
+            ]) ?>
+        </div>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-12">
+            <?php echo $this->partial('administration-partial/panel', [
+                'notification' => false,
+                'title' => $this->translate('Edit the page'),
+                'body' => $this->partial('partial/form', ['form' => $this->page_form])
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>

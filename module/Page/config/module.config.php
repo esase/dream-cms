@@ -4,6 +4,7 @@ return [
     'controllers' => [
         'invokables' => [
             'pages-administration' => 'Page\Controller\PageAdministrationController',
+            'pages-ajax' => 'Page\Controller\PageAjaxController',
             'page' => 'Page\Controller\PageController',
             'page-xml-sitemap' => 'Page\Controller\PageXmlSiteMapController',
             'page-robot' => 'Page\Controller\PageRobotController'

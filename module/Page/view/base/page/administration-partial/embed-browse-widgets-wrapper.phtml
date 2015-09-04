@@ -1,46 +1,3 @@
-<?php $this->declareVars('extraActions', 'pagesTreeId') ?>
-
-<?php $this->pagesTreeId = 'pages-tree' ?>
-<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
-    [
-        'controller' => 'pages-administration',
-        'action' => 'edit-page',
-        'params' => [
-            'slug' => $this->page_info['id']
-        ],
-        'name' => $this->translate('Edit the page'),
-        'check_acl' => true
-    ],
-    [
-        'hide_action' => $this->page_info['right_key'] - $this->page_info['left_key'] != 1 || $this->page_info['dependent_page'],
-        'controller' => 'pages-administration',
-        'action' => 'delete-pages',
-        'name' => $this->translate('Delete the page'),
-        'check_acl' => true,
-        'confirm' => $this->translate('Page will be deleted. Are you sure?'),
-        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'pages' : [{$this->page_info['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'pages-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
-    ],
-    [
-        'controller' => 'pages-administration',
-        'action' => 'system-pages',
-        'name' => $this->translate('Add system pages'),
-        'query' => [
-            'page_id' => $this->page_info['id']
-        ],
-        'check_acl' => true
-    ],
-    [
-        'controller' => 'pages-administration',
-        'action' => 'add-custom-page',
-        'name' => $this->translate('Add a custom page'),
-        'query' => [
-            'page_id' => $this->page_info['id']
-        ],
-        'check_acl' => true
-    ]]
-]))
-?>
-
 <!-- notification -->
 <?php echo $this->partial('partial/notification') ?>
 
@@ -50,7 +7,8 @@
             'layouts' => $this->layouts,
             'page_info' => $this->page_info,
             'manage_layout' => $this->manage_layout,
-            'widgets_connections' => $this->widgets_connections
+            'widgets_connections' => $this->widgets_connections,
+            'embed_mode' => true
         ]) ?>
     </div>
     <div class="col-md-4">
@@ -67,16 +25,6 @@
                 ])
             ]) ?>
         <?php endif ?>
-
-        <?php if ($this->extraActions): ?>
-            <?php echo $this->extraActions ?>
-        <?php endif ?>
-
-        <?php echo $this->partial('administration-partial/panel', [
-            'notification' => false,
-            'title' => $this->translate('Viewing widgets'),
-            'body' => $this->pageTree($this->pagesTreeId, $this->page_info['id'], false, [], false, true)
-        ]) ?>
     </div>
 </div>
 

@@ -2,32 +2,23 @@
 <?php $this->layoutHeadScript()->appendFile($this->layoutAsset('widget.js', 'js', 'page')) ?>
 <?php $this->layoutHeadLink()->appendStylesheet($this->layoutAsset('administration.css', 'css', 'page')) ?>
 
-<?php $this->declareVars('subPageTitle') ?>
-<?php $this->subPageTitle = $this->translate('Browse widgets') ?>
-<?php $this->headTitle($this->subPageTitle) ?>
-<?php $this->headTitle($this->pageTitle($this->page_info)) ?>
-<?php $this->headTitle($this->translate('List of pages')) ?>
-    
-<!-- render a header -->
-<?php echo $this->render('page/page-administration/_header') ?>
-
-<!-- render tabs -->
-<?php echo $this->partial('administration-partial/tab', [
-    'tabs' => $this->baseTabs,
-    'active' => 'list' // selected action is "list"
-]) ?>
-
 <!-- render a breadcrumb -->
 <?php echo $this->partial('administration-partial/breadcrumb', [
     'pages' => [
-        'list' => [
-            'name' => $this->translate('List of pages'),
+        'edit_page' => [
+            'name' => $this->pageTitle($this->page_info) . ' - ' . $this->translate('Edit the page'),
             'controller' => 'pages-administration',
-            'action' => 'list',
-            'check_acl' => true
+            'action' => 'edit-page',
+            'check_acl' => true,
+            'params' => [
+                'slug' => $this->page_info['id']
+            ],
+            'queries' => [
+                'embed_mode' => true
+            ]
         ],
         'browse_widgets' => [
-            'name' => $this->pageTitle($this->page_info) . ' - ' . $this->subPageTitle,
+            'name' => $this->translate('Browse widgets'),
             'controller' => 'pages-administration',
             'action' => 'browse-widgets',
             'check_acl' => true
@@ -36,7 +27,7 @@
 ]) ?>
 
 <div id="widgets-wrapper">
-    <?php echo $this->partial('page/administration-partial/browse-widgets-wrapper', [
+    <?php echo $this->partial('page/administration-partial/embed-browse-widgets-wrapper', [
         'page' => $this->page,
         'page_info' => $this->page_info,
         'paginator' => $this->paginator,
