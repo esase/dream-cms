@@ -48,25 +48,19 @@ class Module
 
         $eventManager = AclEvent::getEventManager();
         $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
-            $users = $moduleManager->getEvent()->getParam('ServiceManager')
+            $userModel = $moduleManager->getEvent()->getParam('ServiceManager')
                 ->get('Application\Model\ModelManager')
                 ->getInstance('User\Model\UserBase');
 
             // change the empty role with the default role
-            if (null != ($usersList = $users->getUsersWithEmptyRole())) {
-                // process users list
-                foreach ($usersList as $userInfo) {
-                    $users->editUserRole($userInfo['user_id'], 
-                            AclBaseModel::DEFAULT_ROLE_MEMBER, AclBaseModel::DEFAULT_ROLE_MEMBER_NAME, $userInfo, true);
-                }
-            }
+            $userModel->updateUsersWithEmptyRoles(AclBaseModel::DEFAULT_ROLE_MEMBER);
         }, -100);
     }
 
     /**
      * Init application
      * 
-     * @param object $e
+     * @param \Zend\ModuleManager\ModuleEvent $e
      */
     public function initApplication(ModuleEvent $e)
     {
@@ -200,7 +194,7 @@ class Module
     }
 
     /**
-     * Return autoloader config array
+     * Return auto loader config array
      *
      * @return array
      */

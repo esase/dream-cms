@@ -583,29 +583,44 @@ class UserBase extends ApplicationAbstractBase
     }
 
     /**
-     * Get users with empty role
+     * Update users with empty roles
      *
-     * @return array
+     * @param integer $roleId
+     * @return boolean|string
      */
-    public function getUsersWithEmptyRole()
+    public function updateUsersWithEmptyRoles($roleId)
     {
-        $select = $this->select();
-        $select->from('user_list')
-            ->columns([
-                'user_id',
-                'nick_name',
-                'email',
-                'language'
-            ])
-            ->where([
-                new IsNullPredicate('role')
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('user_list')
+                ->set([
+                    'role' => $roleId,
+                    'date_edited' => date('Y-m-d')
+                ])
+                ->where([
+                    new IsNullPredicate('role')
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            // clear all users cache
+            $this->staticCacheInstance->clearByTags([
+                self::CACHE_USER_DATA_TAG
             ]);
 
-        $statement = $this->prepareStatementForSqlObject($select);
-        $resultSet = new ResultSet;
-        $resultSet->initialize($statement->execute());
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
 
-        return $resultSet->toArray();
+            return $e->getMessage();
+        }
+
+        return true;
     }
 
     /**
