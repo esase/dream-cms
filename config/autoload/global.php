@@ -13,6 +13,7 @@
 
 return [
     'support_url' => 'http://dream-cms.kg',
+    'installation_report_script' => 'install_report.php',
     'php_settings' => [
         'mbstring.internal_encoding' => 'UTF-8',
         'default_charset' => 'UTF-8'
