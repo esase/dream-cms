@@ -1,20 +1,26 @@
 <?php
+
 namespace Install\Controller;
 
 use Install\Form\Install as InstallForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Http\Client as HttpClient;
+use Exception;
 
 class IndexController extends AbstractActionController
 {
     /**
      * Model instance
-     * @var object  
+     *
+     * @var \Install\Model\InstallBase
      */
     protected $model;
 
     /**
      * Get model
+     *
+     * @return \Install\Model\InstallBase
      */
     protected function getModel()
     {
@@ -23,6 +29,32 @@ class IndexController extends AbstractActionController
         }
 
         return $this->model;
+    }
+
+    /**
+     * Send installation report
+     *
+     * @return void
+     */
+    protected function sendInstallationReport()
+    {
+        try {
+            $config = $this->serviceLocator->get('config');
+            $url = $config['support_url'] . '/' . $config['installation_report_script'];
+            $url .= '?site=' . $this->serviceLocator->get('viewHelperManager')->get('serverUrl')->__invoke(true);
+
+            $culConfig = [
+                'adapter' => 'Zend\Http\Client\Adapter\Curl',
+                'curloptions' => [
+                    CURLOPT_FOLLOWLOCATION => true
+                ]
+            ];
+
+            $curlClient = new HttpClient($url, $culConfig);
+            $curlClient->send();
+        }
+        catch(Exception $e)
+        {}
     }
 
     /**
@@ -77,6 +109,9 @@ class IndexController extends AbstractActionController
                             'module_dir' => $this->getModel()->getInstallModuleDirPath()
                         ])
                         ->setTemplate('install/index/finish');
+
+                    // send the installation report
+                    $this->sendInstallationReport();
 
                     return $viewModel;
                 }
