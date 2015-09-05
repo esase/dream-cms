@@ -1,4 +1,24 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ */
 namespace Acl\Form;
 
 use Application\Form\ApplicationAbstractCustomForm;
@@ -14,24 +34,28 @@ class AclRole extends ApplicationAbstractCustomForm
 
     /**
      * Form name
+     *
      * @var string
      */
     protected $formName = 'acl-role';
 
     /**
      * Model instance
-     * @var object  
+     *
+     * @var \Acl\Model\AclAdministration
      */
     protected $model;
 
     /**
      * Role id
+     *
      * @var integer
      */
     protected $roleId;
 
     /**
      * Form elements
+     *
      * @var array
      */
     protected $formElements = [
@@ -52,7 +76,7 @@ class AclRole extends ApplicationAbstractCustomForm
     /**
      * Get form instance
      *
-     * @return object
+     * @return \Application\Form\ApplicationCustomFormBuilder
      */
     public function getForm()
     {
@@ -75,16 +99,17 @@ class AclRole extends ApplicationAbstractCustomForm
 
         return $this->form;
     }
-    
+
     /**
      * Set a model
      *
-     * @param object $model
-     * @return object fluent interface
+     * @param \Acl\Model\AclAdministration $model
+     * @return \Acl\Form\AclRole
      */
     public function setModel(AclAdministrationModel $model)
     {
         $this->model = $model;
+
         return $this;
     }
 
@@ -92,11 +117,12 @@ class AclRole extends ApplicationAbstractCustomForm
      * Set a role id
      *
      * @param integer $roleId
-     * @return object fluent interface
+     * @return \Acl\Form\AclRole
      */
     public function setRoleId($roleId)
     {
         $this->roleId = $roleId;
+
         return $this;
     }
 

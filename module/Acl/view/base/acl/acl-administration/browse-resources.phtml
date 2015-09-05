@@ -1,7 +1,7 @@
-<?php use Acl\Model\AclBase as AclBaseModel ?>
+<?php use Acl\Model\AclBase as AclBaseModel; ?>
 
 <?php $this->declareVars('extraActions', 'subPageTitle', 'content') ?>
-<?php $this->subPageTitle = $this->translate($this->roleInfo['name']) ?>
+<?php $this->subPageTitle = $this->translate($this->role_info['name']) ?>
 <?php $this->headTitle($this->subPageTitle) ?>
 <?php $this->headTitle($this->translate('List of roles')) ?>
 
@@ -44,17 +44,17 @@
     'default_order_type' => 'desc',
     'filter_form' => $this->filter_form,
     'headers' => [
-        0 => [
+        [
             'title' => $this->translate('ID'),
             'order_name' => 'id'
         ],
-        1 => [
+        [
             'title' => $this->translate('Description')
         ],
-        2 => [
+        [
             'title' => $this->translate('Module')
         ],
-        3 => [
+        [
             'title' => $this->translate('Status'),
             'order_name' => 'connection'
         ]
@@ -75,7 +75,7 @@
         'regular_actions' => [
         ],
         'multiple_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Allow selected'),
                 'controller' => 'acl-administration',
                 'action' => 'allow-resources',
@@ -84,7 +84,7 @@
                 ],
                 'check_acl' => true
             ],
-            1 => [
+            [
                 'name' => $this->translate('Disallow selected'),
                 'controller' => 'acl-administration',
                 'action' => 'disallow-resources',
@@ -95,14 +95,14 @@
             ]
         ],
         'single_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Resource\'s settings'),
                 'controller' => 'acl-administration',
                 'action' => 'resource-settings',
                 'check_acl' => true,
                 'image' => $this->layoutAsset('icon/setting_action.png', 'image'),
                 'param' => 'connection'
-            ],
+            ]
         ]
     ],
     'actions_options' => [
@@ -115,7 +115,7 @@
     'actions_extra_check' => [
         'single_actions' => [
             'resource-settings' => [
-                0 => [
+                [
                     'param' => 'connection',
                     'condition' =>  'return (int) "__value__" > 0;'
                 ]
@@ -126,23 +126,23 @@
 
 <?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
     [
-        'hide_action' => AclBaseModel::ROLE_TYPE_SYSTEM == $this->roleInfo['type'],
+        'hide_action' => AclBaseModel::ROLE_TYPE_SYSTEM == $this->role_info['type'],
         'controller' => 'acl-administration',
         'action' => 'edit-role',
         'params' => [
-            'slug' => $this->roleInfo['id']
+            'slug' => $this->role_info['id']
         ],
         'name' => $this->translate('Edit the role'),
         'check_acl' => true
     ],
     [
-        'hide_action' => AclBaseModel::ROLE_TYPE_SYSTEM == $this->roleInfo['type'],
+        'hide_action' => AclBaseModel::ROLE_TYPE_SYSTEM == $this->role_info['type'],
         'controller' => 'acl-administration',
         'action' => 'delete-roles',
         'name' => $this->translate('Delete the role'),
         'check_acl' => true,
         'confirm' => $this->translate('Role will be deleted. Are you sure?'),
-        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'roles' : [{$this->roleInfo['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'acl-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'roles' : [{$this->role_info['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'acl-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
     ],
     [
         'controller' => 'acl-administration',

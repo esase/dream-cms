@@ -1,10 +1,30 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Acl\Service;
 
 use User\Service\UserIdentity as UserIdentityService;
 use Acl\Model\AclBase as AclBaseModel;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
-
 use Zend\Permissions\Acl\AclInterface;
 use Zend\Permissions\Acl\Acl as AclZend;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
@@ -19,18 +39,21 @@ class Acl
 
     /**
      * Current acl
-     * @var object
+     *
+     * @var \Zend\Permissions\Acl\AclInterface
      */
     protected static $currentAcl = null;
 
     /**
      * Current acl resources
-     * @var object
+     *
+     * @var array
      */
     protected static $currentAclResources;
 
     /**
      * Acl roles
+     *
      * @var array
      */
     protected static $aclRoles;
@@ -39,6 +62,7 @@ class Acl
      * Get acl roles
      *
      * @param boolean $excludeGuest
+     * @param boolean $excludeAdmin
      * @return array
      */
     public static function getAclRoles($excludeGuest = true, $excludeAdmin = false)
@@ -69,7 +93,7 @@ class Acl
     /**
      * Get current acl resources
      *
-     * @return object
+     * @return array
      */
     public static function getCurrentAclResources()
     {
@@ -79,7 +103,7 @@ class Acl
     /**
      * Set current acl
      *
-     * @param object $acl
+     * @param \Zend\Permissions\Acl\AclInterface $acl
      * @return void
      */
     public static function setCurrentAcl(AclInterface $acl)
@@ -90,7 +114,7 @@ class Acl
     /**
      * Get current acl
      *
-     * @return object
+     * @return \Zend\Permissions\Acl\AclInterface
      */
     public static function getCurrentAcl()
     {
