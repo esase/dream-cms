@@ -14,6 +14,7 @@
 <script type="text/javascript">
     require(["<?php echo $this->layoutAsset('tinymce/jquery.tinymce.min.js') ?>"], function() {
         $('#<?php echo $this->form_name ?> .htmlarea').tinymce({
+            valid_elements : '*[*]',
             directionality : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguageDirection()) ?>',
             script_url : '<?php echo $this->escapeJs($this->basePath() . '/' . $this->layoutAsset('tinymce/tinymce.min.js')) ?>',
             language : '<?php echo $this->escapeJs($this->localization()->getCurrentLanguage()) ?>',
