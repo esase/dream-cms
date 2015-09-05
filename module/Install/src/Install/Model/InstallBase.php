@@ -82,7 +82,7 @@ class InstallBase
      * Php version 
      * @var string
      */
-    protected $phpVersion = '5.4.12';
+    protected $phpVersion = '5.5';
 
     /**
      * Intl version

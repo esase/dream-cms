@@ -13,7 +13,7 @@
         }
     },
     "require": {
-        "php": ">=5.3.23",
+        "php": ">=5.5",
         "zendframework/zend-stdlib": "~2.5",
         "zendframework/zend-servicemanager": "~2.5",
         "zendframework/zend-serializer": "~2.5",
@@ -27,11 +27,14 @@
     "suggest": {
         "zendframework/zend-serializer": "Zend\\Serializer component",
         "zendframework/zend-session": "Zend\\Session component",
-        "ext-apc": "APC >= 3.1.6 to use the APC storage adapter",
+        "ext-apcu": "APCU, to use the APC storage adapter",
         "ext-dba": "DBA, to use the DBA storage adapter",
+        "ext-memcache": "Memcache >= 2.0.0 to use the Memcache storage adapter",
         "ext-memcached": "Memcached >= 1.0.0 to use the Memcached storage adapter",
         "ext-mongo": "Mongo, to use MongoDb storage adapter",
+        "ext-redis": "Redis, to use Redis storage adapter",
         "ext-wincache": "WinCache, to use the WinCache storage adapter",
+        "ext-xcache": "XCache, to use the XCache storage adapter",
         "mongofill/mongofill": "Alternative to ext-mongo - a pure PHP implementation designed as a drop in replacement"
     },
     "minimum-stability": "dev",

@@ -44,10 +44,6 @@ class Apc extends AbstractAdapter implements
      */
     public function __construct($options = null)
     {
-        if (version_compare('3.1.6', phpversion('apc')) > 0) {
-            throw new Exception\ExtensionNotLoadedException("Missing ext/apc >= 3.1.6");
-        }
-
         $enabled = ini_get('apc.enabled');
         if (PHP_SAPI == 'cli') {
             $enabled = $enabled && (bool) ini_get('apc.enable_cli');
@@ -244,7 +240,7 @@ class Apc extends AbstractAdapter implements
         }
 
         $prefix       = $namespace . $options->getNamespaceSeparator();
-        $internalKeys = array();
+        $internalKeys = [];
         foreach ($normalizedKeys as $normalizedKey) {
             $internalKeys[] = $prefix . $normalizedKey;
         }
@@ -253,7 +249,7 @@ class Apc extends AbstractAdapter implements
 
         // remove namespace prefix
         $prefixL = strlen($prefix);
-        $result  = array();
+        $result  = [];
         foreach ($fetch as $internalKey => & $value) {
             $result[substr($internalKey, $prefixL)] = $value;
         }
@@ -293,13 +289,13 @@ class Apc extends AbstractAdapter implements
         }
 
         $prefix       = $namespace . $options->getNamespaceSeparator();
-        $internalKeys = array();
+        $internalKeys = [];
         foreach ($normalizedKeys as $normalizedKey) {
             $internalKeys[] = $prefix . $normalizedKey;
         }
 
         $exists  = apc_exists($internalKeys);
-        $result  = array();
+        $result  = [];
         $prefixL = strlen($prefix);
         foreach ($exists as $internalKey => $bool) {
             if ($bool === true) {
@@ -354,7 +350,7 @@ class Apc extends AbstractAdapter implements
      */
     protected function internalGetMetadatas(array & $normalizedKeys)
     {
-        $keysRegExp = array();
+        $keysRegExp = [];
         foreach ($normalizedKeys as $normalizedKey) {
             $keysRegExp[] = preg_quote($normalizedKey, '/');
         }
@@ -373,7 +369,7 @@ class Apc extends AbstractAdapter implements
 
         $format  = APC_ITER_ALL ^ APC_ITER_VALUE ^ APC_ITER_TYPE ^ APC_ITER_REFCOUNT;
         $it      = new BaseApcIterator('user', $pattern, $format, 100, APC_LIST_ACTIVE);
-        $result  = array();
+        $result  = [];
         foreach ($it as $internalKey => $metadata) {
             // @see http://pecl.php.net/bugs/bug.php?id=22564
             if (!apc_exists($internalKey)) {
@@ -431,7 +427,7 @@ class Apc extends AbstractAdapter implements
         }
 
         $prefix                = $namespace . $options->getNamespaceSeparator();
-        $internalKeyValuePairs = array();
+        $internalKeyValuePairs = [];
         foreach ($normalizedKeyValuePairs as $normalizedKey => &$value) {
             $internalKey = $prefix . $normalizedKey;
             $internalKeyValuePairs[$internalKey] = &$value;
@@ -495,7 +491,7 @@ class Apc extends AbstractAdapter implements
         }
 
         $prefix                = $namespace . $options->getNamespaceSeparator();
-        $internalKeyValuePairs = array();
+        $internalKeyValuePairs = [];
         foreach ($normalizedKeyValuePairs as $normalizedKey => $value) {
             $internalKey = $prefix . $normalizedKey;
             $internalKeyValuePairs[$internalKey] = $value;
@@ -574,7 +570,7 @@ class Apc extends AbstractAdapter implements
         }
 
         $prefix       = $namespace . $options->getNamespaceSeparator();
-        $internalKeys = array();
+        $internalKeys = [];
         foreach ($normalizedKeys as $normalizedKey) {
             $internalKeys[] = $prefix . $normalizedKey;
         }
@@ -666,8 +662,8 @@ class Apc extends AbstractAdapter implements
             $capabilities = new Capabilities(
                 $this,
                 $marker,
-                array(
-                    'supportedDatatypes' => array(
+                [
+                    'supportedDatatypes' => [
                         'NULL'     => true,
                         'boolean'  => true,
                         'integer'  => true,
@@ -676,12 +672,12 @@ class Apc extends AbstractAdapter implements
                         'array'    => true,
                         'object'   => 'object',
                         'resource' => false,
-                    ),
-                    'supportedMetadata' => array(
+                    ],
+                    'supportedMetadata' => [
                         'internal_key',
                         'atime', 'ctime', 'mtime', 'rtime',
                         'size', 'hits', 'ttl',
-                    ),
+                    ],
                     'minTtl'             => 1,
                     'maxTtl'             => 0,
                     'staticTtl'          => true,
@@ -691,7 +687,7 @@ class Apc extends AbstractAdapter implements
                     'maxKeyLength'       => 5182,
                     'namespaceIsPrefix'  => true,
                     'namespaceSeparator' => $this->getOptions()->getNamespaceSeparator(),
-                )
+                ]
             );
 
             // update namespace separator on change option
@@ -721,7 +717,7 @@ class Apc extends AbstractAdapter implements
     protected function normalizeMetadata(array & $metadata)
     {
         $apcMetadata = $metadata;
-        $metadata = array(
+        $metadata = [
             'internal_key' => isset($metadata['key']) ? $metadata['key'] : $metadata['info'],
             'atime'        => isset($metadata['access_time']) ? $metadata['access_time'] : $metadata['atime'],
             'ctime'        => isset($metadata['creation_time']) ? $metadata['creation_time'] : $metadata['ctime'],
@@ -730,7 +726,7 @@ class Apc extends AbstractAdapter implements
             'size'         => $metadata['mem_size'],
             'hits'         => isset($metadata['nhits']) ? $metadata['nhits'] : $metadata['num_hits'],
             'ttl'          => $metadata['ttl'],
-        );
+        ];
     }
 
     /**

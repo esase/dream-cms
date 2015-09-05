@@ -26,9 +26,8 @@ class CaptureCache extends AbstractPattern
             $pageId = $this->detectPageId();
         }
 
-        $that = $this;
-        ob_start(function ($content) use ($that, $pageId) {
-            $that->set($content, $pageId);
+        ob_start(function ($content) use ($pageId) {
+            $this->set($content, $pageId);
 
             // http://php.net/manual/function.ob-start.php
             // -> If output_callback  returns FALSE original input is sent to the browser.
@@ -324,7 +323,7 @@ class CaptureCache extends AbstractPattern
             // -> create directories one by one and set permissions
 
             // find existing path and missing path parts
-            $parts = array();
+            $parts = [];
             $path  = $pathname;
             while (!file_exists($path)) {
                 array_unshift($parts, basename($path));
