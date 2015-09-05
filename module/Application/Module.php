@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Application;
 
 use User\Service\UserIdentity as UserIdentityService;
@@ -23,15 +44,17 @@ use Exception;
 class Module implements ConsoleUsageProviderInterface
 {
     /**
-     * Service managerzend
-     * @var object
+     * Service manager
+     *
+     * @var \Zend\ServiceManager\ServiceManager
      */
     protected $serviceLocator;
 
     /**
      * Init
      *
-     * @param object $moduleManager
+     * @param \Zend\ModuleManager\ModuleManagerInterface $moduleManager
+     * @return void
      */
     public function init(ModuleManagerInterface $moduleManager)
     {
@@ -44,6 +67,9 @@ class Module implements ConsoleUsageProviderInterface
 
     /**
      * Bootstrap
+     *
+     * @param \Zend\Mvc\MvcEvent $e
+     * @return void
      */
     public function onBootstrap(MvcEvent $e)
     {
@@ -69,6 +95,9 @@ class Module implements ConsoleUsageProviderInterface
 
     /**
      * Init profiler
+     *
+     * @param \Zend\Mvc\MvcEvent $e
+     * @return void
      */
     public function initProfiler(MvcEvent $e)
     {
@@ -115,10 +144,10 @@ class Module implements ConsoleUsageProviderInterface
 
     /**
      * Init application
-     * 
-     * @param object $e
+     *
+     * @return void
      */
-    public function initApplication(ModuleEvent $e)
+    public function initApplication()
     {
         // init php settings
         $this->initPhpSettings();
@@ -137,18 +166,20 @@ class Module implements ConsoleUsageProviderInterface
         }
 
         $eventManager = LocalizationEvent::getEventManager();
-        $eventManager->attach(LocalizationEvent::UNINSTALL, function ($e) {
+        $eventManager->attach(LocalizationEvent::UNINSTALL, function () {
             ApplicationCacheUtility::clearSettingCache();
         });
     }
 
     /**
      * Init sql strict mode
+     *
+     * @return void
      */
     protected function initSqlStrictMode()
     {
         try {
-            $applicationInit = $this->serviceLocator
+             $this->serviceLocator
                 ->get('Application\Model\ModelManager')
                 ->getInstance('Application\Model\ApplicationInit')
                 ->setStrictSqlMode();
@@ -160,6 +191,8 @@ class Module implements ConsoleUsageProviderInterface
 
     /**
      * Init session
+     *
+     * @return void
      */
     protected function initSession()
     {
@@ -196,6 +229,8 @@ class Module implements ConsoleUsageProviderInterface
 
     /**
      * Init php settings
+     *
+     * @return void
      */
     protected function initPhpSettings()
     {
@@ -215,6 +250,8 @@ class Module implements ConsoleUsageProviderInterface
 
     /**
      * Get config
+     *
+     * @return array
      */
     public function getConfig()
     {
@@ -223,6 +260,8 @@ class Module implements ConsoleUsageProviderInterface
 
     /**
      * Get service config
+     *
+     * @return array
      */
     public function getServiceConfig()
     {
@@ -265,6 +304,7 @@ class Module implements ConsoleUsageProviderInterface
                     ]);
     
                     $cache->setOptions($this->serviceLocator->get('Config')['static_cache']);
+
                     return $cache;
                 },
                 'Application\Cache\Dynamic' => function() {
@@ -310,6 +350,7 @@ class Module implements ConsoleUsageProviderInterface
                     }
 
                     $cache->setOptions($cacheOptions);
+
                     return $cache;
                 },
                 'Application\Model\ModelManager' => function() {
@@ -325,6 +366,8 @@ class Module implements ConsoleUsageProviderInterface
 
     /** 
      * Get view helper config
+     *
+     * @return array
      */
     public function getViewHelperConfig()
     {
@@ -370,7 +413,7 @@ class Module implements ConsoleUsageProviderInterface
     /**
      * Get console usage info
      *
-     * @param object $console
+     * @param \Zend\Console\Adapter\AdapterInterface $console
      * @return array
      */
     public function getConsoleUsage(Console $console)
@@ -386,7 +429,9 @@ class Module implements ConsoleUsageProviderInterface
     }
 
     /**
-     * Get autoloader config
+     * Get auto loader config
+     *
+     * @return  array
      */
     public function getAutoloaderConfig()
     {
@@ -396,7 +441,7 @@ class Module implements ConsoleUsageProviderInterface
             ],
             'Zend\Loader\StandardAutoloader' => [
                 'namespaces' => [
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
                 ]
             ]
         ];

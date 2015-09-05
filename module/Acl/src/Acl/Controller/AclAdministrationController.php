@@ -327,7 +327,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
     }
 
     /**
-     * Acl roles list 
+     * Acl roles list
      */
     public function listAction()
     {
