@@ -1,5 +1,3 @@
-DreamCMS.komodoproject
-.komodotools/*
 .idea/*
 data/session/*
 data/log/*
@@ -11,10 +9,6 @@ data/tmp/*
 !data/session/.htaccess
 !data/tmp/.htaccess
 config/autoload/local.php
-config/autoload/*.local.php
-module/Example/*
-module/Example2/*
-public_html/layout/base/example/
 public_html/layout_cache/css/*
 !public_html/layout_cache/css/.htaccess
 public_html/layout_cache/js/*
@@ -27,6 +21,3 @@ public_html/resource/user/thumbnail/*
 !public_html/resource/user/.htaccess
 public_html/resource/filemanager/*
 !public_html/resource/filemanager/.htaccess
-public_html/resource/example/
-public_html/resource/example2/
-nbproject/
