@@ -18,19 +18,19 @@
         'default_order_type' => 'desc',
         'filter_form' => $this->filter_form,
         'headers' => [
-            0 => [
+            [
                 'title' => $this->translate('Name'),
                 'order_name' => 'name'
             ],
-            1 => [
+            [
                 'title' => $this->translate('Type'),
                 'order_name' => 'type'
             ],
-            2 => [
+            [
                 'title' => $this->translate('Modified date'),
                 'order_name' => 'date'
             ],
-            3 => [
+            [
                 'title' => $this->translate('File size'),
                 'order_name' => 'size'
             ]
@@ -56,7 +56,7 @@
         ],
         'actions' => [
             'regular_actions' => [
-                0 => [
+                [
                     'name' => $this->translate('Add a directory'),
                     'controller' => $this->applicationRoute()->getParam('controller'),
                     'action' => 'add-directory',
@@ -65,7 +65,7 @@
                     ],
                     'check_acl' => true
                 ],
-                1 => [
+                [
                     'name' => $this->translate('Add a file'),
                     'controller' => $this->applicationRoute()->getParam('controller'),
                     'action' => 'add-file',
@@ -76,7 +76,7 @@
                 ]
             ],
             'multiple_actions' => [
-                0 => [
+                [
                     'name' => $this->translate('Delete selected'),
                     'controller' => $this->applicationRoute()->getParam('controller'),
                     'action' => 'delete',
@@ -88,14 +88,14 @@
                 ],
             ],
             'single_actions' => [
-                0 => [
+                [
                     'name' => $this->translate('View image'),
                     'js' => 'showImage(\'__value__\')',
                     'check_acl' => false,
                     'action' => 'view-image',
                     'image' => $this->layoutAsset('icon/eye_action.png', 'image', 'filemanager')
                 ],
-                1 => [
+                [
                     'name' => $this->translate('Edit'),
                     'controller' => $this->applicationRoute()->getParam('controller'),
                     'action' => 'edit',
@@ -121,7 +121,7 @@
         'actions_extra_check' => [
             'single_actions' => [
                 'view-image' => [
-                    0 => [
+                    [
                         'param' => 'name',
                         'condition' =>  '$basePath = "' . $this->current_directory . '"; $fileName = "__value__";
                                 return !is_dir($basePath . $fileName) && in_array(Application\Utility\ApplicationFileSystem::getFileExtension($fileName), explode(",", "' . strtolower($this->applicationSetting('file_manager_image_extensions')) . '"));'
