@@ -91,7 +91,7 @@ class Module
     /**
      * Return path to config file
      *
-     * @return boolean
+     * @return array
      */
     public function getConfig()
     {

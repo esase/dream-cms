@@ -1,8 +1,28 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Layout\View\Helper;
 
 use Layout\Service\Layout as LayoutService;
-use Layout\View\Helper\LayoutHeadResource as LayoutHeadResource;
 use Application\Service\ApplicationSetting as SettingService;
 use Zend\View\Helper\HeadLink as BaseHeadLink;
 
@@ -11,33 +31,37 @@ class LayoutHeadLink extends BaseHeadLink
     use LayoutHeadResource;
 
     /**
+     * Max css nested files imports
+     */
+    const MAX_CSS_NESTED_FILES_IMPORTS = 10;
+
+    /**
      * Css file type
+     *
      * @var string
      */
     protected $cssFileType = 'text/css';
 
     /**
      * Css file rel
+     *
      * @var string
      */
     protected $cssFileRel = 'stylesheet';
 
     /**
      * Cache css file extension
+     *
      * @var string
      */
     protected $cacheCssFileExtension = '.css';
 
     /**
      * Css imports reg expression
+     *
      * @var string
      */
     protected $cssImportsExpression = '/@import.*?[\'|\"]+(?P<importUrl>[a-zA-Z0-9\:\.\/_-]+)[\'|\"]+.*?;/';
-
-    /**
-     * Max css nested files imports
-     */
-    const MAX_CSS_NESTED_FILES_IMPORTS = 10;
 
     /**
      * Unification of css imports
@@ -55,7 +79,7 @@ class LayoutHeadLink extends BaseHeadLink
     /**
      * Render link elements as string
      *
-     * @param  string|int $indent
+     * @param  string|integer $indent
      * @return string
      */
     public function toString($indent = null)
@@ -133,7 +157,7 @@ class LayoutHeadLink extends BaseHeadLink
 
                     // get file content
                     foreach ($files as $file) {
-                        // check the file sheme
+                        // check the file scheme
                         $fileInfo = parse_url($file->href);
 
                         // add absolute path to file
@@ -196,9 +220,6 @@ class LayoutHeadLink extends BaseHeadLink
             // replace relative urls to absolute
             $content = $this->replaceCssRelUrlsToAbs($content, $baseFileUrl);
 
-            // check the file sheme
-            $fileInfo = parse_url($filePath);
-
             // find all css imports
             $content = $this->findCssImports($content, $nestedLevel);
         }
@@ -216,11 +237,11 @@ class LayoutHeadLink extends BaseHeadLink
     protected function findCssImports($content, $nestedLevel)
     {
         $content = preg_replace_callback($this->cssImportsExpression, function($urlInfo) use ($nestedLevel) {
-            $urlDevider = $urlInfo['importUrl']{0} != '/' ? '/' : null;
+            $urlDivider = $urlInfo['importUrl']{0} != '/' ? '/' : null;
 
             $basePath = $this->view->basePath();
 
-            // check the file sheme
+            // check the file scheme
             $fileInfo = parse_url($urlInfo['importUrl']);
 
             // check for base path
@@ -231,7 +252,7 @@ class LayoutHeadLink extends BaseHeadLink
             }
 
             $filePath = empty($fileInfo['scheme'])
-                ? APPLICATION_PUBLIC . $urlDevider . $urlInfo['importUrl']
+                ? APPLICATION_PUBLIC . $urlDivider . $urlInfo['importUrl']
                 : $urlInfo['importUrl'];
 
             $basePath = empty($fileInfo['scheme'])
