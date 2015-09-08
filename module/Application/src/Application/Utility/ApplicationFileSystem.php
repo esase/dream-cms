@@ -1,13 +1,33 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Application\Utility;
 
+use Application\Service\Application as ApplicationService;
+use Application\Exception\ApplicationException;
+use Application\Utility\ApplicationSlug as SlugUtility;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Application\Service\Application as ApplicationService;
-use Exception;
-use Application\Exception\ApplicationException;
 use SplFileInfo;
-use Application\Utility\ApplicationSlug as SlugUtility;
 
 class ApplicationFileSystem
 {
@@ -18,6 +38,7 @@ class ApplicationFileSystem
 
     /**
      * System files
+     *
      * @var array
      */
     protected static $systemFiles = [
@@ -49,7 +70,7 @@ class ApplicationFileSystem
      *
      * @param string $path
      * @param integer $permission
-     * @throws Application\Exception\ApplicationException
+     * @throws \Application\Exception\ApplicationException
      * @return void
      */
     public static function createDir($path, $permission = self::DEFAULT_FOLDER_PERMISSIONS)
@@ -119,7 +140,7 @@ class ApplicationFileSystem
      * Get the file's  name
      * 
      * @param string $fileName
-     * @param string $removeExtension
+     * @param boolean $removeExtension
      * @return string
      */
     public static function getFileName($fileName, $removeExtension = true)
@@ -173,12 +194,12 @@ class ApplicationFileSystem
      * Delete files and folders (recursively)
      *
      * @param string $path
-     * @param array $undeletable
-     * @param boolean $useUndeletableFiles
+     * @param array $notDeletable
+     * @param boolean $useNotDeletableFiles
      * @param boolean $removeCurrentDirectory
      * @return boolean
      */
-    public static function deleteFiles($path, array $undeletable = [], $useUndeletableFiles = true, $removeCurrentDirectory = false)
+    public static function deleteFiles($path, array $notDeletable = [], $useNotDeletableFiles = true, $removeCurrentDirectory = false)
     {
         // check a path
         if (!file_exists($path)) {
@@ -190,9 +211,9 @@ class ApplicationFileSystem
             return unlink($path);
         }
 
-        // check for the undeletable files
-        $undeletable = $useUndeletableFiles
-            ? (!$undeletable ? self::$systemFiles : $undeletable)
+        // check for the not deletable files
+        $notDeletable = $useNotDeletableFiles
+            ? (!$notDeletable ? self::$systemFiles : $notDeletable)
             : [];
 
         // open and read all child directories and files
@@ -202,7 +223,7 @@ class ApplicationFileSystem
         // delete child files and directories
         foreach($files as $file) {
             if ($file->getFilename() === '.' || $file->getFilename() === '..' || in_array($file->
-                    getFilename(), $undeletable) || ($file->isDir() && !self::isDirectoryEmpty($file->getRealPath()))) {
+                    getFilename(), $notDeletable) || ($file->isDir() && !self::isDirectoryEmpty($file->getRealPath()))) {
 
                 continue;
             }
@@ -215,8 +236,6 @@ class ApplicationFileSystem
         }
 
         // remove current directory
-        return $removeCurrentDirectory
-            ? rmdir($path)
-            : true;
+        return $removeCurrentDirectory ? rmdir($path) : true;
     }
 }

@@ -1098,7 +1098,7 @@ class PageAdministration extends PageBase
                     $statement->execute();
 
                     $value = is_array($formData[$setting['name']])
-                        ? implode(PageWidgetSetting::SETTINGS_ARRAY_DEVIDER, $formData[$setting['name']])
+                        ? implode(PageWidgetSetting::SETTINGS_ARRAY_DIVIDER, $formData[$setting['name']])
                         : (null != $formData[$setting['name']] ? $formData[$setting['name']] : '');
 
                     $query = $this->insert('page_widget_setting_value')

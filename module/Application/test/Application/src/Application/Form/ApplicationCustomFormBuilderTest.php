@@ -1,23 +1,46 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Application\Test\Form;
 
-use Application\Test\ApplicationBootstrap;
-use PHPUnit_Framework_TestCase;
 use Application\Form\ApplicationCustomFormBuilder;
-use Locale;
+use Application\Test\ApplicationBootstrap;
 use Localization\Utility\LocalizationLocale as LocaleUtility;
+use PHPUnit_Framework_TestCase;
+use Locale;
 
 class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Form name
+     *
      * @var string
      */
     protected $formName = 'test';
 
     /**
      * Service locator
-     * @var object
+     *
+     * @var \Zend\ServiceManager\ServiceManager
      */
     protected $serviceLocator;
 
@@ -37,7 +60,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'htmlarea'
             ]
@@ -49,7 +72,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'htmlarea',
                 'required' => true
@@ -62,7 +85,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'htmlarea',
                 'required' => true
@@ -77,7 +100,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with js (all dangerous scripts should be stripped off)
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'htmlarea',
                 'required' => true
@@ -98,7 +121,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'text',
                 'type' => 'date_unixtime'
             ]
@@ -110,7 +133,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'date_unixtime',
                 'required' => true
@@ -124,7 +147,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a correct value with locale
         $this->setCustomLocale('ru_RU');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'date_unixtime',
                 'required' => true
@@ -138,7 +161,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a incorrect value with locale
         $this->setCustomLocale('en_US');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'date_unixtime',
                 'required' => true
@@ -157,7 +180,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'text',
                 'type' => 'date'
             ]
@@ -169,7 +192,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
@@ -183,7 +206,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a correct value with locale
         $this->setCustomLocale('ru_RU');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
@@ -197,7 +220,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a incorrect value with locale
         $this->setCustomLocale('en_US');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
@@ -211,7 +234,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a date convertation
         $this->setCustomLocale('fr_FR');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'date',
                 'required' => true
@@ -232,7 +255,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'url'
             ]
@@ -244,7 +267,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
@@ -257,7 +280,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
@@ -270,7 +293,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a incorrect value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
@@ -283,7 +306,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'url',
                 'required' => true
@@ -299,13 +322,13 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test the multicheckbox field
+     * Test the multi checkbox field
      */
     public function testMulticheckboxField()
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multicheckbox'
             ]
@@ -317,7 +340,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multicheckbox',
                 'required' => true
@@ -330,7 +353,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multicheckbox',
                 'required' => true,
@@ -347,7 +370,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a incorrect value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multicheckbox',
                 'required' => true,
@@ -369,7 +392,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'checkbox'
             ]
@@ -381,7 +404,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'checkbox',
                 'required' => true
@@ -394,7 +417,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'checkbox',
                 'required' => true
@@ -407,7 +430,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a incorrect value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'checkbox',
                 'required' => false
@@ -420,13 +443,13 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test the multiselect field
+     * Test the multi select field
      */
     public function testMultiselectField()
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multiselect'
             ]
@@ -438,7 +461,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multiselect',
                 'required' => true
@@ -451,7 +474,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multiselect',
                 'required' => true,
@@ -468,7 +491,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a incorrect value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'multiselect',
                 'required' => true,
@@ -490,7 +513,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'select'
             ]
@@ -502,7 +525,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'select',
                 'required' => true
@@ -515,7 +538,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'select',
                 'required' => true,
@@ -531,7 +554,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a incorrect value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'select',
                 'required' => true,
@@ -553,7 +576,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'radio'
             ]
@@ -565,7 +588,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'radio',
                 'required' => true
@@ -578,7 +601,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'radio',
                 'required' => true,
@@ -594,7 +617,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a incorrect value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'radio',
                 'required' => true,
@@ -616,7 +639,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'password'
             ]
@@ -628,7 +651,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
@@ -641,7 +664,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
@@ -654,7 +677,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
@@ -667,7 +690,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags#2 we should get clean data
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'password',
                 'required' => true
@@ -689,7 +712,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'hidden'
             ]
@@ -701,7 +724,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
@@ -714,7 +737,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
@@ -727,7 +750,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
@@ -740,7 +763,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags#2 we should get clean data
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'hidden',
                 'required' => true
@@ -762,7 +785,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'email'
             ]
@@ -774,7 +797,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
@@ -787,7 +810,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
@@ -800,7 +823,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a incorrect value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
@@ -813,7 +836,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'email',
                 'required' => true
@@ -835,7 +858,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'text'
             ]
@@ -847,7 +870,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
@@ -860,7 +883,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
@@ -873,7 +896,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
@@ -886,7 +909,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags#2 we should get clean data
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'text',
                 'required' => true
@@ -908,7 +931,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'textarea'
             ]
@@ -920,7 +943,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
@@ -933,7 +956,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
@@ -946,7 +969,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
@@ -959,7 +982,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with html tags#2 we should get clean data
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'textarea',
                 'required' => true
@@ -981,7 +1004,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'text',
                 'type' => 'integer'
             ]
@@ -993,7 +1016,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => true
@@ -1006,7 +1029,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test a correct value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => true
@@ -1019,7 +1042,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // pass a float value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => true
@@ -1032,7 +1055,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test not required value with defined wrong value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'integer',
                 'required' => false
@@ -1051,7 +1074,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
     {
         // test with not required value
         $field = [
-            0 => [
+            [
                 'name' => 'text',
                 'type' => 'float'
             ]
@@ -1063,7 +1086,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
 
         // test with required value
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
@@ -1077,7 +1100,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a correct value
         $this->setCustomLocale('en_US');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
@@ -1091,7 +1114,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a correct value with locale
         $this->setCustomLocale('ru_RU');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
@@ -1105,7 +1128,7 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         // test a incorrect value with locale
         $this->setCustomLocale('en_US');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true
@@ -1116,10 +1139,10 @@ class ApplicationCustomFormBuilderTest extends PHPUnit_Framework_TestCase
         $form->setData(['test' => '0,5'], false);
         $this->assertFalse($form->isValid());
 
-        // test a float convertation
+        // test a float conversion
         $this->setCustomLocale('fr_FR');
         $field = [
-            0 => [
+            [
                 'name' => 'test',
                 'type' => 'float',
                 'required' => true

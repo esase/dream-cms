@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Application\Model;
 
 use Application\Service\Application as ApplicationService;
@@ -6,35 +27,17 @@ use Application\Exception\ApplicationException;
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
 use Application\Utility\ApplicationCache as CacheUtility;
 use Localization\Service\Localization as LocalizationService;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Cache\Storage\StorageInterface;
 use Application\Utility\ApplicationSlug as SlugUtility;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Cache\Storage\StorageInterface;
 use ZipArchive;
 
 abstract class ApplicationAbstractBase extends Sql
 {
-    /**
-     * Service locator
-     * @var object
-     */
-    protected $serviceLocator;
-
-    /**
-     * Static cache instance
-     * @var object
-     */
-    protected $staticCacheInstance;
-
-    /**
-     * Slug length
-     * @var integer
-     */
-    protected $slugLength = 10;
-
     /**
      * Module by name
      */
@@ -66,15 +69,36 @@ abstract class ApplicationAbstractBase extends Sql
     const MODULE_TYPE_SYSTEM = 'system';
 
     /**
-     * MOdule type custom
+     * Module type custom
      */
     const MODULE_TYPE_CUSTOM = 'custom';
 
     /**
+     * Service locator
+     *
+     * @var \Zend\ServiceManager\ServiceManager
+     */
+    protected $serviceLocator;
+
+    /**
+     * Static cache instance
+     *
+     * @var \Zend\Cache\Storage\StorageInterface
+     */
+    protected $staticCacheInstance;
+
+    /**
+     * Slug length
+     *
+     * @var integer
+     */
+    protected $slugLength = 10;
+
+    /**
      * Class constructor
      *
-     * @param object $adapter
-     * @param object $staticCacheInstance
+     * @param \Zend\Db\Adapter\AdapterInterface $adapter
+     * @param \Zend\Cache\Storage\StorageInterface $staticCacheInstance
      */
     public function __construct(AdapterInterface $adapter, StorageInterface $staticCacheInstance)
     {
@@ -118,13 +142,13 @@ abstract class ApplicationAbstractBase extends Sql
      * @param integer $slugLength
      * @param array $filters
      * @param string $slugField
-     * @param string $spaceDevider
+     * @param string $spaceDivider
      * @return string
      */
-    public function generateSlug($objectId, $title, $table, $idField, $slugLength = 60, array $filters = [], $slugField = 'slug', $spaceDevider = '-')
+    public function generateSlug($objectId, $title, $table, $idField, $slugLength = 60, array $filters = [], $slugField = 'slug', $spaceDivider = '-')
     {
         // generate a slug
-        $newSlug  = $slug = SlugUtility::slugify($title, $slugLength, $spaceDevider);
+        $newSlug  = $slug = SlugUtility::slugify($title, $slugLength, $spaceDivider);
         $slagSalt = null;
 
         while (true) {
@@ -151,11 +175,11 @@ abstract class ApplicationAbstractBase extends Sql
                 break;
             }
             else {
-                $newSlug = $objectId . $spaceDevider . $slug . $slagSalt;
+                $newSlug = $objectId . $spaceDivider . $slug . $slagSalt;
             }
 
             // add an extra slug
-            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugLength); // add a salt
+            $slagSalt = $spaceDivider . SlugUtility::generateRandomSlug($this->slugLength); // add a salt
         }
 
         return $newSlug;
@@ -246,18 +270,18 @@ abstract class ApplicationAbstractBase extends Sql
      * Generate a rand string
      *
      * @param integer $length
-     * @param  string|null $charlist
+     * @param  string $charList
      * @return string
      */
-    public function generateRandString($length = 10, $charlist = null)
+    public function generateRandString($length = 10, $charList = null)
     {
-        return SlugUtility::generateRandomSlug($length, $charlist);
+        return SlugUtility::generateRandomSlug($length, $charList);
     }
 
     /**
      * Get adapter
      *
-     * @return object
+     * @return \Zend\Db\Adapter\AdapterInterface
      */
     public function getAdapter()
     {
@@ -271,8 +295,7 @@ abstract class ApplicationAbstractBase extends Sql
      */
     protected function generateTmpDir()
     {
-        return ApplicationService::getTmpPath()
-                . '/' . time() . '_' . $this->generateRandString();
+        return ApplicationService::getTmpPath() . '/' . time() . '_' . $this->generateRandString();
     }
 
     /**
@@ -313,13 +336,12 @@ abstract class ApplicationAbstractBase extends Sql
      */
     protected function executeSqlFile($filePath, array $replace = [])
     {
-        if(!file_exists($filePath) || !($handler = fopen($filePath, 'r'))) {
+        if (!file_exists($filePath) || !($handler = fopen($filePath, 'r'))) {
             throw new ApplicationException('Sql file not found or permission denied');
         }
 
         $query = null;
         $delimiter = ';';
-        $result = [];
 
         // collect all queries
         while(!feof($handler)) {
@@ -336,7 +358,7 @@ abstract class ApplicationAbstractBase extends Sql
 
             $query .= ' ' . $str;
 
-            // check for multiline query
+            // check for multi line query
             if(substr($str, -strlen($delimiter)) != $delimiter) {
                 continue;
             }

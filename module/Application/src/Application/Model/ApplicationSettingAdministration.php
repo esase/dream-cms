@@ -42,7 +42,7 @@ class ApplicationSettingAdministration extends ApplicationSetting
                         : [];
 
                     $value = is_array($settingsValues[$setting['name']])
-                        ? implode(self::SETTINGS_ARRAY_DEVIDER, $settingsValues[$setting['name']])
+                        ? implode(self::SETTINGS_ARRAY_DIVIDER, $settingsValues[$setting['name']])
                         : (null != $settingsValues[$setting['name']] ? $settingsValues[$setting['name']] : '');
 
                     $query = $this->insert('application_setting_value')
