@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Page\Form;
 
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
@@ -9,7 +30,7 @@ use Localization\Utility\LocalizationLocale as LocalizationUtility;
 use Acl\Service\Acl as AclService;
 use Page\Model\PageBase as PageBaseModel;
 
-class Page extends ApplicationAbstractCustomForm 
+class Page extends ApplicationAbstractCustomForm
 {
     /**
      * Title max string length
@@ -48,84 +69,98 @@ class Page extends ApplicationAbstractCustomForm
 
     /**
      * Form name
+     *
      * @var string
      */
     protected $formName = 'page';
 
     /**
-     * Is system page
+     * Is it a system page
+     *
      * @var boolean
      */
     protected $isSystemPage = false;
 
     /**
      * Show main menu
+     *
      * @var boolean
      */
     protected $showMainMenu = true;
 
     /**
      * Show site map
+     *
      * @var boolean
      */
     protected $showSiteMap = true;
 
     /**
      * Show xml map
+     *
      * @var boolean
      */
     protected $showXmlMap = true;
 
     /**
      * Show footer menu
+     *
      * @var boolean
      */
     protected $showFooterMenu = true;
 
     /**
      * Show user menu
+     *
      * @var boolean
      */
     protected $showUserMenu = true;
 
     /**
      * Show visibility settings
+     *
      * @var boolean
      */
     protected $showVisibilitySettings = true;
 
     /**
      * Show seo
+     *
      * @var boolean
      */
     protected $showSeo = true;
 
     /**
      * Model instance
-     * @var object  
+     *
+     * @var \Page\Model\PageBase
      */
     protected $model;
 
     /**
      * Page system title
+     *
      * @var string
      */
     protected $systemTitle;
 
     /**
      * Page info
+     *
      * @var array
      */
     protected $pageInfo = [];
 
     /**
      * Page parent
+     *
      * @var array
      */
     protected $pageParent = [];
 
     /**
      * Form elements
+     *
      * @var array
      */
     protected $formElements = [
@@ -301,7 +336,7 @@ class Page extends ApplicationAbstractCustomForm
                 'weekly' => 'weekly',
                 'monthly' => 'monthly',
                 'yearly' => 'yearly',
-                'never' => 'never',
+                'never' => 'never'
             ],
             'category' => 'Xml map'
         ],
@@ -324,7 +359,7 @@ class Page extends ApplicationAbstractCustomForm
     /**
      * Get form instance
      *
-     * @return object
+     * @return \Application\Form\ApplicationCustomFormBuilder
      */
     public function getForm()
     {
@@ -490,7 +525,7 @@ class Page extends ApplicationAbstractCustomForm
                             getServiceLocator()->get('viewHelperManager')->get('pageTitle')->__invoke($pageOptions);
                 }
 
-                // set dfault value
+                // set default value
                 if ($activePageId) {
                     $this->formElements['page']['value'] = $activePageId;
                 }
@@ -503,12 +538,13 @@ class Page extends ApplicationAbstractCustomForm
     /**
      * Set a model
      *
-     * @param object $model
-     * @return object fluent interface
+     * @param \Page\Model\PageBase $model
+     * @return \Page\Form\Page
      */
     public function setModel(PageBaseModel $model)
     {
         $this->model = $model;
+
         return $this;
     }
 
@@ -516,11 +552,12 @@ class Page extends ApplicationAbstractCustomForm
      * Set system page
      *
      * @param boolean $system
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function setSystemPage($system)
     {
         $this->isSystemPage = $system;
+
         return $this;
     }
 
@@ -528,11 +565,12 @@ class Page extends ApplicationAbstractCustomForm
      * Show main menu
      *
      * @param boolean $show
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function showMainMenu($show)
     {
         $this->showMainMenu = $show;
+
         return $this;
     }
 
@@ -540,11 +578,12 @@ class Page extends ApplicationAbstractCustomForm
      * Show site map
      *
      * @param boolean $show
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function showSiteMap($show)
     {
         $this->showSiteMap = $show;
+
         return $this;
     }
 
@@ -552,11 +591,12 @@ class Page extends ApplicationAbstractCustomForm
      * Show xml map
      *
      * @param boolean $show
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function showXmlMap($show)
     {
         $this->showXmlMap = $show;
+
         return $this;
     }
 
@@ -564,11 +604,12 @@ class Page extends ApplicationAbstractCustomForm
      * Show footer menu
      *
      * @param boolean $show
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function showFooterMenu($show)
     {
         $this->showFooterMenu = $show;
+
         return $this;
     }
 
@@ -576,11 +617,12 @@ class Page extends ApplicationAbstractCustomForm
      * Show user menu
      *
      * @param boolean $show
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function showUserMenu($show)
     {
         $this->showUserMenu = $show;
+
         return $this;
     }
 
@@ -588,11 +630,12 @@ class Page extends ApplicationAbstractCustomForm
      * Show visibility settings
      *
      * @param boolean $show
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function showVisibilitySettings($show)
     {
         $this->showVisibilitySettings = $show;
+
         return $this;
     }
 
@@ -600,11 +643,12 @@ class Page extends ApplicationAbstractCustomForm
      * Show SEO
      *
      * @param boolean $show
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function showSeo($show)
     {
         $this->showSeo = $show;
+
         return $this;
     }
 
@@ -612,11 +656,12 @@ class Page extends ApplicationAbstractCustomForm
      * Set page info
      *
      * @param array $pageInfo
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function setPageInfo(array $pageInfo)
     {
         $this->pageInfo = $pageInfo;
+
         return $this;
     }
 
@@ -624,11 +669,12 @@ class Page extends ApplicationAbstractCustomForm
      * Set page parent
      *
      * @param array $pageParent
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function setPageParent(array $pageParent)
     {
         $this->pageParent = $pageParent;
+
         return $this;
     }
 
@@ -636,11 +682,12 @@ class Page extends ApplicationAbstractCustomForm
      * Set page system title
      *
      * @param string $systemTitle
-     * @return object fluent interface
+     * @return \Page\Form\Page
      */
     public function setPageSystemTitle($systemTitle)
     {
         $this->systemTitle = $systemTitle;
+
         return $this;
     }
 
@@ -684,6 +731,7 @@ class Page extends ApplicationAbstractCustomForm
     public function validateXmlMapPriority($value, array $context = [])
     {
         $value = (float) LocalizationUtility::convertFromLocalizedValue($value, 'float');
+
         return $value >= 0 && $value <= 1;
     }
 }

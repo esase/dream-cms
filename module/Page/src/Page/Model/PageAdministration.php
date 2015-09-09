@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Page\Model;
 
 use Application\Utility\ApplicationCache as CacheUtility;
@@ -7,7 +28,6 @@ use Application\Utility\ApplicationErrorLogger;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationPagination as PaginationUtility;
 use Application\Utility\ApplicationSlug as SlugUtility;
-use Page\Model\PageNestedSet;
 use Page\Event\PageEvent;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate;
@@ -31,7 +51,7 @@ class PageAdministration extends PageBase
      */
     public function getManageLayoutPath()
     {
-        return $this->getPageModel()->getManageLayoutPath();   
+        return $this->getPageModel()->getManageLayoutPath();
     }
 
     /**
@@ -124,11 +144,11 @@ class PageAdministration extends PageBase
      * Change public widgets position
      *
      * @param integer $pageId
-     * @param integer $newlayoutId
+     * @param integer $newLayoutId
      * @param integer $defaultPosition
      * @return void
      */
-    protected function changePublicWidgetsPosition($pageId, $newlayoutId, $defaultPosition)
+    protected function changePublicWidgetsPosition($pageId, $newLayoutId, $defaultPosition)
     {
         $select = $this->select();
         $select->from(['a' => 'page_widget_connection'])
@@ -142,7 +162,7 @@ class PageAdministration extends PageBase
             )
             ->join(
                 ['c' => 'page_widget_position_connection'],
-                new Expression('a.position_id = c.position_id and c.layout_id = ?', [$newlayoutId]),
+                new Expression('a.position_id = c.position_id and c.layout_id = ?', [$newLayoutId]),
                 [],
                 'left'
             )
@@ -223,6 +243,7 @@ class PageAdministration extends PageBase
 
         // fire the edit page event
         PageEvent::fireEditPageEvent($pageId);
+
         return true;
     }
 
@@ -282,10 +303,10 @@ class PageAdministration extends PageBase
                     ]);
 
                 $statement = $this->prepareStatementForSqlObject($update);
-                $statement->execute();    
+                $statement->execute();
             }
 
-            // move page 
+            // move page
             if ($parent) {
                 $nearKey = !empty($formData['page'])
                     ? $formData['page']
@@ -312,7 +333,7 @@ class PageAdministration extends PageBase
                 ]);
 
             $statement = $this->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
+            $statement->execute();
 
             // add new visibility settings
             if (!empty($formData['visibility_settings'])) {
@@ -349,6 +370,7 @@ class PageAdministration extends PageBase
 
         // fire the edit page event
         PageEvent::fireEditPageEvent($page['id']);
+
         return true;
     }
 
@@ -487,7 +509,7 @@ class PageAdministration extends PageBase
                 $statement->execute();
             }
             else {
-                // get move direction
+                // get a moving direction
                 $queryExpression = $newOrder < $oldConnectionInfo['order']
                     ? new Expression($this->adapter->platform->quoteIdentifier('order') . ' + 1')
                     : new Expression($this->adapter->platform->quoteIdentifier('order') . ' - 1');
@@ -541,6 +563,7 @@ class PageAdministration extends PageBase
         }
 
         PageEvent::fireChangeWidgetPositionEvent($oldConnectionInfo['widget_id'], $oldConnectionInfo['page_id']);
+
         return true;
     }
 
@@ -569,7 +592,7 @@ class PageAdministration extends PageBase
                 ]);
 
             $statement = $this->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
+            $statement->execute();
 
             // move up next widgets
             $update = $this->update()
@@ -599,6 +622,7 @@ class PageAdministration extends PageBase
         }
 
         PageEvent::fireDeleteWidgetEvent($widget['widget_id'], $widget['page_id']);
+
         return true;
     }
 
@@ -646,6 +670,7 @@ class PageAdministration extends PageBase
         }
 
         PageEvent::fireAddWidgetEvent($widgetId, $pageId);
+
         return $connectionId;
     }
 
@@ -711,7 +736,7 @@ class PageAdministration extends PageBase
 
             $pageId = $this->getPageModel()->addPage($parentLevel,
                     $parentLeftKey, $parentRightKey, $page, $this->getCurrentLanguage(), $nearKey, $pageDirection);
- 
+
             if (!is_numeric($pageId)) {
                 $this->adapter->getDriver()->getConnection()->rollback();
                 return $pageId;
@@ -729,7 +754,7 @@ class PageAdministration extends PageBase
                     ]);
 
                 $statement = $this->prepareStatementForSqlObject($update);
-                $statement->execute();    
+                $statement->execute();
             }
 
             // add visibility settings
@@ -764,7 +789,7 @@ class PageAdministration extends PageBase
                     $statement = $this->prepareStatementForSqlObject($insert);
                     $statement->execute();
                     $widgetOrder++;
-                }                
+                }
             }
 
             // clear cache
@@ -780,6 +805,7 @@ class PageAdministration extends PageBase
 
         // fire the add page event
         PageEvent::fireAddPageEvent($pageId);
+
         return $pageId;
     }
 
@@ -930,7 +956,7 @@ class PageAdministration extends PageBase
                     new Expression('b.slug = c.slug and c.language = ?', [$this->getCurrentLanguage()]),
                     [],
                     'left'
-                ) 
+                )
                 ->group('b.id')
                 ->where->in('a.page_id', array_keys($pages))
                 ->where->isNull('c.id');
@@ -942,7 +968,7 @@ class PageAdministration extends PageBase
             $dependentPagesIds = [];
             foreach ($resultSet as $page) {
                 if (in_array($page->id, $dependentPagesFilter)) {
-                    continue;                    
+                    continue;
                 }
 
                 $dependentPagesIds[] = $page->id;
@@ -984,12 +1010,12 @@ class PageAdministration extends PageBase
                     ])
                     ->join(
                         ['b' => 'page_widget'],
-                        new Expression('b.id = a.depend_widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                        new Expression('b.id = a.depend_widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),
                         []
                     )
                     ->join(
                         ['c' => 'page_widget_connection'],
-                        new Expression('c.page_id  = ? and c.widget_id = b.id', [$pageId]),                        
+                        new Expression('c.page_id  = ? and c.widget_id = b.id', [$pageId]),
                         [],
                         'left'
                     )
@@ -1000,10 +1026,10 @@ class PageAdministration extends PageBase
                 $resultSet = new ResultSet;
                 $resultSet->initialize($statement->execute());
 
-                $widgetsFilter = [];                
-                foreach ($resultSet as $widget) {                    
+                $widgetsFilter = [];
+                foreach ($resultSet as $widget) {
                     if (!in_array($widget['depend_widget_id'], $definedWidgetsIds)) {
-                        $widgetsFilter[] = $definedWidgetsIds[] = $widget['depend_widget_id'];                        
+                        $widgetsFilter[] = $definedWidgetsIds[] = $widget['depend_widget_id'];
                     }
                 }
 
@@ -1055,10 +1081,10 @@ class PageAdministration extends PageBase
      *      integer id
      * @param array $settingsList
      * @param array $formData
-     * @param string $currentlanguage
+     * @param string $currentLanguage
      * @return boolean|string
      */
-    public function saveWidgetSettings(array $widget, array $settingsList, array $formData, $currentlanguage)
+    public function saveWidgetSettings(array $widget, array $settingsList, array $formData, $currentLanguage)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
@@ -1121,7 +1147,7 @@ class PageAdministration extends PageBase
                 ]);
 
             $statement = $this->prepareStatementForSqlObject($delete);
-            $result = $statement->execute();
+            $statement->execute();
 
             // add new widget visibility settings
             if (!empty($formData['visibility_settings'])) {
@@ -1140,7 +1166,7 @@ class PageAdministration extends PageBase
 
             // clear caches
             $this->clearLanguageSensitivePageCaches();
-            $this->clearWidgetsSettingsCache($pageId, $currentlanguage);
+            $this->clearWidgetsSettingsCache($pageId, $currentLanguage);
 
             $dynamicCache = $this->serviceLocator->get('Application\Cache\Dynamic');
             $widgetCacheName = CacheUtility::getCacheName($widget['widget_name'], [
@@ -1161,6 +1187,7 @@ class PageAdministration extends PageBase
         }
 
         PageEvent::fireEditWidgetSettingsEvent($widgetId, $pageId);
+
         return true;
     }
 
@@ -1203,7 +1230,7 @@ class PageAdministration extends PageBase
             ])
             ->join(
                 ['b' => 'page_structure'],
-                new Expression('a.page_id = b.id and b.language = ?', [$this->getCurrentLanguage()]),                
+                new Expression('a.page_id = b.id and b.language = ?', [$this->getCurrentLanguage()]),
                 [
                     'page_layout' => 'layout'
                 ]
@@ -1276,7 +1303,7 @@ class PageAdministration extends PageBase
             ])
             ->join(
                 ['b' => 'page_widget'],
-                new Expression('a.widget_id = b.id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                new Expression('a.widget_id = b.id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),
                 []
             )
             ->order('order')
@@ -1287,7 +1314,7 @@ class PageAdministration extends PageBase
         $resultSet->initialize($statement->execute());
 
         foreach ($resultSet as $widget) {
-            // collect all widgest ids
+            // collect all widgets ids
             if (!in_array($widget->widget_id, $definedWidgetsIds)) {
                 $definedWidgetsIds[] = $widget->widget_id;
             }
@@ -1311,7 +1338,7 @@ class PageAdministration extends PageBase
                     ])
                     ->join(
                         ['b' => 'page_widget'],
-                        new Expression('b.id = a.depend_widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),                        
+                        new Expression('b.id = a.depend_widget_id and b.type = ?', [self::WIDGET_TYPE_PUBLIC]),
                         []
                     )
                     ->where->in('a.widget_id', $widgetsFilter);
@@ -1320,10 +1347,10 @@ class PageAdministration extends PageBase
                 $resultSet = new ResultSet;
                 $resultSet->initialize($statement->execute());
 
-                $widgetsFilter = [];                
-                foreach ($resultSet as $widget) {                    
+                $widgetsFilter = [];
+                foreach ($resultSet as $widget) {
                     if (!in_array($widget['depend_widget_id'], $definedWidgetsIds)) {
-                        $widgetsFilter[] = $definedWidgetsIds[] = $widget['depend_widget_id'];                        
+                        $widgetsFilter[] = $definedWidgetsIds[] = $widget['depend_widget_id'];
                     }
 
                     // search dependent widgets
@@ -1331,7 +1358,7 @@ class PageAdministration extends PageBase
                         if ($widgetInfo['widget_id'] == $widget['widget_id']) {
                             $widgets[] = [
                                 'page_id' => $widgetInfo['page_id'],
-                                'widget_id' => $widget['depend_widget_id']                            
+                                'widget_id' => $widget['depend_widget_id']
                             ];
                         }
                     }
@@ -1382,7 +1409,8 @@ class PageAdministration extends PageBase
      * Get dependent widgets
      *
      * @param integer $widgetId
-     * @return object ResultSet
+     * @param integer $pageId
+     * @return \Zend\Db\ResultSet\ResultSet
      */
     public function getDependentWidgets($widgetId, $pageId)
     {
@@ -1419,7 +1447,8 @@ class PageAdministration extends PageBase
      * Get dependent pages
      *
      * @param integer $pageId
-     * @return object ResultSet
+     * @param boolean $checkInStructure
+     * @return \Zend\Db\ResultSet\ResultSet
      */
     public function getDependentPages($pageId, $checkInStructure = true)
     {
@@ -1444,7 +1473,7 @@ class PageAdministration extends PageBase
                 ]
             );
         }
-        else {            
+        else {
             $select->join(
                 ['b' => 'page_system'],
                 'a.page_id = b.id',
@@ -1475,7 +1504,7 @@ class PageAdministration extends PageBase
      * @param array $filters
      *      array modules
      *      string slug
-     * @return object
+     * @return \Zend\Paginator\Paginator
      */
     public function getSystemPages($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
@@ -1560,7 +1589,7 @@ class PageAdministration extends PageBase
      *
      * @param integer $pageId
      * @param integer $widgetId
-     * @param intger $systemPageId
+     * @param integer $systemPageId
      * @return boolean|array
      */
     public function getPublicWidgetInfo($pageId, $widgetId, $systemPageId = null)
@@ -1608,7 +1637,7 @@ class PageAdministration extends PageBase
             );
             $select->where->isNull('d.id');
 
-            $select->where([ // we need only specific widgets for the page or not specified         
+            $select->where([ // we need only specific widgets for the page or not specified
                 new Predicate\PredicateSet([
                         new Predicate\Operator('b.page_id', '=', $systemPageId),
                         new Predicate\isNull('b.id')
@@ -1624,7 +1653,7 @@ class PageAdministration extends PageBase
         $statement = $this->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
-        return  $result->current() ? $result->current() : false;   
+        return  $result->current() ? $result->current() : false;
     }
 
     /**
@@ -1636,7 +1665,7 @@ class PageAdministration extends PageBase
      * @param integer $perPage
      * @param array $filters
      *      array modules
-     * @return object Paginator
+     * @return \Zend\Paginator\Paginator
      */
     public function getPublicWidgets($pageId, $systemPageId = null, $page = 1, $perPage = 0, array $filters = [])
     {
@@ -1676,7 +1705,7 @@ class PageAdministration extends PageBase
             ->order('a.id')
             ->where([
                 'a.type' => self::WIDGET_TYPE_PUBLIC
-            ])            
+            ])
             ->where
             ->nest
                 ->isNull('c.id')
@@ -1703,7 +1732,7 @@ class PageAdministration extends PageBase
             );
             $select->where->isNull('f.id');
 
-            $select->where([ // we need only specific widgets for the page or not specified         
+            $select->where([ // we need only specific widgets for the page or not specified
                 new Predicate\PredicateSet([
                         new Predicate\Operator('b.page_id', '=', $systemPageId),
                         new Predicate\isNull('b.id')
@@ -1741,7 +1770,7 @@ class PageAdministration extends PageBase
      *      array modules
      *      string status
      *      string slug
-     * @return object Paginator
+     * @return \Zend\Paginator\Paginator
      */
     public function getStructurePages($parentId = null, $page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
@@ -1820,7 +1849,7 @@ class PageAdministration extends PageBase
                 new Expression('i.id = d.module and i.status = ? and (d.depend_page_id is null
                         or d.depend_page_id is not null and dd.system_page is not null)', [self::MODULE_STATUS_ACTIVE]),
                 [
-                    'widgets' => new Expression('count(i.id)') 
+                    'widgets' => new Expression('count(i.id)')
                 ],
                 'left'
             )
@@ -1852,6 +1881,7 @@ class PageAdministration extends PageBase
                         'a.active' => PageNestedSet::PAGE_STATUS_ACTIVE
                     ]);
                     break;
+
                 default :
                     $select->where->IsNull('a.active');
             }
@@ -1877,17 +1907,17 @@ class PageAdministration extends PageBase
      *
      * @param integer $pageId
      * @param string $title
-     * @param string $spaceDevider
+     * @param string $spaceDivider
      * @return string
      */
-    public function generatePageSlug($pageId, $title, $spaceDevider = '-')
+    public function generatePageSlug($pageId, $title, $spaceDivider = '-')
     {
         // generate a slug
-        $newSlug  = $slug = SlugUtility::slugify($title, self::PAGE_SLUG_LENGTH, $spaceDevider);
+        $newSlug  = $slug = SlugUtility::slugify($title, self::PAGE_SLUG_LENGTH, $spaceDivider);
         $slagSalt = null;
 
         while (true) {
-            // check the slug existent in structure pages 
+            // check the slug existent in structure pages
             $select = $this->select();
             $select->from('page_structure')
                 ->columns([
@@ -1925,10 +1955,10 @@ class PageAdministration extends PageBase
                 break;
             }
 
-            $newSlug = $pageId . $spaceDevider . $slug . $slagSalt;
+            $newSlug = $pageId . $spaceDivider . $slug . $slagSalt;
 
             // add an extra slug
-            $slagSalt = $spaceDevider . SlugUtility::generateRandomSlug($this->slugLength); // add a slug
+            $slagSalt = $spaceDivider . SlugUtility::generateRandomSlug($this->slugLength); // add a slug
         }
 
         return $newSlug;

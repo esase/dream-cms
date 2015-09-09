@@ -1,12 +1,32 @@
 <?php
 
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Page\Model;
 
 use Application\Utility\ApplicationErrorLogger;
 use Application\Model\ApplicationAbstractBase;
 use Localization\Service\Localization as LocalizationService;
-use Zend\Db\ResultSet\ResultSet;
 use Application\Utility\ApplicationCache as CacheUtility;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
@@ -51,7 +71,7 @@ class PageBase extends ApplicationAbstractBase
     const CACHE_PAGES_DATA_TAG = 'Page_Data_Tag';
 
     /**
-     * Page slug lengh
+     * Page slug length
      */
     const PAGE_SLUG_LENGTH = 40;
 
@@ -72,24 +92,29 @@ class PageBase extends ApplicationAbstractBase
 
     /**
      * Pages map
+     *
      * @var array
      */
     protected static $pagesMap = null;
 
     /**
      * Pages tree
+     *
      * @var array
      */
     protected static $pagesTree = [];
 
     /**
      * Page model instance
-     * @var object  
+     *
+     * @var \Page\Model\PageNestedSet
      */
     protected $pageModel;
 
     /**
      * Get page model
+     *
+     * @return \Page\Model\PageNestedSet
      */
     protected function getPageModel()
     {
@@ -279,7 +304,7 @@ class PageBase extends ApplicationAbstractBase
      * Get page layouts
      *
      * @param boolean $process
-     * @return array|object ResultSet
+     * @return array|\Zend\Db\ResultSet\ResultSet
      */
     public function getPageLayouts($process = true)
     {
@@ -340,8 +365,10 @@ class PageBase extends ApplicationAbstractBase
     /**
      * Is page movable
      *
-     * @param string $slug
-     * @param integer $pageId
+     * @param integer $leftKey
+     * @param integer $rightKey
+     * @param integer $level
+     * @param integer $parentLeft
      * @return boolean
      */
     public function isPageMovable($leftKey, $rightKey, $level, $parentLeft)
@@ -752,13 +779,14 @@ class PageBase extends ApplicationAbstractBase
         }
 
         self::$pagesTree[$language] = $pagesTree;
+
         return $pagesTree;
     }
 
     /**
      * Process pages tree
      *
-     * @param array $pagesTree
+     * @param array $pages
      * @param string $currentPageName
      * @param array $currentPageOptions
      * @return void
@@ -767,6 +795,7 @@ class PageBase extends ApplicationAbstractBase
     {
         if (empty($currentPageOptions['parent'])) {
             $pages[$currentPageName] = $currentPageOptions;
+
             return;
         }
 
@@ -774,6 +803,7 @@ class PageBase extends ApplicationAbstractBase
         foreach ($pages as $pageName => &$pageOptions) {
             if ($currentPageOptions['parent'] == $pageName) {
                 $pages[$pageName]['children'][$currentPageName] = $currentPageOptions;
+
                 return;
             }
 
@@ -922,6 +952,7 @@ class PageBase extends ApplicationAbstractBase
         }
 
         self::$pagesMap = $pagesMap;
+
         return $pagesMap;
     }
 

@@ -11,11 +11,11 @@
 </div>
 
 <script type="text/javascript">
-        $("#<?php echo $this->escapeJs($this->tree_id) ?>").treeview({
-            persist: "cookie",
-            cookieOptions : {
-                expires: <?php echo $this->cookie_lifetime ?>,
-                path : '<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller')]) ?>'
-            }
-        });
+    $("#<?php echo $this->escapeJs($this->tree_id) ?>").treeview({
+        persist: "cookie",
+        cookieOptions : {
+            expires: <?php echo $this->cookie_lifetime ?>,
+            path : '<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller')]) ?>'
+        }
+    });
 </script>
