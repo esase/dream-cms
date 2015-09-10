@@ -1,5 +1,5 @@
-<?php use User\Model\UserBase as UserBaseModel ?>
-<?php use Acl\Model\AclBase as AclBaseModel ?>
+<?php use User\Model\UserBase as UserBaseModel; ?>
+<?php use Acl\Model\AclBase as AclBaseModel; ?>
 
 <?php $this->declareVars('extraActions', 'subPageTitle') ?>
 <?php $this->subPageTitle = $this->translate('Edit the user') ?>
@@ -100,7 +100,7 @@
             <?php echo $this->partial('administration-partial/panel', [
                 'notification' => false,
                 'title' => $this->translate('Edit account'),
-                'body' => $this->partial('partial/form', ['form' => $this->userForm])
+                'body' => $this->partial('partial/form', ['form' => $this->user_form])
             ]) ?>
         </div>
     <?php else: ?>
@@ -109,7 +109,7 @@
             <?php echo $this->partial('administration-partial/panel', [
                 'notification' => false,
                 'title' => $this->translate('Edit account'),
-                'body' => $this->partial('partial/form', ['form' => $this->userForm])
+                'body' => $this->partial('partial/form', ['form' => $this->user_form])
             ]) ?>
         </div>
         <div class="col-md-4">

@@ -23,22 +23,22 @@
     'default_order' => 'date',
     'default_order_type' => 'desc',
     'headers' => [
-        0 => [
+        [
             'title' => $this->translate('Name')
         ],
-        1 => [
+        [
             'title' => $this->translate('Vendor'),
             'order_name' => 'vendor'
         ],
-        2 => [
+        [
             'title' => $this->translate('Vendor email'),
             'order_name' => 'email'
         ],
-        3 => [
+        [
             'title' => $this->translate('Version'),
             'order_name' => 'version'
         ],
-        4 => [
+        [
             'title' => $this->translate('Modified date'),
             'order_name' => 'date'
         ]
@@ -57,7 +57,7 @@
     ],
     'actions' => [
         'regular_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Upload a module'),
                 'controller' => 'modules-administration',
                 'action' => 'upload',
@@ -65,7 +65,7 @@
             ]
         ],
         'multiple_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Install selected'),
                 'controller' => 'modules-administration',
                 'action' => 'install',
@@ -74,7 +74,7 @@
             ]
         ],
         'single_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('View system requirements'),
                 'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-module-system-requirements']) . '?id=__value__\', \'popup-module-system-requirements-window\')',
                 'check_acl' => true,
@@ -82,7 +82,7 @@
                 'action' => 'ajax-view-module-system-requirements',
                 'image' => $this->layoutAsset('icon/setting_action.png', 'image')
             ],
-            1 => [
+            [
                 'name' => $this->translate('View dependent modules'),
                 'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-dependent-modules']) . '?id=__value__\', \'popup-dependent-modules-window\')',
                 'check_acl' => true,
@@ -90,7 +90,7 @@
                 'action' => 'ajax-view-dependent-modules',
                 'image' => $this->layoutAsset('icon/depend_module_action.png', 'image')
             ],
-            2 => [
+            [
                 'name' => $this->translate('View module description'),
                 'js' => 'showPopup(\'' . $this->url('application/page', ['controller' => 'modules-administration', 'action' => 'ajax-view-module-description']) . '?id=__value__\', \'popup-module-description-window\')',
                 'check_acl' => true,
@@ -98,7 +98,7 @@
                 'action' => 'ajax-view-module-description',
                 'image' => $this->layoutAsset('icon/info_action.png', 'image')
             ],
-            3 => [
+            [
                 'name' => $this->translate('Delete the module'),
                 'check_acl' => true,
                 'controller' => 'modules-administration',
@@ -132,19 +132,19 @@
         'multiple_actions_message' => $this->translate('You have to install or activate all dependent modules or configure all module\'s system requirements before you can install this module'),
         'single_actions' => [
             'ajax-view-dependent-modules' => [
-                0 => [
+                [
                     'param' => 'module_depends',
                     'condition' =>  'return false === (bool) "__value__";'
                 ]
             ],
             'ajax-view-module-system-requirements' => [
-                0 => [
+                [
                     'param' => 'system_requirements',
                     'condition' =>  'return false === (bool) "__value__";'
                 ]
             ],
             'ajax-view-module-description' => [
-                0 => [
+                [
                     'param' => 'description',
                     'condition' =>  'return "" != "__value__";'
                 ]

@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Application\Model;
 
 use Application\Exception\ApplicationException;
@@ -6,9 +27,8 @@ use Application\Utility\ApplicationErrorLogger;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Predicate\Predicate as Predicate;
-use Exception;
 use Zend\Db\Sql\Expression as Expression;
-use Zend\Db\Sql\Update;
+use Exception;
 use Closure;
 
 abstract class ApplicationAbstractNestedSet 
@@ -30,37 +50,43 @@ abstract class ApplicationAbstractNestedSet
 
     /**
      * Node id
+     *
      * @var string
      */
     protected $nodeId = 'id';
 
     /**
      * Parent
+     *
      * @var string
      */
     protected $parent = 'parent_id';
 
     /**
      * Left key
+     *
      * @var string
      */
     protected $left = 'left_key';
 
     /**
      * Right key
+     *
      * @var string
      */
     protected $right = 'right_key';
 
     /**
      * Level
+     *
      * @var string
      */
     protected $level = 'level';
 
     /**
      * Table gateway
-     * @var object
+     *
+     * @var \Zend\Db\TableGateway\TableGateway
      */
     public $tableGateway;
 
@@ -116,6 +142,7 @@ abstract class ApplicationAbstractNestedSet
             }
 
             ApplicationErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -126,8 +153,8 @@ abstract class ApplicationAbstractNestedSet
      * Get all nodes
      *
      * @param array $filter
-     * @param object $closure
-     * @return object
+     * @param Closure $closure
+     * @return \Zend\Db\ResultSet\ResultSet
      */
     public function getAllNodes(array $filter = [], Closure $closure = null)
     {
@@ -193,7 +220,8 @@ abstract class ApplicationAbstractNestedSet
                 $this->tableGateway->getAdapter()->getDriver()->getConnection()->rollback();
             }
 
-            ErrorLogger::log($e);
+            ApplicationErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -216,7 +244,7 @@ abstract class ApplicationAbstractNestedSet
     }
 
     /**
-     * Move node to end
+     * Move node to the end
      *
      * @param array $options
      *      integer id required
@@ -248,13 +276,14 @@ abstract class ApplicationAbstractNestedSet
      *      integer parent_left_key required
      *      integer parent_right_key required
      *      integer parent_level required
-     * @param array $filters
+     * @param array $filter
      * @param boolean $useTransaction
      * @return boolean|string
      */
     public function moveNodeToStart($options, array $filter = [], $useTransaction = true)
     {
         $options['near_key'] = $options['parent_left_key'];
+
         return $this->moveNode($options, $filter, $useTransaction);
     }
 
@@ -278,6 +307,7 @@ abstract class ApplicationAbstractNestedSet
     public function moveNodeAfter($options, array $filter = [], $useTransaction = true)
     {
         $options['near_key'] = $options['after_right_key'];
+
         return $this->moveNode($options, $filter, $useTransaction);
     }
 
@@ -324,7 +354,7 @@ abstract class ApplicationAbstractNestedSet
      * @param array $filter
      * @param boolean $useTransaction
      * @return boolean|string
-     * @throws Application\Exception\ApplicationException
+     * @throws \Application\Exception\ApplicationException
      */
     protected function moveNode(array $options, array $filter = [], $useTransaction = true)
     {
@@ -414,6 +444,7 @@ abstract class ApplicationAbstractNestedSet
             }
 
             ApplicationErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -432,8 +463,6 @@ abstract class ApplicationAbstractNestedSet
      */
     protected function insertNode($level, $nearKey, array $data, array $filter = [], $useTransaction = true)
     {
-        $insertId = 0;
-
         try {
             if ($useTransaction) {
                 $this->tableGateway->getAdapter()->getDriver()->getConnection()->beginTransaction();
@@ -478,6 +507,7 @@ abstract class ApplicationAbstractNestedSet
             }
 
             ApplicationErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -497,6 +527,7 @@ abstract class ApplicationAbstractNestedSet
     public function insertNodeToEnd($parentLevel, $parentRightKey, array $data, array $filter = [], $useTransaction = true)
     {
         $parentRightKey = $parentRightKey - 1;
+
         return $this->insertNode($parentLevel, $parentRightKey, $data, $filter, $useTransaction);
     }
 
@@ -558,7 +589,7 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $rightKey
      * @param integer $level
      * @param array $filter
-     * @param object $closure
+     * @param Closure $closure
      * @return array|boolean
      */
     public function getParentNode($leftKey, $rightKey, $level, array $filter = [], Closure $closure = null)
@@ -588,7 +619,7 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $level
      * @param integer $leftKey
      * @param array $filter
-     * @param object $closure
+     * @param Closure $closure
      * @return array|boolean
      */
     public function getPrevNode($level, $leftKey, array $filter = [], Closure $closure = null)
@@ -616,7 +647,7 @@ abstract class ApplicationAbstractNestedSet
      *
      * @param integer $parentId
      * @param array $filter
-     * @param object $closure
+     * @param Closure $closure
      * @return boolean|array
      */
     public function getChildrenNodes($parentId, array $filter = [], Closure $closure = null)
@@ -679,6 +710,7 @@ abstract class ApplicationAbstractNestedSet
             }
 
             ApplicationErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
@@ -692,7 +724,7 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $rightKey
      * @param integer $level
      * @param array $filter
-     * @param object $closure
+     * @param Closure $closure
      * @param integer $limit
      * @return boolean|array
      */
@@ -729,7 +761,7 @@ abstract class ApplicationAbstractNestedSet
      * @param integer $leftKey
      * @param integer $rightKey
      * @param array $filter
-     * @param object $closure
+     * @param Closure $closure
      * @return boolean|array
      */
     public function getParentNodes($leftKey, $rightKey, array $filter = [], Closure $closure = null)
@@ -755,8 +787,8 @@ abstract class ApplicationAbstractNestedSet
      * Get node info
      *
      * @param integer $id
-     * @apram string $field
-     * @param object $closure
+     * @param string $field
+     * @param Closure $closure
      * @return array|boolean
      */
     public function getNodeInfo($id, $field = null, Closure $closure = null)
@@ -780,7 +812,7 @@ abstract class ApplicationAbstractNestedSet
      * @param array $filter
      * @param integer $parentLeftKey
      * @param integer $parentRightKey     
-     * @param object $closure
+     * @param Closure $closure
      * @return integer|boolean
      */
     public function getLastNode(array $filter = [], $parentLeftKey = null, $parentRightKey = null, Closure $closure = null)

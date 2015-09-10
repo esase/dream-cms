@@ -25,7 +25,7 @@
                 <a href="<?php echo $this->url('application/page', $this->baseUrl, ['force_canonical' => true, 'query' => !empty($this->breadcrumb[$i]['queries']) && is_array($this->breadcrumb[$i]['queries']) ? $this->breadcrumb[$i]['queries'] : null]) ?>">
                     <?php echo $this->escapeHtml($this->breadcrumb[$i]['name']) ?>
                 </a>
-            <?php endif; ?>
+            <?php endif ?>
         </li>
-    <?php endfor; ?>
+    <?php endfor ?>
 </ol>

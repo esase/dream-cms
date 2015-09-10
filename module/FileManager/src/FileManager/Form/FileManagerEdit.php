@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace FileManager\Form;
 
 use Application\Form\ApplicationCustomFormBuilder;
@@ -7,52 +28,60 @@ use Application\Form\ApplicationAbstractCustomForm;
 use Application\Utility\ApplicationFileSystem as FileSystemUtility;
 use FileManager\Model\FileManagerBase as FileManagerBaseModel;
 
-class FileManagerEdit extends ApplicationAbstractCustomForm 
+class FileManagerEdit extends ApplicationAbstractCustomForm
 {
     /**
      * Form name
+     *
      * @var string
      */
     protected $formName = 'edit';
-    
+
     /**
-     * Is directory
+     * Is it directory
+     *
      * @var boolean
      */
     protected $isDirectory = false;
 
     /**
      * File name
+     *
      * @var string
      */
     protected $fileName;
 
     /**
      * Full file's path
+     *
      * @var string
      */
     protected $fullFilePath;
 
     /**
      * User's path
+     *
      * @var string
      */
     protected $userPath;
 
     /**
      * Full user's path
+     *
      * @var string
      */
     protected $fullUserPath;
 
     /**
      * Max file name length
+     *
      * @var integer
      */
     protected $maxFileNameLength;
 
     /**
      * Form elements
+     *
      * @var array
      */
     protected $formElements = [
@@ -72,7 +101,7 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
     /**
      * Get form instance
      *
-     * @return object
+     * @return \Application\Form\ApplicationCustomFormBuilder
      */
     public function getForm()
     {
@@ -105,9 +134,10 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
         return $this->form;
     }
 
-    
     /**
      * Init directory settings
+     *
+     * @return void
      */
     protected function initDirectorySettings()
     {
@@ -147,6 +177,8 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
 
     /**
      * Init file settings
+     *
+     * @return void
      */
     protected function initFileSettings()
     {
@@ -199,7 +231,7 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
     }
 
     /**
-     * Validate possibility moving directory 
+     * Validate possibility of moving directory
      *
      * @param $value
      * @param array $context
@@ -246,14 +278,15 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
     }
 
     /**
-     * Is a directory
+     * Is it a directory
      *
      * @param boolean $isDirectory
-     * @return object fluent interface
+     * @return \FileManager\Form\FileManagerEdit
      */
     public function isDirectory($isDirectory)
     {
         $this->isDirectory = $isDirectory;
+
         return $this;
     }
 
@@ -261,23 +294,25 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
      * Set a file name
      *
      * @param string $fileName
-     * @return object fluent interface
+     * @return \FileManager\Form\FileManagerEdit
      */
     public function setFileName($fileName)
     {
         $this->fileName = $fileName;
+
         return $this;
     }
 
     /**
-     * Set a a full file's path
+     * Set a full file's path
      *
      * @param string $fullFilePath
-     * @return object fluent interface
+     * @return \FileManager\Form\FileManagerEdit
      */
     public function setFullFilePath($fullFilePath)
     {
         $this->fullFilePath = $fullFilePath;
+
         return $this;
     }
 
@@ -285,11 +320,12 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
      * Set a user's path
      *
      * @param string $userPath
-     * @return object fluent interface
+     * @return \FileManager\Form\FileManagerEdit
      */
     public function setUserPath($userPath)
     {
         $this->userPath = $userPath;
+
         return $this;
     }
 
@@ -297,11 +333,12 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
      * Set a full user's path
      *
      * @param string $fullUserPath
-     * @return object fluent interface
+     * @return \FileManager\Form\FileManagerEdit
      */
     public function setFullUserPath($fullUserPath)
     {
         $this->fullUserPath = $fullUserPath;
+
         return $this;
     }
 }

@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace User\Model;
 
 use Acl\Model\AclBase as AclBaseModel;
@@ -48,7 +69,7 @@ class UserBase extends ApplicationAbstractBase
     const CACHE_USER_DATA_TAG = 'User_Data_Tag';
 
     /**
-     * User specicific cache data tag
+     * User specific cache data tag
      */
     const CACHE_USER_SPECIFIC_DATA_TAG = 'User_Specific_Data_Tag_';
 
@@ -83,12 +104,13 @@ class UserBase extends ApplicationAbstractBase
     const USER_INFO_BY_API_KEY = 'api_key';
 
     /**
-     * User slug lengh
+     * User slug length
      */
     const USER_SLUG_LENGTH = 40;
 
     /**
      * User info fields
+     *
      * @var array
      */
     protected $userInfoFields = [
@@ -100,6 +122,7 @@ class UserBase extends ApplicationAbstractBase
 
     /**
      * List of private fields
+     *
      * @var array
      */
     protected $privateFields = [
@@ -111,18 +134,21 @@ class UserBase extends ApplicationAbstractBase
 
     /**
      * Avatars directory
+     *
      * @var string
      */
     protected static $avatarsDir = 'user/';
 
     /**
      * Thumbnails directory
+     *
      * @var string
      */
     protected static $thumbnailsDir = 'user/thumbnail/';
 
     /**
      * User info
+     *
      * @var array
      */
     protected static $userInfo = [];
@@ -273,6 +299,7 @@ class UserBase extends ApplicationAbstractBase
 
         // fire the edit user event
         UserEvent::fireUserEditEvent($userInfo['user_id'], $selfEdit);
+
         return true;
     }
 
@@ -288,7 +315,7 @@ class UserBase extends ApplicationAbstractBase
      *      integer size
      * @param string $oldAvatar
      * @param boolean $deleteAvatar
-     * @throws User\Exception\UserException
+     * @throws \User\Exception\UserException
      * @return void
      */
     protected function uploadAvatar($userId, array $avatar, $oldAvatar = null, $deleteAvatar = false)
@@ -302,7 +329,7 @@ class UserBase extends ApplicationAbstractBase
                 }
             }
 
-            // upload the new
+            // upload a new one
             if (false === ($avatarName =
                     FileSystemUtility::uploadResourceFile($userId, $avatar, self::$avatarsDir))) {
 
@@ -374,7 +401,6 @@ class UserBase extends ApplicationAbstractBase
      *
      * @param array $userInfo
      * @param boolean $sendMessage
-     * @throws User/Exception/UserException
      * @return boolean|string
      */
     public function deleteUser(array $userInfo, $sendMessage = true)
@@ -437,8 +463,6 @@ class UserBase extends ApplicationAbstractBase
      */
     public function addUser(array $formData, $language, $statusApproved = true, array $avatar = [], $retArray = false)
     {
-        $insertId = 0;
-
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
 
@@ -510,6 +534,7 @@ class UserBase extends ApplicationAbstractBase
 
         // fire the add user event
         UserEvent::fireUserAddEvent($insertId);
+
         return $insertId;
     }
 
@@ -666,11 +691,13 @@ class UserBase extends ApplicationAbstractBase
         catch (Exception $e) {
             $this->adapter->getDriver()->getConnection()->rollback();
             ApplicationErrorLogger::log($e);
+
             return $e->getMessage();
         }
 
         // fire the edit user role event
         UserEvent::fireEditRoleEvent($userInfo, $roleName, $isSystem);
+
         return true;
     }
 
@@ -742,6 +769,8 @@ class UserBase extends ApplicationAbstractBase
 
         return true;
     }
+
+    // TODO: is it safe ?
 
     /**
      * Get all active users
@@ -878,6 +907,7 @@ class UserBase extends ApplicationAbstractBase
         }
 
         self::$userInfo[$userId][$field] = $userInfo;
+
         return $userInfo;
     }
 
@@ -885,7 +915,7 @@ class UserBase extends ApplicationAbstractBase
      * Remove the user cache
      *
      * @param integer $userId
-     * @return void
+     * @return boolean
      */
     protected function removeUserCache($userId)
     {

@@ -38,7 +38,7 @@
 
 <?php $this->placeholder('form')->captureStart() ?>
     <?php if ($this->file_form) : ?>
-        <?php echo $this->partial('file-manager/patrial/file-form', [
+        <?php echo $this->partial('file-manager/partial/file-form', [
             'form' => $this->file_form
         ]) ?>
     <?php else: ?>
@@ -61,7 +61,7 @@
 ]))
 ?>
 
-<?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
+<?php echo $this->partial('file-manager/partial/file-manager-wrapper', [
     'user_directories' => $this->user_directories,
     'action' => $this->placeholder('form'),
     'action_title' => $this->translate('General info'),

@@ -12,7 +12,7 @@
 ]) ?>
 
 <?php $this->placeholder('filesList')->captureStart() ?>
-    <?php echo $this->partial('file-manager/patrial/file-list', [
+    <?php echo $this->partial('file-manager/partial/file-list', [
         'current_directory' => $this->current_directory,
         'paginator' => $this->paginator,
         'path' => $this->path,
@@ -24,7 +24,7 @@
     ]) ?>
 <?php $this->placeholder('filesList')->captureEnd() ?>
 
-<?php echo $this->partial('file-manager/patrial/file-manager-wrapper', [
+<?php echo $this->partial('file-manager/partial/file-manager-wrapper', [
     'user_directories' => $this->user_directories,
     'action' => $this->placeholder('filesList'),
     'action_title' => $this->translate('Files and directories'),

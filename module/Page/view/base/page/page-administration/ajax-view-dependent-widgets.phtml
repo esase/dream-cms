@@ -1,8 +1,8 @@
 <?php $this->declareVars('processedWidgets') ?>
 <?php $this->processedWidgets = new ArrayObject ?>
 
-<?php foreach($this->data as $widet): ?>
-    <?php $this->processedWidgets[] = [$this->pageWidgetTitle($widet)] ?>
+<?php foreach($this->data as $widget): ?>
+    <?php $this->processedWidgets[] = [$this->pageWidgetTitle($widget)] ?>
 <?php endforeach ?>
 
 <?php echo $this->partial('partial/popup', [

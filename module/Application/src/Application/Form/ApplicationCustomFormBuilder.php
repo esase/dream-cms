@@ -1,66 +1,42 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Application\Form;
  
 use Acl\Service\Acl as AclService;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Service\ApplicationCaptcha as CaptchaService;
+use Localization\Utility\LocalizationLocale as LocaleUtility;
+use Zend\Captcha\Image as CaptchaImage;
 use Zend\Form\Form;
 use Zend\Form\FormInterface;
 use Zend\Mvc\I18n\Translator;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\Form\Exception\InvalidArgumentException;
-use Localization\Utility\LocalizationLocale as LocaleUtility;
-use Zend\Captcha\Image as CaptchaImage;
 use IntlDateFormatter;
 
 class ApplicationCustomFormBuilder extends Form 
 {
-    /**
-     * Form custom elements
-     * @var array
-     */
-    protected $customElements;
-
-    /**
-     * Translator
-     * @var object
-     */
-    protected $translator;
-
-    /**
-     * Input filter
-     * @var object
-     */
-    protected $inputFilter;
-
-    /**
-     * Input factory
-     * @var object
-     */
-    protected $inputFactory;
-
-    /**
-     * List of ignored fields
-     * @var array
-     */
-    protected $ignoredElements = [];
-
-    /**
-     * List of not validate fields
-     * @var array
-     */
-    protected $notValidatedElements = [];
-
-    /**
-     * Default filters
-     * @var array
-     */
-    protected $defaultFilters = [
-        ['name' => 'StripTags'],
-        ['name' => 'StringTrim']
-    ];
-
     /**
      * Slug type
      */
@@ -97,7 +73,7 @@ class ApplicationCustomFormBuilder extends Form
     const FIELD_HIDDEN  = 'hidden';
 
     /**
-     * Textarea type
+     * Text area type
      */
     const FIELD_TEXT_AREA = 'textarea';
 
@@ -117,7 +93,7 @@ class ApplicationCustomFormBuilder extends Form
     const FIELD_SELECT = 'select';
 
     /**
-     * Multiselect type
+     * Multi select type
      */
     const FIELD_MULTI_SELECT = 'multiselect';
 
@@ -127,7 +103,7 @@ class ApplicationCustomFormBuilder extends Form
     const FIELD_CHECKBOX = 'checkbox';
 
     /**
-     * Multicheckbox type
+     * Multi checkbox type
      */
     const FIELD_MULTI_CHECKBOX = 'multicheckbox';
 
@@ -142,7 +118,7 @@ class ApplicationCustomFormBuilder extends Form
     const FIELD_SUBMIT = 'submit';
 
     /**
-     * Csrf type
+     * CSRF type
      */
     const FIELD_CSRF = 'csrf';
 
@@ -157,7 +133,7 @@ class ApplicationCustomFormBuilder extends Form
     const FIELD_FILE = 'file';
 
     /**
-     * Csrf timeout
+     * CSRF timeout
      */
     const CSRF_TIMEOUT = 1200;
 
@@ -172,7 +148,7 @@ class ApplicationCustomFormBuilder extends Form
     const FIELD_DATE = 'date';
 
     /**
-     * Date unixtime type
+     * Date unix time type
      */
     const FIELD_DATE_UNIXTIME = 'date_unixtime';
 
@@ -192,6 +168,62 @@ class ApplicationCustomFormBuilder extends Form
     const FIELD_NOTIFICATION_TITLE = 'notification_title';
 
     /**
+     * Form custom elements
+     *
+     * @var array
+     */
+    protected $customElements;
+
+    /**
+     * Translator
+     *
+     * @var \Zend\Mvc\I18n\Translator
+     */
+    protected $translator;
+
+    /**
+     * Input filter
+     *
+     * @var \Zend\InputFilter\InputFilter
+     */
+    protected $inputFilter;
+
+    /**
+     * Input factory
+     *
+     * @var \Zend\InputFilter\Factor
+     */
+    protected $inputFactory;
+
+    /**
+     * List of ignored fields
+     *
+     * @var array
+     */
+    protected $ignoredElements = [];
+
+    /**
+     * List of not validate fields
+     *
+     * @var array
+     */
+    protected $notValidatedElements = [];
+
+    /**
+     * Default filters
+     *
+     * @var array
+     */
+    protected $defaultFilters = [
+        [
+            'name' => 'StripTags'
+        ],
+        [
+            'name' => 'StringTrim'
+        ]
+    ];
+
+    /**
      * Class constructor
      *
      * @param string $formName
@@ -206,16 +238,17 @@ class ApplicationCustomFormBuilder extends Form
      *      integer min_length optional
      *      boolean|integer required optional
      *      string value optional
-     *      array values required for radios, multicheckboxes and selects
+     *      array values required for radios, multi checkboxes and selects
      *      string values_provider (PHP function that returns the list of values)
      *      array attributes optional
      *      array filters optional
      *      array validators optional
      *      array extra_options optional
-     * @param object $translator
+     * @param \Zend\Mvc\I18n\Translator $translator
      * @param string $method
      * @param array $ignoredElements
-     * @throws Zend\Form\Exception\InvalidArgumentException
+     * @param array $notValidatedElements
+     * @throws \Zend\Form\Exception\InvalidArgumentException
      */
     public function __construct($formName, array $formElements,
         Translator $translator, array $ignoredElements = [], array $notValidatedElements = [], $method = 'post') 
@@ -564,8 +597,6 @@ class ApplicationCustomFormBuilder extends Form
                         'max' => (int) $element['max_length']
                     ]
                 ];
-
-                $elementAttrs = array_merge(['maxlength' => (int) $element['max_length']], $elementAttrs);
             }
 
             // add a string min length validator
@@ -600,7 +631,7 @@ class ApplicationCustomFormBuilder extends Form
      *
      * @param boolean $localizeData
      * @param  int $flag
-     * @throws Exception\DomainException
+     * @throws \Zend\Form\Exception\DomainException
      * @return array|object
      */
     public function getData($localizeData = true, $flag = FormInterface::VALUES_NORMALIZED)
@@ -632,7 +663,7 @@ class ApplicationCustomFormBuilder extends Form
      * @param  array|\ArrayAccess|Traversable $data
      * @param boolean $convertValues
      * @return Form|FormInterface
-     * @throws Zend\Form\Exception\InvalidArgumentException
+     * @throws \Zend\Form\Exception\InvalidArgumentException
      */
     public function setData($data, $convertValues = true)
     {
@@ -658,7 +689,7 @@ class ApplicationCustomFormBuilder extends Form
     }
 
     /**
-     * Add csrf
+     * Add CSRF
      *
      * @param string $name
      * @return void

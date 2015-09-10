@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Page\Controller;
 
 use Application\Utility\ApplicationDisableSite as DisableSiteUtility;
@@ -13,24 +34,29 @@ class PageController extends AbstractActionController
 {
     /**
      * Model instance
-     * @var object  
+     *
+     * @var \Page\Model\PageNestedSet
      */
     protected $model;
 
     /**
      * Received path
+     *
      * @var array
      */
     protected $receivedPath = null;
 
     /**
      * Home page
+     *
      * @var string
      */
     protected $homePage;
 
     /**
      * Get model
+     *
+     * @return \Page\Model\PageNestedSet
      */
     protected function getModel()
     {
@@ -83,6 +109,7 @@ class PageController extends AbstractActionController
 
             $viewModel->setTemplate($this->getModel()->getLayoutPath() . 'layout-disabled-site');
             $this->layout('layout/blank');
+
             return $viewModel;
         }
 
@@ -131,8 +158,7 @@ class PageController extends AbstractActionController
         ]);
 
         // set a custom page layout
-        $viewModel->setTemplate($this->
-                getModel()->getLayoutPath() . $pageInfo['layout']);
+        $viewModel->setTemplate($this->getModel()->getLayoutPath() . $pageInfo['layout']);
 
         return $viewModel;
     }
@@ -194,7 +220,7 @@ class PageController extends AbstractActionController
                 $this->receivedPath = substr($this->receivedPath, 0, $pathLength);
             }
 
-            // check some criterias
+            // check some criteria
             null === $this->receivedPath
                 ? $this->receivedPath = $this->getHomePage() // home page will be as a default page
                 : ($this->receivedPath = $this->receivedPath == $this->getHomePage() ? null : $this->receivedPath);

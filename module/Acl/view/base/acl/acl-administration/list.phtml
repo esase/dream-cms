@@ -1,4 +1,4 @@
-<?php use Acl\Model\AclBase as AclBaseModel ?>
+<?php use Acl\Model\AclBase as AclBaseModel; ?>
 
 <?php $this->declareVars('subPageTitle', 'content') ?>
 <?php $this->subPageTitle = $this->translate('List of roles') ?>
@@ -23,14 +23,14 @@
     'default_order_type' => 'desc',
     'filter_form' => $this->filter_form,
     'headers' => [
-        0 => [
+        [
             'title' => $this->translate('ID'),
             'order_name' => 'id'
         ],
-        1 => [
+        [
             'title' => $this->translate('Name')
         ],
-        2 => [
+        [
             'title' => $this->translate('Type')
         ]
     ],
@@ -43,7 +43,7 @@
     ],
     'actions' => [
         'regular_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Add a role'),
                 'controller' => 'acl-administration',
                 'action' => 'add-role',
@@ -51,7 +51,7 @@
             ]
         ],
         'multiple_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Delete selected'),
                 'controller' => 'acl-administration',
                 'action' => 'delete-roles',
@@ -60,14 +60,14 @@
             ]
         ],
         'single_actions' => [
-            0 => [
+            [
                 'name' => $this->translate('Edit the role'),
                 'controller' => 'acl-administration',
                 'action' => 'edit-role',
                 'check_acl' => true,
                 'image' => $this->layoutAsset('icon/edit_action.png', 'image')
             ],
-            1 => [
+            [
                 'name' => $this->translate('Browse resources'),
                 'controller' => 'acl-administration',
                 'action' => 'browse-resources',
@@ -93,13 +93,13 @@
         'multiple_actions_message' => $this->translate('You cannot delete the system roles'),
         'single_actions' => [
             'edit-role' => [
-                0 => [
+                [
                     'param' => 'type',
                     'condition' =>  'return "__value__" == "' . AclBaseModel::ROLE_TYPE_SYSTEM . '" ? false : true;'
                 ]
             ],
             'browse-resources' => [
-                0 => [
+                [
                     'param' => 'id',
                     'condition' =>  'return "__value__" == "' . AclBaseModel::DEFAULT_ROLE_ADMIN . '" ? false : true;'
                 ]

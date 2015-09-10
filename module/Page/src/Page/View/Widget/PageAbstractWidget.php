@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Page\View\Widget;
 
 use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
@@ -12,50 +33,57 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
 {
     /**
      * Widget redirected flag
+     *
      * @var boolean
      */
     protected $widgetRedirected = false;
 
     /**
      * Page Id
+     *
      * @var integer
      */
     protected $pageId;
 
     /**
      * Widget connection Id
+     *
      * @var integer
      */
     protected $widgetConnectionId;
 
     /**
      * Widget position
+     *
      * @var string
      */
     protected $widgetPosition;
 
     /**
      * Service locator
-     * @var object
+     *
+     * @var \Zend\ServiceManager\ServiceManager
      */
     protected $serviceLocator;
 
     /**
      * Request
-     * @var object
+     *
+     * @var \Zend\Http\PhpEnvironment\Request
      */
     protected $request;
 
     /**
      * Widget setting model instance
-     * @var object  
+     *
+     * @var \Page\Model\PageWidgetSetting
      */
     private $widgetSettingModel;
 
     /**
      * Abstract widget
      *
-     * @return object fluent interface
+     * @return \Page\View\Widget\PageAbstractWidget
      */
     public function __invoke()
     {
@@ -88,7 +116,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     /**
      * Get request
      *
-     * @return object
+     * @return \Zend\Http\PhpEnvironment\Request
      */
     protected function getRequest()
     {
@@ -102,7 +130,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     /**
      * Get service locator
      *
-     * @return object
+     * @return \Zend\ServiceManager\ServiceManager
      */
     protected function getServiceLocator()
     {
@@ -116,7 +144,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     /**
      * Translate
      * 
-     * @pram string $key
+     * @param string $key
      * @return string
      */
     protected function translate($key)
@@ -168,9 +196,8 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     protected function redirectToUrl($url)
     {
         $this->widgetRedirected = true;
-        $request = $this->getServiceLocator()->get('Request');
-        return $this->getServiceLocator()->
-                get('controllerPluginManager')->get('redirect')->toUrl($url);
+
+        return $this->getServiceLocator()->get('controllerPluginManager')->get('redirect')->toUrl($url);
     }
 
     /**
@@ -181,6 +208,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     protected function reloadPage()
     {
         $this->widgetRedirected = true;
+
         return $this->getServiceLocator()->
                 get('controllerPluginManager')->get('redirect')->toUrl($this->getView()->serverUrl(true));
     }
@@ -188,7 +216,7 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     /**
      * Get flash messenger
      *
-     * @return object
+     * @return \Zend\Mvc\Controller\Plugin\FlashMessenger
      */
     protected function getFlashMessenger()
     {
@@ -198,6 +226,8 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
 
     /**
      * Get widget setting model
+     *
+     * @return \Page\Model\PageWidgetSetting
      */
     private function getWidgetSettingModel()
     {
@@ -213,25 +243,27 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
     /**
      * Get widget setting value
      *
+     * @param string $name
      * @return string|array|boolean
      */
     protected function getWidgetSetting($name)
     {
-        $currentlanguage = LocalizationService::getCurrentLocalization()['language'];
+        $currentLanguage = LocalizationService::getCurrentLocalization()['language'];
 
         return  $this->getWidgetSettingModel()->
-                getWidgetSetting($this->pageId, $this->widgetConnectionId, $name, $currentlanguage);
+                getWidgetSetting($this->pageId, $this->widgetConnectionId, $name, $currentLanguage);
     }
 
     /**
      * Set current page id
      *
      * @param integer $pageId
-     * @return object fluent interface
+     * @return \Page\View\Widget\IPageWidget
      */
     public function setPageId($pageId = 0) 
     {
         $this->pageId = $pageId;
+
         return $this;
     }
 
@@ -239,11 +271,12 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
      * Set widget connection id
      *
      * @param integer $widgetId
-     * @return object fluent interface
+     * @return \Page\View\Widget\IPageWidget
      */
     public function setWidgetConnectionId($widgetId) 
     {
         $this->widgetConnectionId = $widgetId;
+
         return $this;
     }
 
@@ -251,11 +284,12 @@ abstract class PageAbstractWidget extends AbstractHelper implements IPageWidget
      * Set widget position
      *
      * @param string $position
-     * @return object fluent interface
+     * @return \Page\View\Widget\IPageWidget
      */
     public function setWidgetPosition($position) 
     {
         $this->widgetPosition = $position;
+
         return $this;
     }
 

@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace Localization\Utility;
 
 use Localization\Service\Localization as LocalizationService;
@@ -15,6 +36,7 @@ class LocalizationLocale
 
     /**
      * Current locale
+     *
      * @var string
      */
     protected static $locale;
@@ -49,7 +71,7 @@ class LocalizationLocale
      *
      * @param string $value
      * @param string $type
-     * @param string $outputDateFormat (Intl date format - http://www.php.net/manual/en/book.intl.php)
+     * @param integer $outputDateFormat (Intl date format - http://www.php.net/manual/en/book.intl.php)
      * @param string $locale
      * @return string
      */
@@ -66,9 +88,10 @@ class LocalizationLocale
                         ->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, self::MAX_FRACTION_DIGITS);
 
                 return $filter->filter((float) $value);
+
             case 'date' :
             case 'date_unixtime' :
-                $dateFormater = new IntlDateFormatter(
+                $dateFormatter = new IntlDateFormatter(
                     ($locale ? $locale : self::getLocale()),
                     $outputDateFormat,
                     IntlDateFormatter::NONE,
@@ -77,8 +100,9 @@ class LocalizationLocale
                 );
 
                 return $type == 'date'
-                    ? $dateFormater->format(strtotime($value))
-                    : $dateFormater->format((int) $value);
+                    ? $dateFormatter->format(strtotime($value))
+                    : $dateFormatter->format((int) $value);
+
             default :
                 return $value;
         }
@@ -89,12 +113,13 @@ class LocalizationLocale
      *
      * @param string $value
      * @param string $type
-     * @param string $inputDateFormat (Intl date format - http://www.php.net/manual/en/book.intl.php)
+     * @param integer $inputDateFormat (Intl date format - http://www.php.net/manual/en/book.intl.php)
      * @param string $outputDateFormat (php date format)
      * @param string $locale
      * @return mixed
      */
-    public static function convertFromLocalizedValue($value, $type, $inputDateFormat = IntlDateFormatter::MEDIUM, $outputDateFormat = 'Y-m-d', $locale = null)
+    public static function convertFromLocalizedValue($value, $type,
+            $inputDateFormat = IntlDateFormatter::MEDIUM, $outputDateFormat = 'Y-m-d', $locale = null)
     {
         if (!$value) {
             return $value;
@@ -103,10 +128,12 @@ class LocalizationLocale
         switch ($type) {
             case 'float' :
                 $filter = new NumberFormat();
+
                 return $filter->filter($value);
+
             case 'date' :
             case 'date_unixtime' :
-                $dateFormater = new IntlDateFormatter(
+                $dateFormatter = new IntlDateFormatter(
                     ($locale ? $locale : self::getLocale()),
                     $inputDateFormat,
                     IntlDateFormatter::NONE,
@@ -115,8 +142,9 @@ class LocalizationLocale
                 );
 
                 return $type == 'date'
-                    ? date($outputDateFormat, $dateFormater->parse($value)) // return parsed date
-                    : $dateFormater->parse($value); // return timestamp
+                    ? date($outputDateFormat, $dateFormatter->parse($value)) // return parsed date
+                    : $dateFormatter->parse($value); // return timestamp
+
             default :
                 return $value;
         }

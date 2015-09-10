@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * EXHIBIT A. Common Public Attribution License Version 1.0
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.dream-cms.kg/en/license. The License is based on the Mozilla Public License Version 1.1
+ * but Sections 14 and 15 have been added to cover use of software over a computer network and provide for
+ * limited attribution for the Original Developer. In addition, Exhibit A has been modified to be consistent
+ * with Exhibit B. Software distributed under the License is distributed on an “AS IS” basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language
+ * governing rights and limitations under the License. The Original Code is Dream CMS software.
+ * The Initial Developer of the Original Code is Dream CMS (http://www.dream-cms.kg).
+ * All portions of the code written by Dream CMS are Copyright (c) 2014. All Rights Reserved.
+ * EXHIBIT B. Attribution Information
+ * Attribution Copyright Notice: Copyright 2014 Dream CMS. All rights reserved.
+ * Attribution Phrase (not exceeding 10 words): Powered by Dream CMS software
+ * Attribution URL: http://www.dream-cms.kg/
+ * Graphic Image as provided in the Covered Code.
+ * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
+ * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
+ */
 namespace FileManager\Model;
 
 use Application\Model\ApplicationAbstractBase;
@@ -12,7 +33,6 @@ use FileManager\Event\FileManagerEvent;
 use User\Service\UserIdentity as UserIdentityService;
 use Zend\Paginator\Adapter\ArrayAdapter as ArrayAdapterPaginator;
 use Zend\Paginator\Paginator;
-
 use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -23,24 +43,28 @@ class FileManagerBase extends ApplicationAbstractBase
 {
     /**
      * Files directory
+     *
      * @var string
      */
     protected static $filesDir = 'filemanager/';
 
     /**
      * Home directory name
+     *
      * @var string
      */
     protected static $homeDirectoryName = 'home';
 
     /**
      * Directory name pattern
+     *
      * @var string
      */
     protected static $directoryNamePattern = '0-9a-z_';
 
     /**
      * File name pattern
+     *
      * @var string
      */
     protected static $fileNamePattern = '0-9a-z\.\_\-\(\)';
@@ -157,6 +181,7 @@ class FileManagerBase extends ApplicationAbstractBase
         }
 
         ApplicationErrorLogger::log('Cannot delete files and directories for user id: ' . $userId);
+
         return false;
     }
 
@@ -194,7 +219,7 @@ class FileManagerBase extends ApplicationAbstractBase
      *      string tmp_name
      *      integer error
      *      integer size
-     * @param sting $path
+     * @param string $path
      * @return boolean|string
      */
     public function addUserFile(array $fileInfo, $path)
@@ -205,6 +230,7 @@ class FileManagerBase extends ApplicationAbstractBase
         
                 // fire the add file event
                 FileManagerEvent::fireAddFileEvent($this->getUserDirectory($path) . $fileName);
+
                 return $fileName;
             }
 
@@ -256,11 +282,13 @@ class FileManagerBase extends ApplicationAbstractBase
             }
             catch (Exception $e) {
                 ApplicationErrorLogger::log($e);
+
                 return false;
             }
 
             // fire the add directory event
             FileManagerEvent::fireAddDirectoryEvent($userDirectory . $name);
+
             return true;
         }
 
@@ -289,6 +317,7 @@ class FileManagerBase extends ApplicationAbstractBase
         }
         catch (Exception $e) {
             ApplicationErrorLogger::log($e);
+
             return false;
         }
 
@@ -361,7 +390,7 @@ class FileManagerBase extends ApplicationAbstractBase
 
         // get all directories and files
         $directoryIterator = new DirectoryIterator($directory);
-        $files = new CallbackFilterIterator($directoryIterator, function($current, $key, $iterator) use ($filters) {
+        $files = new CallbackFilterIterator($directoryIterator, function($current) use ($filters) {
             if ($current->isDot() || $current->isLink()) {
                 return false;
             }
@@ -454,6 +483,7 @@ class FileManagerBase extends ApplicationAbstractBase
             }
             catch (Exception $e) {
                 ApplicationErrorLogger::log($e);
+
                 return false;
             }
         }
