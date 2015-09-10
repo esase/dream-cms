@@ -1,7 +1,7 @@
 <li>
     <span class="folder">
         <?php if ($this->url) : ?>
-            <a href="<?php echo $this->url ?>">
+            <a <?php if($this->link_description): ?>title="<?php echo $this->escapeHtmlAttr($this->link_description) ?>"<?php endif ?> href="<?php echo $this->url ?>">
                 <?php echo $this->escapeHtml($this->name) ?>
             </a>
         <?php else: ?>

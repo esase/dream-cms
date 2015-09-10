@@ -75,5 +75,8 @@
         'file_path' => $this->file_path,
         'slug' => $this->file_name
     ],
-    'extra_actions' => $this->extraActions
+    'extra_actions' => $this->extraActions,
+    'link_description' => $this->is_directory
+        ? $this->translate('Make this directory as a parent of current directory')
+        : $this->translate('Make this directory as a parent of current file')
 ]) ?>

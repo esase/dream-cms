@@ -35,6 +35,13 @@ class FileManagerDirectoryTree extends AbstractHelper
     protected $treeCookieLifetimeDays = 30;
 
     /**
+     * Link description
+     *
+     * @var string
+     */
+    protected $linkDescription;
+
+    /**
      * Generate a tree
      *
      * @param array|boolean $userDirectories
@@ -42,10 +49,13 @@ class FileManagerDirectoryTree extends AbstractHelper
      * @param string $currentPath
      * @param array $filters
      * @param string $treeClass
+     * @param string $linkDescription
      * @return string
      */
-    public function __invoke($userDirectories = [], $treeId, $currentPath, array $filters = [], $treeClass = 'filetree')
+    public function __invoke($userDirectories = [], $treeId, $currentPath, array $filters = [], $treeClass = 'filetree', $linkDescription = null)
     {
+        $this->linkDescription = $linkDescription;
+
         $currentPath = $currentPath
             ? FileManagerBaseModel::processDirectoryPath($currentPath)
             : FileManagerBaseModel::getHomeDirectoryName();
@@ -88,7 +98,8 @@ class FileManagerDirectoryTree extends AbstractHelper
 
             $content .= $this->getView()->partial('file-manager/partial/directory-tree-item-start', [
                 'url' => $url,
-                'name' => $directoryName
+                'name' => $directoryName,
+                'link_description' => $this->linkDescription
             ]);
 
             // process subdirectories
