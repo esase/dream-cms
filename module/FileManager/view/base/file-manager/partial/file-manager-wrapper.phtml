@@ -19,7 +19,7 @@
         <?php echo $this->partial('administration-partial/panel', [
             'notification' => false,
             'title' => $this->translate('Directories tree'),
-            'body' => $this->fileManagerDirectoriesTree($this->user_directories, $this->directoriesTreeId, $this->path, $this->filters)
+            'body' => $this->fileManagerDirectoriesTree($this->user_directories, $this->directoriesTreeId, $this->path, $this->filters, 'filetree', $this->link_description)
         ]) ?>
 
         <?php if (!empty($this->extra_actions)): ?>

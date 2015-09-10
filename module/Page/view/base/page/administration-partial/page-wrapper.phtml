@@ -18,8 +18,9 @@
     <div class="col-md-4">
         <?php echo $this->partial('administration-partial/panel', [
             'notification' => false,
-            'title' => empty($this->pagesTreeTitle) ? $this->translate('Pages tree') : $this->pagesTreeTitle,
-            'body' => $this->pageTree($this->pagesTreeId, $this->page_id, $this->add_root, $this->filters, $this->tree_disabled)
+            'title' => empty($this->pages_tree_title) ? $this->translate('Pages tree') : $this->pages_tree_title,
+            'body' => $this->pageTree($this->pagesTreeId,
+                    $this->page_id, $this->add_root, $this->filters, $this->tree_disabled, false, $this->link_description)
         ]) ?>
 
         <?php if ($this->extra_actions): ?>

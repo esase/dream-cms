@@ -1,11 +1,11 @@
 <li>
     <?php if (!$this->active && !$this->disabled_tree) : ?>
         <?php if ($this->use_slug): ?>
-            <a href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->page_id], ['force_canonical' => true, 'query' => $this->filters]) ?>">
+            <a <?php if ($this->link_description): ?>title="<?php echo $this->escapeHtmlAttr($this->link_description) ?>"<?php endif ?> href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->page_id], ['force_canonical' => true, 'query' => $this->filters]) ?>">
                 <?php echo $this->title ?>
             </a>
         <?php else: ?>
-            <a href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->applicationRoute()->getParam('slug')], ['force_canonical' => true, 'query' => ['page_id' => $this->page_id] + $this->filters]) ?>">
+            <a <?php if ($this->link_description): ?>title="<?php echo $this->escapeHtmlAttr($this->link_description) ?>"<?php endif ?> href="<?php echo $this->url('application/page', ['controller' => $this->applicationRoute()->getParam('controller'), 'action' => $this->applicationRoute()->getParam('action'), 'slug' => $this->applicationRoute()->getParam('slug')], ['force_canonical' => true, 'query' => ['page_id' => $this->page_id] + $this->filters]) ?>">
                 <?php echo $this->title ?>
             </a>
         <?php endif ?>
