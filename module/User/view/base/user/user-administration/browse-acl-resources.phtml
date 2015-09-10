@@ -1,4 +1,4 @@
-<?php use User\Model\UserBase as UserBaseModel ?>
+<?php use User\Model\UserBase as UserBaseModel; ?>
 
 <?php $this->declareVars('extraActions', 'subPageTitle', 'content') ?>
 <?php $this->subPageTitle = $this->translate('Browse allowed ACL resources')  ?>
@@ -91,12 +91,6 @@
     ],
     'actions_extra_check' => [
         'single_actions' => [
-            'resource-settings' => [
-                [
-                    'param' => 'conection',
-                    'condition' =>  'return (int) "__value__" > 0;'
-                ]
-            ]
         ]
     ]
 ]) ?>
@@ -106,7 +100,7 @@
         'controller' => 'users-administration',
         'action' => 'edit-user',
         'params' => [
-          'slug' => $this->user['user_id']
+            'slug' => $this->user['user_id']
         ],
         'name' => $this->translate('Edit the user'),
         'check_acl' => true
