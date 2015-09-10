@@ -23,7 +23,7 @@
 namespace Install;
 
 use Zend\ModuleManager\ModuleManagerInterface;
-use Zend\Mvc\MvcEvent as ModuleEvent;
+use Zend\ModuleManager\ModuleEvent as ModuleEvent;
 use Zend\Validator\AbstractValidator;
 use Zend\Mvc\MvcEvent;
 use Locale;
