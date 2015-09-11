@@ -50,7 +50,7 @@ class ApplicationDeleteContent extends ApplicationBase
         $resultSet->initialize($statement->execute());
 
         if (!empty($resultSet->current())) {
-            if (true === ($result = $this->markServiceShown($resultSet->current()['id']))) {
+            if (true === ($result = $this->markServiceProcessed($resultSet->current()['id']))) {
                 return $resultSet->current()['path'];
             }
         }
@@ -59,12 +59,12 @@ class ApplicationDeleteContent extends ApplicationBase
     }
 
     /**
-     * Mark service as shown
+     * Mark service as processed
      *
      * @param integer $serviceId
      * @return boolean|string
      */
-    protected function markServiceShown($serviceId)
+    protected function markServiceProcessed($serviceId)
     {
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
