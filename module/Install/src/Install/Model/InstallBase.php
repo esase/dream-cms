@@ -173,6 +173,10 @@ class InstallBase
             [
                 'time'   => '*/5 * * * *',
                 'action' => APPLICATION_PUBLIC . '/index.php application send messages &> /dev/null'
+            ],
+            [
+                'time'   => '*/30 * * * *',
+                'action' => APPLICATION_PUBLIC . '/index.php application delete content &> /dev/null'
             ]
         ];
     }

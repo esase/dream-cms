@@ -44,6 +44,7 @@ DROP TABLE IF EXISTS `page_widget_setting_value`;
 DROP TABLE IF EXISTS `page_widget_visibility`;
 DROP TABLE IF EXISTS `user_list`;
 DROP TABLE IF EXISTS `xmlrpc_class`;
+DROP TABLE IF EXISTS `application_delete_content_service`;
 DROP TABLE IF EXISTS `page_widget_setting_default_value`;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -531,6 +532,18 @@ CREATE TABLE `xmlrpc_class` (
 INSERT INTO `xmlrpc_class` (`namespace`, `path`, `module`) VALUES
 ('localization', 'Localization\\XmlRpc\\LocalizationHandler', 1),
 ('user', 'User\\XmlRpc\\UserHandler', 2);
+
+CREATE TABLE `application_delete_content_service` (
+    `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `path` VARCHAR(50) NOT NULL,
+    `module` SMALLINT(5) UNSIGNED NOT NULL,
+    `processed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`path`, `module`),
+    FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `localization_list` (
     `language` CHAR(2) NOT NULL,
