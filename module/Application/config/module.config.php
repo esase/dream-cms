@@ -27,6 +27,7 @@ return [
             'settings-administration' => 'Application\Controller\ApplicationSettingAdministrationController',
             'error' => 'Application\Controller\ApplicationErrorController',
             'email-queue-console' => 'Application\Controller\ApplicationEmailQueueConsoleController',
+            'delete-content-console' => 'Application\Controller\ApplicationDeleteContentConsoleController',
             'modules-administration' => 'Application\Controller\ApplicationModuleAdministrationController'
         ]
     ],
@@ -76,6 +77,15 @@ return [
                         'defaults' => [
                             'controller' => 'email-queue-console',
                             'action'     => 'sendMessages'
+                        ]
+                    ]
+                ],
+                'application delete content' => [
+                    'options' => [
+                        'route'    => 'application delete content [--verbose|-v]',
+                        'defaults' => [
+                            'controller' => 'delete-content-console',
+                            'action'     => 'deleteContent'
                         ]
                     ]
                 ]

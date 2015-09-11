@@ -54,6 +54,7 @@ return [
     'Application\Model\ApplicationModelManager'                          => __DIR__ . '/src/Application/Model/ApplicationModelManager.php',
     'Application\Model\ApplicationAbstractSetting'                       => __DIR__ . '/src/Application/Model/ApplicationAbstractSetting.php',
     'Application\Model\ApplicationEmailQueue'                            => __DIR__ . '/src/Application/Model/ApplicationEmailQueue.php',
+    'Application\Model\ApplicationDeleteContent'                         => __DIR__ . '/src/Application/Model/ApplicationDeleteContent.php',
     'Application\Model\ApplicationTimeZone'                              => __DIR__ . '/src/Application/Model/ApplicationTimeZone.php',
     'Application\Model\ApplicationAbstractBase'                          => __DIR__ . '/src/Application/Model/ApplicationAbstractBase.php',
     'Application\Model\ApplicationModuleAdministration'                  => __DIR__ . '/src/Application/Model/ApplicationModuleAdministration.php',
@@ -67,6 +68,7 @@ return [
     'Application\Controller\ApplicationErrorController'                  => __DIR__ . '/src/Application/Controller/ApplicationErrorController.php',
     'Application\Controller\ApplicationAbstractBaseConsoleController'    => __DIR__ . '/src/Application/Controller/ApplicationAbstractBaseConsoleController.php',
     'Application\Controller\ApplicationEmailQueueConsoleController'      => __DIR__ . '/src/Application/Controller/ApplicationEmailQueueConsoleController.php',
+    'Application\Controller\ApplicationDeleteContentConsoleController'   => __DIR__ . '/src/Application/Controller/ApplicationDeleteContentConsoleController.php',
     'Application\Exception\ApplicationException'                         => __DIR__ . '/src/Application/Exception/ApplicationException.php',
     'Application\View\Helper\ApplicationHumanDate'                       => __DIR__ . '/src/Application/View/Helper/ApplicationHumanDate.php',
     'Application\View\Helper\ApplicationConfig'                          => __DIR__ . '/src/Application/View/Helper/ApplicationConfig.php',
@@ -86,5 +88,6 @@ return [
     'Application\Test\Service\ServiceTest'                               => __DIR__ . '/test/Application/src/Application/Service/ApplicationServiceTest.php',
     'Application\Test\Utility\ApplicationSlugUtilityTest'                => __DIR__ . '/test/Application/src/Application/Utility/ApplicationSlugTest.php',
     'Application\Test\Utility\ApplicationCacheTest'                      => __DIR__ . '/test/Application/src/Application/Utility/ApplicationCacheTest.php',
-    'Application\Test\Model\ApplicationSlugTest'                         => __DIR__ . '/test/Application/src/Application/Model/ApplicationSlugTest.php'
+    'Application\Test\Model\ApplicationSlugTest'                         => __DIR__ . '/test/Application/src/Application/Model/ApplicationSlugTest.php',
+    'Application\DeleteContent\ApplicationAbstractDeleteContent'         => __DIR__ . '/src/Application/DeleteContent/ApplicationAbstractDeleteContent.php'
 ];

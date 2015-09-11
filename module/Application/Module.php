@@ -424,6 +424,10 @@ class Module implements ConsoleUsageProviderInterface
             // describe expected parameters
             [
                 '--verbose|-v', '(optional) turn on verbose mode'
+            ],
+            'application delete content [--verbose|-v]' => 'Delete unused content',
+            [
+                '--verbose|-v', '(optional) turn on verbose mode'
             ]
         ];
     }
