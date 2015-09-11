@@ -1,0 +1,16 @@
+Dream CMS 2.3.0, Sep 11, 2015
+====================================
+
+- added some useful descriptions for working with site pages and file manager;
+- fixed usage js in tinymce (tinymce stripped out  all javascript);
+- fixed upload images bug;
+- added a license info into each file;
+- fixed the "gzopen" function usage;
+- added priority for email notifications;
+- added content delete service (we need it for deleting unused or expired content items via cron jobs);
+- update all vendors elements (zend framework, jquery, etc);
+- added rss widget;
+- added a few improvements to the auto members role assignment function;
+- added pages rating widget;
+- fixed incorrect format in the "robots.txt";
+- added possibility edit page on the site front-end (earlier we could only edit pages in the admin page);
