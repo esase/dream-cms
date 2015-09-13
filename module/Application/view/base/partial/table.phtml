@@ -57,14 +57,14 @@
                                              if (!empty($action['action']) && !empty($this->actions_check[$action['action']])) {
                                                  foreach ($this->actions_check[$action['action']] as $check) {
                                                      if (isset($check['param'], $check['condition'])) {
-                                                         $this->value = $items[$check['param']];
+                                                         $this->value = $data[$check['param']];
 
                                                          if (false === ($result = eval(str_replace('__value__', addslashes($this->value), $check['condition'])))) {
                                                              continue 2;
                                                          }
                                                      }
                                                      else if (isset($check['function'])) {
-                                                         if (false === ($result = $check['function']($items))) {
+                                                         if (false === ($result = $check['function']($data))) {
                                                              continue 2;
                                                          }
                                                      }
@@ -77,8 +77,8 @@
                                                 if (!empty($action['slug_params']['use_query']) && $action['slug_params']['use_query'] === true) {
                                                     $this->urlQueries = array_merge($this->urlQueries, [
                                                         'slug' => !empty($action['param'])
-                                                            ? $items[$action['param']]
-                                                            : $items[$this->actions_options['action_identity']]
+                                                            ? $data[$action['param']]
+                                                            : $data[$this->actions_options['action_identity']]
                                                     ]);
                                                 }
                                             ?>
@@ -89,8 +89,8 @@
                                                         'action' => $action['action'],
                                                         'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
                                                             ? !empty($action['param'])
-                                                                ? $items[$action['param']]
-                                                                : $items[$this->actions_options['action_identity']]
+                                                                ? $data[$action['param']]
+                                                                : $data[$this->actions_options['action_identity']]
                                                             : null
                                                     ],
                                                     ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
@@ -99,8 +99,8 @@
                                                         'page_name' => $action['page_name'],
                                                         'slug' => empty($action['slug_params']['use_query']) || false === $action['slug_params']['use_query']
                                                             ? !empty($action['param'])
-                                                                ? $items[$action['param']]
-                                                                : $items[$this->actions_options['action_identity']]
+                                                                ? $data[$action['param']]
+                                                                : $data[$this->actions_options['action_identity']]
                                                             : null
                                                     ],
                                                     ['force_canonical' => true, 'query' => $this->urlQueries]) ?>" title="<?php echo $this->escapeHtmlAttr($action['name']) ?>">
@@ -108,7 +108,7 @@
                                                 <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                                             </a>
                                         <?php else: ?>
-                                            <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? addslashes($items[$action['param']]) : addslashes($items[$this->actions_options['action_identity']])), $action['js']) ?>">
+                                            <a title="<?php echo $this->escapeHtmlAttr($action['name']) ?>" class="single-actions" href="javascript:void(0)" onclick="<?php echo str_replace('__value__', (!empty($action['param']) ? addslashes($data[$action['param']]) : addslashes($data[$this->actions_options['action_identity']])), $action['js']) ?>">
                                                 <img src="<?php echo $this->escapeHtmlAttr($action['image']) ?>" alt="<?php echo $this->escapeHtmlAttr($action['name']) ?>" />
                                             </a>
                                         <?php endif ?>
