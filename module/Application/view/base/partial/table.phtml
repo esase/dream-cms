@@ -26,21 +26,26 @@
                 </thead>
             <?php endif ?>
                 <tbody>
-                    <?php foreach ($this->list as $items): ?>
+                    <?php foreach ($this->list as $data): ?>
                         <tr>
-                            <?php foreach ($items as $itemName => $itemValue) : ?>
-                                <?php if (!empty($this->skipped_fields) && in_array($itemName, $this->skipped_fields)):  ?>
+                            <?php foreach ($data as $fieldName => $fieldValue) : ?>
+                                <?php if (is_array($this->skipped_fields) && in_array($fieldName, $this->skipped_fields)) : ?>
                                     <?php continue ?>
                                 <?php endif ?>
                                 <td>
-                                    <?php if (!empty($this->helpers[$itemName])) : ?>
-                                        <?php if (!empty($this->helpers_set_array) && array_key_exists($itemName, $this->helpers_set_array) ): ?>
-                                             <?php echo $this->{$this->helpers[$itemName]}($items) ?>
-                                        <?php else: ?>
-                                             <?php echo $this->{$this->helpers[$itemName]}($itemValue) ?>
-                                        <?php endif ?>                                       
+                                    <?php if (!empty($this->helpers[$fieldName])) : ?>
+
+                                        <?php if ($fieldValue === null) : ?>
+                                            <?php $fieldValue = '' ?>
+                                        <?php endif ?>
+
+                                        <?php
+                                            echo empty($this->helpers_options[$fieldName])
+                                                ? $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data))
+                                                : $this->{$this->helpers[$fieldName]}((empty($this->helpers_set_array[$fieldName]) ? $fieldValue : $data), $this->helpers_options[$fieldName])
+                                        ?>
                                     <?php else: ?>
-                                        <?php echo $this->escapeHtml($itemValue) ?>
+                                        <?php echo $this->escapeHtml($fieldValue) ?>
                                     <?php endif ?>
                                 </td>
                             <?php endforeach ?>
