@@ -34,7 +34,13 @@ class ApplicationFileSystem
     /**
      * Default folder permissions
      */
-    const DEFAULT_FOLDER_PERMISSIONS = 0755;
+    const DEFAULT_FOLDER_PERMISSIONS = 0777;
+
+    /**
+     * Default file permissions
+     */
+    const DEFAULT_FILE_PERMISSIONS = 0666;
+
 
     /**
      * System files
@@ -183,6 +189,8 @@ class ApplicationFileSystem
 
         if (is_writable($basePath)) {
             if (true === ($result = move_uploaded_file($file['tmp_name'], $basePath . $fileName))) {
+                @chmod($basePath . $fileName, self::DEFAULT_FILE_PERMISSIONS);
+
                 return $fileName;
             }
         }
