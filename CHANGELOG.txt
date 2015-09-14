@@ -1,6 +1,7 @@
-Dream CMS 2.3.0, Sep 11, 2015
+Dream CMS 2.3.0, Sep 14, 2015
 ====================================
 
+- fixed permissions for all uploadable files;
 - added some useful descriptions for working with site pages and file manager;
 - fixed usage js in tinymce (tinymce stripped out  all javascript);
 - fixed upload images bug;
