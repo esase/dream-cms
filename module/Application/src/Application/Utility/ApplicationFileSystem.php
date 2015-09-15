@@ -84,6 +84,8 @@ class ApplicationFileSystem
         if (true !== ($result = mkdir($path, $permission, true))) {
             throw new ApplicationException ('Failed to create directory - ' . $path);
         }
+
+        @chmod($path, self::DEFAULT_FOLDER_PERMISSIONS);
     }
 
     /**
