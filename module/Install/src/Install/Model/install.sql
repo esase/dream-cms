@@ -521,7 +521,7 @@ CREATE TABLE `application_module_depend` (
 
 CREATE TABLE `xmlrpc_class` (
     `namespace` VARCHAR(20) NOT NULL,
-    `path` VARCHAR(50) NOT NULL,
+    `path` VARCHAR(100) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`namespace`, `path`, `module`),
     FOREIGN KEY (`module`) REFERENCES `application_module`(`id`)
@@ -535,7 +535,7 @@ INSERT INTO `xmlrpc_class` (`namespace`, `path`, `module`) VALUES
 
 CREATE TABLE `application_delete_content_service` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `path` VARCHAR(50) NOT NULL,
+    `path` VARCHAR(100) NOT NULL,
     `module` SMALLINT(5) UNSIGNED NOT NULL,
     `processed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
