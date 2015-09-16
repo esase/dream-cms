@@ -49,8 +49,12 @@ class ApplicationImage
             ? Imagine\Image\ImageInterface::THUMBNAIL_INSET
             : Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
 
+        $path = ($newPath ? ApplicationService::getResourcesDir() . $newPath  . $file : $filePath);
+
         $imagine->open($filePath)
             ->thumbnail($size, $mode)
-            ->save(($newPath ? ApplicationService::getResourcesDir() . $newPath  . $file : $filePath));    
+            ->save($path);
+
+        @chmod($path, ApplicationFileSystem::DEFAULT_FILE_PERMISSIONS);
     }
 }
