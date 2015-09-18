@@ -62,6 +62,19 @@
                 </div>
                 <div class="col-sm-5" id="logo-actions">
                     <?php echo $this->pageInjectWidget('logo') ?>
+
+                    <?php if($this->aclCheckPermission('pages_administration_edit_page')): ?>
+                        <div class="btn-group">
+                            <div class="btn-group-wrapper">
+                                <div class="btn-group-item">
+                                    <a href="javascript:void(0)" rel="nofollow" onclick="showPopup('<?php echo $this->escapeJs($this->url('application/page', ['controller' => 'pages-ajax', 'action' => 'ajax-get-embed-page-manager'], ['force_canonical' => true, 'query' => ['page_id' => $this->page['id']]])) ?>', 'popup-page-manager-window')">
+                                        <img src="<?php echo $this->layoutAsset('icon/customize.png', 'image') ?>" width="32" height="32" title="<?php echo $this->escapeHtmlAttr($this->translate('Customize the page')) ?>" />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif ?>
+
                     <?php if (count($this->localization()->getAllLocalizations()) > 1): ?>
 
                         <?php foreach($this->localization()->getAllLocalizations() as $language): ?>
@@ -77,18 +90,6 @@
                                 ?>
                             <?php endif ?>
                         <?php endforeach ?>
-
-                        <?php if($this->aclCheckPermission('pages_administration_edit_page')): ?>
-                            <div class="btn-group">
-                                <div class="btn-group-wrapper">
-                                    <div class="btn-group-item">
-                                        <a href="javascript:void(0)" rel="nofollow" onclick="showPopup('<?php echo $this->escapeJs($this->url('application/page', ['controller' => 'pages-ajax', 'action' => 'ajax-get-embed-page-manager'], ['force_canonical' => true, 'query' => ['page_id' => $this->page['id']]])) ?>', 'popup-page-manager-window')">
-                                            <img src="<?php echo $this->layoutAsset('icon/customize.png', 'image') ?>" width="32" height="32" title="<?php echo $this->escapeHtmlAttr($this->translate('Customize the page')) ?>" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif ?>
 
                         <?php if (count($this->localizationPages) > 1): ?>
                             <!-- language switcher -->
