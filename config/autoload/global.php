@@ -60,9 +60,7 @@ return [
         'readable' => true,
         'cache_dir' => APPLICATION_ROOT . '/data/cache/application',
         'dir_level' => 1,
-        'ttl' => 0, // cache never will be expired
-        'dir_permission' => 0777,
-        'file_permission' => 0666
+        'ttl' => 0 // cache never will be expired
     ],
     'view_manager' => [
         'layout' => 'layout/frontend'
