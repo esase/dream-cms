@@ -55,3 +55,4 @@
 ## CRON JOBS
 
     1. */5 * * * * /replace/it/with/path/to/php/binary -q /replace/it/with/application/public/path/index.php application send messages &> /dev/null
+    2. */30 * * * * /replace/it/with/path/to/php/binary -q /replace/it/with/application/public/path/index.php application delete content &> /dev/null
