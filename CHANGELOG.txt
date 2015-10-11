@@ -1,3 +1,8 @@
+Dream CMS 2.3.1, Oct 11, 2015
+====================================
+
+- security fix for preventing uploading PHP scripts via the file manager;
+
 Dream CMS 2.3.0, Sep 15, 2015
 ====================================
 
