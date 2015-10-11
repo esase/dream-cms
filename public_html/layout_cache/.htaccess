@@ -1,5 +1,8 @@
 AddEncoding gzip .gz
-php_flag engine off
+
+<FilesMatch "\.ph(p[3-7]?|tml)$">
+    Deny from all
+</FilesMatch>
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
