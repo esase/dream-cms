@@ -342,6 +342,8 @@
         <?php $formName = new Element\Hidden('form_name') ?>
         <?php $formName->setValue($this->formName) ?>
         <?php echo $this->formHidden($formName) ?>
+
+        <?php echo $this->formHidden(new Element\Csrf('csrf')) ?>
     <?php endif ?>
 
     <div class="table-responsive">

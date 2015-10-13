@@ -109,7 +109,8 @@ return [
     ],
     'controller_plugins' => [
         'invokables' => [
-            'applicationSetting' => 'Application\Controller\Plugin\ApplicationSetting'
+            'applicationSetting' => 'Application\Controller\Plugin\ApplicationSetting',
+            'applicationCsrf' => 'Application\Controller\Plugin\ApplicationCsrf'
         ]
     ],
     'view_manager' => [
