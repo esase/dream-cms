@@ -22,6 +22,7 @@
  */
 namespace Application\Utility;
 
+use Application\Form\ApplicationCustomFormBuilder;
 use Zend\Validator\Csrf;
 
 class ApplicationCsrf
@@ -63,7 +64,9 @@ class ApplicationCsrf
     protected static function getCsrf()
     {
         if (!self::$csrf) {
-            self::$csrf =  new Csrf();
+            self::$csrf =  new Csrf([
+                'timeout' => ApplicationCustomFormBuilder::CSRF_TIMEOUT
+            ]);
         }
 
         return self::$csrf;
