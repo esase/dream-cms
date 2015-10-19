@@ -85,11 +85,17 @@ class Module implements ConsoleUsageProviderInterface
         if (!$request instanceof ConsoleRequest) {
             // init profiler
             $config = $this->serviceLocator->get('Config');
+
             if ($config['profiler']) {
                 $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_FINISH, [
                     $this, 'initProfiler'
                 ]);
             }
+
+            // set basic headers
+            $headers = $e->getResponse()->getHeaders();
+            $headers->addHeaderLine('X-Frame-Options: SAMEORIGIN');
+            $headers->addHeaderLine('X-Content-Type-Options: nosniff');
         }
     }
 
