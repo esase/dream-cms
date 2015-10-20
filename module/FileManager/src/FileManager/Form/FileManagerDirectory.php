@@ -64,6 +64,10 @@ class FileManagerDirectory extends ApplicationAbstractCustomForm
             'description' => 'New directory description',
             'description_params' => []
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

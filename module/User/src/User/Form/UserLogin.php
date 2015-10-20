@@ -58,13 +58,13 @@ class UserLogin extends ApplicationAbstractCustomForm
             'label' => 'Remember me'
         ],
         [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
+        [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit'
-        ],
-        [
-            'name' => 'csrf',
-            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
         ]
     ];
 }

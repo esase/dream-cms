@@ -38,6 +38,10 @@ class ApplicationSetting extends ApplicationAbstractCustomForm
      */
     protected $formElements = [
         [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
+        [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Save'

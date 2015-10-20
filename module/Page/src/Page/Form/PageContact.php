@@ -68,14 +68,14 @@ class PageContact extends ApplicationAbstractCustomForm
             'name' => 'captcha',
             'type' => ApplicationCustomFormBuilder::FIELD_CAPTCHA
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Submit'
-        ],
-        'csrf' => [
-            'name' => 'csrf',
-            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
         ]
     ];
 

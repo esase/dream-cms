@@ -84,6 +84,10 @@ class ApplicationModule extends ApplicationAbstractCustomForm
             'category' => 'FTP access',
             'description' => 'Upload module description'
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

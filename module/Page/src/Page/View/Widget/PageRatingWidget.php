@@ -24,6 +24,7 @@ namespace Page\View\Widget;
 
 use Page\Service\Page as PageService;
 use Acl\Service\Acl as AclService;
+use Application\Utility\ApplicationCsrf;
 
 class PageRatingWidget extends PageAbstractWidget
 {
@@ -80,7 +81,9 @@ class PageRatingWidget extends PageAbstractWidget
                 || $this->getModel()->isPageRated($this->pageId, $this->getPageSlug());
 
         // process actions
-        if ($this->getRequest()->isPost()) {
+        if ($this->getRequest()->isPost()
+                && ApplicationCsrf::isTokenValid($this->getRequest()->getPost('csrf'))) {
+
             if (false !== ($action = $this->
                     getRequest()->getPost('widget_action', false)) && $this->getRequest()->isXmlHttpRequest()) {
 
@@ -100,6 +103,7 @@ class PageRatingWidget extends PageAbstractWidget
             : 0;
 
         return $this->getView()->partial('page/widget/rating', [
+            'csrf' =>ApplicationCsrf::getToken(),
             'rating' => $currentRating,
             'widget_url' => $this->getWidgetConnectionUrl(),
             'big_rating' => $this->getWidgetSetting('page_rating_size') == 'big_rating',

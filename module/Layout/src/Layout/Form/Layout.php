@@ -64,6 +64,10 @@ class Layout extends ApplicationModule
             'category' => 'FTP access',
             'description' => 'Upload layout description'
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

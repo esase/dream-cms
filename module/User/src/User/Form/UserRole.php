@@ -47,6 +47,10 @@ class UserRole extends ApplicationAbstractCustomForm
             'label' => 'Role',
             'required' => true
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

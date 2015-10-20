@@ -66,6 +66,10 @@ class AclRole extends ApplicationAbstractCustomForm
             'required' => true,
             'max_length' => self::ACL_NAME_MAX_LENGTH
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
