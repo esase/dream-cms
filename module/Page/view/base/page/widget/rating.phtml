@@ -13,7 +13,7 @@
     }).bind('rated', function (event, value) {
         var self = this;
 
-        $.post("<?php echo $this->escapeJs($this->widget_url) ?>", {"widget_action" : "add_rating", "value" : value}, function(data){
+        $.post("<?php echo $this->escapeJs($this->widget_url) ?>", {"csrf" : "<?php echo $this->escapeJs($this->csrf) ?>", "widget_action" : "add_rating", "value" : value}, function(data){
             data = $.parseJSON(data);
             $(self).rateit('readonly', true);
 

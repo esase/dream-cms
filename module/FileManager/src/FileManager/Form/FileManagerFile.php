@@ -50,6 +50,10 @@ class FileManagerFile extends ApplicationAbstractCustomForm
             'description' => 'New file description',
             'description_params' => []
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

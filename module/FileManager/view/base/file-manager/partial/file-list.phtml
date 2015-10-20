@@ -154,7 +154,7 @@
         var baseUrl = "<?php echo $this->escapeJs($this->fileManagerBaseFileUrl($this->path)) ?>";
         var $modalWindow = $("#preview-images");
 
-        $modalWindow.find("#preview-image").css("background-image", "url(" + baseUrl + fileName + ")");
+        $modalWindow.find("#preview-image").css("background-image", "url(" + escape(baseUrl + fileName) + ")");
         $modalWindow.modal("show");
     }
 <?php $this->inlineScript()->captureEnd() ?>

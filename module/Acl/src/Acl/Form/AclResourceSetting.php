@@ -123,6 +123,10 @@ class AclResourceSetting extends ApplicationAbstractCustomForm
             'label' => 'Clean the action counter',
             'required' => false
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

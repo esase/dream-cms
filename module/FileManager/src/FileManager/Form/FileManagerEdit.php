@@ -91,6 +91,10 @@ class FileManagerEdit extends ApplicationAbstractCustomForm
             'label' => 'Name',
             'required' => true
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,

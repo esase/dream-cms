@@ -50,6 +50,10 @@ class ApplicationClearCache extends ApplicationAbstractCustomForm
             ]
         ],
         [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
+        [
             'name' => 'clear',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
             'label' => 'Clear'
