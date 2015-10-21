@@ -1,3 +1,10 @@
+Dream CMS 2.3.2, Oct 21, 2015
+====================================
+
+- update all vendors elements (zend framework, jquery, etc);
+- security added the "X-Frame-Options header SAMEORIGIN" header (it prevents site loading in iframes);
+- security added CSRF tokens in all forms;
+
 Dream CMS 2.3.1, Oct 11, 2015
 ====================================
 
