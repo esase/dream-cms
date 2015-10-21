@@ -10,8 +10,9 @@
 namespace Zend\Mail\Header;
 
 use Zend\Mail\Headers;
+use Zend\Mime\Mime;
 
-class ContentType implements HeaderInterface
+class ContentType implements UnstructuredInterface
 {
     /**
      * @var string
@@ -19,9 +20,16 @@ class ContentType implements HeaderInterface
     protected $type;
 
     /**
+     * Header encoding
+     *
+     * @var string
+     */
+    protected $encoding = 'ASCII';
+
+    /**
      * @var array
      */
-    protected $parameters = array();
+    protected $parameters = [];
 
     public static function fromString($headerLine)
     {
@@ -64,8 +72,14 @@ class ContentType implements HeaderInterface
             return $prepared;
         }
 
-        $values = array($prepared);
+        $values = [$prepared];
         foreach ($this->parameters as $attribute => $value) {
+            if (HeaderInterface::FORMAT_ENCODED === $format && !Mime::isPrintable($value)) {
+                $this->encoding = 'UTF-8';
+                $value = HeaderWrap::wrap($value, $this);
+                $this->encoding = 'ASCII';
+            }
+
             $values[] = sprintf('%s="%s"', $attribute, $value);
         }
 
@@ -74,18 +88,18 @@ class ContentType implements HeaderInterface
 
     public function setEncoding($encoding)
     {
-        // This header must be always in US-ASCII
+        $this->encoding = $encoding;
         return $this;
     }
 
     public function getEncoding()
     {
-        return 'ASCII';
+        return $this->encoding;
     }
 
     public function toString()
     {
-        return 'Content-Type: ' . $this->getFieldValue();
+        return 'Content-Type: ' . $this->getFieldValue(HeaderInterface::FORMAT_ENCODED);
     }
 
     /**
@@ -135,8 +149,10 @@ class ContentType implements HeaderInterface
         if (! HeaderValue::isValid($name)) {
             throw new Exception\InvalidArgumentException('Invalid content-type parameter name detected');
         }
-        if (! HeaderValue::isValid($value)) {
-            throw new Exception\InvalidArgumentException('Invalid content-type parameter value detected');
+        if (! HeaderWrap::canBeEncoded($value)) {
+            throw new Exception\InvalidArgumentException(
+                'Parameter value must be composed of printable US-ASCII or UTF-8 characters.'
+            );
         }
 
         $this->parameters[$name] = $value;

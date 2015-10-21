@@ -17,7 +17,7 @@ class Message extends Part implements Message\MessageInterface
      * flags for this message
      * @var array
      */
-    protected $flags = array();
+    protected $flags = [];
 
     /**
      * Public constructor
@@ -42,6 +42,8 @@ class Message extends Part implements Message\MessageInterface
             } else {
                 $params['raw'] = stream_get_contents($params['file']);
             }
+
+            $params['raw'] = ltrim($params['raw']);
         }
 
         if (!empty($params['flags'])) {

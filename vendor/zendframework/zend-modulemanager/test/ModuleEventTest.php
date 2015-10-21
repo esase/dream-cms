@@ -14,8 +14,16 @@ use stdClass;
 use Zend\ModuleManager\Listener\ConfigListener;
 use Zend\ModuleManager\ModuleEvent;
 
+/**
+ * @covers Zend\ModuleManager\ModuleEvent
+ */
 class ModuleEventTest extends TestCase
 {
+    /**
+     * @var ModuleEvent
+     */
+    protected $event;
+
     public function setUp()
     {
         $this->event = new ModuleEvent();

@@ -9,38 +9,39 @@
 
 namespace ZendTest\ModuleManager\Listener;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Zend\ModuleManager\Listener\ModuleResolverListener;
 use Zend\ModuleManager\Listener\ModuleLoaderListener;
 use Zend\ModuleManager\Listener\ListenerOptions;
 use Zend\ModuleManager\ModuleManager;
 use Zend\ModuleManager\ModuleEvent;
+use ZendTest\ModuleManager\SetUpCacheDirTrait;
 
-class ModuleLoaderListenerTest extends TestCase
+/**
+ * @covers Zend\ModuleManager\Listener\AbstractListener
+ * @covers Zend\ModuleManager\Listener\ModuleLoaderListener
+ */
+class ModuleLoaderListenerTest extends AbstractListenerTestCase
 {
+    use SetUpCacheDirTrait;
+
+    /**
+     * @var ModuleManager
+     */
+    protected $moduleManager;
+
     public function setUp()
     {
-        $this->tmpdir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'zend_module_cache_dir';
-        @mkdir($this->tmpdir);
-
-        $this->moduleManager = new ModuleManager(array());
+        $this->moduleManager = new ModuleManager([]);
         $this->moduleManager->getEventManager()->attach(ModuleEvent::EVENT_LOAD_MODULE_RESOLVE, new ModuleResolverListener, 1000);
-    }
-
-    public function tearDown()
-    {
-        $file = glob($this->tmpdir . DIRECTORY_SEPARATOR . '*');
-        @unlink($file[0]); // change this if there's ever > 1 file
-        @rmdir($this->tmpdir);
     }
 
     public function testModuleLoaderListenerFunctionsAsAggregateListenerEnabledCache()
     {
-        $options = new ListenerOptions(array(
+        $options = new ListenerOptions([
             'cache_dir'                => $this->tmpdir,
             'module_map_cache_enabled' => true,
             'module_map_cache_key'     => 'foo',
-        ));
+        ]);
 
         $moduleLoaderListener = new ModuleLoaderListener($options);
 
@@ -55,9 +56,9 @@ class ModuleLoaderListenerTest extends TestCase
 
     public function testModuleLoaderListenerFunctionsAsAggregateListenerDisabledCache()
     {
-        $options = new ListenerOptions(array(
+        $options = new ListenerOptions([
             'cache_dir' => $this->tmpdir,
-        ));
+        ]);
 
         $moduleLoaderListener = new ModuleLoaderListener($options);
 
@@ -72,11 +73,11 @@ class ModuleLoaderListenerTest extends TestCase
 
     public function testModuleLoaderListenerFunctionsAsAggregateListenerHasCache()
     {
-        $options = new ListenerOptions(array(
+        $options = new ListenerOptions([
             'cache_dir'                => $this->tmpdir,
             'module_map_cache_key'     => 'foo',
             'module_map_cache_enabled' => true,
-        ));
+        ]);
 
         file_put_contents($options->getModuleMapCacheFile(), '<?php return array();');
 

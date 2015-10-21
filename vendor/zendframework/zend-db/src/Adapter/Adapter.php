@@ -70,7 +70,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
     public function __construct($driver, Platform\PlatformInterface $platform = null, ResultSet\ResultSetInterface $queryResultPrototype = null, Profiler\ProfilerInterface $profiler = null)
     {
         // first argument can be an array of parameters
-        $parameters = array();
+        $parameters = [];
 
         if (is_array($driver)) {
             $parameters = $driver;
@@ -166,7 +166,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
      */
     public function query($sql, $parametersOrQueryMode = self::QUERY_MODE_PREPARE, ResultSet\ResultSetInterface $resultPrototype = null)
     {
-        if (is_string($parametersOrQueryMode) && in_array($parametersOrQueryMode, array(self::QUERY_MODE_PREPARE, self::QUERY_MODE_EXECUTE))) {
+        if (is_string($parametersOrQueryMode) && in_array($parametersOrQueryMode, [self::QUERY_MODE_PREPARE, self::QUERY_MODE_EXECUTE])) {
             $mode = $parametersOrQueryMode;
             $parameters = null;
         } elseif (is_array($parametersOrQueryMode) || $parametersOrQueryMode instanceof ParameterContainer) {
@@ -210,7 +210,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
     {
         $statement = $this->driver->createStatement($initialSql);
         if ($initialParameters === null || !$initialParameters instanceof ParameterContainer && is_array($initialParameters)) {
-            $initialParameters = new ParameterContainer((is_array($initialParameters) ? $initialParameters : array()));
+            $initialParameters = new ParameterContainer((is_array($initialParameters) ? $initialParameters : []));
         }
         $statement->setParameterContainer($initialParameters);
         return $statement;
@@ -218,7 +218,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
 
     public function getHelpers(/* $functions */)
     {
-        $functions = array();
+        $functions = [];
         $platform = $this->platform;
         foreach (func_get_args() as $arg) {
             switch ($arg) {
@@ -270,7 +270,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
             throw new Exception\InvalidArgumentException(__FUNCTION__ . ' expects a "driver" to be a string or instance of DriverInterface');
         }
 
-        $options = array();
+        $options = [];
         if (isset($parameters['options'])) {
             $options = (array) $parameters['options'];
             unset($parameters['options']);
@@ -322,7 +322,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
         }
 
         // currently only supported by the IbmDb2 & Oracle concrete implementations
-        $options = (isset($parameters['platform_options'])) ? $parameters['platform_options'] : array();
+        $options = (isset($parameters['platform_options'])) ? $parameters['platform_options'] : [];
 
         switch ($platformName) {
             case 'Mysql':
@@ -333,8 +333,8 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
                 // PDO is only supported driver for quoting values in this platform
                 return new Platform\SqlServer(($this->driver instanceof Driver\Pdo\Pdo) ? $this->driver : null);
             case 'Oracle':
-                // oracle does not accept a driver as an option, no driver specific quoting available
-                return new Platform\Oracle($options);
+                $driver = ($this->driver instanceof Driver\Oci8\Oci8 || $this->driver instanceof Driver\Pdo\Pdo) ? $this->driver : null;
+                return new Platform\Oracle($options, $driver);
             case 'Sqlite':
                 // PDO is only supported driver for quoting values in this platform
                 return new Platform\Sqlite(($this->driver instanceof Driver\Pdo\Pdo) ? $this->driver : null);
