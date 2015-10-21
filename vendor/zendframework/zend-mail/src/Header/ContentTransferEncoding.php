@@ -16,7 +16,7 @@ class ContentTransferEncoding implements HeaderInterface
      * (reduced set)
      * @var array
      */
-    protected static $allowedTransferEncodings = array(
+    protected static $allowedTransferEncodings = [
         '7bit',
         '8bit',
         'quoted-printable',
@@ -26,7 +26,7 @@ class ContentTransferEncoding implements HeaderInterface
          * not implemented:
          * x-token: 'X-'
          */
-    );
+    ];
 
     /**
      * @var string
@@ -36,7 +36,7 @@ class ContentTransferEncoding implements HeaderInterface
     /**
      * @var array
      */
-    protected $parameters = array();
+    protected $parameters = [];
 
     public static function fromString($headerLine)
     {
@@ -85,7 +85,7 @@ class ContentTransferEncoding implements HeaderInterface
      *
      * @param  string $transferEncoding
      * @throws Exception\InvalidArgumentException
-     * @return self
+     * @return $this
      */
     public function setTransferEncoding($transferEncoding)
     {

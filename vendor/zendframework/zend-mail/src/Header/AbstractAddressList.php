@@ -58,13 +58,16 @@ abstract class AbstractAddressList implements HeaderInterface
         }
         // split value on ","
         $fieldValue = str_replace(Headers::FOLDING, ' ', $fieldValue);
+        $fieldValue = preg_replace('/[^:]+:([^;]*);/', '$1,', $fieldValue);
         $values     = str_getcsv($fieldValue, ',');
         array_walk(
             $values,
             function (&$value) {
                 $value = trim($value);
+                $value = self::stripComments($value);
             }
         );
+        $values = array_filter($values);
 
         $addressList = $header->getAddressList();
         foreach ($values as $address) {
@@ -80,7 +83,7 @@ abstract class AbstractAddressList implements HeaderInterface
 
     public function getFieldValue($format = HeaderInterface::FORMAT_RAW)
     {
-        $emails   = array();
+        $emails   = [];
         $encoding = $this->getEncoding();
 
         foreach ($this->getAddressList() as $address) {
@@ -154,5 +157,20 @@ abstract class AbstractAddressList implements HeaderInterface
         $name  = $this->getFieldName();
         $value = $this->getFieldValue(HeaderInterface::FORMAT_ENCODED);
         return (empty($value)) ? '' : sprintf('%s: %s', $name, $value);
+    }
+
+    // Supposed to be private, protected as a workaround for PHP bug 68194
+    protected static function stripComments($value)
+    {
+        return preg_replace(
+            '/\\(
+                (
+                    \\\\.|
+                    [^\\\\)]
+                )+
+            \\)/x',
+            '',
+            $value
+        );
     }
 }

@@ -105,7 +105,7 @@ class Smtp extends AbstractProtocol
 
         // If we don't have a config array, initialize it
         if (null === $config) {
-            $config = array();
+            $config = [];
         }
 
         if (isset($config['ssl'])) {
@@ -252,7 +252,7 @@ class Smtp extends AbstractProtocol
 
         // Set rcpt to true, as per 4.1.1.3 of RFC 2821
         $this->_send('RCPT TO:<' . $to . '>');
-        $this->_expect(array(250, 251), 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
+        $this->_expect([250, 251], 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
         $this->rcpt = true;
     }
 
@@ -273,16 +273,25 @@ class Smtp extends AbstractProtocol
         $this->_send('DATA');
         $this->_expect(354, 120); // Timeout set for 2 minutes as per RFC 2821 4.5.3.2
 
-        // Ensure newlines are CRLF (\r\n)
-        $data = str_replace("\n", "\r\n", str_replace("\r", '', $data));
+        if (($fp = fopen("php://temp", "r+")) === false) {
+            throw new Exception\RuntimeException('cannot fopen');
+        }
+        if (fwrite($fp, $data) === false) {
+            throw new Exception\RuntimeException('cannot fwrite');
+        }
+        unset($data);
+        rewind($fp);
 
-        foreach (explode(self::EOL, $data) as $line) {
-            if (strpos($line, '.') === 0) {
+        // max line length is 998 char + \r\n = 1000
+        while (($line = stream_get_line($fp, 1000, "\n")) !== false) {
+            $line = rtrim($line, "\r");
+            if (isset($line[0]) && $line[0] === '.') {
                 // Escape lines prefixed with a '.'
                 $line = '.' . $line;
             }
             $this->_send($line);
         }
+        fclose($fp);
 
         $this->_send('.');
         $this->_expect(250, 600); // Timeout set for 10 minutes as per RFC 2821 4.5.3.2
@@ -300,7 +309,7 @@ class Smtp extends AbstractProtocol
     {
         $this->_send('RSET');
         // MS ESMTP doesn't follow RFC, see [ZF-1377]
-        $this->_expect(array(250, 220));
+        $this->_expect([250, 220]);
 
         $this->mail = false;
         $this->rcpt = false;
@@ -329,7 +338,7 @@ class Smtp extends AbstractProtocol
     public function vrfy($user)
     {
         $this->_send('VRFY ' . $user);
-        $this->_expect(array(250, 251, 252), 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
+        $this->_expect([250, 251, 252], 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
     }
 
     /**
