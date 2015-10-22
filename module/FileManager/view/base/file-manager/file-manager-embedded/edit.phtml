@@ -43,7 +43,7 @@
         'name' => $this->translate('Delete'),
         'check_acl' => true,
         'confirm' => $this->translate('File or directory will be deleted. Are you sure?'),
-        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'files' : ['{$this->file_name}']}, function(){location.href='{$this->url('application/page', ['controller' => 'files-manager-embedded', 'action' => 'list'], ['query' => ['path' => $this->path], 'force_canonical' => true])}'}) }"
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'csrf' : '{$this->csrf_token}', 'files' : ['{$this->file_name}']}, function(){location.href='{$this->url('application/page', ['controller' => 'files-manager-embedded', 'action' => 'list'], ['query' => ['path' => $this->path], 'force_canonical' => true])}'}) }"
     ],
     [
         'controller' => 'files-manager-embedded',
@@ -80,3 +80,6 @@
         ? $this->translate('Make this directory as a parent of current directory')
         : $this->translate('Make this directory as a parent of current file')
 ]) ?>
+
+<br />
+
