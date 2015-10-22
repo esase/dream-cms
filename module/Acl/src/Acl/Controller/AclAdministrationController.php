@@ -73,7 +73,9 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
 
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost()
+                && $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($resourcesIds = $request->getPost('resources', null))) {
                 // allow resources
                 foreach ($resourcesIds as $resourceId) {
@@ -126,7 +128,9 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
 
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($resourcesIds = $request->getPost('resources', null))) {
                 // disallow recources
                 foreach ($resourcesIds as $resourceId) {
@@ -172,7 +176,9 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost()
+                && $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($rolesIds = $request->getPost('roles', null))) {
                 // delete selected roles
                 $deleteResult = false;
@@ -273,6 +279,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         }
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'role' => $role,
             'acl_form' => $aclRoleForm->getForm()
         ]);
@@ -403,6 +410,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
                 $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'slug' => $role['id'],
             'role_info' => $role,
             'filter_form' => $filterForm->getForm(),
@@ -471,6 +479,7 @@ class AclAdministrationController extends ApplicationAbstractAdministrationContr
         }
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'resource_settings' => $settings,
             'acl_form' => $aclResourceSettingsForm->getForm()
         ]);
