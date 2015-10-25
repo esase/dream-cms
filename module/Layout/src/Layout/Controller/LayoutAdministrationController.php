@@ -354,6 +354,7 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
                 $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
             'order_by' => $this->getOrderBy(),

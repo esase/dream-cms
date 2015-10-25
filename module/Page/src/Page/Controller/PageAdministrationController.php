@@ -120,7 +120,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($pagesIds = $request->getPost('pages', null))) {
                 // get pages map
                 if (null != ($systemPagesMap = $this->getModel()->getSystemPagesMap($pagesIds))) {
@@ -261,7 +263,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($pagesIds = $request->getPost('pages', null))) {
                 // delete selected pages
                 $deleteResult = false;
@@ -468,6 +472,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         $view = new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'page' => $page,
             'page_form' => $pageForm->getForm(),
             'page_id' => !empty($parent) ? $parent['id'] : null,
@@ -564,7 +569,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getQuery('csrf'))) {
+
             // get page info
             if (false !== ($pageInfo = $this->getModel()->getStructurePageInfo($this->getSlug()))) {
                 $layoutId = $this->params()->fromQuery('layout', -1);
@@ -611,7 +618,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             $widgetConnectionId = $request->getPost('widget_connection', -1);
             $widgetOrder = (int) $request->getPost('widget_order', 0);
             $widgetPosition = $request->getPost('widget_position');
@@ -658,7 +667,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getQuery('csrf'))) {
+
             $widgetConnectionId = $this->getSlug();
 
             // get widget connection info
@@ -704,7 +715,9 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getQuery('csrf'))) {
+
             $pageId = $this->params()->fromQuery('page', -1);
             $widgetId = $this->params()->fromQuery('widget', -1);
 
@@ -799,6 +812,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
                 getPublicWidgets($page['id'], $page['system_page'], $this->getPage(), $this->getPerPage(), $filters);
 
         $viewModel = new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'page' => $this->getPage(),
             'page_info' => $page,
             'paginator' => $paginator,
@@ -908,6 +922,7 @@ class PageAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         $viewModel = new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'settings_form' => $settingsForm->getForm(),
             'page_info' => $this->getModel()->getStructurePageInfo($widget['page_id']),
             'widget_info' => $widget
