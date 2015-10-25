@@ -97,7 +97,9 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($layoutsIds = $request->getPost('layouts', null))) {
                 // install selected layouts
                 $installResult = false;
@@ -367,7 +369,9 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($layoutsIds = $request->getPost('layouts', null))) {
                 // uninstall selected layouts
                 $uninstallResult = false;
