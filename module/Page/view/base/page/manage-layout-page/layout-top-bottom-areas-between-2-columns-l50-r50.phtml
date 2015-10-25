@@ -18,6 +18,7 @@
                             <?php if (!$widget['widget_system']): ?>
                                 <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
                                     <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'csrf_token' => $this->csrf_token,
                                         'widget' => $widget,
                                         'allow_delete' => $this->allow_delete,
                                         'allow_view_dependents' => $this->allow_view_dependents,
@@ -40,6 +41,7 @@
                             <?php if (!$widget['widget_system']): ?>
                                 <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
                                     <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'csrf_token' => $this->csrf_token,
                                         'widget' => $widget,
                                         'allow_delete' => $this->allow_delete,
                                         'allow_view_dependents' => $this->allow_view_dependents,
@@ -60,6 +62,7 @@
                             <?php if (!$widget['widget_system']): ?>
                                 <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
                                     <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'csrf_token' => $this->csrf_token,
                                         'widget' => $widget,
                                         'allow_delete' => $this->allow_delete,
                                         'allow_view_dependents' => $this->allow_view_dependents,
@@ -82,6 +85,7 @@
                             <?php if (!$widget['widget_system']): ?>
                                 <li class="ui-state-default" widget-connection="<?php echo $this->escapeHtmlAttr($widget['widget_connection_id']) ?>">
                                     <?php echo $this->partial('page/administration-partial/_widget-actions', [
+                                        'csrf_token' => $this->csrf_token,
                                         'widget' => $widget,
                                         'allow_delete' => $this->allow_delete,
                                         'allow_view_dependents' => $this->allow_view_dependents,

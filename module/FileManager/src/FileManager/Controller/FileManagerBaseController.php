@@ -275,6 +275,7 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
         }
 
         return [
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'is_directory' => $isDirectory,
             'edit_form' => $editForm ? $editForm->getForm() : null,
             'path' => $userPath,
@@ -293,7 +294,9 @@ abstract class FileManagerBaseController extends ApplicationAbstractAdministrati
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($fileNames = $request->getPost('files', null))) {
                 // process requested path
                 $userPath = $this->getUserPath();

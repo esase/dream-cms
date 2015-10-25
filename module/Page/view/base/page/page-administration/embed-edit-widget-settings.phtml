@@ -8,6 +8,9 @@
         'params' => [
             'slug' => $this->widget_info['id']
         ],
+        'query' => [
+            'csrf' => $this->csrf_token
+        ],
         'name' => $this->translate('Delete widget'),
         'check_acl' => true,
         'confirm' => $this->translate('Widget will be deleted. Are you sure?'),

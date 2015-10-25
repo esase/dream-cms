@@ -18,7 +18,7 @@
 <?php if ($this->paginator->count()): ?>
     <div class="list-group" id="new-widgets-list">
         <?php foreach ($paginator as $data) : ?>
-            <a title="<?php echo $this->escapeHtmlAttr($this->translate('Add widget')) ?>" onclick="pageWidget.getPage($(this).attr('href')); return false" href="<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-add-widget'], ['query' => ['page' => $this->page_info['id'], 'widget' => $data->id], 'force_canonical' => true]) ?>" class="list-group-item">
+            <a title="<?php echo $this->escapeHtmlAttr($this->translate('Add widget')) ?>" onclick="pageWidget.getPage($(this).attr('href')); return false" href="<?php echo $this->url('application/page', ['controller' => 'pages-administration', 'action' => 'ajax-add-widget'], ['query' => ['csrf' => $this->csrf_token, 'page' => $this->page_info['id'], 'widget' => $data->id], 'force_canonical' => true]) ?>" class="list-group-item">
                <img src="<?php echo $this->layoutAsset('icon/plus.png', 'image', 'page') ?>" alt="<?php echo $this->escapeHtmlAttr($this->translate('Add widget')) ?>"  />
                <?php echo $this->translate($data->description) ?>
             </a>          

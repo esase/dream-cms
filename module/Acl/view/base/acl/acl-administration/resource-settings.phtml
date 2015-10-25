@@ -62,7 +62,7 @@
         'name' => $this->translate('Delete the role'),
         'check_acl' => true,
         'confirm' => $this->translate('Role will be deleted. Are you sure?'),
-        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'roles' : [{$this->resource_settings['role']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'acl-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'csrf' : '{$this->csrf_token}', 'roles' : [{$this->resource_settings['role']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'acl-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
     ],
     [
         'controller' => 'acl-administration',

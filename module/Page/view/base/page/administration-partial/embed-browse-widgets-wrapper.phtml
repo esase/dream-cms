@@ -4,6 +4,7 @@
 <div class="row">
     <div class="col-md-8">
         <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
+            'csrf_token' => $this->csrf_token,
             'layouts' => $this->layouts,
             'page_info' => $this->page_info,
             'manage_layout' => $this->manage_layout,
@@ -17,6 +18,7 @@
                 'notification' => false,
                 'title' => $this->translate('Widgets'),
                 'body' => $this->partial('page/administration-partial/_add-widgets', [
+                    'csrf_token' => $this->csrf_token,
                     'page_info' => $this->page_info,
                     'paginator' => $this->paginator,
                     'per_page' => $this->per_page,
@@ -48,6 +50,7 @@
             'stop' : function (e, ui) {
 
                 params = {
+                    'csrf' : '<?php echo $this->escapeJs($this->csrf_token) ?>',
                     'widget_order' : $(ui.item).index(),
                     'widget_connection'  : $(ui.item).attr('widget-connection'),
                     'widget_position' : $(ui.item).parent().attr('position')

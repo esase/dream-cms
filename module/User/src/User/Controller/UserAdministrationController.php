@@ -153,6 +153,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'user' => $user,
             'resource_settings' => $settings,
             'acl_form' => $aclResourceSettingsForm->getForm()
@@ -201,6 +202,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
                 $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'slug' => $user['user_id'],
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
@@ -267,6 +269,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'role_form' => $roleForm->getForm(),
             'user' => $user
         ]);
@@ -337,6 +340,7 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
         }
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'user_form' => $userForm->getForm(),
             'user' => $user
         ]);
@@ -414,7 +418,9 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($usersIds = $request->getPost('users', null))) {
                 // delete selected users
                 $deleteResult = false;
@@ -475,7 +481,9 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($usersIds = $request->getPost('users', null))) {
                 // approve selected users
                 $approveResult = false;
@@ -537,7 +545,9 @@ class UserAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+            $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($usersIds = $request->getPost('users', null))) {
                 // disapprove selected users
                 $disapproveResult = false;

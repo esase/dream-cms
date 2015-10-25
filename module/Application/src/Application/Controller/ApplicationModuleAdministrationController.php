@@ -157,7 +157,9 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             $uninstallIntroText = [];
 
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
@@ -248,7 +250,9 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost()
+                && $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             $installIntroText = [];
 
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
@@ -334,7 +338,9 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // activate selected modules
                 $activateResult = false;
@@ -398,7 +404,9 @@ class ApplicationModuleAdministrationController extends ApplicationAbstractAdmin
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($modulesIds = $request->getPost('modules', null))) {
                 // deactivate selected modules
                 $deactivateResult = false;

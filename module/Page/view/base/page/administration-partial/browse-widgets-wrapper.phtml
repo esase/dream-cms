@@ -18,7 +18,7 @@
         'name' => $this->translate('Delete the page'),
         'check_acl' => true,
         'confirm' => $this->translate('Page will be deleted. Are you sure?'),
-        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'pages' : [{$this->page_info['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'pages-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'csrf' : '{$this->csrf_token}', 'pages' : [{$this->page_info['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'pages-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
     ],
     [
         'controller' => 'pages-administration',
@@ -47,6 +47,7 @@
 <div class="row">
     <div class="col-md-8">
         <?php echo $this->partial('page/administration-partial/_manage-widgets-wrapper', [
+            'csrf_token' => $this->csrf_token,
             'layouts' => $this->layouts,
             'page_info' => $this->page_info,
             'manage_layout' => $this->manage_layout,
@@ -59,6 +60,7 @@
                 'notification' => false,
                 'title' => $this->translate('Widgets'),
                 'body' => $this->partial('page/administration-partial/_add-widgets', [
+                    'csrf_token' => $this->csrf_token,
                     'page_info' => $this->page_info,
                     'paginator' => $this->paginator,
                     'per_page' => $this->per_page,
@@ -100,6 +102,7 @@
             'stop' : function (e, ui) {
 
                 params = {
+                    'csrf' : '<?php echo $this->escapeJs($this->csrf_token) ?>',
                     'widget_order' : $(ui.item).index(),
                     'widget_connection'  : $(ui.item).attr('widget-connection'),
                     'widget_position' : $(ui.item).parent().attr('position')

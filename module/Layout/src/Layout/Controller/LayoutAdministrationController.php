@@ -97,7 +97,9 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($layoutsIds = $request->getPost('layouts', null))) {
                 // install selected layouts
                 $installResult = false;
@@ -352,6 +354,7 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
                 $this->getPerPage(), $this->getOrderBy(), $this->getOrderType(), $filters);
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'filter_form' => $filterForm->getForm(),
             'paginator' => $paginator,
             'order_by' => $this->getOrderBy(),
@@ -367,7 +370,9 @@ class LayoutAdministrationController extends ApplicationAbstractAdministrationCo
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($layoutsIds = $request->getPost('layouts', null))) {
                 // uninstall selected layouts
                 $uninstallResult = false;
